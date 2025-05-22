@@ -1,0 +1,37 @@
+/* Style général pour tous les titres */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+/* Style spécifique pour chaque niveau de titre */
+h1 {
+  font-size: 2.5rem;    /* Titre principal */
+  color: #D96E30;       /* Couleur */
+}
+
+h2 {
+  font-size: 2rem;      /* Sous-titre */
+  color: #3D7C4D;
+}
+
+h3 {
+  font-size: 1.75rem;
+  color: #0A436B;
+}
+
+h4 {
+  font-size: 1.5rem;
+  color: #222;
+}
+
+h5 {
+  font-size: 1.25rem;
+  color: #666;
+}
+
+h6 {
+  font-size: 1rem;
+  color: #888;
+}

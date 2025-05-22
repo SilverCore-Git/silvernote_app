@@ -1,7 +1,7 @@
 
 <template>
 
-    <header class="mb-5 top-0 left-0 w-full h-14 text-2xl bg-[#F28C28] text-white font-bold flex items-center justify-center">
+    <header style="font-family: 'Montserrat', sans-serif;" class="mb-5 top-0 left-0 w-full h-14 text-2xl bg-[#F28C28] text-white font-bold flex items-center justify-center">
         <h1>SilverNote</h1>
     </header>
 
