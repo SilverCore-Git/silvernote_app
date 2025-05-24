@@ -15,9 +15,9 @@
 
   <section class="flex flex-col justify-center items-center h-full w-[100%] mt-12 overflow-x-hidden">
 
-    <input class="text-3xl mb-3 font-bold" type="text" placeholder="Vôtre titre...">
+    <input class="text-3xl mb-3 font-bold" type="text" placeholder="Titre...">
 
-    <RichMarkdownEditor />
+    <RichMarkdownEditor  />
 
   </section>
 

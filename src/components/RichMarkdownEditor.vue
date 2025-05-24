@@ -1,22 +1,38 @@
 <template>
-  <div class="editor-container">
-    <editor-content :editor="editor" class="prose bg-white" />
+  <div class="editor-container" @click="focusEditor">
+    <editor-content :editor="editor" class="prose h-full" />
   </div>
 </template>
 
 <script setup lang="ts">
+
 import { onBeforeUnmount } from 'vue'
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
+import Placeholder from '@tiptap/extension-placeholder'
+import Link from '@tiptap/extension-link'
+
+
+const focusEditor = () => {
+  if (!editor) return
+  if (!editor.isFocused) {
+    editor.commands.focus()
+  }
+}
+
 
 // Initialisation de l'éditeur Tiptap avec StarterKit et l'extension Underline
 const editor = new Editor({
   extensions: [
     StarterKit,
+    Link,
     Underline,
+    Placeholder.configure({
+      placeholder: 'Commencez à écrire ici...',
+    }),
   ],
-  content: ``,
+  content: ''
 })
 
 // Nettoyage de l'éditeur lorsque le composant est détruit
@@ -35,20 +51,28 @@ onBeforeUnmount(() => {
 .editor-container {
   width: 90%;
   min-height: 70vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Zone éditable de Tiptap */
-.ProseMirror {
-  border: none ;
-  outline: none ;
-  box-shadow: none ;
-  padding: 1rem;
+.editor-container .ProseMirror {
+
+  height: 100%;
+  overflow-y: hidden;
+  border: none;
+  outline: none;
+  box-shadow: none;
   font-family: system-ui, sans-serif;
-  background-color: white;
+  background-color: #FFF8F0;
 }
 
-.ProseMirror:focus {
-  outline: 1px solid #3B3B3B;
+.ProseMirror p.is-empty::before {
+  content: attr(data-placeholder);
+  color: #aaa;
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
+
 
 </style>
