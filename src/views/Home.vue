@@ -30,11 +30,10 @@
 
             <ul>
 
-                <li class="flex flex-col" v-for="(note, index) in sortedNotes" :key="index">
+                <li class="flex flex-col" v-for="(note, index) in list_notes" :key="index">
                     <Note_card 
                         :id="note.id"
                         :pinned="note.pinned"
-                        @click="open_note(note.id, note.pinned)" 
                         class="mb-3" :title="note.title" 
                         :content="note.content" 
                         :date="note.date" 
@@ -57,47 +56,18 @@
 <script setup lang='ts'>
 
     import { useRouter } from 'vue-router';
-    import { ref, computed } from 'vue';
+    import { ref } from 'vue';
+
+    import { list_notes } from '../assets/ts/use_notes';
 
     import Danger_card from '../components/Danger_card.vue';
     import Note_card from '../components/Note_card.vue';
 
     const router = useRouter();
 
-    const list_notes = ref([
-        { id: 1, pinned: false, title: "Ma super note", content: 'aaaaah', date: '20 Mai 2025' }, 
-        { id: 2, pinned: false, title: "Ma super note 2", content: 'aaaaah 2', date: '22 Mai 2025' }, 
-        { id: 3, pinned: false, title: "Ma super note 3", content: 'aaaaah 3', date: '20 Mai 2024' }, 
-        { id: 5, pinned: false, title: "Ma super note", content: 'aaaaah', date: '20 Mai 2025' }, 
-        { id: 6543, pinned: false, title: "Ma super note 2", content: 'aaaaah 2', date: '22 Mai 2025' }, 
-        { id: 543, pinned: false, title: "Ma super note 3", content: 'aaaaah 3', date: '20 Mai 2024' }, 
-        { id: 543, pinned: false, title: "Ma super note", content: 'aaaaah', date: '20 Mai 2025' }, 
-        { id: 543, pinned: false, title: "Ma super note 2", content: 'aaaaah 2', date: '22 Mai 2025' }, 
-        { id: 543, pinned: true, title: "Ma super note", content: 'aaaaahdd', date: '20 Mai 2025' }, 
-        { id: 543, pinned: false, title: "Ma super note 2", content: 'aaaaah 2', date: '22 Mai 2025' }, 
-        { id: 543, pinned: false, title: "Ma super note 3", content: 'aaaaah 3', date: '20 Mai 2024' }, 
-        { id: 98, pinned: false, title: "Ma super note", content: 'aaaaah', date: '20 Mai 2025' }, 
-        { id: 98, pinned: false, title: "Ma super note 2", content: 'aaaaah 2', date: '22 Mai 2025' }, 
-        { id: 98, pinned: false, title: "Ma super note 3", content: 'aaaaah 3', date: '20 Mai 2024' }, 
-        { id: 98, pinned: false, title: "Ma super note", content: 'aaaaah', date: '20 Mai 2025' }, 
-        { id: 98, pinned: false, title: "Ma super note 2", content: 'aaaaah 2', date: '22 Mai 2025' }, 
-        { id: 98, pinned: false, title: "Ma super note 3", content: 'aaaaah 3', date: '20 Mai 2024' }
-    ]);
-
-    const sortedNotes = computed(() => {
-        return [...list_notes.value].sort((a, b) => {
-            return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
-        });
-    });
-
-
     const create_new_note = () => {
         router.push('/edit')
     };
-
-    const open_note = (id: number, pinned: boolean) => {
-        router.push(`/edit?id=${id}&pinned=${pinned}`)
-    }
 
     const if_open_dropdown = ref(false);
 

@@ -29,6 +29,8 @@
 import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
+import { unpinNoteById, pinNoteById } from '../assets/ts/use_notes';
+
 const router = useRouter();
 const route = useRoute();
 
@@ -40,10 +42,19 @@ import pinEmpty from '../assets/svgs/pin_vide.png?url';
 const if_pin_active = ref(route.query.pinned == "true" ? true : false);
 
 const change_pin_state = () => {
-  if_pin_active.value = !if_pin_active.value;
+    if_pin_active.value = !if_pin_active.value;
+    if (if_pin_active.value) {
+        pinNoteById(Number(route.query.id))
+    } else {
+        unpinNoteById(Number(route.query.id))
+    };
+    router.push({ 
+        query: { 
+            ...route.query,
+            pinned: if_pin_active.value ? 'true' : 'false'
+        }
+    });
 };
-
-
 
 </script>
 
