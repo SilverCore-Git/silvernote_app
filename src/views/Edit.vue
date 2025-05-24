@@ -27,16 +27,17 @@
 <script lang="ts" setup>
 
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+
+const router = useRouter();
+const route = useRoute();
 
 import RichMarkdownEditor from '../components/RichMarkdownEditor.vue';
 
 import pinFull from '../assets/svgs/pin_plein.png?url';
 import pinEmpty from '../assets/svgs/pin_vide.png?url';
 
-const if_pin_active = ref(false);
-
-const router = useRouter();
+const if_pin_active = ref(route.query.pinned == "true" ? true : false);
 
 const change_pin_state = () => {
   if_pin_active.value = !if_pin_active.value;
