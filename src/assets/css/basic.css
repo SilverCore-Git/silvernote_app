@@ -1,53 +1,53 @@
 
-h1, h2, h3, h4, h5, h6 {
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
 
-h1 {
+.prose h1 {
   font-size: 2.5rem;
 }
 
-h2 {
+.prose h2 {
   font-size: 2rem;
 }
 
-h3 {
+.prose h3 {
   font-size: 1.75rem;
 }
 
-h4 {
+.prose h4 {
   font-size: 1.5rem;
 }
 
-h5 {
+.prose h5 {
   font-size: 1.25rem;
 }
 
-h6 {
+.prose h6 {
   font-size: 1rem;
 }
 
-ul, ol {
+.prose ul, .prose ol {
   padding-left: 1.5rem;
-  list-style-type: disc; /* ou 'decimal' pour ol */
+  list-style-type: disc;
 }
 
-ul {
+.prose ul {
   list-style: disc;
 }
 
-ol {
+.prose ol {
   list-style: decimal;
 }
 
-hr {
+.prose hr {
   height: 2px;
   background-color: #D96E30;
   border: none;
 }
 
-blockquote {
+.prose blockquote {
   border-left: 4px solid #D96E30;
   padding-left: 1rem;
   color: #555;
@@ -55,7 +55,7 @@ blockquote {
   margin: 1rem 0;
 }
 
-a {
+.prose a {
     text-decoration: underline;
     color: #555;
 }

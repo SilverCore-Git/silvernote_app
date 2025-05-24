@@ -9,14 +9,14 @@ const routes = [
     name: 'Home', 
     component: Home,
     props: {},
-    meta: { title: 'Home' }
+    meta: { title: 'SilverNote - Home' }
   },
   { 
     path: '/edit', 
     name: 'Edit', 
     component: Edit,
     props: {},
-    meta: { title: 'Edit' }
+    meta: { title: 'SilverNote - Edit' }
   }
 ]
 
