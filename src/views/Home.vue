@@ -1,7 +1,10 @@
 
 <template>
 
-    <header style="font-family: 'Montserrat', sans-serif; box-shadow: 0 0 15px #36363681;" class="mb-5 top-0 left-0 w-full h-14 text-2xl bg-[#F28C28] text-white font-bold flex items-center justify-center">
+    <header 
+        style="font-family: 'Montserrat', sans-serif; box-shadow: 0 0 15px #36363681;" 
+        class="mb-5 top-0 left-0 w-full h-14 text-2xl bg-[#F28C28] text-white font-bold flex items-center justify-center fixed z-50"
+    >
         
         <h1 class="absolute left-4">SilverNote</h1>
         <!-- <div class="gear-svg absolute right-14"></div> -->
@@ -24,13 +27,15 @@
 
     </header>
 
-    <div @click="if_open_dropdown=false" class=" overflow-x-hidden">
 
-        <Search_bar />
+    <Search_bar class="fixed right-4 left-4 top-16 z-40" />
 
-        <Danger_card style="box-shadow: 0 0 15px #3636364f;" class="mb-6 mt-4" title="Tip of the week" content="You can create a new note with +" />
 
-        <div class="overflow-y-auto h-[60vh]">
+    <div @click="if_open_dropdown=false" class=" overflow-x-hidden mt-28 mb-30">
+
+        <Danger_card v-if="tip" style="box-shadow: 0 0 15px #3636364f;" title="Tip of the week" content="You can create a new note with +" />
+
+        <div class="overflow-y-auto mt-4">
 
             <ul>
 
@@ -48,7 +53,7 @@
 
         </div>
     
-        <div style="box-shadow: 0 0 15px #3636364f;" class="bg-[#FFF8F0] h-30 w-full z-50 absolute bottom-0">
+        <div style="box-shadow: 0 0 15px #3636364f;" class="bg-[#FFF8F0] h-30 w-full z-50 fixed bottom-0">
             <button @click="create_new_note" class="add-note-btn cursor-pointer flex items-center justify-center absolute right-4 left-4 bottom-8"><div class="add-note-svg"></div></button>
         </div>
 
@@ -60,7 +65,7 @@
 <script setup lang='ts'>
 
     import { useRouter } from 'vue-router';
-    import { ref } from 'vue';
+    import { ref, onMounted, onUnmounted } from 'vue';
 
     import { list_notes } from '../assets/ts/use_notes';
 
@@ -74,7 +79,36 @@
         router.push('/edit')
     };
 
-    const if_open_dropdown = ref(false);
+    const tip: boolean = false;
+
+    const if_open_dropdown = ref<boolean>(false)
+    const showSearchBar = ref<boolean>(true)
+
+    const lastMouseY = ref<number | null>(null)
+
+    function handleMouseMove(event: MouseEvent) {
+    const currentY = event.clientY
+
+    if (lastMouseY.value !== null) {
+        if (currentY > lastMouseY.value + 5) {
+        // souris descend
+        showSearchBar.value = false
+        } else if (currentY < lastMouseY.value - 5) {
+        // souris monte
+        showSearchBar.value = true
+        }
+    }
+
+    lastMouseY.value = currentY
+    }
+
+    onMounted(() => {
+    window.addEventListener('mousemove', handleMouseMove)
+    })
+
+    onUnmounted(() => {
+    window.removeEventListener('mousemove', handleMouseMove)
+    })
 
 </script>
 
