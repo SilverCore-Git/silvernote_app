@@ -2,29 +2,33 @@
 <template>
 
     <header style="font-family: 'Montserrat', sans-serif; box-shadow: 0 0 15px #36363681;" class="mb-5 top-0 left-0 w-full h-14 text-2xl bg-[#F28C28] text-white font-bold flex items-center justify-center">
+        
         <h1 class="absolute left-4">SilverNote</h1>
         <!-- <div class="gear-svg absolute right-14"></div> -->
         <div class="ellipsis-svg absolute right-4" @click="if_open_dropdown=!if_open_dropdown"></div>
 
         <transition name="fade-slide">
-        <div 
-            v-if="if_open_dropdown"
-            class="dropdown absolute top-14 right-3 bg-[#F28C28] 
-                z-50 min-w-[150px] w-[40%] flex flex-col justify-center items-center p-3"
-        >
-            <ul class="text-xl">
-            <li>Paramètre</li>
-            <li>Aide</li>
-            <li>Légal</li>
-            </ul>
-        </div>
+            <div 
+                v-if="if_open_dropdown"
+                class="dropdown absolute top-14 right-3 bg-[#F28C28] 
+                    z-50 min-w-[150px] w-[40%] flex flex-col justify-center items-center p-3"
+            >
+                <ul class="text-xl">
+                <li>Paramètre</li>
+                <li>Compte</li>
+                <li>Aide</li>
+                <li>Légal</li>
+                </ul>
+            </div>
         </transition>
 
     </header>
 
     <div @click="if_open_dropdown=false">
 
-        <Danger_card style="box-shadow: 0 0 15px #3636364f;" class="mb-6" title="Tip of the week" content="You can create a new note with +" />
+        <Search_bar />
+
+        <Danger_card style="box-shadow: 0 0 15px #3636364f;" class="mb-6 mt-4" title="Tip of the week" content="You can create a new note with +" />
 
         <div class="overflow-y-auto h-[60vh]">
 
@@ -62,6 +66,7 @@
 
     import Danger_card from '../components/Danger_card.vue';
     import Note_card from '../components/Note_card.vue';
+    import Search_bar from '../components/Search_bar.vue';
 
     const router = useRouter();
 
