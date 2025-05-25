@@ -2,21 +2,25 @@
 
   <div
     class="note-card bg-[#FFF8F0] mr-4 ml-4 text-[#3B3B3B]
-           flex flex-col p-4 border border-[#3B3B3B] relative"
+           flex flex-col pl-4 pt-2.5 pb-2.5 border border-[#3B3B3B] relative"
     style="box-shadow: 0 0 15px #3636364f; border-radius: 15px;"
   >
 
     <div class="flex flex-row items-center">
+
       <input 
         v-model="searchQuery"
         type="search" 
         class="w-[85%] border-none outline-none" 
         placeholder="Recherche..."
       >
-      <button type="submit" class="search-btn absolute end-3"></button>
+
+      <button v-if="searchQuery !== ''" @click="searchQuery = ''" class="cross-btn absolute end-10"></button>
+      <button class="search-btn absolute end-4"></button>
+
     </div>
 
-    <div v-if="filteredNotes.length && searchQuery != ''" class="mt-4 space-y-2">
+    <div v-if="filteredNotes.length && searchQuery != ''" class="mt-4 space-y-2 max-h-[55vh] relative overflow-x-auto pr-4">
       <div 
         v-for="note in filteredNotes" 
         :key="note.id"
@@ -68,6 +72,20 @@ const filteredNotes = computed(() =>
         background-repeat: no-repeat;
         background-position: center;
         background-image: url('../assets/svgs/magnifying-glass.svg');
+        filter: brightness(0) saturate(100%) invert(55%) sepia(65%) saturate(538%) hue-rotate(343deg) brightness(98%) contrast(98%);
+        transition: all 0.3s ease;
+
+    }
+
+    .cross-btn {
+
+        cursor: pointer;
+        width: 55px;
+        height: 55px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-image: url('../assets/svgs/cross.svg');
         filter: brightness(0) saturate(100%) invert(55%) sepia(65%) saturate(538%) hue-rotate(343deg) brightness(98%) contrast(98%);
         transition: all 0.3s ease;
 

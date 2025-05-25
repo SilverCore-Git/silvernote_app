@@ -24,7 +24,7 @@
 
     </header>
 
-    <div @click="if_open_dropdown=false">
+    <div @click="if_open_dropdown=false" class=" overflow-x-hidden">
 
         <Search_bar />
 
