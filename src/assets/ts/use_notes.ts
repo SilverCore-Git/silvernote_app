@@ -32,6 +32,19 @@ const list_notes_brut = ref<Note[]>([
   { id: 20, pinned: true, title: "Note 20", content: "Contenu de la note 20", date: "20 Janvier 2025", tags: ['d'] }
 ]);
 
+interface Notes_parms {
+  tags: string[]
+}
+
+const notes_parms = ref<Notes_parms>({
+  tags: [
+    "perso",
+    "ar",
+    "pa",
+    "d"
+  ]
+})
+
 const notes = computed<Note[]>(() => {
   let dd: Note[] = [...list_notes_brut.value].sort((a, b) => a.id - b.id);
   
@@ -73,6 +86,7 @@ watch(list_notes_brut, () => {
 
 export {
     list_notes,
+    notes_parms,
     togglePinById,
     unpinNoteById,
     pinNoteById

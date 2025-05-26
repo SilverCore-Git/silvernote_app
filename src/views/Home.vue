@@ -27,11 +27,13 @@
 
     </header>
 
-
     <Search_bar class="fixed right-4 left-4 top-16 z-40" />
 
+    <ul class="mt-30 flex flex-row justify-center gap-1.5">
+        <li v-for="(tags, index) in notes_parms.tags" :key="index" class=" w-[20%]"><Tags_item :name="tags" :tag="tags" /></li>
+    </ul>
 
-    <div @click="if_open_dropdown=false" class=" overflow-x-hidden mt-28 mb-30">
+    <div @click="if_open_dropdown=false" class=" overflow-x-hidden mb-30">
 
         <Danger_card v-if="tip" style="box-shadow: 0 0 15px #3636364f;" title="Tip of the week" content="You can create a new note with +" />
 
@@ -67,11 +69,12 @@
     import { useRouter } from 'vue-router';
     import { ref, onMounted, onUnmounted } from 'vue';
 
-    import { list_notes } from '../assets/ts/use_notes';
+    import { list_notes, notes_parms } from '../assets/ts/use_notes';
 
     import Danger_card from '../components/Danger_card.vue';
     import Note_card from '../components/Note_card.vue';
     import Search_bar from '../components/Search_bar.vue';
+    import Tags_item from '../components/Tags_item.vue';
 
     const router = useRouter();
 
