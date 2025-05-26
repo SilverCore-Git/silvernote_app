@@ -57,6 +57,12 @@ const notes = computed<Note[]>(() => {
 });
 
 
+const view_tag_note = (tag: string) => {
+  return notes.value
+    .filter(note => note.tags.includes(tag))
+    .sort((a, b) => a.id - b.id);
+}
+
 const togglePinById = (id: number) => {
   const note = list_notes_brut.value.find(note => note.id === id);
   if (note) note.pinned = !note.pinned;
@@ -89,5 +95,6 @@ export {
     notes_parms,
     togglePinById,
     unpinNoteById,
+    view_tag_note,
     pinNoteById
 }

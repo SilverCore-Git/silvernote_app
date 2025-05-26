@@ -17,10 +17,10 @@
                     z-50 min-w-[150px] w-[40%] flex flex-col justify-center items-center p-3"
             >
                 <ul class="text-xl">
-                <li>Paramètre</li>
-                <li>Compte</li>
-                <li>Aide</li>
-                <li>Légal</li>
+                    <li>Paramètre</li>
+                    <li>Compte</li>
+                    <li>Aide</li>
+                    <li>Légal</li>
                 </ul>
             </div>
         </transition>
@@ -67,7 +67,7 @@
 <script setup lang='ts'>
 
     import { useRouter } from 'vue-router';
-    import { ref, onMounted, onUnmounted } from 'vue';
+    import { ref } from 'vue';
 
     import { list_notes, notes_parms } from '../assets/ts/use_notes';
 
@@ -84,34 +84,7 @@
 
     const tip: boolean = false;
 
-    const if_open_dropdown = ref<boolean>(false)
-    const showSearchBar = ref<boolean>(true)
-
-    const lastMouseY = ref<number | null>(null)
-
-    function handleMouseMove(event: MouseEvent) {
-    const currentY = event.clientY
-
-    if (lastMouseY.value !== null) {
-        if (currentY > lastMouseY.value + 5) {
-        // souris descend
-        showSearchBar.value = false
-        } else if (currentY < lastMouseY.value - 5) {
-        // souris monte
-        showSearchBar.value = true
-        }
-    }
-
-    lastMouseY.value = currentY
-    }
-
-    onMounted(() => {
-    window.addEventListener('mousemove', handleMouseMove)
-    })
-
-    onUnmounted(() => {
-    window.removeEventListener('mousemove', handleMouseMove)
-    })
+    const if_open_dropdown = ref<boolean>(false);
 
 </script>
 

@@ -25,7 +25,8 @@
       <div 
         v-for="note in filteredNotes" 
         :key="note.id"
-        class="bg-white p-2 rounded shadow"
+        @click="router.push(`/edit?id=${note.id}&pinned=${note.pinned}`)"
+        class="bg-white p-2 rounded shadow cursor-pointer"
       >
         <h3 
             class="font-semibold"
@@ -54,9 +55,11 @@
 <script lang="ts" setup>
 
 import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { list_notes } from '../assets/ts/use_notes';
 
+const router = useRouter();
 const searchQuery = ref('')
 
 const filteredNotes = computed(() =>
