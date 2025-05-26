@@ -3,7 +3,7 @@
 
     <header 
         style="font-family: 'Montserrat', sans-serif; box-shadow: 0 0 15px #36363681;" 
-        class="mb-5 top-0 left-0 w-full h-14 text-2xl bg-[#F28C28] text-white font-bold flex items-center justify-center fixed z-50"
+        class="mb-5 top-0 left-0 w-full h-14 text-2xl bg-[ {{ color.default.back2 }} ] text-white font-bold flex items-center justify-center fixed z-50"
     >
         
         <h1 class="absolute left-4">SilverNote</h1>
@@ -13,7 +13,7 @@
         <transition name="fade-slide">
             <div 
                 v-if="if_open_dropdown"
-                class="dropdown absolute top-14 right-3 bg-[#F28C28] 
+                class="dropdown absolute top-14 right-3 bg-[ {{ color.default.back2 }} ] 
                     z-50 min-w-[150px] w-[40%] flex flex-col justify-center items-center p-3"
             >
                 <ul class="text-xl">
@@ -55,7 +55,7 @@
 
         </div>
     
-        <div style="box-shadow: 0 0 15px #3636364f;" class="bg-[#FFF8F0] h-30 w-full z-50 fixed bottom-0">
+        <div style="box-shadow: 0 0 15px #3636364f;" class="bg-[ {{ color.default.back }} ] h-30 w-full z-50 fixed bottom-0">
             <button @click="create_new_note" class="add-note-btn cursor-pointer flex items-center justify-center absolute right-4 left-4 bottom-8"><div class="add-note-svg"></div></button>
         </div>
 
@@ -75,6 +75,7 @@
     import Note_card from '../components/Note_card.vue';
     import Search_bar from '../components/Search_bar.vue';
     import Tags_item from '../components/Tags_item.vue';
+    import color from '../front_color';
 
     const router = useRouter();
 
