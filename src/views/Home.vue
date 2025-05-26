@@ -29,8 +29,8 @@
 
     <Search_bar class="fixed right-4 left-4 top-16 z-40" />
 
-    <ul class="mt-30 flex flex-row justify-center gap-1.5">
-        <li v-for="(tags, index) in notes_parms.tags" :key="index" class=" w-[20%]"><Tags_item :name="tags" :tag="tags" /></li>
+    <ul class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-0 ml-0 overflow-y-auto">
+        <li v-for="(tags, index) in notes_parms.tags" :key="index" class=" w-[20%] min-w-[70px]"><Tags_item :name="tags" :tag="tags" /></li>
     </ul>
 
     <div @click="if_open_dropdown=false" class=" overflow-x-hidden mb-30">
