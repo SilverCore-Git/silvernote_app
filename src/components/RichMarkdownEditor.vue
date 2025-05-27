@@ -7,6 +7,9 @@
 <script setup lang="ts">
 
 import { onBeforeUnmount } from 'vue'
+
+import { evaluate } from 'mathjs';
+
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
@@ -22,7 +25,6 @@ const focusEditor = () => {
 }
 
 
-// Initialisation de l'éditeur Tiptap avec StarterKit et l'extension Underline
 const editor = new Editor({
   extensions: [
     StarterKit,
@@ -32,13 +34,59 @@ const editor = new Editor({
       placeholder: 'Commencez à écrire ici...',
     }),
   ],
-  content: ''
-})
+  content: '',
+  onUpdate: () => {
+    checkForMath();
+  },
+});
+
 
 // Nettoyage de l'éditeur lorsque le composant est détruit
 onBeforeUnmount(() => {
   editor.destroy()
 })
+  
+
+function checkForMath() {
+  if (!editor) return;
+
+  const regex = /(\d+[+\-*/\d\s().]*?)=(?!\d)/g;
+
+  editor.state.doc.descendants((node, pos) => {
+    if (!node.isText) return true;
+
+    const text = node.text || '';
+    let match;
+    
+    while ((match = regex.exec(text)) !== null) {
+      const rawExpr = match[1].trim();
+      const fullMatch = match[0];
+
+      try {
+        const result = evaluate(rawExpr);
+        const fullExpr = `${rawExpr}=${result}`;
+
+        // Ne rien faire si déjà remplacé
+        if (text.includes(fullExpr)) continue;
+
+        const from = pos + match.index;
+        const to = from + fullMatch.length;
+
+        // Appliquer la transformation
+        editor.commands.command(({ tr }) => {
+          tr.insertText(fullExpr, from, to);
+          return true;
+        });
+
+      } catch (e) {
+        // Ignorer les erreurs de calcul
+      }
+    }
+
+    return true;
+  });
+}
+
 
 </script>
 
