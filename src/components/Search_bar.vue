@@ -26,14 +26,14 @@
         v-for="note in filteredNotes" 
         :key="note.id"
         @click="router.push(`/edit?id=${note.id}&pinned=${note.pinned}`)"
-        class="bg-white p-2 rounded shadow cursor-pointer"
+        class="bg-white p-2 rounded shadow cursor-pointer "
       >
         <h3 
             class="font-semibold"
             v-html="highlightMatch(note.title, searchQuery)"
         ></h3>
         <p 
-            class="text-sm text-gray-600"
+            class="text-sm text-gray-600 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
             v-html="highlightMatch(note.content, searchQuery)"
         ></p>
 
