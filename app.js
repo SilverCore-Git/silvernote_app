@@ -16,6 +16,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true })); 
 
 
+const api = require('./routes/api');
+const user = require('./routes/user');
+
+app.use('/api', api);
+app.use('/user', user);
+
 app.get('/', (req, res) => {
   res.send('le teste en sah !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
 });
