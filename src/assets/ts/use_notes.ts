@@ -10,8 +10,8 @@ interface Note {
 };
 
 const list_notes_brut = ref<Note[]>([
-  { id: 1, pinned: false, title: "Note 1", content: "Contenu de la note 1 ********************************************************************************", date: "01 Janvier 2025", tags: ['perso'] },
-  { id: 2, pinned: false, title: "Note 2", content: "Contenu de la note 2", date: "02 Janvier 2025", tags: ['perso'] },
+  { id: 1, pinned: false, title: "Note 1 dfsqfjds;,fjds;:,fhjdjjfsdhkjll", content: "Contenu de la note 1 hfdjkfhgdsjklfhdsljkfdshflkjdsjhfjkldshfdjklshfdkjshfddsjkljhfdskjl", date: "01 Janvier 2025", tags: ['perso'] },
+  { id: 2, pinned: false, title: "Note 2", content: "Contenu de la note 2", date: "02 Janvier 2025", tags: ['perso', 'caca', 'ar'] },
   { id: 3, pinned: false, title: "Note 3", content: "Contenu de la note 3", date: "03 Janvier 2025", tags: ['perso'] },
   { id: 4, pinned: false, title: "Note 4", content: "Contenu de la note 4", date: "04 Janvier 2025", tags: ['perso'] },
   { id: 5, pinned: false, title: "Note 5", content: "Contenu de la note 5", date: "05 Janvier 2025", tags: ['perso'] },

@@ -47,7 +47,8 @@
                         :pinned="note.pinned"
                         class="mb-3" :title="note.title" 
                         :content="note.content" 
-                        :date="note.date" 
+                        :date="note.date"
+                        :tags="note.tags"
                     />
                 </li>
 

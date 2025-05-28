@@ -5,7 +5,7 @@
     style="border-radius: 15px;"
     @click="open_note"
   > 
-    <span class="font-bold text-xl">{{ title }}</span>
+    <p class="font-bold text-xl w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">{{ title }}</p>
 
     <div
       class="pin absolute right-3 top-3"
@@ -17,7 +17,15 @@
       @click.stop="change_pin_state"
     ></div>
 
-    <p class="text-lg">{{ content }}</p>
+    <p 
+      class="text-mb mb-3 w-[65%] whitespace-nowrap overflow-hidden text-ellipsis"
+    >
+      {{ content }}
+    </p>
+
+    <div class="absolute left-1 bottom-1">
+      <span v-for="(tag, index) in tags" :key="index" class="ml-2 underline">{{ tag }}</span>
+    </div>
     <label class="absolute right-2 bottom-1">{{ date }}</label>
 
   </div>
@@ -41,6 +49,7 @@ const props = defineProps<{
   content: string
   date: string
   pinned: boolean
+  tags: string[]
   id: number
 }>()
 
