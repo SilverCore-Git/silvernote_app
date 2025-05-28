@@ -9,3 +9,11 @@ body {
     color: #3B3B3B;
     overflow-x: hidden;
 }
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}

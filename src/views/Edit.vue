@@ -68,7 +68,7 @@ const if_math_active = ref(false);
 import edit_note_Full from '../assets/svgs/note-edit_plein.png?url';
 import edit_note_Empty from '../assets/svgs/note-edit_vide.png?url';
 
-const if_edit_note_active = ref(true);
+const if_edit_note_active = ref(route.query.simply_edit == 'true' ? true : false);
 
 const note = get_note(Number(route.query.id)) || {};
 
