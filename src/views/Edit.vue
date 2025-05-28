@@ -91,7 +91,6 @@ const change_pin_state = () => {
 
 <style scoped>
 
-.left-arrow,
 .pin,
 .math,
 .edit_note {
@@ -100,11 +99,6 @@ const change_pin_state = () => {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-}
-
-.left-arrow {
-  background-image: url('../assets/svgs/left_arrow.svg');
-  filter: brightness(0) saturate(100%) invert(55%) sepia(65%) saturate(538%) hue-rotate(343deg) brightness(98%) contrast(98%);
 }
 
 

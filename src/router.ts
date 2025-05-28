@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import Home from './views/Home.vue'
+import Home from './views/Home.vue';
 import Edit from './views/Edit.vue';
+import Settings from './views/Settings.vue';
+import Account from './views/Account.vue';
 
 const routes = [
   { 
@@ -17,6 +19,20 @@ const routes = [
     component: Edit,
     props: {},
     meta: { title: 'SilverNote - Edit' }
+  },
+  { 
+    path: '/settings', 
+    name: 'Settings', 
+    component: Settings,
+    props: {},
+    meta: { title: 'SilverNote - Settings' }
+  },
+  { 
+    path: '/account', 
+    name: 'Account', 
+    component: Account,
+    props: {},
+    meta: { title: 'SilverNote - Account' }
   }
 ]
 

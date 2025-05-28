@@ -17,8 +17,8 @@
                     z-50 min-w-[150px] w-[40%] flex flex-col justify-center items-center p-3"
             >
                 <ul class="text-xl">
-                    <li>Paramètre</li>
-                    <li>Compte</li>
+                    <li @click="router.push('/settings')">Paramètre</li>
+                    <li @click="router.push('/account')">Compte</li>
                     <li>Aide</li>
                     <li>Légal</li>
                 </ul>
