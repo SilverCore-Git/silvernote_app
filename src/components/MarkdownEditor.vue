@@ -18,7 +18,11 @@
 import { ref } from 'vue';
 import { evaluate } from 'mathjs';
 
-const content = ref('');
+const props = defineProps<{
+  content: string
+}>();
+
+const content = ref(props.content);
 
 function checkForMath() {
   const regex = /(\d+[+\-*/\d\s().]*?)=(?!\d)/g;

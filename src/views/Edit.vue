@@ -31,11 +31,11 @@
 
   <section class="flex flex-col justify-center items-center h-full w-[100%] mt-12 overflow-x-hidden">
 
-    <input class="text-3xl mb-3 font-bold" type="text" placeholder="Titre...">
+    <input class="text-3xl mb-3 font-bold" type="text" placeholder="Titre..." :value="note?.title || ''">
 
-    <RichMarkdownEditor v-if="if_edit_note_active" />
+    <RichMarkdownEditor v-if="if_edit_note_active" :content="note?.content || ''" />
 
-    <MarkdownEditor v-else />
+    <MarkdownEditor :content="note?.content || ''" v-else />
 
   </section>
 
@@ -47,7 +47,7 @@
 import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
-import { unpinNoteById, pinNoteById } from '../assets/ts/use_notes';
+import { unpinNoteById, pinNoteById, get_note } from '../assets/ts/use_notes';
 
 const router = useRouter();
 const route = useRoute();
@@ -69,6 +69,8 @@ import edit_note_Full from '../assets/svgs/note-edit_plein.png?url';
 import edit_note_Empty from '../assets/svgs/note-edit_vide.png?url';
 
 const if_edit_note_active = ref(true);
+
+const note = get_note(Number(route.query.id)) || {};
 
 const change_pin_state = () => {
     if_pin_active.value = !if_pin_active.value;

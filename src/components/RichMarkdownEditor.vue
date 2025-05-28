@@ -16,6 +16,9 @@ import Underline from '@tiptap/extension-underline'
 import Placeholder from '@tiptap/extension-placeholder'
 import Link from '@tiptap/extension-link'
 
+const props = defineProps<{
+  content: string
+}>();
 
 const focusEditor = () => {
   if (!editor) return
@@ -34,7 +37,7 @@ const editor = new Editor({
       placeholder: 'Commencez à écrire ici...',
     }),
   ],
-  content: '',
+  content: props.content,
   onUpdate: () => {
     checkForMath();
   },
