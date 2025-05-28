@@ -38,7 +38,6 @@ import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { unpinNoteById, pinNoteById } from '../assets/ts/use_notes';
-import { settings } from '../assets/ts/settings';
 
 import pinFull from '../assets/svgs/pin_plein.png?url'
 import pinEmpty from '../assets/svgs/pin_vide.png?url'
@@ -51,6 +50,7 @@ const props = defineProps<{
   date: string
   pinned: boolean
   tags: string[]
+  simply_edit: boolean
   id: number
 }>()
 
@@ -66,7 +66,7 @@ const change_pin_state = () => {
 };
 
 const open_note = () => {
-  router.push(`/edit?id=${props.id}&pinned=${if_pin_active.value}&simply_edit=${settings.simply_edit}`)
+  router.push(`/edit?id=${props.id}&pinned=${if_pin_active.value}&simply_edit=${props.simply_edit}`)
 }
 
 watch(() => props.pinned, (newVal) => {

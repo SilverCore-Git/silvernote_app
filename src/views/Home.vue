@@ -7,7 +7,6 @@
     >
         
         <h1 class="absolute left-4">SilverNote</h1>
-        <!-- <div class="gear-svg absolute right-14"></div> -->
         <div class="ellipsis-svg absolute right-4" @click="if_open_dropdown=!if_open_dropdown"></div>
 
         <transition name="fade-slide">
@@ -29,8 +28,37 @@
 
     <Search_bar class="fixed right-4 left-4 top-16 z-40" />
 
-    <ul class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-0 ml-0 overflow-y-auto">
-        <li v-for="(tags, index) in notes_parms.tags" :key="index" class=" w-[20%] min-w-[70px]"><Tags_item :name="tags" :tag="tags" /></li>
+    <ul class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-0 ml-0 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
+
+        <li 
+            v-for="(tag, index) in notes_parms.tags"
+            :key="index" 
+            class=" w-[20%] min-w-[70px]"
+        >
+
+            <Tags_item 
+                @click="add_tag_filter(tag.id)" 
+                :id="tag.id" :name="tag.name" 
+                :tag="tag.name" 
+                :active="tag.active" 
+            />
+
+        </li>
+        
+        <li 
+            class=" w-[20%] min-w-[70px]"
+        >
+
+            <Tags_item 
+                @click="create_tag" 
+                :id="null"
+                name="+"
+                :tag="''"
+                :active="false"
+            />
+
+        </li>
+
     </ul>
 
     <div @click="if_open_dropdown=false" class=" overflow-x-hidden mb-30">
@@ -41,7 +69,7 @@
 
             <ul>
 
-                <li class="flex flex-col" v-for="(note, index) in list_notes" :key="index">
+                <li class="flex flex-col" v-for="(note, index) in filteredNotes" :key="index">
                     <Note_card 
                         :id="note.id"
                         :pinned="note.pinned"
@@ -49,6 +77,7 @@
                         :content="note.content" 
                         :date="note.date"
                         :tags="note.tags"
+                        :simply_edit="note.simply_edit"
                     />
                 </li>
 
@@ -62,6 +91,30 @@
 
     </div>
 
+    <div v-if="if_open_create_tag">
+
+        <div @click="if_open_create_tag = false" class="fixed inset-0 bg-black/50 z-100"></div>
+
+            <section class="flex flex-col gap-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-110">
+
+            <Tags_item
+                id="create_tag"
+                name="create_tag"
+                tag="create_tag"
+                :active="false"
+            />
+
+            <Tags_item 
+                @click="create_tag()" 
+                id="create_tag_btn"
+                name="create_tag_btn"
+                tag="create_tag_btn"
+                :active="false"
+            />
+
+        </section>
+
+    </div>
 
 </template>
 
@@ -70,7 +123,7 @@
     import { useRouter } from 'vue-router';
     import { ref } from 'vue';
 
-    import { list_notes, notes_parms } from '../assets/ts/use_notes';
+    import { add_tag_filter, filteredNotes, notes_parms } from '../assets/ts/use_notes';
 
     import Danger_card from '../components/Danger_card.vue';
     import Note_card from '../components/Note_card.vue';
@@ -86,6 +139,12 @@
     const tip: boolean = false;
 
     const if_open_dropdown = ref<boolean>(false);
+
+    const if_open_create_tag = ref<boolean>(false);
+
+    const create_tag = () => {
+        if_open_create_tag.value = true
+    }
 
 </script>
 
