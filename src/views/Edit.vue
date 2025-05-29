@@ -55,22 +55,36 @@ const route = useRoute();
 import RichMarkdownEditor from '../components/RichMarkdownEditor.vue';
 import MarkdownEditor from '../components/MarkdownEditor.vue';
 
-import pinFull from '../assets/svgs/pin_plein.png?url';
-import pinEmpty from '../assets/svgs/pin_vide.png?url';
+import pinFull from '/assets/webp/pin_plein.webp?url';
+import pinEmpty from '/assets/webp/pin_vide.webp?url';
 
 const if_pin_active = ref(route.query.pinned == "true" ? true : false);
 
 // import MathFull from '../assets/svgs/calculation.png?url';
 // import MathEmpty from '../assets/svgs/calculation.png?url';
 
-const if_math_active = ref(false);
+const if_math_active = ref<boolean>(false);
 
-import edit_note_Full from '../assets/svgs/note-edit_plein.png?url';
-import edit_note_Empty from '../assets/svgs/note-edit_vide.png?url';
+import edit_note_Full from '/assets/webp/note-edit_plein.webp?url';
+import edit_note_Empty from '/assets/webp/note-edit_vide.webp?url';
 
 const if_edit_note_active = ref(route.query.simply_edit == 'true' ? true : false);
 
-const note = get_note(Number(route.query.id)) || {};
+const note: { 
+  title: string
+  content: string
+  pinned: boolean
+  simply_edit: boolean
+  id: number
+  tags: string[]
+} = get_note(Number(route.query.id)) || {
+  title: '',
+  content: '',
+  pinned: false,
+  simply_edit: false,
+  id: -1,
+  tags: []
+};
 
 const change_pin_state = () => {
     if_pin_active.value = !if_pin_active.value;

@@ -28,7 +28,7 @@
 
     <Search_bar class="fixed right-4 left-4 top-16 z-40" />
 
-    <ul class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-0 ml-0 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
+    <ul class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
 
         <li 
             v-for="(tag, index) in notes_parms.tags"
