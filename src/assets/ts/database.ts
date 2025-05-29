@@ -16,87 +16,105 @@ interface Note {
 
 class Database {
 
-  private filePath: string;
-  private data: Note[];
+    private filePath: string;
+    private data: Note[];
 
-  constructor() {
-    this.filePath = path.resolve('../notes.json');
-    this.data = this.readFile();
-  };
+    constructor() {
+        this.filePath = path.resolve('../notes.json');
+        this.data = this.readFile();
+    };
 
-  private readFile(): Note[] {
+    private readFile(): Note[] {
 
-    try {
+        try {
 
-      const content = fs.readFileSync(this.filePath, 'utf-8');
-      return JSON.parse(content);
+        const content = fs.readFileSync(this.filePath, 'utf-8');
+        return JSON.parse(content);
 
-    } catch (error) {
+        } catch (error) {
 
-      console.error('Erreur de lecture du fichier JSON:', error);
-      return [];
+        console.error('Erreur de lecture du fichier JSON:', error);
+        return [];
+
+        };
 
     };
 
-  };
+    private writeFile(): void {
 
-  private writeFile(): void {
+        try {
 
-    try {
+        fs.writeFileSync(this.filePath, JSON.stringify(this.data, null, 2), 'utf-8');
 
-      fs.writeFileSync(this.filePath, JSON.stringify(this.data, null, 2), 'utf-8');
+        } catch (error) {
 
-    } catch (error) {
+        console.error('Erreur d’écriture du fichier JSON:', error);
 
-      console.error('Erreur d’écriture du fichier JSON:', error);
-
-    };
-
-  };
-
-  public save(note: Note): void {
-
-    const index = this.data.findIndex(n => n.id === note.id);
-
-    if (index !== -1) {
-
-      this.data[index] = note;
-
-    } else {
-
-      this.data.push(note);
+        };
 
     };
 
-    this.writeFile();
+    public save(note: Note): void {
 
-  };
+        const index = this.data.findIndex(n => n.id === note.id);
 
-  public delete(id: number): void {
+        if (index !== -1) {
 
-    this.data = this.data.filter(note => note.id !== id);
-    this.writeFile();
+        this.data[index] = note;
 
-  };
+        } else {
 
-  public create(note: Note): void {
+        this.data.push(note);
 
-    if (this.data.find(n => n.id === note.id)) {
+        };
 
-      throw new Error(`Une note avec l'id ${note.id} existe déjà.`);
+        this.writeFile();
 
     };
 
-    this.data.push(note);
-    this.writeFile();
+    public save_content(content: string, id: number): void {
 
-  };
+        const index = this.data.findIndex(note => note.id === id);
 
-  public getAll(): Note[] {
+        if (index !== -1) {
 
-    return this.data;
+            this.data[index].content = content;
+            this.writeFile();
 
-  };
+        } else {
+
+            console.warn(`Note avec l'id ${id} non trouvée.`);
+
+        }
+        
+    }
+
+
+    public delete(id: number): void {
+
+        this.data = this.data.filter(note => note.id !== id);
+        this.writeFile();
+
+    };
+
+    public create(note: Note): void {
+
+        if (this.data.find(n => n.id === note.id)) {
+
+        throw new Error(`Une note avec l'id ${note.id} existe déjà.`);
+
+        };
+
+        this.data.push(note);
+        this.writeFile();
+
+    };
+
+    public getAll(): Note[] {
+
+        return this.data;
+
+    };
 
 }
 

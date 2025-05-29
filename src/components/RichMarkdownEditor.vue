@@ -8,6 +8,8 @@
 
 import { onBeforeUnmount } from 'vue'
 
+import db from '../assets/ts/database';
+
 import { evaluate } from 'mathjs';
 
 import { Editor, EditorContent } from '@tiptap/vue-3'
@@ -40,6 +42,7 @@ const editor = new Editor({
   content: props.content,
   onUpdate: () => {
     checkForMath();
+    save_content()
   },
 });
 
@@ -88,8 +91,13 @@ function checkForMath() {
 
     return true;
   });
-}
+};
 
+const save_content = () => {
+  db.save({
+    
+  });
+};
 
 </script>
 
