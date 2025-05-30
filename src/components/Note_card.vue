@@ -34,10 +34,10 @@
 
 <script setup lang="ts">
 
-import { ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
-import { unpinNoteById, pinNoteById } from '../assets/ts/use_notes';
+import db from '../assets/ts/database';
 
 import pinFull from '../assets/svgs/pin_plein.png?url'
 import pinEmpty from '../assets/svgs/pin_vide.png?url'
@@ -58,11 +58,7 @@ const if_pin_active = ref(props.pinned)
 
 const change_pin_state = () => {
     if_pin_active.value = !if_pin_active.value;
-    if (if_pin_active.value) {
-        pinNoteById(props.id)
-    } else {
-        unpinNoteById(props.id)
-    };
+    db.togle_pinned(props.id);
 };
 
 const open_note = () => {

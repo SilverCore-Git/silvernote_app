@@ -13,7 +13,7 @@
             ? `url(${edit_note_Full})`
             : `url(${edit_note_Empty})`
         }"
-        @click="if_edit_note_active = !if_edit_note_active"
+        @click="change_edit_state"
       ></div>
 
       <div
@@ -39,9 +39,9 @@
       v-model="note.title"
     />
 
-    <RichMarkdownEditor v-if="if_edit_note_active" :id="note.id" />
+    <RichMarkdownEditor :simplify_text="if_edit_note_active" :id="note.id" />
 
-    <MarkdownEditor :id="note.id" v-else />
+    <!-- <MarkdownEditor :id="note.id" v-else /> -->
 
   </section>
 
@@ -53,7 +53,6 @@ import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
 import db from '../assets/ts/database';
-import { unpinNoteById, pinNoteById } from '../assets/ts/use_notes';
 
 const router = useRouter();
 const route = useRoute();
@@ -72,13 +71,20 @@ const if_pin_active = ref(route.query.pinned == "true");
 const if_edit_note_active = ref(route.query.simply_edit == 'true');
 
 // Initialisation de la note
-const note = ref({
-  title: '',
-  content: '',
-  pinned: false,
-  simply_edit: false,
-  id: -1,
-  tags: []
+const note = ref<{
+        id: number
+        pinned: boolean
+        simply_edit: boolean
+        title: string
+        content: string
+        tags: string[]
+  }>({
+    title: '',
+    content: '',
+    pinned: false,
+    simply_edit: false,
+    id: -1,
+    tags: []
 });
 
 // Fonction pour récupérer la note
@@ -92,15 +98,24 @@ onMounted(async () => {
 // Fonction pour changer l'état du pin
 const change_pin_state = () => {
   if_pin_active.value = !if_pin_active.value;
-  if (if_pin_active.value) {
-    pinNoteById(Number(route.query.id));
-  } else {
-    unpinNoteById(Number(route.query.id));
-  }
+  db.togle_pinned(Number(route.query.id));
   router.push({ 
     query: { 
       ...route.query,
       pinned: if_pin_active.value ? 'true' : 'false'
+    }
+  });
+  db.togle_pinned(Number(route.query.id));
+};
+
+// Fonction pour changer l'état
+const change_edit_state = () => {
+  if_edit_note_active.value = !if_edit_note_active.value;
+
+  router.push({ 
+    query: { 
+      ...route.query,
+      simply_edit: if_edit_note_active.value ? 'true' : 'false'
     }
   });
 };

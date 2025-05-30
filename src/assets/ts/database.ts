@@ -76,6 +76,18 @@ class Database {
 
     };
 
+    async togle_pinned(id: number): Promise<void> {
+
+        const db = await this.dbPromise;
+        const note = await db.get('notes', id);
+
+        if (note) {
+            note.pinned = !note.pinned;
+            await db.put('notes', note);
+        };
+
+    };
+
     async delete(id: number): Promise<void> {
 
         const db = await this.dbPromise;

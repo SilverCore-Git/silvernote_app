@@ -33,7 +33,7 @@
             v-html="highlightMatch(note.title, searchQuery)"
         ></h3>
         <p 
-            class="text-sm text-gray-600 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
+            class="text-sm max-h-20 text-gray-600 overflow-x-auto"
             v-html="highlightMatch(note.content, searchQuery)"
         ></p>
 
@@ -54,16 +54,29 @@
 
 <script lang="ts" setup>
 
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { list_notes } from '../assets/ts/use_notes';
+import db from '../assets/ts/database';
 
 const router = useRouter();
-const searchQuery = ref('')
+const searchQuery = ref('');
+const list_notes = ref<{
+        id: number
+        pinned: boolean
+        simply_edit: boolean
+        title: string
+        content: string
+        date: string
+        tags: string[]
+    }[]>([]);
+
+const init_notes = async () => {
+    list_notes.value = await db.getAll();
+}
 
 const filteredNotes = computed(() =>
-  list_notes.filter((note) =>
+  list_notes.value.filter((note) =>
     [note.title, note.content, ...(note.tags || [])]
       .join(' ')
       .toLowerCase()
@@ -77,6 +90,10 @@ const highlightMatch = (text: string, query: string) => {
   const regex = new RegExp(`(${escapedQuery})`, 'gi');
   return text.replace(regex, '<mark class="bg-yellow-300">$1</mark>');
 };
+
+onMounted(async () => {
+  await init_notes();
+});
 
 </script>
 

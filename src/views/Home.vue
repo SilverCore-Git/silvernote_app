@@ -28,7 +28,7 @@
 
     <Search_bar class="fixed right-4 left-4 top-16 z-40" />
 
-    <ul class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
+    <ul v-if="notes_parms.tags" class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
 
         <li 
             v-for="(tag, index) in notes_parms.tags"
@@ -61,6 +61,13 @@
 
     </ul>
 
+    <ul v-else class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
+        <Tags_item_loader />
+        <Tags_item_loader />
+        <Tags_item_loader />
+        <Tags_item_loader />
+    </ul>
+
     <div @click="if_open_dropdown=false" class=" overflow-x-hidden mb-30">
 
         <Danger_card v-if="tip" style="box-shadow: 0 0 15px #3636364f;" title="Tip of the week" content="You can create a new note with +" />
@@ -69,7 +76,7 @@
 
             <ul>
 
-                <li class="flex flex-col" v-for="(note, index) in filteredNotes" :key="index">
+                <li v-if="list_notes" class="flex flex-col" v-for="(note, index) in list_notes" :key="index">
                     <Note_card 
                         :id="note.id"
                         :pinned="note.pinned"
@@ -79,6 +86,13 @@
                         :tags="note.tags"
                         :simply_edit="note.simply_edit"
                     />
+                </li>
+
+                <li v-else class="flex flex-col">
+                    <Note_card_loader class="mb-3" />
+                    <Note_card_loader class="mb-3" />
+                    <Note_card_loader class="mb-3" />
+                    <Note_card_loader class="mb-3" />
                 </li>
 
             </ul>
@@ -121,14 +135,17 @@
 <script setup lang='ts'>
 
     import { useRouter } from 'vue-router';
-    import { ref } from 'vue';
+    import { onMounted, ref, watch } from 'vue';
 
-    import { add_tag_filter, filteredNotes, notes_parms } from '../assets/ts/use_notes';
+    import db from '../assets/ts/database';
+    import { notes_parms } from '../assets/ts/use_notes';
 
     import Danger_card from '../components/Danger_card.vue';
     import Note_card from '../components/Note_card.vue';
+    import Note_card_loader from '../components/Note_card_loader.vue';
     import Search_bar from '../components/Search_bar.vue';
     import Tags_item from '../components/Tags_item.vue';
+    import Tags_item_loader from '../components/Tags_item_loader.vue';
 
     const router = useRouter();
 
@@ -136,15 +153,69 @@
         router.push('/edit')
     };
 
+    interface Note {
+        id: number
+        pinned: boolean
+        simply_edit: boolean
+        title: string
+        content: string
+        date: string
+        tags: string[]
+    };
+
     const tip: boolean = false;
+
+    const list_notes = ref<Note[]>();
 
     const if_open_dropdown = ref<boolean>(false);
 
     const if_open_create_tag = ref<boolean>(false);
 
+    const init_notes = async () => {
+        list_notes.value = await db.getAll();
+        const sort_notes = list_notes.value.sort((a, b) => {
+            if (a.pinned === b.pinned) {
+                return a.id - b.id;
+            }
+                return a.pinned ? -1 : 1;
+        });
+        list_notes.value = sort_notes;
+    }
+
+    const add_tag_filter = (id: number) => {
+
+        notes_parms.value.tags[id].active = !notes_parms.value.tags[id].active;
+
+        const activeTags = notes_parms.value.tags
+            .filter(tag => tag.active)
+            .map(tag => tag.name);
+
+        if (activeTags.length === 0) {
+            list_notes.value = list_notes.value;
+            return;
+        }
+
+        const notes: Note[] = list_notes.value ?? [];
+
+        list_notes.value = notes.filter(note =>
+            note.tags.some(tag => activeTags.includes(tag))
+        );
+    };
+
     const create_tag = () => {
         if_open_create_tag.value = true
     }
+
+    onMounted(async () => {
+        setTimeout(async () => {
+            await init_notes();
+        }, 500);
+    });
+
+    watch(list_notes, async () => {
+        await init_notes()
+        console.log("Les notes ont été modifiées, tri en cours...");
+    }, { deep: true });
 
 </script>
 

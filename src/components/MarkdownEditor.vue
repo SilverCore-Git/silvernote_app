@@ -15,17 +15,27 @@
 
 <script setup lang="ts">
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { evaluate } from 'mathjs';
 
 import db from '../assets/ts/database';
 
 const props = defineProps<{
-  content: string
   id: number
 }>();
 
-const content = ref(props.content);
+const content = ref<string>('')
+
+const loadContent = async () => {
+  try {
+    const note = await db.getNote(props.id)
+    content.value = note?.content || ''
+    console.log(note)
+  } catch (error) {
+    console.error('Erreur lors du chargement de la note:', error)
+    content.value = 'Erreur de chargement.'
+  }
+}
 
 function checkForMath() {
   const regex = /(\d+[+\-*/\d\s().]*?)=(?!\d)/g;
@@ -49,8 +59,14 @@ function checkForMath() {
 }
 
 const save_content = () => {
-  db.saveContent(content.value, props.id);
-};
+db.saveContent(content.value, props.id)
+}
+
+onMounted(async () => {
+  setTimeout(async () => {
+    await loadContent();
+  }, 1000);
+})
 
 </script>
 

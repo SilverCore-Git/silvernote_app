@@ -1,6 +1,6 @@
 <template>
   <div class="editor-container" @click="focusEditor">
-    <editor-content v-if="editor" :editor="editor" class="prose h-full" />
+    <editor-content :editor="editor" class="prose h-full" />
   </div>
 </template>
 
@@ -102,25 +102,24 @@ onMounted(async () => {
 
     await loadContent()
 
-    
-  editor.value = new Editor({
-    extensions: [
-      StarterKit,
-      Link,
-      Underline,
-      Placeholder.configure({
-        placeholder: 'Commencez à écrire ici...',
-      }),
-      MathEvalShortcut,
-    ],
-    content: content.value,
-    onUpdate: () => {
-      saveContent()
-      checkForMath()
-    },
-  })
+    editor.value = new Editor({
+      extensions: [
+        StarterKit,
+        Link,
+        Underline,
+        Placeholder.configure({
+          placeholder: 'Commencez à écrire ici...',
+        }),
+        MathEvalShortcut,
+      ],
+      content: content.value,
+      onUpdate: () => {
+        saveContent()
+        checkForMath()
+      },
+    })
 
-  }, 1000);
+  }, 500);
 
 })
  
@@ -128,9 +127,11 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   editor.value?.destroy()
 })
+
 </script>
 
 <style>
+
 @import '../assets/css/basic.css';
 
 .editor-container {
@@ -157,4 +158,5 @@ onBeforeUnmount(() => {
   height: 0;
   pointer-events: none;
 }
+
 </style>
