@@ -1,6 +1,7 @@
 <template>
 
   <header class="flex flex-row pt-4 relative">
+
     <div class="left-arrow absolute left-4" @click="router.push('/')"></div>
 
     <div class="flex flex-row gap-4 absolute right-4">
@@ -31,74 +32,77 @@
 
   <section class="flex flex-col justify-center items-center h-full w-[100%] mt-12 overflow-x-hidden">
 
-    <input class="text-3xl mb-3 font-bold" type="text" placeholder="Titre..." :value="note?.title || ''">
+    <input 
+      class="text-3xl mb-3 font-bold" 
+      type="text" 
+      placeholder="Titre..." 
+      v-model="note.title"
+    />
 
-    <RichMarkdownEditor v-if="if_edit_note_active" :id="note?.id" :content="note?.content || ''" />
+    <RichMarkdownEditor v-if="if_edit_note_active" :id="note.id" />
 
-    <MarkdownEditor :id="note?.id" :content="note?.content || ''" v-else />
+    <MarkdownEditor :id="note.id" v-else />
 
   </section>
-
 
 </template>
 
 <script lang="ts" setup>
 
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
-import { unpinNoteById, pinNoteById, get_note } from '../assets/ts/use_notes';
+import db from '../assets/ts/database';
+import { unpinNoteById, pinNoteById } from '../assets/ts/use_notes';
 
 const router = useRouter();
 const route = useRoute();
 
+// Importation des composants
 import RichMarkdownEditor from '../components/RichMarkdownEditor.vue';
 import MarkdownEditor from '../components/MarkdownEditor.vue';
 
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';
-
-const if_pin_active = ref(route.query.pinned == "true" ? true : false);
-
-// import MathFull from '../assets/svgs/calculation.png?url';
-// import MathEmpty from '../assets/svgs/calculation.png?url';
-
-const if_math_active = ref<boolean>(false);
-
 import edit_note_Full from '/assets/webp/note-edit_plein.webp?url';
 import edit_note_Empty from '/assets/webp/note-edit_vide.webp?url';
 
-const if_edit_note_active = ref(route.query.simply_edit == 'true' ? true : false);
+// État pour la gestion de l'édition et du pin
+const if_pin_active = ref(route.query.pinned == "true");
+const if_edit_note_active = ref(route.query.simply_edit == 'true');
 
-const note: { 
-  title: string
-  content: string
-  pinned: boolean
-  simply_edit: boolean
-  id: number
-  tags: string[]
-} = get_note(Number(route.query.id)) || {
+// Initialisation de la note
+const note = ref({
   title: '',
   content: '',
   pinned: false,
   simply_edit: false,
   id: -1,
   tags: []
-};
+});
 
+// Fonction pour récupérer la note
+onMounted(async () => {
+  const fetchedNote = await db.getNote(Number(route.query.id));
+  if (fetchedNote) {
+    note.value = fetchedNote;
+  }
+});
+
+// Fonction pour changer l'état du pin
 const change_pin_state = () => {
-    if_pin_active.value = !if_pin_active.value;
-    if (if_pin_active.value) {
-        pinNoteById(Number(route.query.id))
-    } else {
-        unpinNoteById(Number(route.query.id))
-    };
-    router.push({ 
-        query: { 
-            ...route.query,
-            pinned: if_pin_active.value ? 'true' : 'false'
-        }
-    });
+  if_pin_active.value = !if_pin_active.value;
+  if (if_pin_active.value) {
+    pinNoteById(Number(route.query.id));
+  } else {
+    unpinNoteById(Number(route.query.id));
+  }
+  router.push({ 
+    query: { 
+      ...route.query,
+      pinned: if_pin_active.value ? 'true' : 'false'
+    }
+  });
 };
 
 </script>
@@ -115,14 +119,12 @@ const change_pin_state = () => {
   background-position: center;
 }
 
-
 textarea,
 input {
-    border: none;
-    outline: none;
-    width: 90%;
-    text-decoration: none;
+  border: none;
+  outline: none;
+  width: 90%;
+  text-decoration: none;
 }
-
 
 </style>

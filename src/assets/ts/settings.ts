@@ -4,7 +4,7 @@ interface Settings {
 }
 
 const settings: Settings = {
-    simply_edit: false
+    simply_edit: true
 }
 
 

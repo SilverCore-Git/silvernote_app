@@ -1,109 +1,131 @@
 <template>
   <div class="editor-container" @click="focusEditor">
-    <editor-content :editor="editor" class="prose h-full" />
+    <editor-content v-if="editor" :editor="editor" class="prose h-full" />
   </div>
 </template>
 
 <script setup lang="ts">
-
-import { onBeforeUnmount } from 'vue'
-
-import db from '../assets/ts/database';
-
-import { evaluate } from 'mathjs';
-
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { Editor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import Placeholder from '@tiptap/extension-placeholder'
 import Link from '@tiptap/extension-link'
+import { Extension } from '@tiptap/core'
+import { evaluate } from 'mathjs'
+import db from '../assets/ts/database'
 
-const props = defineProps<{
-  content: string
-  id: number
-}>();
+const props = defineProps<{ id: number }>()
 
+const editor = ref<Editor | null>(null)
+const content = ref<string>('')
+
+// Donne le focus à l'éditeur si non actif
 const focusEditor = () => {
-  if (!editor) return
-  if (!editor.isFocused) {
-    editor.commands.focus()
+  if (editor.value && !editor.value.isFocused) {
+    editor.value.commands.focus()
   }
 }
 
+// Charge le contenu de la note
+const loadContent = async () => {
+  try {
+    const note = await db.getNote(props.id)
+    content.value = note?.content || ''
+  } catch (error) {
+    console.error('Erreur lors du chargement de la note:', error)
+    content.value = 'Erreur de chargement.'
+  }
+}
 
-const editor = new Editor({
-  extensions: [
-    StarterKit,
-    Link,
-    Underline,
-    Placeholder.configure({
-      placeholder: 'Commencez à écrire ici...',
-    }),
-  ],
-  content: props.content,
-  onUpdate: () => {
-    checkForMath();
-    save_content()
-  },
-});
-
-
-// Nettoyage de l'éditeur lorsque le composant est détruit
-onBeforeUnmount(() => {
-  editor.destroy()
-})
-  
-
+// Évalue les expressions mathématiques
 function checkForMath() {
-  if (!editor) return;
+  if (!editor.value) return
 
-  const regex = /(\d+[+\-*/\d\s().]*?)=(?!\d)/g;
+  const regex = /(\d+(?:\s*[\+\-\*\/]\s*\d+)+)\s*=(?!\d)/g
 
-  editor.state.doc.descendants((node, pos) => {
-    if (!node.isText) return true;
+  editor.value.state.doc.descendants((node, pos) => {
+    if (!node.isText) return true
 
-    const text = node.text || '';
-    let match;
-    
+    const text = node.text ?? ''
+    let match
     while ((match = regex.exec(text)) !== null) {
-      const rawExpr = match[1].trim();
-      const fullMatch = match[0];
+      const rawExpr = match[1].trim()
+      const fullMatch = match[0]
 
       try {
-        const result = evaluate(rawExpr);
-        const fullExpr = `${rawExpr}=${result}`;
+        const result = evaluate(rawExpr)
+        const evaluated = `${rawExpr}=${result}`
 
-        // Ne rien faire si déjà remplacé
-        if (text.includes(fullExpr)) continue;
+        if (text.includes(evaluated)) continue
 
-        const from = pos + match.index;
-        const to = from + fullMatch.length;
+        const from = pos + match.index
+        const to = from + fullMatch.length
 
-        // Appliquer la transformation
-        editor.commands.command(({ tr }) => {
-          tr.insertText(fullExpr, from, to);
-          return true;
-        });
-
+        editor.value.commands.command(({ tr }) => {
+          tr.insertText(evaluated, from, to)
+          return true
+        })
       } catch (e) {
-        // Ignorer les erreurs de calcul
+        console.warn(`Échec de l’évaluation "${rawExpr}"`, e)
       }
     }
+    return true
+  })
+}
 
-    return true;
-  });
-};
+// Sauvegarde du contenu dans la base
+const saveContent = () => {
+  if (editor.value) {
+    db.saveContent(editor.value.getHTML(), props.id)
+  }
+}
 
-const save_content = () => {
-  db.saveContent(editor.getHTML(), props.id);
-};
+// Raccourci clavier Ctrl/Cmd+Enter pour forcer l’évaluation
+const MathEvalShortcut = Extension.create({
+  name: 'mathEvalShortcut',
+  addKeyboardShortcuts() {
+    return {
+      'Mod-Enter': () => {
+        checkForMath()
+        return true
+      },
+    }
+  },
+})
 
+// Initialisation
+onMounted(async () => {
+
+  setTimeout(async () => {
+    await loadContent()
+  }, 1000);
+
+  editor.value = new Editor({
+    extensions: [
+      StarterKit,
+      Link,
+      Underline,
+      Placeholder.configure({
+        placeholder: 'Commencez à écrire ici...',
+      }),
+      MathEvalShortcut,
+    ],
+    content: content.value,
+    onUpdate: () => {
+      saveContent()
+      checkForMath()
+    },
+  })
+})
+ 
+// Nettoyage
+onBeforeUnmount(() => {
+  editor.value?.destroy()
+})
 </script>
 
-
-
 <style>
-
 @import '../assets/css/basic.css';
 
 .editor-container {
@@ -114,7 +136,6 @@ const save_content = () => {
 }
 
 .editor-container .ProseMirror {
-
   height: 100%;
   overflow-y: hidden;
   border: none;
@@ -131,6 +152,4 @@ const save_content = () => {
   height: 0;
   pointer-events: none;
 }
-
-
 </style>
