@@ -32,6 +32,7 @@ const loadContent = async () => {
   try {
     const note = await db.getNote(props.id)
     content.value = note?.content || ''
+    console.log(note)
   } catch (error) {
     console.error('Erreur lors du chargement de la note:', error)
     content.value = 'Erreur de chargement.'
@@ -98,9 +99,10 @@ const MathEvalShortcut = Extension.create({
 onMounted(async () => {
 
   setTimeout(async () => {
-    await loadContent()
-  }, 1000);
 
+    await loadContent()
+
+    
   editor.value = new Editor({
     extensions: [
       StarterKit,
@@ -117,6 +119,9 @@ onMounted(async () => {
       checkForMath()
     },
   })
+
+  }, 1000);
+
 })
  
 // Nettoyage
