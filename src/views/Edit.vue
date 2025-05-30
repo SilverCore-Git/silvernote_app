@@ -33,9 +33,9 @@
 
     <input class="text-3xl mb-3 font-bold" type="text" placeholder="Titre..." :value="note?.title || ''">
 
-    <RichMarkdownEditor v-if="if_edit_note_active" :content="note?.content || ''" />
+    <RichMarkdownEditor v-if="if_edit_note_active" :id="note?.id" :content="note?.content || ''" />
 
-    <MarkdownEditor :content="note?.content || ''" v-else />
+    <MarkdownEditor :id="note?.id" :content="note?.content || ''" v-else />
 
   </section>
 

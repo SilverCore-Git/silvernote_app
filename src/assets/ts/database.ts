@@ -1,122 +1,102 @@
+import { openDB } from 'idb';
+import type { DBSchema, IDBPDatabase } from 'idb';
 
-import fs from 'fs';
-import path from 'path';
+import notes from '../notes.json';
 
+export interface Note {
+  id: number;
+  pinned: boolean;
+  simply_edit: boolean;
+  title: string;
+  content: string;
+  date: string;
+  tags: string[];
+};
 
-interface Note {
-    id: number;
-    pinned: boolean;
-    simply_edit: boolean;
-    title: string;
-    content: string;
-    date: string;
-    tags: string[];
-}
-
+interface NotesDB extends DBSchema {
+  notes: {
+    key: number;
+    value: Note;
+  };
+};
 
 class Database {
 
-    private filePath: string;
-    private data: Note[];
+  private dbPromise: Promise<IDBPDatabase<NotesDB>>;
 
-    constructor() {
-        this.filePath = path.resolve('../notes.json');
-        this.data = this.readFile();
-    };
+  constructor(initialNotes?: Note[]) {
 
-    private readFile(): Note[] {
+    this.dbPromise = openDB<NotesDB>('notes-db', 1, {
 
-        try {
+      upgrade(db) {
 
-        const content = fs.readFileSync(this.filePath, 'utf-8');
-        return JSON.parse(content);
+        if (!db.objectStoreNames.contains('notes')) {
 
-        } catch (error) {
+          const store = db.createObjectStore('notes', { keyPath: 'id' });
 
-        console.error('Erreur de lecture du fichier JSON:', error);
-        return [];
+          if (initialNotes) {
 
-        };
+            for (const note of initialNotes) {
+              store.add(note);
+            };
 
-    };
-
-    private writeFile(): void {
-
-        try {
-
-        fs.writeFileSync(this.filePath, JSON.stringify(this.data, null, 2), 'utf-8');
-
-        } catch (error) {
-
-        console.error('Erreur d’écriture du fichier JSON:', error);
+          };
 
         };
 
+      }
+
+    });
+
+  };
+
+  async getAll(): Promise<Note[]> {
+
+    const db = await this.dbPromise;
+    return db.getAll('notes');
+
+  };
+
+  async save(note: Note): Promise<void> {
+
+    const db = await this.dbPromise;
+    await db.put('notes', note);
+
+  };
+
+  async saveContent(content: string, id: number): Promise<void> {
+
+    const db = await this.dbPromise;
+    const note = await db.get('notes', id);
+
+    if (note) {
+      note.content = content;
+      await db.put('notes', note);
     };
 
-    public save(note: Note): void {
+  };
 
-        const index = this.data.findIndex(n => n.id === note.id);
+  async delete(id: number): Promise<void> {
 
-        if (index !== -1) {
+    const db = await this.dbPromise;
+    await db.delete('notes', id);
 
-        this.data[index] = note;
+  };
 
-        } else {
+  async create(note: Note): Promise<void> {
 
-        this.data.push(note);
+    const db = await this.dbPromise;
+    const existing = await db.get('notes', note.id);
 
-        };
-
-        this.writeFile();
-
+    if (existing) {
+      throw new Error(`Note avec l'id ${note.id} existe déjà.`);
     };
 
-    public save_content(content: string, id: number): void {
+    await db.add('notes', note);
 
-        const index = this.data.findIndex(note => note.id === id);
+  };
 
-        if (index !== -1) {
-
-            this.data[index].content = content;
-            this.writeFile();
-
-        } else {
-
-            console.warn(`Note avec l'id ${id} non trouvée.`);
-
-        }
-        
-    }
+};
 
 
-    public delete(id: number): void {
-
-        this.data = this.data.filter(note => note.id !== id);
-        this.writeFile();
-
-    };
-
-    public create(note: Note): void {
-
-        if (this.data.find(n => n.id === note.id)) {
-
-        throw new Error(`Une note avec l'id ${note.id} existe déjà.`);
-
-        };
-
-        this.data.push(note);
-        this.writeFile();
-
-    };
-
-    public getAll(): Note[] {
-
-        return this.data;
-
-    };
-
-}
-
-
-export default new Database();
+export default new Database(notes);

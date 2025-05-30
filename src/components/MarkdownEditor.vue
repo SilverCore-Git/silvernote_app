@@ -4,7 +4,7 @@
 
     <textarea
       v-model="content"
-      @input="checkForMath"
+      @input="checkForMath; save_content"
       placeholder="Commencez à écrire ici..."
       class="prose h-screen p-0 w-full bg-[#FFF8F0] resize-none border rounded"
     ></textarea>
@@ -18,8 +18,11 @@
 import { ref } from 'vue';
 import { evaluate } from 'mathjs';
 
+import db from '../assets/ts/database';
+
 const props = defineProps<{
   content: string
+  id: number
 }>();
 
 const content = ref(props.content);
@@ -45,7 +48,9 @@ function checkForMath() {
   content.value = processedText;
 }
 
-
+const save_content = () => {
+  db.saveContent(content.value, props.id);
+};
 
 </script>
 

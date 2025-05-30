@@ -20,6 +20,7 @@ import Link from '@tiptap/extension-link'
 
 const props = defineProps<{
   content: string
+  id: number
 }>();
 
 const focusEditor = () => {
@@ -94,9 +95,7 @@ function checkForMath() {
 };
 
 const save_content = () => {
-  db.save({
-    
-  });
+  db.saveContent(editor.getHTML(), props.id);
 };
 
 </script>
