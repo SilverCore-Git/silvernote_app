@@ -22,79 +22,85 @@ interface NotesDB extends DBSchema {
 
 class Database {
 
-  private dbPromise: Promise<IDBPDatabase<NotesDB>>;
+    private dbPromise: Promise<IDBPDatabase<NotesDB>>;
 
-  constructor(initialNotes?: Note[]) {
+    constructor(initialNotes?: Note[]) {
 
-    this.dbPromise = openDB<NotesDB>('notes-db', 1, {
+        this.dbPromise = openDB<NotesDB>('notes-db', 1, {
 
-      upgrade(db) {
+        upgrade(db) {
 
-        if (!db.objectStoreNames.contains('notes')) {
+            if (!db.objectStoreNames.contains('notes')) {
 
-          const store = db.createObjectStore('notes', { keyPath: 'id' });
+            const store = db.createObjectStore('notes', { keyPath: 'id' });
 
-          if (initialNotes) {
+            if (initialNotes) {
 
-            for (const note of initialNotes) {
-              store.add(note);
+                for (const note of initialNotes) {
+                store.add(note);
+                };
+
             };
 
-          };
+            };
 
+        }
+
+        });
+
+    };
+
+    async getAll(): Promise<Note[]> {
+
+        const db = await this.dbPromise;
+        return db.getAll('notes');
+
+    };
+
+    async save(note: Note): Promise<void> {
+
+        const db = await this.dbPromise;
+        await db.put('notes', note);
+
+    };
+
+    async saveContent(content: string, id: number): Promise<void> {
+
+        const db = await this.dbPromise;
+        const note = await db.get('notes', id);
+
+        if (note) {
+        note.content = content;
+        await db.put('notes', note);
         };
 
-      }
-
-    });
-
-  };
-
-  async getAll(): Promise<Note[]> {
-
-    const db = await this.dbPromise;
-    return db.getAll('notes');
-
-  };
-
-  async save(note: Note): Promise<void> {
-
-    const db = await this.dbPromise;
-    await db.put('notes', note);
-
-  };
-
-  async saveContent(content: string, id: number): Promise<void> {
-
-    const db = await this.dbPromise;
-    const note = await db.get('notes', id);
-
-    if (note) {
-      note.content = content;
-      await db.put('notes', note);
     };
 
-  };
+    async delete(id: number): Promise<void> {
 
-  async delete(id: number): Promise<void> {
+        const db = await this.dbPromise;
+        await db.delete('notes', id);
 
-    const db = await this.dbPromise;
-    await db.delete('notes', id);
-
-  };
-
-  async create(note: Note): Promise<void> {
-
-    const db = await this.dbPromise;
-    const existing = await db.get('notes', note.id);
-
-    if (existing) {
-      throw new Error(`Note avec l'id ${note.id} existe déjà.`);
     };
 
-    await db.add('notes', note);
+    async create(note: Note): Promise<void> {
 
-  };
+        const db = await this.dbPromise;
+        const existing = await db.get('notes', note.id);
+
+        if (existing) {
+        throw new Error(`Note avec l'id ${note.id} existe déjà.`);
+        };
+
+        await db.add('notes', note);
+
+    };
+
+    async getNote(id: number): Promise<Note | undefined> {
+        const db = await this.dbPromise;
+        const note = await db.get('notes', id);
+        return note;
+    }
 
 };
 
