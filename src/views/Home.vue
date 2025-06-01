@@ -28,10 +28,10 @@
 
     <Search_bar class="fixed right-4 left-4 top-16 z-40" />
 
-    <ul v-if="notes_parms.tags" class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
+    <ul v-if="all_tags && all_tags.length" class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
 
         <li 
-            v-for="(tag, index) in notes_parms.tags"
+            v-for="(tag, index) in all_tags"
             :key="index" 
             class=" w-[20%] min-w-[70px]"
         >
@@ -60,6 +60,22 @@
         </li>
 
     </ul>
+    
+    <ul v-else-if="all_tags.length" class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
+        <li 
+            class=" w-[20%] min-w-[70px]"
+        >
+
+            <Tags_item 
+                @click="create_tag" 
+                :id="null"
+                name="+"
+                :tag="''"
+                :active="false"
+            />
+
+        </li>
+    </ul>
 
     <ul v-else class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
         <Tags_item_loader />
@@ -71,6 +87,7 @@
     <div @click="if_open_dropdown=false" class=" overflow-x-hidden mb-30">
 
         <Danger_card v-if="tip" style="box-shadow: 0 0 15px #3636364f;" title="Tip of the week" content="You can create a new note with +" />
+        <Danger_card v-if="if_danger_card" style="box-shadow: 0 0 15px #3636364f;" :title="Danger_card_props.title" :content="Danger_card_props.message" />
 
         <div class="overflow-y-auto mt-4">
 
@@ -149,7 +166,7 @@
     import { onMounted, ref, watch } from 'vue';
 
     import db from '../assets/ts/database';
-    import { notes_parms } from '../assets/ts/use_notes';
+    import back from '../assets/ts/backend_link';
 
     import Danger_card from '../components/Danger_card.vue';
     import Note_card from '../components/Note_card.vue';
@@ -175,15 +192,17 @@
     };
 
     const tip: boolean = false;
+    const if_danger_card: boolean = back.info_message() ? true : false;
+    const Danger_card_props: { title: string, message: string } = back.info_message();
 
     const list_notes = ref<Note[]>();
+    const all_tags = await db.getAll('tags');
 
     const if_open_dropdown = ref<boolean>(false);
-
     const if_open_create_tag = ref<boolean>(false);
 
     const init_notes = async () => {
-        list_notes.value = await db.getAll();
+        list_notes.value = await db.getAll('notes');
         const sort_notes = list_notes.value.sort((a, b) => {
             if (a.pinned === b.pinned) {
                 return a.id - b.id;
@@ -193,11 +212,11 @@
         list_notes.value = sort_notes;
     }
 
-    const add_tag_filter = (id: number) => {
+    const add_tag_filter = async (id: number) => {
 
-        notes_parms.value.tags[id].active = !notes_parms.value.tags[id].active;
+        all_tags[id].active = !all_tags[id].active;
 
-        const activeTags = notes_parms.value.tags
+        const activeTags = all_tags
             .filter(tag => tag.active)
             .map(tag => tag.name);
 

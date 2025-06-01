@@ -42,12 +42,24 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  from;
   const title = to.meta.title as string;
+
   if (title) {
     document.title = title;
+
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute('content', title);
+    } else {
+      const meta = document.createElement('meta');
+      meta.setAttribute('property', 'og:title');
+      meta.setAttribute('content', title);
+      document.head.appendChild(meta);
+    }
   }
+
   next();
 });
+
 
 export default router

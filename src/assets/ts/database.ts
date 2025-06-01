@@ -2,10 +2,10 @@
 import { openDB } from 'idb';
 import type { DBSchema, IDBPDatabase } from 'idb';
 
-import notes_db from '../notes.json';
+import back from './backend_link';
 
-const notes: Note[] = notes_db.notes;
-const tags: Tags[] = notes_db.tags;
+const notes: Note[] = back.db?.notes;
+const tags: Tags[] = back.db?.tags;
 
 
 export interface Note {
@@ -77,12 +77,13 @@ class Database {
 
     };
 
-    async getAll(): Promise<Note[]> {
+    async getAll<T extends 'notes' | 'tags'>(type: T): Promise<T extends 'notes' ? Note[] : Tags[]> {
 
         const db = await this.dbPromise;
-        return db.getAll('notes');
+        return db.getAll(type) as any;
 
-    };
+    }
+
 
     async save(note: Note): Promise<void> {
 
