@@ -1,7 +1,8 @@
 import { openDB } from 'idb';
 import type { DBSchema, IDBPDatabase } from 'idb';
 
-import notes from '../notes.json';
+import notes_db from '../notes.json';
+const notes: Note[] = notes_db.notes;
 
 export interface Note {
   id: number;

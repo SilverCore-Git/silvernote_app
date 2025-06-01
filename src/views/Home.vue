@@ -76,7 +76,7 @@
 
             <ul>
 
-                <li v-if="list_notes" class="flex flex-col" v-for="(note, index) in list_notes" :key="index">
+                <li v-if="list_notes && list_notes?.length" class="flex flex-col" v-for="(note, index) in list_notes" :key="index">
                     <Note_card 
                         :id="note.id"
                         :pinned="note.pinned"
@@ -86,6 +86,17 @@
                         :tags="note.tags"
                         :simply_edit="note.simply_edit"
                     />
+                </li>
+
+                <li v-else-if="list_notes" class="flex flex-col">
+                    <div 
+                        class="note-card bg-[#FFF8F0] mr-4 ml-4 text-[#3B3B3B] p-3 border-[#3B3B3B] border-2"
+                        style="border-radius: 15px;"
+                    >
+                        <p class="font-bold text-xl w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
+                            Aucune note trouvée !
+                        </p>
+                    </div>
                 </li>
 
                 <li v-else class="flex flex-col">
