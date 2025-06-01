@@ -1,8 +1,12 @@
+
 import { openDB } from 'idb';
 import type { DBSchema, IDBPDatabase } from 'idb';
 
 import notes_db from '../notes.json';
+
 const notes: Note[] = notes_db.notes;
+const tags: Tags[] = notes_db.tags;
+
 
 export interface Note {
   id: number;
@@ -14,38 +18,60 @@ export interface Note {
   tags: string[];
 };
 
-interface NotesDB extends DBSchema {
-  notes: {
-    key: number;
-    value: Note;
-  };
+export interface Tags {
+    id: number;
+    active: boolean;
+    name: string;
 };
+
+interface NotesDB extends DBSchema {
+    notes: {
+        key: number;
+        value: Note;
+    };
+    tags: {
+        key: number;
+        value: Tags;
+    };
+};
+
 
 class Database {
 
     private dbPromise: Promise<IDBPDatabase<NotesDB>>;
 
-    constructor(initialNotes?: Note[]) {
+    constructor(initialNotes?: Note[], initialTags?: Tags[]) {
 
         this.dbPromise = openDB<NotesDB>('notes-db', 1, {
 
-        upgrade(db) {
+            upgrade(db) {
 
-            if (!db.objectStoreNames.contains('notes')) {
+                if (!db.objectStoreNames.contains('notes')) {
 
-            const store = db.createObjectStore('notes', { keyPath: 'id' });
+                    const store = db.createObjectStore('notes', { keyPath: 'id' });
 
-            if (initialNotes) {
+                    if (initialNotes) {
 
-                for (const note of initialNotes) {
-                store.add(note);
+                        for (const note of initialNotes) {
+                        store.add(note);
+                        };
+
+                    };
+
                 };
 
-            };
+                if (!db.objectStoreNames.contains('tags')) {
 
-            };
+                    const tagsStore = db.createObjectStore('tags', { keyPath: 'id' });
 
-        }
+                    if (initialTags) {
+                        for (const tag of initialTags) {
+                            tagsStore.add(tag);
+                        };
+                    };
+                };
+
+            }
 
         });
 
@@ -118,4 +144,7 @@ class Database {
 };
 
 
-export default new Database(notes);
+export default  new Database(
+                        notes,
+                        tags
+                    );
