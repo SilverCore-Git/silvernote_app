@@ -61,13 +61,13 @@
 
     </ul>
     
-    <ul v-else-if="all_tags.length" class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
+    <ul v-else-if="all_tags?.length" class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
         <li 
             class=" w-[20%] min-w-[70px]"
         >
 
             <Tags_item 
-                @click="create_tag" 
+                @click="if_open_create_tag = true" 
                 :id="null"
                 name="+"
                 :tag="''"
@@ -86,8 +86,23 @@
 
     <div @click="if_open_dropdown=false" class=" overflow-x-hidden mb-30">
 
-        <Danger_card v-if="tip" style="box-shadow: 0 0 15px #3636364f;" title="Tip of the week" content="You can create a new note with +" />
-        <Danger_card v-if="if_danger_card" style="box-shadow: 0 0 15px #3636364f;" :title="Danger_card_props.title" :content="Danger_card_props.message" />
+        <Danger_card 
+            v-if="tip" 
+            style="box-shadow: 0 0 15px #3636364f;" 
+            class="mt-4"
+            title="Tip of the week" 
+            content="You can create a new note with +" 
+        />
+
+        <Danger_card 
+            v-if="if_danger_card" 
+            style="box-shadow: 0 0 15px #3636364f;" 
+            class="mt-4"
+            :title="Danger_card_props.title"
+            :btn="Danger_card_props.btn"
+            :href="Danger_card_props.href"
+            :content="Danger_card_props.message" 
+        />
 
         <div class="overflow-y-auto mt-4">
 
@@ -133,9 +148,9 @@
 
     </div>
 
-    <div v-if="if_open_create_tag">
+    <div @click="if_open_create_tag = false" v-if="if_open_create_tag">
 
-        <div @click="if_open_create_tag = false" class="fixed inset-0 bg-black/50 z-100"></div>
+        <div  class="fixed inset-0 bg-black/50 z-100"></div>
 
             <section class="flex flex-col gap-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-110">
 
@@ -146,12 +161,12 @@
                 :active="false"
             />
 
-            <Tags_item 
-                @click="create_tag()" 
+            <Tags_item
                 id="create_tag_btn"
                 name="create_tag_btn"
                 tag="create_tag_btn"
                 :active="false"
+                @tag-created="create_tag"
             />
 
         </section>
@@ -177,7 +192,7 @@
 
     const router = useRouter();
 
-    const create_new_note = () => {
+    const create_new_note = (): void => {
         router.push('/edit')
     };
 
@@ -193,15 +208,15 @@
 
     const tip: boolean = false;
     const if_danger_card: boolean = back.info_message() ? true : false;
-    const Danger_card_props: { title: string, message: string } = back.info_message();
+    const Danger_card_props: { message: string, title: string, btn: boolean, href: string } = back.info_message();
 
     const list_notes = ref<Note[]>();
-    const all_tags = await db.getAll('tags');
+    let all_tags: { id: number, name: string, active: boolean }[] | undefined  = undefined;
 
     const if_open_dropdown = ref<boolean>(false);
     const if_open_create_tag = ref<boolean>(false);
 
-    const init_notes = async () => {
+    const init_notes = async (): Promise<void> => {
         list_notes.value = await db.getAll('notes');
         const sort_notes = list_notes.value.sort((a, b) => {
             if (a.pinned === b.pinned) {
@@ -210,17 +225,19 @@
                 return a.pinned ? -1 : 1;
         });
         list_notes.value = sort_notes;
-    }
+    };
 
-    const add_tag_filter = async (id: number) => {
+    const add_tag_filter = async (id: number): Promise<void> => {
 
-        all_tags[id].active = !all_tags[id].active;
+        if (all_tags?.[id]) {
+            all_tags[id].active = !all_tags[id].active;
+        }
 
         const activeTags = all_tags
-            .filter(tag => tag.active)
-            .map(tag => tag.name);
+                ?.filter(tag => tag.active)
+                .map(tag => tag.name);
 
-        if (activeTags.length === 0) {
+        if (activeTags?.length === 0) {
             list_notes.value = list_notes.value;
             return;
         }
@@ -228,16 +245,20 @@
         const notes: Note[] = list_notes.value ?? [];
 
         list_notes.value = notes.filter(note =>
-            note.tags.some(tag => activeTags.includes(tag))
+            note.tags.some(tag => activeTags?.includes(tag))
         );
     };
 
-    const create_tag = () => {
-        if_open_create_tag.value = true
-    }
+    const create_tag = async (tag_name: string): Promise<void> => {
+        await db.create_tag({ id: -1, name: tag_name, active: false });
+        all_tags = await db.getAll('tags');
+        if_open_create_tag.value = false
+    };
+
 
     onMounted(async () => {
         setTimeout(async () => {
+            all_tags = await db.getAll('tags');
             await init_notes();
         }, 500);
     });

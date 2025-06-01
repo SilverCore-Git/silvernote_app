@@ -96,7 +96,7 @@ onMounted(async () => {
 });
 
 // Fonction pour changer l'état du pin
-const change_pin_state = () => {
+const change_pin_state = (): void => {
   if_pin_active.value = !if_pin_active.value;
   db.togle_pinned(Number(route.query.id));
   router.push({ 
@@ -109,7 +109,7 @@ const change_pin_state = () => {
 };
 
 // Fonction pour changer l'état
-const change_edit_state = () => {
+const change_edit_state = (): void => {
   if_edit_note_active.value = !if_edit_note_active.value;
 
   router.push({ 

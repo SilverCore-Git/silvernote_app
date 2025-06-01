@@ -72,7 +72,7 @@ const list_notes = ref<{
     }[]>([]);
 
 const init_notes = async () => {
-    list_notes.value = await db.getAll();
+    list_notes.value = await db.getAll('notes');
 }
 
 const filteredNotes = computed(() =>

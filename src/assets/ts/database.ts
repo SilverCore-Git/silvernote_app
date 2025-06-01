@@ -5,20 +5,20 @@ import type { DBSchema, IDBPDatabase } from 'idb';
 import back from './backend_link';
 
 const notes: Note[] = back.db?.notes;
-const tags: Tags[] = back.db?.tags;
+const tags: Tag[] = back.db?.tags;
 
 
 export interface Note {
-  id: number;
-  pinned: boolean;
-  simply_edit: boolean;
-  title: string;
-  content: string;
-  date: string;
-  tags: string[];
+    id: number;
+    pinned: boolean;
+    simply_edit: boolean;
+    title: string;
+    content: string;
+    date: string;
+    tags: string[];
 };
 
-export interface Tags {
+export interface Tag {
     id: number;
     active: boolean;
     name: string;
@@ -31,7 +31,7 @@ interface NotesDB extends DBSchema {
     };
     tags: {
         key: number;
-        value: Tags;
+        value: Tag;
     };
 };
 
@@ -40,7 +40,7 @@ class Database {
 
     private dbPromise: Promise<IDBPDatabase<NotesDB>>;
 
-    constructor(initialNotes?: Note[], initialTags?: Tags[]) {
+    constructor(initialNotes?: Note[], initialTags?: Tag[]) {
 
         this.dbPromise = openDB<NotesDB>('notes-db', 1, {
 
@@ -77,7 +77,7 @@ class Database {
 
     };
 
-    async getAll<T extends 'notes' | 'tags'>(type: T): Promise<T extends 'notes' ? Note[] : Tags[]> {
+    async getAll<T extends 'notes' | 'tags'>(type: T): Promise<T extends 'notes' ? Note[] : Tag[]> {
 
         const db = await this.dbPromise;
         return db.getAll(type) as any;
@@ -126,13 +126,22 @@ class Database {
     async create(note: Note): Promise<void> {
 
         const db = await this.dbPromise;
-        const existing = await db.get('notes', note.id);
+        const all_notes = await db.getAll('notes');
 
-        if (existing) {
-        throw new Error(`Note avec l'id ${note.id} existe déjà.`);
-        };
+        note.id = all_notes.length + 1;
 
         await db.add('notes', note);
+
+    };
+
+    async create_tag(tag: Tag): Promise<void> {
+
+        const db = await this.dbPromise;
+        const all_tags = await db.getAll('tags');
+
+        tag.id = all_tags.length + 1;
+
+        await db.add('tags', tag);
 
     };
 

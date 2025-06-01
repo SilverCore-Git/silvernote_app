@@ -31,8 +31,13 @@ const db = {
 }
 
 
-const info_message = () => {
-    return { message: "Une info", title: "Le titre" };
+const info_message = (): { message: string, title: string, btn: boolean, href: string } => {
+    return { 
+              message: "SilverNote est actuelement en maintenance, l'app fonctionera en local seulement pendant cet periode.", 
+              title: "Maintenance",
+              btn: true,
+              href: "https://www.silvercore.fr"
+            };
 };
 
 

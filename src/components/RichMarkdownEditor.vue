@@ -1,6 +1,6 @@
 <template>
   <div class="editor-container" @click="focusEditor">
-    <editor-content :editor="editor" class="prose h-full" />
+    <editor-content :editor="editor ?? undefined" class="prose h-full" />
   </div>
 </template>
 
@@ -17,7 +17,7 @@ import db from '../assets/ts/database'
 
 const props = defineProps<{ id: number }>()
 
-const editor = ref<Editor | null>(null)
+const editor = ref<Editor | undefined>();
 const content = ref<string>('')
 
 // Donne le focus à l'éditeur si non actif
@@ -63,7 +63,7 @@ function checkForMath() {
         const from = pos + match.index
         const to = from + fullMatch.length
 
-        editor.value.commands.command(({ tr }) => {
+        editor.value?.commands.command(({ tr }) => {
           tr.insertText(evaluated, from, to)
           return true
         })
