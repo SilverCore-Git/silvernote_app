@@ -50,7 +50,7 @@
         >
 
             <Tags_item 
-                @click="create_tag" 
+                @click="if_open_create_tag = true" 
                 :id="null"
                 name="+"
                 :tag="''"
@@ -61,13 +61,13 @@
 
     </ul>
     
-    <ul v-else-if="all_tags?.length" class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
+    <ul v-else-if="all_tags" class="mt-30 flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
         <li 
             class=" w-[20%] min-w-[70px]"
         >
 
             <Tags_item 
-                @click="if_open_create_tag = true" 
+                @click="if_open_create_tag = true"
                 :id="null"
                 name="+"
                 :tag="''"
@@ -148,26 +148,29 @@
 
     </div>
 
-    <div @click="if_open_create_tag = false" v-if="if_open_create_tag">
+    <div  v-if="if_open_create_tag">
 
         <div  class="fixed inset-0 bg-black/50 z-100"></div>
 
             <section class="flex flex-col gap-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-110">
 
-            <Tags_item
-                id="create_tag"
-                name="create_tag"
-                tag="create_tag"
-                :active="false"
+            <div class="p-1 text-center w-full border-2 bg-white/80 border-[#F28C28] rounded-[15px] shadow-lg">
+            <input
+                v-model="tag_name"
+                ref="inputRef"
+                type="text"
+                class="outline-none pl-1 w-full"
+                placeholder="Mon tag"
             />
+            </div>
 
-            <Tags_item
-                id="create_tag_btn"
-                name="create_tag_btn"
-                tag="create_tag_btn"
-                :active="false"
-                @tag-created="create_tag"
-            />
+            <button
+                class="p-1 text-center w-full border-2 bg-white/80 text-[#F28C28] font-bold cursor-pointer rounded-[15px] shadow-md
+                        hover:bg-[#f28c28]"
+                @click="create_tag(tag_name)"
+            >
+                <span>Créer mon tag</span>
+            </button>
 
         </section>
 
@@ -189,7 +192,7 @@
     import Search_bar from '../components/Search_bar.vue';
     import Tags_item from '../components/Tags_item.vue';
     import Tags_item_loader from '../components/Tags_item_loader.vue';
-
+    
     const router = useRouter();
 
     const create_new_note = (): void => {
@@ -207,6 +210,7 @@
     };
 
     const tip: boolean = false;
+    const tag_name = ref<string>('');
     const if_danger_card: boolean = back.info_message() ? true : false;
     const Danger_card_props: { message: string, title: string, btn: boolean, href: string } = back.info_message();
 
@@ -217,7 +221,7 @@
     const if_open_create_tag = ref<boolean>(false);
 
     const init_notes = async (): Promise<void> => {
-        list_notes.value = await db.getAll('notes');
+        list_notes.value = await db.getAll('notes') || null;
         const sort_notes = list_notes.value.sort((a, b) => {
             if (a.pinned === b.pinned) {
                 return a.id - b.id;
@@ -249,8 +253,10 @@
         );
     };
 
-    const create_tag = async (tag_name: string): Promise<void> => {
-        await db.create_tag({ id: -1, name: tag_name, active: false });
+    const create_tag = async (tagName: string): Promise<void> => {
+        console.log('création du tag :', tagName)
+        tag_name.value = '';
+        await db.create_tag({ id: -1, name: tagName, active: false });
         all_tags = await db.getAll('tags');
         if_open_create_tag.value = false
     };
