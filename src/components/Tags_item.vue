@@ -23,9 +23,9 @@
       v-else :id="active ? `${tag}-active` : tag" 
       :class="active ? 'p-0.5 text-center border-3 border-[#F28C28] cursor-pointer' 
                      : 'p-1 text-center border-1 cursor-pointer'" 
-      class="rounded-[15px]"
+      class="rounded-[15px] relative"
     >
-        <span class="w-[90%]">{{ name }}</span>
+        <span>{{ name }}</span>
     </div>
 
 </template>
@@ -67,13 +67,6 @@ onMounted(() => {
 
 <style scoped>
 
-input:focus {
-  border-color: #F28C28;
-  outline: none;
-}
 
-button:hover {
-  background-color: #f28c28;
-}
 </style>
 

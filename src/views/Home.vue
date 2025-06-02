@@ -38,6 +38,7 @@
 
             <Tags_item 
                 @click="add_tag_filter(tag.id)" 
+                class="w-[100%]"
                 :id="tag.id" :name="tag.name" 
                 :tag="tag.name" 
                 :active="tag.active" 
@@ -148,9 +149,9 @@
 
     </div>
 
-    <div  v-if="if_open_create_tag">
+    <div v-if="if_open_create_tag">
 
-        <div  class="fixed inset-0 bg-black/50 z-100"></div>
+        <div @click="if_open_create_tag = false" class="fixed inset-0 bg-black/50 z-100"></div>
 
             <section class="flex flex-col gap-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-110">
 
@@ -254,10 +255,13 @@
     };
 
     const create_tag = async (tagName: string): Promise<void> => {
-        console.log('création du tag :', tagName)
-        tag_name.value = '';
-        await db.create_tag({ id: -1, name: tagName, active: false });
-        all_tags = await db.getAll('tags');
+        if (tagName) {
+            console.log('création du tag :', tagName)
+            tag_name.value = '';
+            await db.create_tag({ id: -1, name: tagName, active: false });
+            all_tags = await db.getAll('tags');
+        };
+
         if_open_create_tag.value = false
     };
 
