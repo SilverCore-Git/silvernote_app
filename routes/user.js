@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
   res.json({ message: '/user' });
 });
 
-router.post('/create/access', async (req, res) => {
+router.post('/session/create', async (req, res) => {
 
   const { passwd, mail } = req.body;
 
@@ -25,13 +25,32 @@ router.post('/create/access', async (req, res) => {
 
       account.access = { token: await Token.create(account), open: true, date: new Date() };
 
-      res.status(200).json({ success: true, key: account.access.token });
+      res.status(201).json({ success: true, key: account.access.token });
       
     } 
     else
     {
       res.status(402).json({ error: true, message: "Donnée de connections incorect." });
     };
+
+  };
+
+});
+
+router.post('/session/verify', (req, res) => {
+
+  const { token } = req.body;
+
+  try {
+
+    const session = Token.verify(token);
+
+    if (session) {
+      res.status(201).json(session);
+    }
+
+  }
+  catch (err) {
 
   };
 
