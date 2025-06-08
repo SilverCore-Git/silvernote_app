@@ -1,16 +1,19 @@
+
 const express = require('express');
 const router = express.Router();
 
+const Token = require('../assets/js/token');
+
 const user_accounts = [
-  { passwd: "mon_pass", mail: "fds@fds.fds", name: "jean", data: { d: "data", access: {} } },
-  { passwd: "passwd", mail: "mail@mail.mail", name: "michel", data: { d: "data", access: {} } }
+  { passwd: "mon_pass", mail: "fds@fds.fds", name: "jean", data: { user_key: '9e85834271241421d99e06a1c230419a', d: "data", access: {} } },
+  { passwd: "passwd", mail: "mail@mail.mail", name: "michel", data: { user_key: '8a6db5829db4fb1e523b2546f5786931', d: "data", access: {} } }
 ];
 
 router.get('/', (req, res) => {
   res.json({ message: '/user' });
 });
 
-router.post('/create/access', (req, res) => {
+router.post('/create/access', async (req, res) => {
 
   const { passwd, mail } = req.body;
 
@@ -20,7 +23,9 @@ router.post('/create/access', (req, res) => {
 
     if (account && account.passwd == passwd && account.mail == mail) {
 
-      account.access = { access_key: , open: true,  }
+      account.access = { token: await Token.create(account), open: true, date: new Date() };
+
+      res.status(200).json({ success: true, key: account.access.token });
       
     } 
     else
