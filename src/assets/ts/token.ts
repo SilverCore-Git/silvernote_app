@@ -1,18 +1,18 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const secretKey = process.env.secret_token_key;
+const secretKey: string | undefined = process.env.secret_token_key;
 
 class token {
 
-    create(data = {}) {
+    create(data = {}): string {
         return jwt.sign(data, secretKey, { expiresIn: '24h' } );
     };
 
-    verify(token) {
+    verify(token: string): any {
         return jwt.verify(token, secretKey);
     };
 
 };
 
-module.exports = new token();
+export default new token();
