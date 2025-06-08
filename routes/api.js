@@ -6,5 +6,4 @@ router.get('/', (req, res) => {
   res.json({ message: 'route api' });
 });
 
-
 module.exports = router;

@@ -23,13 +23,13 @@ app.use('/api', api);
 app.use('/user', user);
 
 app.get('/', (req, res) => {
-  res.send('le teste en sah !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+  res.send('/');
 });
 
 
 // 404
 app.use((req, res) => {
-  res.status(404).json({ error: 'Route non trouvée' });
+  res.status(404).json({ route: req.path, error: 'Route non trouvée' });
 });
 
 // Lancement du serveur
