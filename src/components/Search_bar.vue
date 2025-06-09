@@ -1,7 +1,7 @@
 <template>
 
   <div
-    class="note-card bg-[#FFF8F0] text-[#3B3B3B]
+    class="note-card bg-[#FFF8F0] text-[#3B3B3B] relative mr-4 ml-4
            flex flex-col pl-4 pt-2.5 pb-2.5 border border-[#3B3B3B] z-30"
     style="box-shadow: 0 0 15px #3636364f; border-radius: 15px;"
   >
@@ -9,18 +9,23 @@
     <div class="flex flex-row items-center">
 
       <input 
+        ref="search_input"
         v-model="searchQuery"
-        type="search" 
+        type="text"
         class="w-[85%] border-none outline-none" 
         placeholder="Recherche..."
       >
 
-      <button v-if="searchQuery !== ''" @click="searchQuery = ''" class="cross-btn absolute end-1"></button>
-      <button v-if="searchQuery == ''" class="search-btn absolute end-4"></button>
+      <button v-if="searchQuery !== ''" @click="searchQuery = ''" class="cross-btn absolute end-1" :class="hitbox ? 'bg-red-600' : ''"></button>
+      <button v-if="searchQuery == ''" @click="search_input?.focus()" class="search-btn absolute end-4" :class="hitbox ? 'bg-red-600' : ''"></button>
 
     </div>
 
-    <div v-if="filteredNotes.length && searchQuery != ''" class="mt-4 space-y-2 max-h-[55vh] relative overflow-x-auto pr-4">
+    <div 
+        v-if="filteredNotes.length && searchQuery != ''" 
+        class="mt-4 space-y-2 w-[100%] relative overflow-x-auto pr-4" 
+        :style="{ maxHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)`, minHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)` }"
+    >
 
       <div 
         v-for="note in filteredNotes" 
@@ -33,7 +38,7 @@
             v-html="highlightMatch(note.title, searchQuery)"
         ></h3>
         <p 
-            class="text-sm max-h-20 text-gray-600 overflow-x-auto"
+            class="text-sm max-h-20 text-gray-600 overflow-hidden"
             v-html="highlightMatch(note.content, searchQuery)"
         ></p>
 
@@ -58,21 +63,25 @@ import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import db from '../assets/ts/database';
+import type { Note } from '../assets/ts/type';
+import { hitbox as if_hitbox } from '../assets/ts/settings';
+
+let hitbox: boolean;
+onMounted(async () => { hitbox = await if_hitbox() })
+
+const props = defineProps<{
+  pt?: string
+}>()
+
+const search_input = ref<HTMLInputElement | null>(null);
 
 const router = useRouter();
 const searchQuery = ref('');
-const list_notes = ref<{
-        id: number
-        pinned: boolean
-        simply_edit: boolean
-        title: string
-        content: string
-        date: string
-        tags: string[]
-    }[]>([]);
+const list_notes = ref<Note[]>([]);
 
 const init_notes = async () => {
     list_notes.value = await db.getAll('notes');
+    list_notes.value.sort( (a, b) => { return b.id - a.id } );
 }
 
 const filteredNotes = computed(() =>

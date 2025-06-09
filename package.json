@@ -6,8 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "build force": "vite build",
-    "preview": "vite preview"
+    "build_force": "vite build",
+    "preview": "vite preview",
+    "sync": "npm run build && npx cap sync",
+    "android": "npx cap open android",
+    "android_icon": "cordova-res"
   },
   "dependencies": {
     "@tiptap/extension-link": "^2.12.0",

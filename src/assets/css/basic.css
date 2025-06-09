@@ -58,4 +58,5 @@
 .prose a {
     text-decoration: underline;
     color: #555;
+    cursor: pointer;
 }

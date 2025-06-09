@@ -2,12 +2,18 @@
 @import 'tailwindcss';
 
 @import './assets/css/fonts.css';
+@import './assets/css/switch.css';
 
 
 body {
     background-color: #FFF8F0;
     color: #3B3B3B;
     overflow-x: hidden;
+    font-family: 'Roboto';
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat';
 }
 
 .scrollbar-none::-webkit-scrollbar {
@@ -25,6 +31,7 @@ body {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+  cursor: pointer;
 }
 
 .left-arrow {
