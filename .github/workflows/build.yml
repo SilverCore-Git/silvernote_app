@@ -36,7 +36,7 @@ jobs:
       - name: Archive build output
         run: |
           mkdir release
-          zip -r release/silvernote-web-${{ steps.get_version.outputs.VERSION }}.zip dist/
+          zip -r release/silvernote-front-${{ steps.get_version.outputs.VERSION }}.zip dist/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -52,6 +52,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.get_version.outputs.VERSION }}
-          files: release/silvernote-web-${{ steps.get_version.outputs.VERSION }}.zip
+          files: release/silvernote-front-${{ steps.get_version.outputs.VERSION }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
