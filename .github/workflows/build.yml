@@ -42,9 +42,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.get_version.outputs.VERSION }}
-          name: Silvernote backend (${{ steps.get_version.outputs.VERSION }})
-          body: |
-            Backend Silvernote.
+          name: Silvernote (${{ steps.get_version.outputs.VERSION }})
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
