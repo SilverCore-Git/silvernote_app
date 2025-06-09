@@ -42,9 +42,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.get_version.outputs.VERSION }}
-          name: Silvernote Web (${{ steps.get_version.outputs.VERSION }})
+          name: Silvernote (${{ steps.get_version.outputs.VERSION }})
           body: |
-            Nouvelle version de la Web App Silvernote.
+            Nouvelle version de Silvernote.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
