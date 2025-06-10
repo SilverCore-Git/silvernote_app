@@ -1,9 +1,9 @@
 {
-  "name": "silvernote_desktop",
-  "productName": "silvernote_desktop",
+  "name": "mon-app",
+  "productName": "mon-app",
   "version": "1.0.0",
   "description": "My Electron application description",
-  "main": ".webpack/main",
+  "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -17,6 +17,9 @@
     "email": "philippeetchtebaise@hotmail.com"
   },
   "license": "MIT",
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.1"
+  },
   "devDependencies": {
     "@electron-forge/cli": "^7.8.1",
     "@electron-forge/maker-deb": "^7.8.1",
@@ -25,15 +28,7 @@
     "@electron-forge/maker-zip": "^7.8.1",
     "@electron-forge/plugin-auto-unpack-natives": "^7.8.1",
     "@electron-forge/plugin-fuses": "^7.8.1",
-    "@electron-forge/plugin-webpack": "^7.8.1",
     "@electron/fuses": "^1.8.0",
-    "@vercel/webpack-asset-relocator-loader": "^1.7.3",
-    "css-loader": "^6.11.0",
-    "electron": "36.4.0",
-    "node-loader": "^2.1.0",
-    "style-loader": "^3.3.4"
-  },
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.1"
+    "electron": "36.4.0"
   }
 }
