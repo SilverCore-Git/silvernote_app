@@ -16,14 +16,12 @@ app.use((0, morgan_1.default)('dev'));
 app.use(express_1.default.json());
 app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 app.use(express_1.default.urlencoded({ extended: true }));
+app.use('/', express_1.default.static(path_1.default.join(__dirname, 'public', 'index.html')));
 // Import des routes
 const api_1 = __importDefault(require("./routes/api"));
 const user_1 = __importDefault(require("./routes/user"));
 app.use('/api', api_1.default);
 app.use('/user', user_1.default);
-app.get('/', (req, res) => {
-    res.send('/');
-});
 // Middleware 404
 app.use((req, res) => {
     res.status(404).json({ route: req.path, error: 'Route non trouvée' });
