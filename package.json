@@ -1,5 +1,5 @@
 {
-  "name": "silvernote",
+  "name": "silvernote_back",
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
@@ -7,6 +7,10 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "build": "npx tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SilverCore-Git/silvernote.git"
   },
   "keywords": [],
   "author": "",
@@ -25,5 +29,9 @@
     "@types/express": "^5.0.3",
     "@types/morgan": "^1.9.10",
     "@types/node": "^22.15.30"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/SilverCore-Git/silvernote/issues"
+  },
+  "homepage": "https://github.com/SilverCore-Git/silvernote#readme"
 }

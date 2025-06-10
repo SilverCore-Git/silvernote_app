@@ -15,16 +15,14 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/', express.static(path.join(__dirname, 'public', 'index.html')));
+
 // Import des routes
 import api from './routes/api';
 import user from './routes/user';
 
 app.use('/api', api);
 app.use('/user', user);
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('/');
-});
 
 // Middleware 404
 app.use((req: Request, res: Response) => {
