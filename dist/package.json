@@ -5,8 +5,8 @@
     "main": "app.js",
     "scripts": {
         "start": "pm2 start app.js --name 'silvernote'",
-        "stop": "pm2 stop <silvernote>",
-        "log": "pm2 logs <silvernote>",
+        "stop": "pm2 stop silvernote",
+        "log": "pm2 logs silvernote",
         "dev": "nodemon app.js",
         "build": "npx tsc"
     },
