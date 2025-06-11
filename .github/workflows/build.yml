@@ -67,24 +67,26 @@ jobs:
 
       - name: Get version from package.json
         id: get_version
-        run: echo "VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_ENV
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Rename target files
         run: |
           mkdir release
 
           # Linux .rpm and .deb
-          mv linux/rpm/x64/silvernote-${{ steps.get_version.outputs.VERSION }}-1.x86_64.rpm release/silvernote-linux-setup.rpm
-          mv linux/deb/x64/silvernote_${{ steps.get_version.outputs.VERSION }}_amd64.deb release/silvernote-linux-setup.deb
+          mv linux/rpm/x64/silvernote-${{ env.VERSION }}-1.x86_64.rpm release/silvernote-linux-setup.rpm
+          mv linux/deb/x64/silvernote_${{ env.VERSION }}_amd64.deb release/silvernote-linux-setup.deb
 
           # Windows .exe
-          mv windows/squirrel.windows/x64/"silvernote-${{ steps.get_version.outputs.VERSION }} Setup.exe" release/silvernote-win-setup.exe
+          mv windows/squirrel.windows/x64/"silvernote-${{ env.VERSION }} Setup.exe" release/silvernote-win-setup.exe
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ steps.get_version.outputs.VERSION }}
-          name: Silvernote (${{ steps.get_version.outputs.VERSION }})
+          tag_name: v${{ env.VERSION }}
+          name: Silvernote (${{ env.VERSION }})
           body: |
             Nouvelle version de Silvernote.
         env:
@@ -93,7 +95,7 @@ jobs:
       - name: Upload release assets
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          tag_name: v${{ env.VERSION }}
           files: |
             release/silvernote-linux-setup.rpm
             release/silvernote-linux-setup.deb
