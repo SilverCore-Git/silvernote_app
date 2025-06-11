@@ -1,6 +1,6 @@
 {
-  "name": "mon-app",
-  "productName": "mon-app",
+  "name": "silvernote_desktop",
+  "productName": "silvernote",
   "version": "0.0.0",
   "description": "My Electron application description",
   "main": "src/index.js",
