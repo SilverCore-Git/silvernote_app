@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 
 import Home from './views/Home.vue';
 import Edit from './views/Edit.vue';
@@ -36,8 +36,12 @@ const routes = [
   }
 ]
 
+const isFileProtocol = window.location.protocol === 'file:'
+
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: isFileProtocol
+    ? createWebHashHistory(import.meta.env.BASE_URL)  // pour Electron local
+    : createWebHistory(import.meta.env.BASE_URL),    // pour Web/Express
   routes,
 });
 
