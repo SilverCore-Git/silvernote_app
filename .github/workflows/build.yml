@@ -18,7 +18,7 @@ jobs:
           node-version: '20'
       - run: npm install
       - run: npm run make
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: electron-build-linux
           path: out/make/
@@ -32,7 +32,7 @@ jobs:
           node-version: '20'
       - run: npm install
       - run: npm run make
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: electron-build-windows
           path: out/make/
@@ -46,7 +46,7 @@ jobs:
           node-version: '20'
       - run: npm install
       - run: npm run make
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: electron-build-macos
           path: out/make/
