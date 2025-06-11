@@ -12,6 +12,13 @@
     "publish": "electron-forge publish",
     "maj:front": "node scripts/maj_front"
   },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "executableName": "silvernote"
+      }
+    }
+  }, 
   "keywords": [],
   "author": {
     "name": "MisterPapaye",
