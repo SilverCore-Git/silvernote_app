@@ -1,9 +1,9 @@
-name: Build Web App
+name: Build electron App
 
 on:
   push:
     branches:
-      - main
+      - front_desktop
 
 permissions:
   contents: write
@@ -25,33 +25,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build web app
-        run: npm run build
+      - name: Build electron app
+        run: npm run make
 
-      - name: Get version from package.json
-        id: get_version
-        run: |
-          echo "VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
-
-      - name: Archive build output
-        run: |
-          mkdir release
-          zip -r release/silvernote-front-${{ steps.get_version.outputs.VERSION }}.zip dist/
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ steps.get_version.outputs.VERSION }}
-          name: Silvernote (${{ steps.get_version.outputs.VERSION }})
-          body: |
-            Nouvelle version de Silvernote.
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload zipped build to Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ steps.get_version.outputs.VERSION }}
-          files: release/silvernote-front-${{ steps.get_version.outputs.VERSION }}.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
