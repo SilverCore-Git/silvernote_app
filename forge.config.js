@@ -33,14 +33,14 @@ module.exports = {
       name: '@electron-forge/maker-dmg',
       platforms: ['darwin'],
       config: {
-        background: 'assets/dmg-background.png', // image de fond DMG (optionnel)
-        icon: 'assets/icon.icns',                 // icône macOS .icns
+        background: '', // image de fond DMG (optionnel) png
+        icon: 'resources/icons/mac/icon.icns',                 // icône macOS .icns
         format: 'ULFO',                           // format DMG (ULFO par défaut, plus rapide)
         overwrite: true,                         // écrase le fichier dmg existant
         debug: false,                           // affiche des logs de debug
         window: { width: 600, height: 400 },    // taille fenêtre au montage du dmg
         contents: [
-          { x: 130, y: 220, type: 'file', path: 'path/to/app.app' },   // emplacement de l’app dans dmg
+          //{ x: 130, y: 220, type: 'file', path: 'path/to/app.app' },   // emplacement de l’app dans dmg
           { x: 410, y: 220, type: 'link', path: '/Applications' },     // raccourci vers Applications
         ],
       },
@@ -51,13 +51,13 @@ module.exports = {
       name: '@electron-forge/maker-deb',
       config: {
         options: {
-          maintainer: 'Ton Nom <ton.email@example.com>',  // mainteneur du package
-          homepage: 'https://tonsite.com',                 // site web de ton projet
-          icon: 'assets/icon.png',                          // icône PNG pour Debian
+          maintainer: 'SilverCore <contact@silvercore.fr>',  // mainteneur du package
+          homepage: 'https://www.silvercore.fr',                 // site web de ton projet
+          icon: 'resources/png/256x256.png',                          // icône PNG pour Debian
           categories: ['Utility'],                          // catégorie(s) dans menu
           depends: ['libc6', 'libgcc1', 'libstdc++6'],     // dépendances Debian
           priority: 'optional',
-          description: 'Description courte de ton app',   // description dans le package
+          description: 'Silvernote est une app de prise de note simple, intuitive et hergonomique. Projet open source et francais.',   // description dans le package
           packageName: 'silvernote',                        // nom du package Debian
           productName: 'Silvernote',                        // nom affiché
         },
@@ -69,14 +69,14 @@ module.exports = {
       name: '@electron-forge/maker-rpm',
       config: {
         options: {
-          maintainer: 'Ton Nom <ton.email@example.com>',
-          homepage: 'https://tonsite.com',
-          icon: 'assets/icon.png',
+          maintainer: 'SilverCore <contact@silvercore.fr>',
+          homepage: 'https://www.silvercore.fr',
+          icon: 'resources/png/256x256.png',
           categories: ['Utility'],
           requires: ['glibc', 'libgcc', 'libstdc++'],
-          description: 'Description courte de ton app',
+          description: 'Silvernote est une app de prise de note simple, intuitive et hergonomique. Projet open source et francais.',
           packageName: 'silvernote',
-          productName: 'Silvernote',
+          productName: 'Silvernote', 
         },
       },
     },
