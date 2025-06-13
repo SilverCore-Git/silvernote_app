@@ -28,8 +28,7 @@
             class=" absolute top-7 right-0 
                     bg-[#FFF8F0] border-[#3B3B3B] 
                     border-t-0 border-1
-                    p-2 pr-3 pl-3 
-                    min-w-full min-h-full z-30
+                    p-2 pr-3 pl-3 z-30
                   "
             style="border-radius: 10px; border-top-left-radius: 20px; border-top-right-radius: 0px;"
             v-if="dropdown"

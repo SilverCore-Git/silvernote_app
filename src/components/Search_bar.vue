@@ -1,9 +1,13 @@
 <template>
 
   <div
-    class="note-card bg-[#FFF8F0] text-[#3B3B3B] relative ml-4 mr-4 w-full
-           flex flex-col pl-4 pt-2.5 pb-2.5 border border-[#3B3B3B] z-30"
+    :class="desktop && filteredNotes.length && searchQuery != '' 
+            ? 'note-card bg-[#FFF8F0] text-[#3B3B3B] absolute right-4 left-4  flex flex-col pl-4 pt-2.5 pb-2.5 border border-[#3B3B3B] z-30'
+            : 'note-card bg-[#FFF8F0] text-[#3B3B3B] relative lg:ml-0 ml-4 mr-4 w-full flex flex-col pl-4 pt-2.5 pb-2.5 border border-[#3B3B3B] z-30'"
     style="box-shadow: 0 0 15px #3636364f; border-radius: 15px;"
+    :style="desktop && filteredNotes.length && searchQuery != '' 
+            ? { top: `calc(4.5rem + ${props.pt})` } 
+            : ''"
   >
 
     <div class="flex flex-row items-center">
@@ -22,7 +26,7 @@
     </div>
 
     <div 
-        v-if="filteredNotes.length && searchQuery != ''" 
+        v-if="filteredNotes.length && searchQuery != '' && !desktop" 
         class="mt-4 space-y-2 w-[100%] relative overflow-x-auto pr-4" 
         :style="{ maxHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)`, minHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)` }"
     >
@@ -50,6 +54,47 @@
         Aucune note trouvée.
     </div>
 
+  
+    <ul 
+        v-else-if="filteredNotes.length && searchQuery != '' && desktop" 
+        class="mt-4 space-y-2 w-full relative overflow-x-auto gap-4
+              pr-4 grid lg:grid-cols-[23%_23%_23%_23%] xl:grid-cols-[18%_18%_18%_18%_18%] " 
+        :style="{ maxHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)`,  minHeight: `calc(80vh - 3.5rem - ${props.pt})` }"
+    >
+
+      <li 
+        v-for="note in filteredNotes" 
+        :key="note.id"
+        @click="router.push(`/edit?id=${note.id}&pinned=${note.pinned}`)"
+        class="bg-white p-3 rounded-[15px] shadow cursor-pointer relative h-full"
+      >
+
+          <h3 
+              class="font-semibold"
+              v-html="highlightMatch(note.title, searchQuery)"
+              :class="hitbox ? 'bg-blue-200' : ''"
+          ></h3>
+          <p 
+              class="text-sm text-gray-600 overflow-hidden mb-5"
+              v-html="highlightMatch(note.content, searchQuery)"
+              :class="hitbox ? 'bg-blue-500' : ''"
+          ></p>
+
+          <div class="absolute left-1 bottom-1 w-[60%] whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
+            <div 
+                v-for="(tag) in all_tags.filter(tag => note.tags.includes(tag.id))" 
+                :key="tag.id" 
+                class="ml-2 underline" 
+                :class="hitbox ? 'bg-teal-500' : ''"
+                v-html="highlightMatch(tag.name, searchQuery)"
+            ></div>
+          </div>
+
+          <label class="absolute right-2.5 bottom-1.5 z-10" :class="hitbox ? 'bg-teal-500' : ''">{{ note.date }}</label>
+          
+        </li>
+
+      </ul>
 
   </div>
 
@@ -63,14 +108,15 @@ import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import db from '../assets/ts/database';
-import type { Note } from '../assets/ts/type';
+import type { Note, Tag } from '../assets/ts/type';
 import { hitbox as if_hitbox } from '../assets/ts/settings';
 
 let hitbox: boolean;
 onMounted(async () => { hitbox = await if_hitbox() })
 
 const props = defineProps<{
-  pt?: string
+  pt?: string;
+  desktop?: boolean;
 }>()
 
 const search_input = ref<HTMLInputElement | null>(null);
@@ -78,6 +124,11 @@ const search_input = ref<HTMLInputElement | null>(null);
 const router = useRouter();
 const searchQuery = ref('');
 const list_notes = ref<Note[]>([]);
+const all_tags = ref<Tag[]>([]);
+
+onMounted(async () => {
+  all_tags.value = await db.getAll('tags');
+})
 
 const init_notes = async () => {
     list_notes.value = await db.getAll('notes');
@@ -85,13 +136,22 @@ const init_notes = async () => {
 }
 
 const filteredNotes = computed(() =>
-  list_notes.value.filter((note) =>
-    [note.title, note.content, ...(note.tags || [])]
+
+  list_notes.value.filter(note => {
+    const tagNames = all_tags.value
+      .filter(tag => note.tags.includes(tag.id))
+      .map(tag => tag.name)
+      .join(' ');
+
+    const searchableText = [note.title, note.content, tagNames, ...(note.tags || [])]
       .join(' ')
-      .toLowerCase()
-      .includes(searchQuery.value.toLowerCase())
-  )
+      .toLowerCase();
+
+    return searchableText.includes(searchQuery.value.toLowerCase());
+  })
+
 );
+
 
 const highlightMatch = (text: string, query: string) => {
   if (!query) return text;

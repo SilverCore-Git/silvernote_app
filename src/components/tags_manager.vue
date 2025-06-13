@@ -18,7 +18,7 @@
                     <h1 class="text-2xl font-bold" style="font-family: 'Montserrat'; letter-spacing: 2px;">Gérer les dossiers</h1>
                     <span>Sélectionnez les dossiers contenant la note</span>
 
-                    <ul class="flex flex-col items-center gap-5 w-full h-[60vh] overflow-auto pr-20 pl-20 mt-10">
+                    <ul class="flex flex-col items-center gap-5 w-full max-h-[60vh] overflow-auto pr-20 pl-20 mt-10">
 
                         <li
                             class="w-full"
@@ -28,7 +28,7 @@
 
                             <label class="flex flex-row justify-between items-center" :for="`switch-${tag.id}`">
 
-                                <span class="text-lg">{{ tag.name }}</span>
+                                <span class="text-lg max-w-[60%]">{{ tag.name }}</span>
 
                                 <div class="switch flex flex-row">
                                     

@@ -77,7 +77,7 @@
 
     <div class="Search_bar flex flex-col lg:flex-row items-center mr-4 ml-4">
 
-        <Search_bar class="mb-4 lg:mb-0 lg:min-w-[50%] " pt="env(safe-area-inset-top)" />
+        <Search_bar class="mb-4 lg:mb-0 lg:min-w-[50%] " :desktop="isLargeScreen" pt="env(safe-area-inset-top)" />
 
         <ul 
             v-if="all_tags && all_tags.length" 
@@ -290,7 +290,7 @@
 <script setup lang='ts'>
 
     import { useRouter } from 'vue-router';
-    import { onMounted, ref, watch } from 'vue';
+    import { onMounted, ref, watch, onUnmounted } from 'vue';
 
     import db from '../assets/ts/database';
     import back from '../assets/ts/backend_link';
@@ -317,7 +317,6 @@
 
     };
 
-
     const tip: boolean = false;
     const tag_name = ref<string>('');
     const if_danger_card: boolean = back.info_message() ? true : false;
@@ -331,7 +330,19 @@
     const if_open_create_tag = ref<boolean>(false);
     const inputRef = ref<HTMLInputElement | null>(null);
 
+    const isLargeScreen = ref(window.innerWidth >= 1024)
 
+    const updateSize = () => {
+        isLargeScreen.value = window.innerWidth >= 1024;
+    }
+
+    onMounted(() => {
+        window.addEventListener('resize', updateSize);
+    })
+
+    onUnmounted(() => {
+        window.removeEventListener('resize', updateSize);
+    })
 
     const add_tag_filter = async (id: number): Promise<void> => {
 
