@@ -119,7 +119,8 @@ onMounted(async () => {
                                   tags: []
                               });
 
-    note.value.id = Note.id;
+    console.log(Note.id)
+    note.value.id = Note.id || -1;
     router.push({ 
       query: { 
         ...route.query,

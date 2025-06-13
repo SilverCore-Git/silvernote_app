@@ -1,11 +1,9 @@
 <template>
 
-
-
-    <div 
-      :class="active ? 'p-0.5 text-center border-3 border-[#F28C28] cursor-pointer' 
-                     : 'p-1 text-center border-1 cursor-pointer'" 
-      class="rounded-[15px]"
+    <div
+      :class="active ? 'p-0.5 lg:p-1.5 text-center border-3 border-[#F28C28] cursor-pointer' 
+                     : 'p-1 lg:p-2 text-center border-1 cursor-pointer'" 
+      class="rounded-[15px] text-mb lg:rounded-[15px]"
     >
         <span class="w-[90%]">{{ name }}</span>
     </div>

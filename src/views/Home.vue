@@ -5,12 +5,11 @@
         style="
             font-family: 'Montserrat', sans-serif; 
             box-shadow: 0 0 15px #36363681;
-            height: calc(3.5rem + env(safe-area-inset-top));
             padding-top: calc(env(safe-area-inset-top)/2);
         " 
         class="
-                mb-5 top-0 left-0 w-full 
-                text-2xl font-bold
+                top-0 left-0 w-full 
+                text-2xl  font-bold
                 bg-[#F28C28] text-white
                 flex items-center justify-center fixed z-50
             "
@@ -21,7 +20,11 @@
             <h1 class="absolute left-4" :class="hitbox ? 'bg-red-600' : ''">SilverNote</h1>
 
             <div 
-                class="reload-svg absolute right-24" 
+                class="reload-svg absolute 
+                        right-25 
+                        w-[24px] 
+                        h-[24px] 
+                    " 
                 :class="[
                     { rotating: isRotating },
                     hitbox ? 'bg-teal-300' : ''
@@ -30,7 +33,11 @@
             ></div>
 
             <div 
-                class="saving-svg absolute right-14" 
+                class="saving-svg absolute
+                        right-14 
+                        w-[24px] 
+                        h-[24px] 
+                    " 
                 :class="[
                     { 'jump': isJumping },
                     hitbox ? 'bg-teal-300' : '' 
@@ -40,7 +47,11 @@
 
             <div
                 :class="[ hitbox ? 'bg-teal-300' : '' ]"
-                class="ellipsis-svg absolute right-4" 
+                class="ellipsis-svg absolute
+                        right-4
+                        w-[30px]
+                        h-[30px]
+                    " 
                 @click="if_open_dropdown = !if_open_dropdown"
             ></div>
 
@@ -48,7 +59,7 @@
                 <div
                     v-if="if_open_dropdown"
                     class="dropdown absolute right-0 bg-[#F28C28] 
-                        z-50 min-w-[150px] w-[40%] flex flex-col justify-center items-center p-3"
+                        z-50 min-w-[150px] w-[40%] md:w-[20%] lg:w-[10%] flex flex-col justify-center items-center p-3"
                     :style=" { top: `calc(3.5rem + env(safe-area-inset-top))` } "
                 >
                     <ul class="text-xl">
@@ -64,73 +75,77 @@
 
     </header>
 
-    <Search_bar class="mb-4" pt="env(safe-area-inset-top)" :style=" { marginTop: `calc(4.5rem + env(safe-area-inset-top))` } " />
+    <div class="Search_bar flex flex-col lg:flex-row items-center mr-4 ml-4">
 
-    <ul 
-        v-if="all_tags && all_tags.length" 
-        class="flex flex-row mr-4 ml-4 gap-1.5 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
-        :class="hitbox ? 'bg-amber-400' : ''"
-    >
+        <Search_bar class="mb-4 lg:mb-0 lg:min-w-[50%] " pt="env(safe-area-inset-top)" />
 
-        <li 
-            v-for="(tag, index) in all_tags"
-            :key="index" 
+        <ul 
+            v-if="all_tags && all_tags.length" 
+            class="flex flex-row gap-1.5 whitespace-nowrap overflow-x-auto text-ellipsis w-full scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent"
+            :class="[hitbox ? 'bg-amber-400' : '', 'lg:scrollbar-thin', 'scrollbar-thumb-rounded']"
         >
 
-            <Tags_item 
-                @click="add_tag_filter(tag.id)" 
-                :id="tag.id" :name="tag.name" 
-                :tag="tag.name" 
-                :active="tag.active"
-                class="min-w-[70px]"
-            />
+            <li 
+                v-for="(tag, index) in all_tags"
+                :key="index" 
+            >
 
-        </li>
-        
-        <li 
-            class=" min-w-[70px]"
-        >
+                <Tags_item 
+                    @click="add_tag_filter(tag.id)" 
+                    :id="tag.id" :name="tag.name" 
+                    :tag="tag.name" 
+                    :active="tag.active"
+                    class="min-w-[70px]"
+                />
 
-            <Tags_item 
-                @click="if_open_create_tag = true" 
-                :id="null"
-                name="+"
-                :tag="''"
-                :active="false"
-            />
+            </li>
+            
+            <li 
+                class=" min-w-[70px]"
+            >
 
-        </li>
+                <Tags_item 
+                    @click="if_open_create_tag = true" 
+                    :id="null"
+                    name="+"
+                    :tag="''"
+                    :active="false"
+                />
 
-    </ul>
+            </li>
+
+        </ul>
     
-    <ul 
-        v-else-if="all_tags" 
-        class="flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
-    >
-        <li 
-            class=" w-[20%] min-w-[70px]"
+        <ul 
+            v-else-if="all_tags" 
+            class="flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
         >
+            <li 
+                class=" w-[20%] min-w-[70px]"
+            >
 
-            <Tags_item 
-                @click="if_open_create_tag = true; inputRef?.focus()"
-                :id="null"
-                name="+"
-                :tag="''"
-                :active="false"
-            />
+                <Tags_item 
+                    @click="if_open_create_tag = true; inputRef?.focus()"
+                    :id="null"
+                    name="+"
+                    :tag="''"
+                    :active="false"
+                />
 
-        </li>
-    </ul>
+            </li>
+        </ul>
 
-    <ul 
-        v-else 
-        class="flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
-    >
-        <Tags_item_loader />
-        <Tags_item_loader />
-        <Tags_item_loader />
-        <Tags_item_loader />
-    </ul>
+        <ul 
+            v-else 
+            class="flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
+        >
+            <Tags_item_loader />
+            <Tags_item_loader />
+            <Tags_item_loader />
+            <Tags_item_loader />
+        </ul>
+
+    </div>
 
     <div @click="if_open_dropdown=false" class=" overflow-x-hidden mb-30" :class="hitbox ? 'bg-rose-600' : ''">
 
@@ -152,11 +167,27 @@
             :content="Danger_card_props?.message" 
         />
 
-        <div class="overflow-y-auto mt-4 min-h-[60vh]" :class="hitbox ? 'bg-purple-600' : ''">
+        <div 
+            class="overflow-y-auto mt-4 min-h-[60vh]" 
+            :class="hitbox ? 'bg-purple-600' : ''"
+        >
 
-            <ul>
+            <ul 
+                class="grid grid-cols-1 
+                        md:grid-cols-[33%_33%_33%] 
+                        lg:grid-cols-[25%_25%_25%_25%] 
+                        xl:grid-cols-[20%_20%_20%_20%_20%] 
+                        md:mr-2 md:ml-2
+                       "
+            >
 
-                <li v-if="list_notes && list_notes.length" class="flex flex-col" v-for="(note, index) in list_notes" :key="index">
+                <li 
+                    v-if="list_notes && list_notes.length" 
+                    class=""
+                    v-for="(note, index) in list_notes" 
+                    :key="index"
+                >
+
                     <Note_card 
                         :id="note.id"
                         :pinned="note.pinned"
@@ -166,6 +197,7 @@
                         :tags="note.tags.map(tag => Number(tag))"
                         :simply_edit="note.simply_edit"
                     />
+
                 </li>
 
                 <li v-else-if="list_notes && list_notes.length == 0" class="flex flex-col">
@@ -212,7 +244,13 @@
             <button 
                 style="box-shadow: 0 0 15px #3636364f;" 
                 @click="create_new_note" 
-                class="add-note-btn cursor-pointer flex items-center justify-center absolute right-4 left-4 bottom-4"
+                class="add-note-btn cursor-pointer 
+                        flex items-center justify-center 
+                        absolute right-4 left-4 bottom-4
+                        md:left-1/4 md:right-1/4
+                        lg:left-1/3.5 lg:right-1/3.5
+                        xl:left-1/3 xl:right-1/3
+                      "
             ><div class="add-note-svg"></div></button>
         </div>
 
@@ -392,9 +430,25 @@
 
 <style scoped>
 
+    header {
+        height: calc(3.5rem + env(safe-area-inset-top));
+
+        @media (min-width: 1280px) {
+            height: calc(4rem + env(safe-area-inset-top));
+        }
+    }
+
+    .Search_bar {
+
+        margin-top: calc(4.5rem + env(safe-area-inset-top));
+
+        @media (min-width: 1280px) {
+            margin-top: calc(5rem + env(safe-area-inset-top));
+        }
+        
+    }
+    
     .gear-svg {
-        width: 30px;
-        height: 30px;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
@@ -403,18 +457,8 @@
         transition: all 0.3s ease;
     }
 
-    .gear-svg:hover {
-        transform: rotate(90deg);
-    }
-
-    .gear-svg:active {
-        transform: rotate(190deg);
-    }
-
     .ellipsis-svg {
         cursor: pointer;
-        width: 30px;
-        height: 30px;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
@@ -425,8 +469,6 @@
 
     .saving-svg {
         cursor: pointer;
-        width: 24px;
-        height: 24px;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
@@ -437,8 +479,6 @@
         
     .reload-svg {
         cursor: pointer;
-        width: 24px;
-        height: 24px;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;

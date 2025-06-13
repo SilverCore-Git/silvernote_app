@@ -1,7 +1,7 @@
 <template>
 
   <div
-    class="note-card bg-[#FFF8F0] text-[#3B3B3B] relative mr-4 ml-4
+    class="note-card bg-[#FFF8F0] text-[#3B3B3B] relative ml-4 mr-4 w-full
            flex flex-col pl-4 pt-2.5 pb-2.5 border border-[#3B3B3B] z-30"
     style="box-shadow: 0 0 15px #3636364f; border-radius: 15px;"
   >

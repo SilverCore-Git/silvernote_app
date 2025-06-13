@@ -1,10 +1,12 @@
 <template>
 
   <div
-    class="note-card bg-[#FFF8F0] mr-4 ml-4 text-[#3B3B3B] p-3 border-[#3B3B3B] border-2 relative cursor-pointer mb-3"
+    class="note-card bg-[#FFF8F0] text-[#3B3B3B] p-3 border-[#3B3B3B]
+          mr-4 ml-4 md:mr-2 md:ml-2 border-2 relative cursor-pointer mb-4 md:h-[28vh]"
     style="border-radius: 15px;"
     @click="open_note"
   > 
+  
     <p class="font-bold text-xl w-[80%] whitespace-nowrap overflow-hidden text-ellipsis" :class="hitbox ? 'bg-teal-500' : ''">{{ utils.htmlToText(title) }}</p>
 
     <div class="absolute right-0 top-3 h-full flex flex-row-reverse gap-1.5">
@@ -66,7 +68,7 @@
     </div>
 
     <p 
-      class="text-mb mb-3 w-[65%] whitespace-nowrap overflow-hidden text-ellipsis"
+      class="text-mb mb-3 w-[65%] whitespace-nowrap md:whitespace-normal overflow-hidden text-ellipsis"
       :class="hitbox ? 'bg-blue-500' : ''"
     >
       {{ utils.htmlToText(content) }}
