@@ -5,7 +5,7 @@ module.exports = {
 
   packagerConfig: {
     asar: true,
-    icon: 'assets/icon', // mettre .ico .png .icns
+    icon: 'resources/icons', // npm run icon
   },
   rebuildConfig: {},
 
@@ -19,8 +19,8 @@ module.exports = {
         authors: 'SilverCore',
         exe: 'silvernote.exe',
         setupExe: 'silvernote-setup.exe',
-        setupIcon: 'assets/icon.ico',
-        loadingGif: 'assets/loading.gif',   // gif animé affiché pendant l'installation (optionnel)
+        setupIcon: 'resources/icons/win/icon.ico',
+        loadingGif: 'resources/loading.gif',   // gif animé affiché pendant l'installation (optionnel)
         noMsi: true,                       // désactive la génération du MSI
         remoteReleases: null,              // URL des mises à jour (optionnel)
         certificateFile: '',               // fichier certificat pour signer l'installeur (optionnel)

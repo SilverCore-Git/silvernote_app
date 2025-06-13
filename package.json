@@ -11,7 +11,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "maj:front": "node scripts/maj_front",
-    "icon": "npx electron-icon-maker --input=recources/icon.png --output=recources"
+    "icon": "npx electron-icon-maker --input=resources/icon.png --output=resources"
   },
   "config": {
     "forge": {
