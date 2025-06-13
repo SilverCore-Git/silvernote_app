@@ -2,26 +2,83 @@ const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
 module.exports = {
+
   packagerConfig: {
     asar: true,
+    icon: 'assets/icon', // mettre .ico .png .icns
   },
   rebuildConfig: {},
+
   makers: [
+
+    // Windows Squirrel installer
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        name: 'silvernote',
+        authors: 'SilverCore',
+        exe: 'silvernote.exe',
+        setupExe: 'silvernote-setup.exe',
+        setupIcon: 'assets/icon.ico',
+        loadingGif: 'assets/loading.gif',   // gif animé affiché pendant l'installation (optionnel)
+        noMsi: true,                       // désactive la génération du MSI
+        remoteReleases: null,              // URL des mises à jour (optionnel)
+        certificateFile: '',               // fichier certificat pour signer l'installeur (optionnel)
+        certificatePassword: '',           // mot de passe certificat (optionnel)
+      },
     },
+
+    // macOS DMG installer
     {
-      name: '@electron-forge/maker-zip',
+      name: '@electron-forge/maker-dmg',
       platforms: ['darwin'],
+      config: {
+        background: 'assets/dmg-background.png', // image de fond DMG (optionnel)
+        icon: 'assets/icon.icns',                 // icône macOS .icns
+        format: 'ULFO',                           // format DMG (ULFO par défaut, plus rapide)
+        overwrite: true,                         // écrase le fichier dmg existant
+        debug: false,                           // affiche des logs de debug
+        window: { width: 600, height: 400 },    // taille fenêtre au montage du dmg
+        contents: [
+          { x: 130, y: 220, type: 'file', path: 'path/to/app.app' },   // emplacement de l’app dans dmg
+          { x: 410, y: 220, type: 'link', path: '/Applications' },     // raccourci vers Applications
+        ],
+      },
     },
+
+    // Debian package
     {
       name: '@electron-forge/maker-deb',
-      config: {},
+      config: {
+        options: {
+          maintainer: 'Ton Nom <ton.email@example.com>',  // mainteneur du package
+          homepage: 'https://tonsite.com',                 // site web de ton projet
+          icon: 'assets/icon.png',                          // icône PNG pour Debian
+          categories: ['Utility'],                          // catégorie(s) dans menu
+          depends: ['libc6', 'libgcc1', 'libstdc++6'],     // dépendances Debian
+          priority: 'optional',
+          description: 'Description courte de ton app',   // description dans le package
+          packageName: 'silvernote',                        // nom du package Debian
+          productName: 'Silvernote',                        // nom affiché
+        },
+      },
     },
+
+    // RPM package => redhat linux
     {
       name: '@electron-forge/maker-rpm',
-      config: {},
+      config: {
+        options: {
+          maintainer: 'Ton Nom <ton.email@example.com>',
+          homepage: 'https://tonsite.com',
+          icon: 'assets/icon.png',
+          categories: ['Utility'],
+          requires: ['glibc', 'libgcc', 'libstdc++'],
+          description: 'Description courte de ton app',
+          packageName: 'silvernote',
+          productName: 'Silvernote',
+        },
+      },
     },
   ],
   plugins: [
