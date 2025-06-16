@@ -13,31 +13,6 @@
     "maj:front": "node scripts/maj_front",
     "icon": "npx electron-icon-maker --input=resources/icon.png --output=resources"
   },
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "executableName": "silvernote"
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-deb",
-          "platforms": ["linux"]
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "platforms": ["linux"]
-        },
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "platforms": ["win32"]
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": ["darwin"]
-        }
-      ]
-    }
-  },
   "keywords": [],
   "author": {
     "name": "MisterPapaye",
@@ -58,6 +33,6 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.8.1",
     "@electron-forge/plugin-fuses": "^7.8.1",
     "@electron/fuses": "^1.8.0",
-    "electron": "npm:@electron/fuses-electron@36.4.0"
+    "electron": "36.4.0"
   }
 }
