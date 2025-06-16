@@ -23,8 +23,8 @@ module.exports = {
         loadingGif: 'resources/loading.gif',   // gif animé affiché pendant l'installation (optionnel)
         noMsi: true,                       // désactive la génération du MSI
         remoteReleases: null,              // URL des mises à jour (optionnel)
-        certificateFile: '',               // fichier certificat pour signer l'installeur (optionnel)
-        certificatePassword: '',           // mot de passe certificat (optionnel)
+        //certificateFile: '',               // fichier certificat pour signer l'installeur (optionnel)
+        //certificatePassword: '',           // mot de passe certificat (optionnel)
       },
     },
 
@@ -33,7 +33,7 @@ module.exports = {
       name: '@electron-forge/maker-dmg',
       platforms: ['darwin'],
       config: {
-        background: '', // image de fond DMG (optionnel) png
+        //background: '', // image de fond DMG (optionnel) png
         icon: 'resources/icons/mac/icon.icns',                 // icône macOS .icns
         format: 'ULFO',                           // format DMG (ULFO par défaut, plus rapide)
         overwrite: true,                         // écrase le fichier dmg existant
