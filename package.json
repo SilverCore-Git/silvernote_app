@@ -21,7 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1",
-    "unzutilipper": "^0.12.3",
+    "unzipper": "^0.12.3",
     "util": "^0.12.5"
   },
   "devDependencies": {
