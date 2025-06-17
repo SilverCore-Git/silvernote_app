@@ -19,11 +19,11 @@ module.exports = {
         exe: 'silvernote.exe',
         setupExe: 'silvernote-setup.exe',
         setupIcon: 'resources/icons/win/icon.ico',
-        loadingGif: 'resources/loading.gif',   // gif animé affiché pendant l'installation (optionnel)
+        loadingGif: 'resources/loading.gif',   // gif animé affiché pendant l'installation
         noMsi: true,                       // désactive la génération du MSI
-        remoteReleases: null,              // URL des mises à jour (optionnel)
-        //certificateFile: '',               // fichier certificat pour signer l'installeur (optionnel)
-        //certificatePassword: '',           // mot de passe certificat (optionnel)
+        remoteReleases: null,              // URL des mises à jour
+        //certificateFile: '',               // fichier certificat pour signer l'installeur
+        //certificatePassword: '',           // mot de passe certificat
       },
     },
 
@@ -32,7 +32,7 @@ module.exports = {
       name: '@electron-forge/maker-dmg',
       platforms: ['darwin'],
       config: {
-        //background: '', // image de fond DMG (optionnel) png
+        //background: '', // image de fond DMG png
         icon: 'resources/icons/mac/icon.icns',                 // icône macOS .icns
         format: 'ULFO',                           // format DMG (ULFO par défaut, plus rapide)
         overwrite: true,                         // écrase le fichier dmg existant
