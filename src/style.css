@@ -8,7 +8,7 @@
 
 body {
     background-color: var(--bg);
-    color: #3B3B3B;
+    color: var(--text);
     overflow-x: hidden;
     font-family: 'Roboto';
 }

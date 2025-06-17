@@ -1,7 +1,7 @@
 <template>
 
   <div
-    class="note-card bg-[var(--bg2)] text-[#3B3B3B] p-3 border-[#3B3B3B]
+    class="note-card bg-[var(--bg2)] text-[var(--text)] p-3 border-[var(--text)]
           mr-4 ml-4 md:mr-2 md:ml-2 border-2 relative cursor-pointer mb-4 md:h-[28vh]"
     style="border-radius: 15px;"
     @click="open_note"
@@ -26,7 +26,7 @@
  
           <div 
             class=" absolute top-7 right-0 
-                    bg-[#FFF8F0] border-[#3B3B3B] 
+                    bg-[#FFF8F0] border-[var(--text)] 
                     border-t-0 border-1
                     p-2 pr-3 pl-3 z-30
                   "

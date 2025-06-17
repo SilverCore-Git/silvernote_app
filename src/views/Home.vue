@@ -10,7 +10,7 @@
         class="
                 top-0 left-0 w-full 
                 text-2xl  font-bold
-                bg-[#F28C28] text-white
+                bg-[#F28C28]
                 flex items-center justify-center fixed z-50
             "
     >
@@ -217,7 +217,7 @@
                 <li v-else-if="list_notes && list_notes.length == 0" class="flex flex-col">
 
                     <div 
-                        class="note-card bg-[var(--bg2)] w-[100%] mr-4 ml-4 text-[#3B3B3B] p-3 border-[#3B3B3B] border-2"
+                        class="note-card bg-[var(--bg2)] w-[100%] mr-4 ml-4 p-3 border-2"
                         style="border-radius: 15px;"
                     >
 

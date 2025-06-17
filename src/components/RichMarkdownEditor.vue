@@ -10,7 +10,7 @@
       class="
               absolute left-2 right-2 bottom-0
               flex flex-row gap-1 justify-between items-center 
-              bg-[#FFF8F0] border-t-1 border-[#3B3B3B] 
+              bg-[#FFF8F0] border-t-1 border-[var(--text)] 
             "
     >
 
@@ -252,7 +252,6 @@ onBeforeUnmount(() => {
   outline: none;
   box-shadow: none;
   font-family: system-ui, sans-serif;
-  background-color: #FFF8F0;
 }
 
 .ProseMirror p.is-empty::before {

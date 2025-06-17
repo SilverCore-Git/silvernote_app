@@ -2,14 +2,19 @@
 :root {
     --bg: #FFFF;
     --bg2: #FFFF;
+    --text: #FFFF;
+    --btn: #F28C28;
 }
 
 body.dark {
-    --bg: #1E1A16;
-    --bg2: #1E1A16;
+  --bg:  #2A2420;
+  --bg2: #3A322D;
+  --text: #FFF8F0;
 }
+
 
 body.light {
     --bg: #FFF8F0;
     --bg2: #fff5e8;
+    --text: #3B3B3B;
 }
