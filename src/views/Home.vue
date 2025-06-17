@@ -217,7 +217,7 @@
                 <li v-else-if="list_notes && list_notes.length == 0" class="flex flex-col">
 
                     <div 
-                        class="note-card bg-[var(--bg2)] w-[100%] mr-4 ml-4 p-3 border-2"
+                        class="note-card bg-[var(--bg2)] mr-4 ml-4 p-3 border-2"
                         style="border-radius: 15px;"
                     >
 
@@ -329,7 +329,6 @@
     import Search_bar from '../components/Search_bar.vue';
     import Tags_item from '../components/Tags_item.vue';
     import Tags_item_loader from '../components/Tags_item_loader.vue';
-import { all } from 'mathjs';
     
     const router = useRouter();
 
@@ -473,11 +472,13 @@ import { all } from 'mathjs';
 
     }, { deep: true });
 
-    watch(all_tags, async () => {
+    watch(() => all_tags.value?.map(tag => tag.id), async (newVal, oldVal) => {
 
-        all_tags.value = await db.getAll('tags');
+        if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+            all_tags.value = await db.getAll('tags');
+        }
 
-    }, { deep: true });
+    }, { deep: false });
 
 
 </script>

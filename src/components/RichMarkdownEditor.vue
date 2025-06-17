@@ -10,7 +10,7 @@
       class="
               absolute left-2 right-2 bottom-0
               flex flex-row gap-1 justify-between items-center 
-              bg-[#FFF8F0] border-t-1 border-[var(--text)] 
+              bg-[var(--bg2)] border-t-1 border-[var(--text)]  text-[var(--text)]
             "
     >
 
@@ -266,7 +266,7 @@ button {
   padding: 4px 8px;
   border: 1px solid transparent;
   cursor: pointer;
-  color: black;
+  color: var(--text);
 }
 button.active {
   border: 1px solid #F28C28;
