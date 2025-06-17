@@ -32,7 +32,7 @@
 
   </header>
 
-  <section class="flex flex-col justify-center items-center h-full w-[100%] mt-12 overflow-x-hidden">
+  <section class="flex flex-col justify-center items-center h-full  lg:mr-[20%] lg:ml-[20%] 2xl:mr-[30%] 2xl:ml-[30%] mt-12 overflow-x-hidden">
 
     <input 
       class="text-3xl mb-3 font-bold" 

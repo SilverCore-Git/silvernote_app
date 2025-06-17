@@ -35,14 +35,14 @@
         v-for="note in filteredNotes" 
         :key="note.id"
         @click="router.push(`/edit?id=${note.id}&pinned=${note.pinned}`)"
-        class="bg-white p-2 rounded shadow cursor-pointer "
+        class="bg-[var(--bg2)] p-2 rounded shadow cursor-pointer border-1 border-[var(--text)]"
       >
         <h3 
             class="font-semibold"
             v-html="highlightMatch(note.title, searchQuery)"
         ></h3>
         <p 
-            class="text-sm max-h-20 text-gray-600 overflow-hidden"
+            class="text-sm max-h-20 overflow-hidden"
             v-html="highlightMatch(note.content, searchQuery)"
         ></p>
 
@@ -66,7 +66,7 @@
         v-for="note in filteredNotes" 
         :key="note.id"
         @click="router.push(`/edit?id=${note.id}&pinned=${note.pinned}`)"
-        class="bg-white p-3 rounded-[15px] shadow cursor-pointer relative h-full"
+        class="bg-[var(--bg2)] p-3 rounded-[15px] shadow cursor-pointer relative h-fullborder-[var(--text)]"
       >
 
           <h3 
@@ -75,7 +75,7 @@
               :class="hitbox ? 'bg-blue-200' : ''"
           ></h3>
           <p 
-              class="text-sm text-gray-600 overflow-hidden mb-5"
+              class="text-sm overflow-hidden mb-5"
               v-html="highlightMatch(note.content, searchQuery)"
               :class="hitbox ? 'bg-blue-500' : ''"
           ></p>

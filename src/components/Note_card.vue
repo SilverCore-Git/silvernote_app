@@ -25,8 +25,8 @@
         <transition name="fade-slide">
  
           <div 
-            class=" absolute top-7 right-0 
-                    bg-[#FFF8F0] border-[var(--text)] 
+            class=" absolute top-8 right-0 
+                    bg-[var(--bg2)] border-[var(--text)] 
                     border-t-0 border-1
                     p-2 pr-3 pl-3 z-30
                   "
@@ -67,7 +67,7 @@
     </div>
 
     <p 
-      class="text-mb mb-3 w-[65%] whitespace-nowrap md:whitespace-normal overflow-hidden text-ellipsis"
+      class="text-mb mb-3 w-[65%] h-[90%] whitespace-nowrap md:whitespace-normal overflow-hidden text-ellipsis"
       :class="hitbox ? 'bg-blue-500' : ''"
     >
       {{ utils.htmlToText(content) }}
@@ -154,7 +154,6 @@ const change_pin_state = async () => {
 
 const onTagsUpdate = (newTags: number[]) => {
   db.saveTags(newTags, props.id);
-  window.location.reload();
 };
 
 
@@ -177,11 +176,11 @@ const open_note = () => {
 onMounted(async () => {
   all_tags.value = await db.getAll('tags');
   Tags.value = all_tags.value.filter(tag => props.tags.includes(tag.id));
-});
+})
 
 watch(() => props.pinned, (newVal) => {
   if_pin_active.value = newVal
-});
+})
 
 const handleClickOutside = (event: MouseEvent) => {
   if (dropdown_rootRef.value && !dropdown_rootRef.value.contains(event.target as Node)) {
@@ -190,15 +189,20 @@ const handleClickOutside = (event: MouseEvent) => {
   if (share.value) {
     share.value = false;
   }
-};
+}
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside);
-});
+})
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
-});
+})
+
+watch(Tags, async() => {
+  all_tags.value = await db.getAll('tags');
+  Tags.value = all_tags.value.filter(tag => props.tags.includes(tag.id));
+})
 
 </script>
 

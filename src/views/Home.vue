@@ -17,7 +17,7 @@
 
         <div class="flex flex-row justify-center items-center">
             
-            <h1 class="absolute left-4" :class="hitbox ? 'bg-red-600' : ''">SilverNote</h1>
+            <h1 class="absolute left-4 text-white" :class="hitbox ? 'bg-red-600' : ''">SilverNote</h1>
 
             <div 
                 class="reload-svg absolute 
@@ -95,7 +95,7 @@
 
         <ul 
             v-if="all_tags && all_tags.length" 
-            class="flex flex-row gap-1.5 pr-1.5 pl-1.5 whitespace-nowrap overflow-x-auto text-ellipsis w-full scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent"
+            class="flex flex-row gap-3 pr-1.5 pl-1.5 whitespace-nowrap overflow-x-auto text-ellipsis w-full scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent"
             :class="[hitbox ? 'bg-amber-400' : '', 'lg:scrollbar-thin', 'scrollbar-thumb-rounded']"
         >
 
@@ -276,7 +276,7 @@
 
             <section class="flex flex-col gap-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-110">
 
-            <div class="p-1 text-center w-full border-2 bg-white/80 border-[#F28C28] rounded-[15px] shadow-lg">
+            <div class="p-1 text-center w-full border-2 bg-[var(--bg2)]/80 border-[#F28C28] rounded-[15px] shadow-lg">
                 <input
                     v-model="tag_name"
                     ref="inputRef"
@@ -288,11 +288,17 @@
             </div>
 
             <button
-                class="p-1 text-center w-full border-2 bg-white/80 text-[#F28C28] font-bold cursor-pointer rounded-[15px] shadow-md
+                class="p-1 text-center w-full border-2 bg-white/80 font-bold cursor-pointer rounded-[15px] shadow-md
                         hover:bg-[#f28c28]"
                 @click.stop="create_tag(tag_name)"
             >
                 <span>Créer mon dossier</span>
+            </button>
+            <button
+                class="p-1 text-center w-full border-2 bg-white/80 font-bold cursor-pointer rounded-[15px] shadow-md"
+                @click.stop="if_open_create_tag = false"
+            >
+                <span>Annuler</span>
             </button>
 
         </section>
@@ -323,6 +329,7 @@
     import Search_bar from '../components/Search_bar.vue';
     import Tags_item from '../components/Tags_item.vue';
     import Tags_item_loader from '../components/Tags_item_loader.vue';
+import { all } from 'mathjs';
     
     const router = useRouter();
 
@@ -460,15 +467,15 @@
 
     watch(list_notes, async () => {
 
-        //const actives_tags = all_tags.value?.filter(tag => tag.active);
-
-        //console.log('Tag active ?', all_tags.value?.some(tag => tag.active), '=>', actives_tags?.map(tag => tag.name));
-
         if (!all_tags.value?.some(tag => tag.active)) {
             await init_notes(list_notes);
         };
 
-        //console.log("Les notes ont été modifiées, tri en cours...");
+    }, { deep: true });
+
+    watch(all_tags, async () => {
+
+        all_tags.value = await db.getAll('tags');
 
     }, { deep: true });
 

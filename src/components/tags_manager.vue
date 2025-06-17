@@ -11,7 +11,7 @@
             <div class="fixed inset-0 top-10 z-50 flex items-center justify-center px-4">
 
                 <div
-                    class="bg-[#FFF8F0] rounded-md p-4 m-3 mb-25 w-full max-w-sm text-sm flex flex-col items-center justify-center top"
+                    class="bg-[var(--bg2)] rounded-md p-4 m-3 mb-25 w-full max-w-sm text-sm flex flex-col items-center justify-center top"
                     style="border-radius: 15px;"
                 >
 
@@ -50,7 +50,7 @@
                     </ul>
 
                     <button
-                        class="px-3 py-1 rounded border hover:bg-gray-200 cursor-pointer mt-5"
+                        class="px-3 py-1  rounded border hover:bg-gray-200 cursor-pointer mt-5"
                         @click="close"
                     >
                         Fermer
@@ -111,7 +111,9 @@ onMounted(async () => {
     all_tags.value = await db.getAll('tags');
 });
 
-
+watch(all_tags, async () => {
+    all_tags.value = await db.getAll('tags');
+})
 
 </script>
 

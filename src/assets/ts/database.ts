@@ -96,6 +96,11 @@ class Database {
         await db.delete('notes', id);
     }
 
+    public async delete_tag(id: number): Promise<void> {
+        const db = await this.dbPromise;
+        await db.delete('tags', id);
+    }
+
     public async create(note: Note): Promise<{ id: number }> {
         const db = await this.dbPromise;
         const all_notes = await db.getAll('notes');
