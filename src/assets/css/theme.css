@@ -1,0 +1,15 @@
+
+:root {
+    --bg: #FFFF;
+    --bg2: #FFFF;
+}
+
+body.dark {
+    --bg: #1E1A16;
+    --bg2: #1E1A16;
+}
+
+body.light {
+    --bg: #FFF8F0;
+    --bg2: #fff5e8;
+}

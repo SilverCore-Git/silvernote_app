@@ -3,10 +3,11 @@
 
 @import './assets/css/fonts.css';
 @import './assets/css/switch.css';
+@import './assets/css/theme.css';
 
 
 body {
-    background-color: #FFF8F0;
+    background-color: var(--bg);
     color: #3B3B3B;
     overflow-x: hidden;
     font-family: 'Roboto';

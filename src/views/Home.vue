@@ -21,6 +21,20 @@
 
             <div 
                 class="reload-svg absolute 
+                        right-36
+                        w-[24px] 
+                        h-[24px] 
+                    " 
+                :class="[
+                    ifLight ? 'sun-svg' : 'moon-svg',
+                    hitbox ? 'bg-teal-300' : ''
+                ]"
+                ref="theme_btn"
+                @click="toggleTheme"
+            ></div>
+
+            <div 
+                class="reload-svg absolute 
                         right-25 
                         w-[24px] 
                         h-[24px] 
@@ -81,7 +95,7 @@
 
         <ul 
             v-if="all_tags && all_tags.length" 
-            class="flex flex-row gap-1.5 whitespace-nowrap overflow-x-auto text-ellipsis w-full scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent"
+            class="flex flex-row gap-1.5 pr-1.5 pl-1.5 whitespace-nowrap overflow-x-auto text-ellipsis w-full scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent"
             :class="[hitbox ? 'bg-amber-400' : '', 'lg:scrollbar-thin', 'scrollbar-thumb-rounded']"
         >
 
@@ -118,7 +132,7 @@
     
         <ul 
             v-else-if="all_tags" 
-            class="flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
+            class="flex flex-row justify-center items-center gap-1.5 pr-1.5 pl-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
         >
             <li 
                 class=" w-[20%] min-w-[70px]"
@@ -137,7 +151,7 @@
 
         <ul 
             v-else 
-            class="flex flex-row justify-center items-center gap-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
+            class="flex flex-row justify-center items-center gap-1.5 pr-1.5 pl-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
         >
             <Tags_item_loader />
             <Tags_item_loader />
@@ -203,7 +217,7 @@
                 <li v-else-if="list_notes && list_notes.length == 0" class="flex flex-col">
 
                     <div 
-                        class="note-card bg-[#FFF8F0] mr-4 ml-4 text-[#3B3B3B] p-3 border-[#3B3B3B] border-2"
+                        class="note-card bg-[var(--bg2)] w-[100%] mr-4 ml-4 text-[#3B3B3B] p-3 border-[#3B3B3B] border-2"
                         style="border-radius: 15px;"
                     >
 
@@ -298,6 +312,7 @@
     import { init_notes } from '../assets/ts/utils';
     import type { Note } from '../assets/ts/type';
     import { hitbox as if_hitbox } from '../assets/ts/settings';
+    import { toggle_theme, init_theme } from '../assets/ts/theme';
 
     let hitbox: boolean;
     onMounted(async () => { hitbox = await if_hitbox() })
@@ -316,6 +331,9 @@
         router.push(`/edit?id=new&pinned=false&simply_edit=false`);
 
     };
+
+    const ifLight = ref<boolean>(false);
+    const theme_btn = ref<HTMLDivElement | null>(null);
 
     const tip: boolean = false;
     const tag_name = ref<string>('');
@@ -343,6 +361,23 @@
     onUnmounted(() => {
         window.removeEventListener('resize', updateSize);
     })
+
+    const toggleTheme = () => {
+        const newTheme = !ifLight.value
+        toggle_theme(newTheme)
+        ifLight.value = newTheme
+        theme_btn.value?.animate(
+            [
+            { transform: 'scale(1)' },
+            { transform: 'scale(0.9)' },
+            { transform: 'scale(1)' }
+            ],
+            {
+            duration: 150,
+            easing: 'ease-out'
+            }
+        )
+    }
 
     const add_tag_filter = async (id: number): Promise<void> => {
 
@@ -418,6 +453,7 @@
     onMounted(async () => {
         all_tags.value = await db.getAll('tags');
         await init_notes(list_notes);
+        init_theme();
     });
 
 
@@ -495,6 +531,26 @@
         background-position: center;
         background-image: url('../assets/svgs/reload.svg');
         filter: invert(1);
+    }
+
+    .moon-svg {
+        cursor: pointer;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-image: url('/assets/svgs/moon.svg');
+        filter: invert(1);
+        transition: all 0.3s;
+    }
+
+    .sun-svg {
+        cursor: pointer;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-image: url('/assets/svgs/sun.svg');
+        filter: invert(1);
+        transition: all 0.3s;
     }
 
     .rotating {

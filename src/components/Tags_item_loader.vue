@@ -1,6 +1,6 @@
 <template>
 
-  <div class="p-1 w-[20%] h-7 text-center border rounded-[15px] flex items-center justify-center">
+  <div class="p-1 w-[20%] h-7 text-center border rounded-[15px] flex items-center justify-center bg-[var(--bg2)]">
     <span class="animate-pulse bg-gray-300 h-full w-full rounded-[15px]"></span>
   </div>
   
