@@ -5,7 +5,7 @@ module.exports = {
 
   packagerConfig: {
     asar: true,
-    icon: 'resources/icons', // => npm run icon
+    icon: 'resources/icons/mac/icon',
   },
   rebuildConfig: {},
 
@@ -34,14 +34,15 @@ module.exports = {
       platforms: ['darwin'],
       config: {
         //background: '', // image de fond DMG png
-        icon: 'resources/icons/mac/icon.icns',                 // icône macOS .icns
+        icon: './resources/icons/mac/icon.icns',                 // icône macOS .icns
         format: 'ULFO',                           // format DMG (ULFO par défaut, plus rapide)
         overwrite: true,                         // écrase le fichier dmg existant
         debug: false,                           // affiche des logs de debug
         window: { width: 600, height: 400 },    // taille fenêtre au montage du dmg
-        contents: [
-          { x: 410, y: 220, type: 'link', path: '/Applications' },     // raccourci vers Applications
-        ],
+        // contents: [
+        //   { x: 130, y: 220, type: 'file', path: '/Applications/Silvernote.app' },
+        //   { x: 410, y: 220, type: 'link', path: '/Applications' },     // raccourci vers Applications
+        // ],
       },
     },
 
