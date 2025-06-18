@@ -1,10 +1,11 @@
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
+const { AutoUnpackNativesPlugin } = require('@electron-forge/plugin-auto-unpack-natives');
 
 module.exports = {
 
   packagerConfig: {
     asar: true,
-    icon: 'resources/icons', // npm run icon
+    icon: 'resources/icons', // => npm run icon
   },
   rebuildConfig: {},
 
@@ -21,7 +22,7 @@ module.exports = {
         setupIcon: 'resources/icons/win/icon.ico',
         loadingGif: 'resources/loading.gif',   // gif animé affiché pendant l'installation
         noMsi: true,                       // désactive la génération du MSI
-        remoteReleases: null,              // URL des mises à jour
+        //remoteReleases: null,              // URL des mises à jour
         //certificateFile: '',               // fichier certificat pour signer l'installeur
         //certificatePassword: '',           // mot de passe certificat
       },
@@ -39,7 +40,6 @@ module.exports = {
         debug: false,                           // affiche des logs de debug
         window: { width: 600, height: 400 },    // taille fenêtre au montage du dmg
         contents: [
-          //{ x: 130, y: 220, type: 'file', path: 'path/to/app.app' },   // emplacement de l’app dans dmg
           { x: 410, y: 220, type: 'link', path: '/Applications' },     // raccourci vers Applications
         ],
       },
@@ -79,12 +79,10 @@ module.exports = {
         },
       },
     },
+
   ],
   plugins: [
-    {
-      name: '@electron-forge/plugin-auto-unpack-natives',
-      config: {},
-    },
+    new AutoUnpackNativesPlugin(),
     {
       name: '@electron-forge/plugin-fuses',
       config: {
@@ -96,6 +94,6 @@ module.exports = {
         [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
         [FuseV1Options.OnlyLoadAppFromAsar]: true,
       },
-    },
+    }, // test rebuild sans plugin fuse
   ],
 };
