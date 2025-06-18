@@ -70,7 +70,7 @@ module.exports = {
         options: {
           maintainer: 'SilverCore <contact@silvercore.fr>',
           homepage: 'https://www.silvercore.fr',
-          icon: 'resources/png/256x256.png',
+          icon: 'resources/icons/png/256x256.png',
           categories: ['Utility'],
           requires: ['glibc', 'libgcc', 'libstdc++'],
           description: 'Silvernote est une app de prise de note simple, intuitive et hergonomique. Projet open source et francais.',
