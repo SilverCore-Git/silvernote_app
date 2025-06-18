@@ -52,7 +52,7 @@ module.exports = {
         options: {
           maintainer: 'SilverCore <contact@silvercore.fr>',  // mainteneur du package
           homepage: 'https://www.silvercore.fr',                 // site web de ton projet
-          icon: 'resources/png/256x256.png',                          // icône PNG pour Debian
+          icon: 'resources/icons/png/256x256.png',                          // icône PNG pour Debian
           categories: ['Utility'],                          // catégorie(s) dans menu
           depends: ['libc6', 'libgcc1', 'libstdc++6'],     // dépendances Debian
           priority: 'optional',
