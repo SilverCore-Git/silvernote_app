@@ -116,8 +116,9 @@ jobs:
         with:
           tag_name: v${{ env.VERSION }}
           files: |
-            release/silvernote-linux-setup.rpm
-            release/silvernote-linux-setup.deb
-            release/silvernote-win-setup.exe
+            release/silvernote-${{ env.VERSION }}-linux-setup.rpm
+            release/silvernote-${{ env.VERSION }}-linux-setup.deb
+            release/silvernote-${{ env.VERSION }}-win-setup.exe
+            release/silvernote-${{ env.VERSION }}-macos.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
