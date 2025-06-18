@@ -329,7 +329,6 @@
     import Search_bar from '../components/Search_bar.vue';
     import Tags_item from '../components/Tags_item.vue';
     import Tags_item_loader from '../components/Tags_item_loader.vue';
-import { sortDependencies } from 'mathjs';
     
     const router = useRouter();
 
