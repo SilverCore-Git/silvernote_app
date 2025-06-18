@@ -48,6 +48,7 @@ const del = async (): Promise<void> => {
   const tags: Tag[] = await db.getAll('tags');
   const tag: Tag | undefined = tags.find(tag => tag.name == props.name);
   if (tag) db.delete_tag(tag.id);
+  window.location.reload();
 }
 
 const pressTimer = ref<number | null>(null);

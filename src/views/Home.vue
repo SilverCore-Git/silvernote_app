@@ -329,6 +329,7 @@
     import Search_bar from '../components/Search_bar.vue';
     import Tags_item from '../components/Tags_item.vue';
     import Tags_item_loader from '../components/Tags_item_loader.vue';
+import { sortDependencies } from 'mathjs';
     
     const router = useRouter();
 
@@ -464,17 +465,28 @@
 
 
 
-    watch(list_notes, async () => {
+    watch(list_notes, async (newVal, oldVal) => {
 
-        if (!all_tags.value?.some(tag => tag.active)) {
+        if (!all_tags.value?.some(tag => tag.active) && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
             await init_notes(list_notes);
+            console.log('Update list_note !')
         };
 
     }, { deep: true });
 
-    watch(() => all_tags.value?.map(tag => tag.id), async (newVal, oldVal) => {
+    watch(all_tags, async (newVal, oldVal) => {
 
-        if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+        const hasActiveChanged = newVal?.some((newTag, index) => {
+            const oldTag = oldVal ? oldVal[index] : undefined;
+            return oldTag && newTag.active !== oldTag.active;
+        });
+
+        const db_tags = await db.getAll('tags');
+        const db_tags_ids = all_tags.value?.map(tag => tag.id).sort();
+        const all_tags_ids = db_tags.map(tag => tag.id).sort();
+
+        if (!hasActiveChanged && JSON.stringify(newVal) != JSON.stringify(oldVal) || JSON.stringify(db_tags_ids) !== JSON.stringify(all_tags_ids)) {
+            console.log('Update all_tags !');
             all_tags.value = await db.getAll('tags');
         }
 
