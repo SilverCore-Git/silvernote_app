@@ -4,6 +4,7 @@ import Home from './views/Home.vue';
 import Edit from './views/Edit.vue';
 import Settings from './views/Settings.vue';
 import Account from './views/Account.vue';
+import Dev from './views/Dev.vue'
 
 const routes = [
   { 
@@ -33,6 +34,13 @@ const routes = [
     component: Account,
     props: {},
     meta: { title: 'SilverNote - Account' }
+  },
+  { 
+    path: '/dev', 
+    name: 'dev', 
+    component: Dev,
+    props: {},
+    meta: { title: 'SilverNote - dev access' }
   }
 ]
 

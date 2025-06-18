@@ -81,6 +81,7 @@
                         <li @click="router.push('/account')">Compte</li>
                         <li>Aide</li>
                         <li>Légal</li>
+                        <li v-if="if_dev" class="mt-1 text-sm" @click="router.push('/dev')">Développeurs</li>
                     </ul>
                 </div>
             </transition>
@@ -317,7 +318,7 @@
     //import os from '../assets/ts/os';
     import { init_notes } from '../assets/ts/utils';
     import type { Note } from '../assets/ts/type';
-    import { hitbox as if_hitbox } from '../assets/ts/settings';
+    import { hitbox as if_hitbox, dev as if_dev } from '../assets/ts/settings';
     import { toggle_theme, init_theme } from '../assets/ts/theme';
 
     let hitbox: boolean;

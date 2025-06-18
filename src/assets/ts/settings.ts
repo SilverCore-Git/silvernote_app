@@ -63,7 +63,7 @@ const settings: Settings = {
     { id: "", name: "Langue", type: "checkbox", active: false }
   ],
   avancé: [
-    { id: "dev_mode", name: "Mode développeur", type: "checkbox", active: true }
+    { id: "dev_mode", name: "Mode développeur", type: "checkbox", active: false }
   ],
   dev_mode: [
     { id: "hitbox", name: "Activer les hitbox", type: "checkbox", active: false },
@@ -75,11 +75,18 @@ const settings: Settings = {
 const hitbox = async (): Promise<boolean> => {
   const db = new SettingsDB();
   const parms = await db.get();
-  return parms?.dev_mode.find(p => p.id == 'hitbox')?.active ?? false
-};
+  return parms?.dev_mode.find(p => p.id == 'hitbox')?.active ?? false;
+}
+
+const dev = async (): Promise<boolean> => {
+  const db = new SettingsDB();
+  const parms = await db.get();
+  return parms?.avancé.find(p => p.id == 'dev_mode')?.active ?? false;
+}
 
 export {
     settings,
     hitbox,
+    dev,
     SettingsDB
 }
