@@ -35,7 +35,7 @@ module.exports = {
       platforms: ['darwin'],
       config: {
         //background: '', // image de fond DMG png
-        icon: './resources/icons/mac/icon.icns',                 // icône macOS .icns
+        icon: 'resources/icons/mac/icon.icns',                 // icône macOS .icns
         format: 'ULFO',                           // format DMG (ULFO par défaut, plus rapide)
         overwrite: true,                         // écrase le fichier dmg existant
         debug: false,                           // affiche des logs de debug
@@ -96,6 +96,6 @@ module.exports = {
         [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
         [FuseV1Options.OnlyLoadAppFromAsar]: true,
       },
-    }, // test rebuild sans plugin fuse
+    },
   ],
 };
