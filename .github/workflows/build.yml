@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - front_desktop
+      - main
 
 permissions:
   contents: write
