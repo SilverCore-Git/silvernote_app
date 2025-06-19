@@ -26,7 +26,7 @@
                         h-[24px] 
                     " 
                 :class="[
-                    ifLight ? 'sun-svg' : 'moon-svg',
+                    ifLight ? 'moon-svg' : 'sun-svg',
                     hitbox ? 'bg-teal-300' : ''
                 ]"
                 ref="theme_btn"

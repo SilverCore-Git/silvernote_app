@@ -61,6 +61,9 @@ import db from '../assets/ts/database';
 import utils from '../assets/ts/utils';
 import { hitbox as if_hitbox } from '../assets/ts/settings';
 
+import { init_theme } from '../assets/ts/theme';
+onMounted(() => { init_theme() });
+
 let hitbox: boolean;
 onMounted(async () => { hitbox = await if_hitbox() })
 import type { Note } from '../assets/ts/type';

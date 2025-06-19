@@ -2,8 +2,16 @@ const prefersDark: boolean = window.matchMedia('(prefers-color-scheme: dark)').m
 
 function init_theme(): void {
 
-  if (prefersDark) toggle_theme(false)
-  else toggle_theme(true)
+  const theme = localStorage.getItem('theme');
+
+  if (theme == 'dark' || theme == 'light') {
+    toggle_theme(theme == 'light' ? true : false);
+  }
+  else
+  {
+    if (prefersDark) toggle_theme(false);
+    else toggle_theme(true);
+  }
 
 }
 

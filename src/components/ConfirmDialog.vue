@@ -11,7 +11,7 @@
         "
     >
 
-        <div class="bg-white rounded-md shadow-md p-4 m-3 w-full max-w-sm text-sm">
+        <div class="bg-[var(--bg)] rounded-md shadow-md p-4 m-3 w-full max-w-sm text-sm">
 
             <h2 class="text-base font-semibold mb-2">{{ title }}</h2>
 
@@ -20,14 +20,14 @@
             <div class="flex justify-end gap-2">
 
                 <button
-                    class="px-3 py-1 rounded border hover:bg-gray-200 cursor-pointer"
+                    class="px-3 py-1 rounded border cursor-pointer"
                     @click="cancel"
                     >
                     Annuler
                 </button>
 
                 <button
-                    class="px-3 py-1 rounded text-white bg-red-600 hover:bg-red-900 cursor-pointer"
+                    class="px-3 py-1 rounded text-[var(--text)] bg-red-600 hover:bg-red-900 cursor-pointer"
                     @click="confirm"
                     >
                     Confirmer

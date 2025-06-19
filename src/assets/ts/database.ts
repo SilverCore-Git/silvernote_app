@@ -120,6 +120,46 @@ class Database {
         const db = await this.dbPromise;
         return db.get('notes', id);
     }
+
+    public async add_notes(notes: Note[]): Promise<void> {
+
+        if (notes.length) {
+
+            for (const note of notes) {
+                await this.create(note);
+            }
+
+        }
+
+    }
+
+    public async add_tags(tags: Tag[]): Promise<void> {
+
+        if (tags.length) {
+
+            for (const tag of tags) {
+                await this.create_tag(tag);
+            }
+
+        }
+
+    }
+
+    public async reset(): Promise<void> {
+
+        const notes = await this.getAll('notes');
+        const tags = await this.getAll('tags');
+
+        for (const tag of tags) {
+            await this.delete_tag(tag.id);
+        }
+
+        for (const note of notes) {
+            await this.delete(note.id);
+        }
+
+    }
+
 }
 
 export default new Database(
