@@ -6,6 +6,7 @@ module.exports = {
   packagerConfig: {
     asar: true,
     icon: 'resources/icons/mac/icon',
+    executableName: 'silvernote',
   },
   rebuildConfig: {},
 
