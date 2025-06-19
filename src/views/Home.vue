@@ -76,12 +76,36 @@
                         z-50 min-w-[150px] w-[40%] md:w-[20%] lg:w-[10%] flex flex-col justify-center items-center p-3"
                     :style=" { top: `calc(3.5rem + env(safe-area-inset-top))` } "
                 >
-                    <ul class="text-xl">
-                        <li @click="router.push('/settings')">Paramètre</li>
-                        <li @click="router.push('/account')">Compte</li>
-                        <li>Aide</li>
-                        <li>Légal</li>
-                        <li v-if="if_dev" class="mt-1 text-sm" @click="router.push('/dev')">Développeurs</li>
+                    <ul class="text-xl text-white">
+
+                        <li 
+                            class="flex flex-row" 
+                            @click="router.push('/settings')"
+                        >
+                            <div class="gear-svg"></div>
+                            Paramètre
+                        </li>
+
+                        <li class="flex flex-row" @click="router.push('/account')">
+                            <div class="nav-svg" style="filter: invert(0);">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                </svg>
+                            </div>
+                            Compte
+                        </li>
+
+                        <li class="flex flex-row">
+                            <div class="nav-svg legal-svg">
+
+                            </div>
+                            Légal
+                        </li>
+
+                        <li class="flex flex-row mt-1 text-sm" v-if="if_dev" @click="router.push('/dev')">Développeurs</li>
+
                     </ul>
                 </div>
             </transition>
@@ -497,6 +521,17 @@
 
 <style scoped>
 
+    .nav-svg {
+        filter: invert(1);
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        margin-right: 10px;
+    }
+
     header {
         height: calc(3.5rem + env(safe-area-inset-top));
 
@@ -516,12 +551,15 @@
     }
     
     .gear-svg {
+        width: 25px;
+        height: 25px;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
         background-image: url('../assets/svgs/gear.svg');
         filter: invert(1);
         transition: all 0.3s ease;
+        margin-right: 10px;
     }
 
     .ellipsis-svg {
@@ -542,6 +580,14 @@
         background-image: url('../assets/svgs/saving_disc.svg');
         filter: invert(1);
         transition: all 0.3s ease;
+    }
+
+    .legal-svg {
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        cursor: pointer;
+        background-image: url('../assets/svgs/legal.svg');
     }
         
     .reload-svg {
