@@ -39,11 +39,11 @@
       >
         <h3 
             class="font-semibold"
-            v-html="highlightMatch(note.title, searchQuery)"
+            v-html="highlightMatch(utils.clean_html(note.title), searchQuery)"
         ></h3>
         <p 
             class="text-sm max-h-20 overflow-hidden"
-            v-html="highlightMatch(note.content, searchQuery)"
+            v-html="highlightMatch(utils.clean_html(note.content), searchQuery)"
         ></p>
 
       </div>
@@ -71,12 +71,12 @@
 
           <h3 
               class="font-semibold"
-              v-html="highlightMatch(note.title, searchQuery)"
+              v-html="highlightMatch(utils.clean_html(note.title), searchQuery)"
               :class="hitbox ? 'bg-blue-200' : ''"
           ></h3>
           <p 
               class="text-sm overflow-hidden mb-5"
-              v-html="highlightMatch(note.content, searchQuery)"
+              v-html="highlightMatch(utils.clean_html(note.content), searchQuery)"
               :class="hitbox ? 'bg-blue-500' : ''"
           ></p>
 
@@ -110,6 +110,7 @@ import { useRouter } from 'vue-router';
 import db from '../assets/ts/database';
 import type { Note, Tag } from '../assets/ts/type';
 import { hitbox as if_hitbox } from '../assets/ts/settings';
+import utils from '../assets/ts/utils';
 
 let hitbox: boolean;
 onMounted(async () => { hitbox = await if_hitbox() })
