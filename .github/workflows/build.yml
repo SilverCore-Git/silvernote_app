@@ -92,7 +92,7 @@ jobs:
           mkdir release
 
           # macos .dmg
-          mv macos/silvernote-${{ env.VERSION }}-arm64.dmg release/silvernote-${{ env.VERSION }}-macos.dmg
+          mv macos/Silvernote-${{ env.VERSION }}-arm64.dmg release/silvernote-${{ env.VERSION }}-macos.dmg
 
           # Linux .rpm and .deb
           mv linux/rpm/x64/silvernote-${{ env.VERSION }}-1.x86_64.rpm release/silvernote-${{ env.VERSION }}-linux-setup.rpm
