@@ -134,7 +134,7 @@
   <ConfirmDialog
     :visible="showDialog"
     title="Confirmation"
-    message="Voulez-vous vraiment supprimer cette note ?"
+    message="Voulez-vous vraiment réinitialiser vos donées ?"
     @confirm="reset_db(2)"
     @cancel="showDialog = false"
   />
@@ -148,10 +148,12 @@ import { useRouter } from 'vue-router';
 
 import ConfirmDialog from '../components/ConfirmDialog.vue';
 
+import { version } from '../../package.json';
 import { SettingsDB, settings as settingsObj  } from '../assets/ts/settings';
 import type { Settings } from '../assets/ts/type';
 import { hitbox as if_hitbox } from '../assets/ts/settings';
 import indexed_db from '../assets/ts/database';
+import utils from '../assets/ts/utils';
 
 import { init_theme } from '../assets/ts/theme';
 onMounted(() => { init_theme() });
@@ -189,12 +191,33 @@ const download_db = async () => {
   const tags = await indexed_db.getAll('tags');
   const notes = await indexed_db.getAll('notes');
 
+  const userAgent: string = navigator.userAgent;
+
+  const sender_info = {
+    userAgent,
+    version,
+    with: "blob"
+  }
+
+  const data_info = {
+    tags_lenght: tags.length,
+    notes_lenght: notes.length
+  }
+
   const json_file = {
     tags,
-    notes
+    notes,
+    sender_info,
+    data_info,
+    hash: {
+      tags: await utils.hash(tags),
+      notes: await utils.hash(notes),
+      sender_info: await utils.hash(sender_info),
+      data_info: await utils.hash(data_info)
+    }
   };
 
-  const blob = new Blob([JSON.stringify(json_file, null, 2)], { type: 'application/json' }); // utilisation de blob pour créer une ressource avec des données brut
+  const blob = new Blob([JSON.stringify(json_file)], { type: 'application/json' }); // utilisation de blob pour créer une ressource avec des données brut
 
   const url = URL.createObjectURL(blob);
   const lien = document.createElement('a');
@@ -227,19 +250,42 @@ const get_db_file = async (event: Event): Promise<void> => {
 
           const data = JSON.parse(contenu)
 
-          try {
-            await indexed_db.add_notes(data.notes);
-          } catch(err) { throw new Error('Erreur lors de la sync des notes.') }
+          const tags_hash_ok: boolean = await utils.hash(data.tags) === data.hash.tags;
+          const notes_hash_ok: boolean = await utils.hash(data.notes) === data.hash.notes;
+          const sender_info_hash_ok: boolean = await utils.hash(data.sender_info) === data.hash.sender_info;
+          const data_info_hash_ok: boolean = await utils.hash(data.data_info) === data.hash.data_info;
 
-          try {
-            await indexed_db.add_tags(data.tags);
-          } catch(err) { throw new Error('Erreur lors de la sync des tags.') }
+          if (tags_hash_ok) console.log('Hash tags ok !'); else console.warn('Hash tags incorect !');
+          if (notes_hash_ok) console.log('Hash notes ok !'); else console.warn('Hash notes incorect !');
+          if (sender_info_hash_ok) console.log('Hash sender_info ok !'); else console.warn('Hash sender_info incorect !');
+          if (data_info_hash_ok) console.log('Hash data_info ok !'); else console.warn('Hash data_info incorect !');
+
+          if (tags_hash_ok && notes_hash_ok && sender_info_hash_ok && data_info_hash_ok) {
+
+            console.log('All hash ok !');
+            console.log('Starting eating data...');
+
+            try {
+              await indexed_db.add_notes(data.notes);
+            } catch(err) { throw new Error('Erreur lors de la sync des notes.') }
+
+            try {
+              await indexed_db.add_tags(data.tags);
+            } catch(err) { throw new Error('Erreur lors de la sync des tags.') }
+
+          }
+          else 
+          {
+            throw new Error(`Hash not valid.\n\n Hashes:\n  Tags: ${await utils.hash(data.tags)} || ${data.hash.tags}\n  Notes: ${await utils.hash(data.notes)} || ${data.hash.notes}\n  Sender Info: ${await utils.hash(data.sender_info)} || ${data.hash.sender_info}\n  Data Info: ${await utils.hash(data.data_info)} || ${data.hash.data_info}\n\nValidation:\n  Tags OK: ${await utils.hash(data.tags) === data.hash.tags}\n  Notes OK: ${await utils.hash(data.notes) === data.hash.notes}\n  Sender Info OK: ${await utils.hash(data.sender_info) === data.hash.sender_info}\n  Data Info OK: ${await utils.hash(data.data_info) === data.hash.data_info}`)
+          }
 
         } catch (err) {
-          return console.error("Une erreur est survenue, step : parse data / save data :", err)
+          return console.error("Une erreur est survenue, step : parse data / eating data / verify hash :", err)
         }
-        console.log('Database chargé !')
+
+        console.log('Database eat end !')
         window.location.reload();
+
       }
     }
 

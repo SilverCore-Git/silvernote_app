@@ -38,6 +38,15 @@ class utils {
 
     }
 
+    public async hash(text: any) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(text);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashHex;
+    }
+
 }
 
 const init_notes = async (list_notes: Ref<Note[] | undefined>): Promise<void> => {
