@@ -1,10 +1,10 @@
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
 
 import Home from './views/Home.vue';
 import Edit from './views/Edit.vue';
 import Settings from './views/Settings.vue';
 import Account from './views/Account.vue';
-import Dev from './views/Dev.vue'
+import Dev from './views/Dev.vue';
 
 const routes = [
   { 

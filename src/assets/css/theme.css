@@ -1,8 +1,8 @@
 
 :root {
-    --bg: #FFFF;
-    --bg2: #FFFF;
-    --text: #FFFF;
+    --bg: black;
+    --bg2: black;
+    --text: black;
     --btn: #F28C28;
 }
 

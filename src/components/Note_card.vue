@@ -165,6 +165,7 @@ const delete_note = async (state: number): Promise<void> => {
 
   else if (state == 2) {
     await db.delete(props.id);
+    showDialog.value = false;
   };
   //await db.delete(props.id);
 };

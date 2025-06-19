@@ -283,8 +283,7 @@ const get_db_file = async (event: Event): Promise<void> => {
           return console.error("Une erreur est survenue, step : parse data / eating data / verify hash :", err)
         }
 
-        console.log('Database eat end !')
-        window.location.reload();
+        console.log('Database eat end !');
 
       }
     }
@@ -300,7 +299,6 @@ const reset_db = async (step: number): Promise<void> => {
   if (step == 2) {
     showDialog.value = false
     await indexed_db.reset();
-    window.location.reload();
   } 
   else 
   {

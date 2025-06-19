@@ -489,9 +489,9 @@
 
 
 
-    watch(list_notes, async (newVal, oldVal) => {
+    watch(list_notes, async () => {
 
-        if (!all_tags.value?.some(tag => tag.active) && JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+        if (!all_tags.value?.some(tag => tag.active)) {
             await init_notes(list_notes);
             console.log('Update list_note !')
         };
