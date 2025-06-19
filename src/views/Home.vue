@@ -17,7 +17,7 @@
 
         <div class="flex flex-row justify-center items-center">
             
-            <h1 class="absolute left-4 text-white" :class="hitbox ? 'bg-red-600' : ''">SilverNote</h1>
+            <h1 class="absolute left-4 text-white flex flex-row" :class="hitbox ? 'bg-red-600' : ''"><img src="/favicon.svg" class="w-6 mr-2" alt="logo">SilverNote</h1>
 
             <div 
                 class="reload-svg absolute 
@@ -497,6 +497,7 @@
         };
 
     }, { deep: true });
+
 
     watch(all_tags, async (newVal, oldVal) => {
 
