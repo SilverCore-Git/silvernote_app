@@ -80,7 +80,7 @@ const init_notes = async (list_notes: Ref<Note[] | undefined>): Promise<void> =>
             return a.pinned ? -1 : 1;
     });
     list_notes.value = sort_notes;
-};
+}
 
 export default new utils();
 export {

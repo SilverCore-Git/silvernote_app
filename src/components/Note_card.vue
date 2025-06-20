@@ -125,6 +125,7 @@ import pinEmpty from '/assets/webp/pin_vide.webp?url';
 
 const router = useRouter()
 
+const emit = defineEmits(['pin']);
 const props = defineProps<{
   title: string
   content: string
@@ -150,6 +151,7 @@ const dropdown_rootRef = ref<HTMLElement | null>(null);
 const change_pin_state = async () => {
   await db.togle_pinned(props.id);
   if_pin_active.value = !if_pin_active.value;
+  emit('pin', true)
 };
 
 const onTagsUpdate = (newTags: number[]) => {

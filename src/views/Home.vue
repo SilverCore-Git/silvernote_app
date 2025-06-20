@@ -230,7 +230,8 @@
                     :key="index"
                 >
 
-                    <Note_card 
+                    <Note_card
+                        @pin="withdraw"
                         :id="note.id"
                         :pinned="note.pinned"
                         :title="note.title" 
@@ -423,6 +424,16 @@
         )
     }
 
+    const withdraw = async () => {
+        const notes: Note[] = await db.getAll('notes');
+        list_notes.value = notes.sort((a: Note, b: Note) => {
+            if (a.pinned === b.pinned) {
+                return b.id - a.id;
+            }
+                return a.pinned ? -1 : 1;
+        });
+    }
+
     const add_tag_filter = async (id: number): Promise<void> => {
 
         const index = id - 1;
@@ -470,7 +481,7 @@
         await back.saving_all(await db.getAll('notes'), await db.getAll('tags'));
     };
 
-    const reload_list = async () => {
+    const reload_list = async () => {        
 
         if (isRotating.value) return;
 
@@ -506,19 +517,6 @@
         all_tags.value = await db.getAll('tags');
         await init_notes(list_notes);
         init_theme();
-    });
-
-
-
-    watch(list_notes.value?.map(note => note.pinned), async () => {
-
-        console.log(list_notes.value?.map(note => note.pinned))
-
-        if (!all_tags.value?.some(tag => tag.active)) {
-            await init_notes(list_notes);
-            console.log('Update list_note !')
-        };
-
     });
 
 
