@@ -73,7 +73,7 @@
                 <div
                     v-if="if_open_dropdown"
                     class="dropdown absolute right-0 bg-[#F28C28] 
-                        z-50 min-w-[150px] w-[40%] md:w-[20%] lg:w-[10%] flex flex-col justify-center items-center p-3"
+                        z-50 min-w-[200px] w-[40%] md:w-[20%] lg:w-[10%] flex flex-col justify-center items-center p-3"
                     :style=" { top: `calc(3.5rem + env(safe-area-inset-top))` } "
                 >
                     <ul class="text-xl text-white">
@@ -130,10 +130,11 @@
             >
 
                 <Tags_item 
-                    @click="add_tag_filter(tag.id)" 
+                    @click.stop="add_tag_filter(tag.id)" 
                     :id="tag.id" :name="tag.name" 
                     :tag="tag.name" 
                     :active="tag.active"
+                    :color="tag.color"
                     class="min-w-[70px]"
                 />
 
@@ -149,6 +150,7 @@
                     name="+"
                     :tag="''"
                     :active="false"
+                    color="#fff5e8"
                 />
 
             </li>
@@ -169,6 +171,7 @@
                     name="+"
                     :tag="''"
                     :active="false"
+                    color="#fff5e8"
                 />
 
             </li>
@@ -301,7 +304,7 @@
 
             <section class="flex flex-col gap-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-110">
 
-            <div class="p-1 text-center w-full border-2 bg-[var(--bg2)]/80 border-[#F28C28] rounded-[15px] shadow-lg">
+            <div class="p-1 text-center w-full border-2 bg-[var(--bg2)]/80 border-[#F28C28] rounded-[var(--br-btn)] shadow-lg">
                 <input
                     v-model="tag_name"
                     ref="inputRef"
@@ -312,15 +315,25 @@
                 />
             </div>
 
+            <div @click.stop="" class="flex flex-col justify-center items-center border-2 h-full bg-[var(--bg2)]/80 border-[#F28C28] rounded-[var(--br-btn)] shadow-lg" >
+                <span>couleur de mon dossier</span>
+                <input
+                    v-model="tag_color"
+                    type="color"
+                    class="outline-none w-full h-10 cursor-pointer rounded-[var(--br-btn)] border-none"
+                />
+            </div>
+
             <button
-                class="p-1 text-center w-full border-2 bg-white/80 font-bold cursor-pointer rounded-[15px] shadow-md
+                class="p-1 text-center w-full border-2 bg-white/80 font-bold cursor-pointer rounded-[var(--br-btn)] shadow-md
                         hover:bg-[#f28c28]"
-                @click.stop="create_tag(tag_name)"
+                @click.stop="create_tag(tag_name, tag_color)"
             >
                 <span>Créer mon dossier</span>
             </button>
             <button
-                class="p-1 text-center w-full border-2 bg-white/80 font-bold cursor-pointer rounded-[15px] shadow-md"
+                class="p-1 text-center w-full border-2 bg-white/80 font-bold cursor-pointer rounded-[var(--br-btn)] shadow-md
+                        hover:bg-[#f25728]"
                 @click.stop="if_open_create_tag = false"
             >
                 <span>Annuler</span>
@@ -339,9 +352,8 @@
 
     import db from '../assets/ts/database';
     import back from '../assets/ts/backend_link';
-    //import os from '../assets/ts/os';
     import { init_notes } from '../assets/ts/utils';
-    import type { Note } from '../assets/ts/type';
+    import type { Note, Tag } from '../assets/ts/type';
     import { hitbox as if_hitbox, dev as if_dev } from '../assets/ts/settings';
     import { toggle_theme, init_theme } from '../assets/ts/theme';
 
@@ -363,16 +375,17 @@
 
     };
 
-    const ifLight = ref<boolean>(false);
+    const ifLight = ref<boolean>(localStorage.getItem('theme') == 'light');
     const theme_btn = ref<HTMLDivElement | null>(null);
 
     const tip: boolean = false;
     const tag_name = ref<string>('');
+    const tag_color = ref<string>('');
     const if_danger_card: boolean = back.info_message() ? true : false;
     const Danger_card_props: { message: string, title: string, btn: boolean, href: string } | void = back.info_message();
 
-    const list_notes = ref<Note[] | undefined>([]);
-    let all_tags = ref<{ id: number, name: string, active: boolean }[] | undefined>(undefined);
+    const list_notes = ref<Note[]>([]);
+    let all_tags = ref<Tag[] | undefined>(undefined);
 
     const isRotating = ref(false);
     const if_open_dropdown = ref<boolean>(false);
@@ -435,13 +448,21 @@
 
     };
 
-    const create_tag = async (tagName: string): Promise<void> => {
+    const create_tag = async (tagName: string, tagColor: string): Promise<void> => {
+
         if (!tagName) return;
-        console.log('création du tag :', tagName)
+        if (!tagColor) tagColor = '#FFF';
+
+        console.log('création du tag :', tagName, '\n avec la couleur :', tagColor);
+
         tag_name.value = '';
-        await db.create_tag({ id: -1, name: tagName, active: false });
+        tag_color.value = '';
+
+        await db.create_tag({ id: -1, name: tagName, active: false, color: tagColor });
+
         all_tags.value = await db.getAll('tags');
-        if_open_create_tag.value = false
+        if_open_create_tag.value = false;
+
     };
 
     const saving_notes = async (): Promise<void> => {
@@ -456,7 +477,7 @@
         isRotating.value = true;
 
         setTimeout(async () => {
-            list_notes.value = undefined;
+            list_notes.value = [];
             await init_notes(list_notes);
             console.log('Rechargement des notes...')
             setTimeout(() => {
@@ -489,14 +510,16 @@
 
 
 
-    watch(list_notes, async () => {
+    watch(list_notes.value?.map(note => note.pinned), async () => {
+
+        console.log(list_notes.value?.map(note => note.pinned))
 
         if (!all_tags.value?.some(tag => tag.active)) {
             await init_notes(list_notes);
             console.log('Update list_note !')
         };
 
-    }, { deep: true });
+    });
 
 
     watch(all_tags, async (newVal, oldVal) => {
@@ -515,7 +538,7 @@
             all_tags.value = await db.getAll('tags');
         }
 
-    }, { deep: false });
+    });
 
 
 </script>
@@ -659,8 +682,8 @@
     }
 
     .dropdown {
-        border-bottom-left-radius: 12px;
-        border-bottom-right-radius: 12px;
+        border-bottom-left-radius: var(--br-btn);
+        border-bottom-right-radius: var(--br-btn);
         box-shadow: 0 15px 15px #36363681;
     }
 
@@ -675,7 +698,7 @@
 
     .add-note-btn {
         background-color: #F28C28;
-        border-radius: 15px;
+        border-radius: var(--br-btn);
         height: 55px;
         transition: all 0.3s;
     }

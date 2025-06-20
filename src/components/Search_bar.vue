@@ -4,7 +4,7 @@
     :class="desktop && filteredNotes.length && searchQuery != '' 
             ? 'note-card bg-[var(--bg2)] text-[var(--text)] absolute right-4 left-4  flex flex-col pl-4 pt-2.5 pb-2.5 border border-[var(--text)] z-30'
             : 'note-card bg-[var(--bg2)] text-[var(--text)] relative lg:ml-0 ml-4 mr-4 w-full flex flex-col pl-4 pt-2.5 pb-2.5 border border-[var(--text)] z-30'"
-    style="box-shadow: 0 0 15px #3636364f; border-radius: 15px;"
+    style="box-shadow: 0 0 15px #3636364f; border-radius: var(--br-btn);"
     :style="desktop && filteredNotes.length && searchQuery != '' 
             ? { top: `calc(4.5rem + ${props.pt})` } 
             : ''"

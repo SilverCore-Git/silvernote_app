@@ -2,7 +2,7 @@ import { openDB } from 'idb';
 import type { DBSchema, IDBPDatabase } from 'idb';
 import type { Note, Tag } from './type';
 
-//import back from './backend_link';
+// import back from './backend_link';
 
 // const notes: Note[] = back.db?.notes;
 // const tags: Tag[] = back.db?.tags;
@@ -141,6 +141,20 @@ class Database {
                 await this.create_tag(tag);
             }
 
+        }
+
+    }
+
+    public async save_tag_color(id: number, color: string) {
+
+        if (!color) return;
+
+        const db = await this.dbPromise;
+        const tag = await db.get('tags', id);
+
+        if (tag) {
+            tag.color = color;
+            await db.put('tags', tag);
         }
 
     }

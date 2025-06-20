@@ -3,7 +3,7 @@
   <div
     class="note-card bg-[var(--bg2)] text-[var(--text)] p-3 border-[var(--text)]
           mr-4 ml-4 md:mr-2 md:ml-2 border-2 relative cursor-pointer mb-4 md:h-[28vh]"
-    style="border-radius: 15px;"
+    style="border-radius: var(--br-card);"
     @click="open_note"
   > 
   
@@ -25,20 +25,20 @@
         <transition name="fade-slide">
  
           <div 
-            class=" absolute top-8 right-0 
+            class=" absolute top-8 right-0
                     bg-[var(--bg2)] border-[var(--text)] 
                     border-t-0 border-1
                     p-2 pr-3 pl-3 z-30
                   "
-            style="border-radius: 10px; border-top-left-radius: 20px; border-top-right-radius: 0px;"
+            style="border-radius: var(--br-card); border-top-left-radius: 20px; border-top-right-radius: 0px;"
             v-if="dropdown"
           >
 
             <ul>
 
-              <li @click.stop="() => { manage_tags = true; dropdown = false; }" :class="hitbox ? 'bg-teal-600 border-1 border-black' : ''" >Dossiers</li>
-              <li @click.stop="share=!share"   :class="hitbox ? 'bg-teal-600 border-1 border-black' : ''" >Partager</li>
-              <li @click.stop="delete_note(1)" class="text-red-600" :class="hitbox ? 'bg-teal-600 border-1 border-black' : ''" >Supprimer</li>
+              <li @click.stop="() => { manage_tags = true; dropdown = false; }" :class="hitbox ? 'bg-teal-600 border-1 border-black' : ''" >dossiers</li>
+              <li @click.stop="share=!share"   :class="hitbox ? 'bg-teal-600 border-1 border-black' : ''" >partager</li>
+              <li @click.stop="delete_note(1)" class="text-red-600" :class="hitbox ? 'bg-teal-600 border-1 border-black' : ''" >supprimer</li>
 
             </ul>
 
@@ -67,14 +67,14 @@
     </div>
 
     <p 
-      class="text-mb mb-3 w-[65%] h-[90%] whitespace-nowrap md:whitespace-normal overflow-hidden text-ellipsis"
+      class="text-mb mb-5 w-[65%] h-[80%] whitespace-nowrap md:whitespace-normal overflow-hidden text-ellipsis"
       :class="hitbox ? 'bg-blue-500' : ''"
     >
       {{ utils.htmlToText(content) }}
     </p>
 
     <div class="absolute left-1 bottom-1 w-[60%] whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
-      <span v-for="(tag, index) in Tags" :key="index" class="ml-2 underline" :class="hitbox ? 'bg-teal-500' : ''">{{ tag.name }}</span>
+      <span v-for="(tag, index) in Tags" :key="index" class="ml-2 border-1 border-[var(--text)] pr-1.5 pl-1.5 rounded-[var(--br-tag)]" :style="{ backgroundColor: tag.color, color: utils.get_text_color(tag.color) }" :class="hitbox ? 'bg-teal-500' : ''">{{ tag.name }}</span>
     </div>
     <label class="absolute right-2 bottom-1 z-10" :class="hitbox ? 'bg-teal-500' : ''">{{ date }}</label>
 
@@ -208,6 +208,15 @@ watch(Tags, async() => {
 </script>
 
 <style scoped>
+
+.note-card {
+  transition: all 0.3s ease;
+}
+
+.note-card:hover {
+  box-shadow: 0 0 10px color-mix(in srgb, var(--btn) 50%, transparent);
+}
+
 
 .bin {
     width: 30px;

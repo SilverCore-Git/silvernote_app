@@ -14,6 +14,7 @@ export interface Tag {
     id: number;
     active: boolean;
     name: string;
+    color: string;
 };
 
 export interface SettingOption {

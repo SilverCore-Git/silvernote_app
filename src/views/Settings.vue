@@ -126,7 +126,7 @@
                 </div>
 
             </label>
-            
+
         </section>
 
     </div>
@@ -347,7 +347,7 @@ watch(settings, async () => {
   background: var(--button-color);
   position: relative;
   text-align: center;
-  border-radius: 0.45em;
+  border-radius: var(--br-btn);
   font-family: "Arial";
   transition: background 0.3s;
 }

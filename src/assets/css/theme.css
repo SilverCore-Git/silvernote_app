@@ -1,9 +1,17 @@
 
 :root {
+
     --bg: black;
     --bg2: black;
     --text: black;
     --btn: #F28C28;
+
+    --br-main: 24px;
+    --br-card: 16px;
+    --br-btn: 12px;
+    --br-tag: 8px;
+
+
 }
 
 body.dark {
