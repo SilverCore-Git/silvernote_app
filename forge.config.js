@@ -12,23 +12,6 @@ module.exports = {
 
   makers: [
 
-    // Windows Squirrel installer
-    {
-      name: '@electron-forge/maker-squirrel',
-      config: {
-        name: 'silvernote',
-        authors: 'SilverCore',
-        exe: 'silvernote.exe',
-        setupExe: 'silvernote-setup.exe',
-        setupIcon: 'resources/icons/win/icon.ico',
-        loadingGif: 'resources/loading.gif',   // gif animé affiché pendant l'installation
-        noMsi: true,                       // désactive la génération du MSI
-        //remoteReleases: null,              // URL des mises à jour
-        //certificateFile: '',               // fichier certificat pour signer l'installeur
-        //certificatePassword: '',           // mot de passe certificat
-      },
-    },
-
     // macOS DMG installer
     {
       name: '@electron-forge/maker-dmg',

@@ -8,7 +8,9 @@
     "start": "electron-forge start",
     "dev": "electron .",
     "package": "electron-forge package",
-    "make": "electron-forge make",
+    "build": "npm run build:win && npm run build:mac&linux",
+    "build:win": "electron-builder",
+    "build:mac&linux": "electron-forge make",
     "publish": "electron-forge publish",
     "maj:front": "node scripts/maj_front",
     "icon": "npx electron-icon-maker --input=resources/icon.png --output=resources"
@@ -35,6 +37,33 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.8.1",
     "@electron-forge/plugin-fuses": "^7.8.1",
     "@electron/fuses": "^1.8.0",
-    "electron": "^36.4.0"
+    "electron": "^36.4.0",
+    "electron-builder": "^26.0.12"
+  },
+
+  "build": {
+    "appId": "com.silvercore.silvernote",
+    "productName": "Silvernote",
+    "directories": {
+      "output": "dist",
+      "buildResources": "resources"
+    },
+    "files": [
+      "src/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "resources/icons/win/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "resources/icons/win/icon.ico",
+      "uninstallerIcon": "resources/icons/win/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
   }
+
 }
