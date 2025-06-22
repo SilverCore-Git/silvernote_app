@@ -104,7 +104,7 @@
 
                 <div>
                   <span class=" border-1 border-[var(--btn)] p-1 rounded">Téléversez le fichier</span>
-                  <input @change="get_db_file($event)" accept=".json,application/json" class="w-0" type="file">
+                  <input @change="get_db_file($event)" accept=".snote,.json" class="w-0" type="file">
                 </div>
 
             </label>
@@ -222,7 +222,7 @@ const download_db = async () => {
   const url = URL.createObjectURL(blob);
   const lien = document.createElement('a');
   lien.href = url;
-  lien.download = 'mes_data_silvernote.json';
+  lien.download = 'mes_data_silvernote.snote';
 
   document.body.appendChild(lien); // création d'un <a> invisible
   lien.click(); // simulation du click
