@@ -7,11 +7,12 @@
   "scripts": {
     "start": "DEV=false electron-forge start",
     "dev": "DEV=true electron-forge start",
-    "package": "electron-forge package",
-    "build": "npm run build:win && npm run build:mac&linux",
-    "build:win": "electron-builder",
-    "build:mac&linux": "electron-forge make",
-    "publish": "electron-forge publish",
+
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+
     "maj:front": "node scripts/maj_front",
     "icon": "npx electron-icon-maker --input=resources/icon.png --output=resources"
   },
@@ -29,12 +30,6 @@
   "devDependencies": {
     "@electron-forge/cli": "^7.8.1",
     "@electron-forge/core": "^7.8.1",
-    "@electron-forge/maker-deb": "^7.8.1",
-    "@electron-forge/maker-dmg": "^7.8.1",
-    "@electron-forge/maker-rpm": "^7.8.1",
-    "@electron-forge/maker-squirrel": "^7.8.1",
-    "@electron-forge/maker-zip": "^7.8.1",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.8.1",
     "electron": "^36.4.0",
     "electron-builder": "^26.0.12"
   },
