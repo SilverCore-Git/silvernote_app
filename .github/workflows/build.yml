@@ -104,8 +104,8 @@ jobs:
           mv linux/Silvernote-${{ env.VERSION }}.AppImage release/silvernote-${{ env.VERSION }}-linux-setup.AppImage
 
           # Windows .exe
-          mv "windows/Silvernote Setup ${{ env.VERSION }}.exe" release/silvernote-${{ env.VERSION }}-win-setup.exe
-          mv "windows/Silvernote Setup ${{ env.VERSION }}.exe.blockmap" release/silvernote-${{ env.VERSION }}-win-setup.exe.blockmap
+          mv "windows/Silvernote Setup ${{ env.VERSION }}.exe" "release/silvernote-${{ env.VERSION }}-win-setup.exe"
+          mv "windows/Silvernote Setup ${{ env.VERSION }}.exe.blockmap" "release/silvernote-${{ env.VERSION }}-win-setup.exe.blockmap"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
