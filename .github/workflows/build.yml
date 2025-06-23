@@ -25,7 +25,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: electron-build-linux
-          path: out/make/
+          path: dist/
 
   build-windows:
     runs-on: windows-latest
@@ -42,7 +42,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: electron-build-windows
-          path: out/make/
+          path: dist/
 
   build-macos:
     runs-on: macos-latest
@@ -55,11 +55,11 @@ jobs:
       - run: npm run maj:front
       - run: npm run build:mac
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}aa
       - uses: actions/upload-artifact@v4
         with:
           name: electron-build-macos
-          path: out/make/
+          path: dist/
 
   # release:
 
