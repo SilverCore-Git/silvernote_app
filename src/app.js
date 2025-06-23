@@ -14,6 +14,8 @@ const appDataPath = if_dev ? path.join(__dirname, '../data') : app.getPath(proce
 
 function alert_log(window) {
 
+  if (!window || window.isDestroyed()) return;
+
   window.webContents.executeJavaScript(`
     
     console.log(
@@ -83,8 +85,15 @@ async function create_main_window () {
   autoUpdater.logger = log;
   autoUpdater.logger.transports.file.level = 'info';
 
-  console.log('Check for update...')
   autoUpdater.checkForUpdatesAndNotify();
+
+  autoUpdater.on('update-available', () => {
+    win.webContents.send('update_available');
+  });
+
+  autoUpdater.on('update-downloaded', () => {
+    win.webContents.send('update_downloaded');
+  });
 
 }
 
@@ -98,14 +107,6 @@ app.whenReady().then(() => {
 
     if (BrowserWindow.getAllWindows().length === 0) create_main_window();
 
-  });
-
-  autoUpdater.on('update-available', () => {
-    win.webContents.send('update_available');
-  });
-
-  autoUpdater.on('update-downloaded', () => {
-    win.webContents.send('update_downloaded');
   });
 
 });
