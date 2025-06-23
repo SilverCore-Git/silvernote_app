@@ -1,12 +1,12 @@
 {
   "name": "silvernote",
   "productName": "Silvernote",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "My Electron application description",
-  "main": "src/index.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "electron-forge start",
-    "dev": "electron .",
+    "start": "DEV=false electron-forge start",
+    "dev": "DEV=true electron-forge start",
     "package": "electron-forge package",
     "build": "npm run build:win && npm run build:mac&linux",
     "build:win": "electron-builder",
@@ -17,12 +17,12 @@
   },
   "keywords": [],
   "author": {
-    "name": "MisterPapaye",
-    "email": "philippeetchtebaise@hotmail.com"
+    "name": "Silvercore",
+    "url": "https://www.silvercore.fr"
   },
   "license": "MIT",
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.1",
+    "nodemon": "^3.1.10",
     "unzipper": "^0.12.3",
     "util": "^0.12.5"
   },
@@ -35,12 +35,9 @@
     "@electron-forge/maker-squirrel": "^7.8.1",
     "@electron-forge/maker-zip": "^7.8.1",
     "@electron-forge/plugin-auto-unpack-natives": "^7.8.1",
-    "@electron-forge/plugin-fuses": "^7.8.1",
-    "@electron/fuses": "^1.8.0",
     "electron": "^36.4.0",
     "electron-builder": "^26.0.12"
   },
-
   "build": {
     "appId": "com.silvercore.silvernote",
     "productName": "Silvernote",
@@ -61,9 +58,29 @@
       "allowToChangeInstallationDirectory": true,
       "installerIcon": "resources/icons/win/icon.ico",
       "uninstallerIcon": "resources/icons/win/icon.ico",
+      "installerHeaderIcon": "resources/icons/win/icon.ico",
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "createStartMenuShortcut": false
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "resources/icons/mac/icon.icns",
+      "category": "public.app-category.productivity",
+      "darkModeSupport": true
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "dmg",
+        "rpm"
+      ],
+      "category": "Utility",
+      "icon": "resources/icons/png",
+      "maintainer": "silvercore",
+      "description": "Application de prise de note simple et intuitive."
     }
   }
-
 }
