@@ -20,6 +20,8 @@ jobs:
       - run: npm install
       - run: npm run maj:front
       - run: npm run build:linux
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v4
         with:
           name: electron-build-linux
@@ -35,6 +37,8 @@ jobs:
       - run: npm install
       - run: npm run maj:front
       - run: npm run build:win
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v4
         with:
           name: electron-build-windows
@@ -50,6 +54,8 @@ jobs:
       - run: npm install
       - run: npm run maj:front
       - run: npm run build:mac
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v4
         with:
           name: electron-build-macos
