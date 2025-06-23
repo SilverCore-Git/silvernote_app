@@ -1,5 +1,5 @@
 
-const { app, BrowserWindow, Menu, globalShortcut } = require('electron');
+const { app, BrowserWindow, Menu, globalShortcut, dialog } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const log = require('electron-log');
 
@@ -8,6 +8,7 @@ const fs = require('fs');
 
 const Console = require('./logger');
 const if_dev = process.env.DEV == 'true';
+const is_online = navigator.onLine;
 
 if (if_dev && !fs.existsSync(path.join(__dirname, '../data'))) fs.promises.mkdir(path.join(__dirname, '../data'));
 const appDataPath = if_dev ? path.join(__dirname, '../data') : app.getPath(process.platform === 'win32' ? 'appData' : process.platform === 'darwin' ? 'appData' : '.config');
@@ -42,6 +43,8 @@ function alert_log(window) {
   `);
 
 }
+
+
 
 async function create_main_window () {
 
@@ -82,26 +85,70 @@ async function create_main_window () {
     alert_log(win);
   }, 60 * 1000);
 
+}
+
+function create_update_window() {
+
+  const win = new BrowserWindow({
+
+    width: 300,
+    height: 400,
+    frame: false,
+    resizable: false, 
+    maximizable: false, 
+    fullscreenable: false,
+    title: "Verification des mise a jours...",
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: true,
+    }
+
+  });
+
+  win.loadFile(path.join(__dirname, './mini_window/index.html'));
+
   autoUpdater.logger = log;
   autoUpdater.logger.transports.file.level = 'info';
 
-  autoUpdater.checkForUpdatesAndNotify();
+  autoUpdater.checkForUpdates();
+
+  autoUpdater.on('checking-for-update', () => {
+    console.log('Checking for update...');
+  });
 
   autoUpdater.on('update-available', () => {
-    win.webContents.send('update_available');
+    console.log('Downloading an update');
+  });
+
+
+  autoUpdater.on('update-not-available', () => {
+    win.close();
+    create_main_window()
+  });
+
+  autoUpdater.on('error', (err) => {
+    win.close();
+    create_main_window()
   });
 
   autoUpdater.on('update-downloaded', () => {
-    win.webContents.send('update_downloaded');
+
+    autoUpdater.quitAndInstall();
+
   });
 
 }
 
-
 app.whenReady().then(() => {
 
   console.log('Creating window...');
-  create_main_window();
+
+  if (is_online) {
+    create_update_window()
+  }
+  else {
+    create_main_window()
+  }
 
   app.on('activate', () => {
 

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body style="width: 300px; height: 400px; overflow: hidden; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+  
+  <h1 style="font-size: 20px; margin-top: -30%;">Vérification des mise a jours...</h1>
+
+  <div style="margin-top: 20%;">
+    <!-- From Uiverse.io by mrpumps31232 --> 
+    <div class="loading-wave">
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+    </div>
+  </div>
+
+  <script>
+    document.body.style.backgroundColor = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? '#2A2420' : '#FFF8F0';
+    document.body.style.color = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? '#FFF8F0' : '#3B3B3B';
+  </script>
+
+</body>
+
+<style>
+@font-face {
+  font-family: 'Roboto';
+  src: url('../dist/assets/roboto-WOy3sDCz.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* From Uiverse.io by mrpumps31232 */ 
+.loading-wave {
+  width: 300px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.loading-bar {
+  width: 20px;
+  height: 10px;
+  margin: 0 5px;
+  background-color: #F28C28;
+  border-radius: 5px;
+  animation: loading-wave-animation 1s ease-in-out infinite;
+}
+
+.loading-bar:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.loading-bar:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.loading-bar:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+@keyframes loading-wave-animation {
+  0% {
+    height: 10px;
+  }
+
+  50% {
+    height: 50px;
+  }
+
+  100% {
+    height: 10px;
+  }
+}
+
+
+</style>
+
+</html>
