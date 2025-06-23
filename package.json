@@ -1,7 +1,7 @@
 {
   "name": "silvernote",
   "productName": "Silvernote",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "My Electron application description",
   "main": "src/app.js",
   "scripts": {
@@ -80,6 +80,6 @@
       "maintainer": "silvercore",
       "description": "Application de prise de note simple et intuitive."
     }
-    
+
   }
 }
