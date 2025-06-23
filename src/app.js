@@ -8,7 +8,33 @@ const fs = require('fs');
 
 const Console = require('./logger');
 const if_dev = process.env.DEV == 'true';
-const is_online = navigator.onLine;
+const https = require('https');
+
+function isOnline(timeout = 3000) {
+  return new Promise((resolve) => {
+    const req = https.request(
+      {
+        host: 'www.google.com',
+        method: 'HEAD',
+        timeout: timeout,
+      },
+      (res) => {
+        resolve(true);
+      }
+    );
+
+    req.on('error', (err) => {
+      resolve(false);
+    });
+
+    req.on('timeout', () => {
+      req.destroy();
+      resolve(false);
+    });
+
+    req.end();
+  });
+}
 
 if (if_dev && !fs.existsSync(path.join(__dirname, '../data'))) fs.promises.mkdir(path.join(__dirname, '../data'));
 const appDataPath = if_dev ? path.join(__dirname, '../data') : app.getPath(process.platform === 'win32' ? 'appData' : process.platform === 'darwin' ? 'appData' : '.config');
@@ -105,6 +131,13 @@ function create_update_window() {
 
   });
 
+  globalShortcut.register('CommandOrControl+Shift+I', () => {
+    if (win) {
+      win.webContents.openDevTools({ mode: 'detach' });
+    }
+  });
+
+
   win.loadFile(path.join(__dirname, './mini_window/index.html'));
 
   autoUpdater.logger = log;
@@ -116,19 +149,26 @@ function create_update_window() {
     console.log('Checking for update...');
   });
 
+  let update = false;
   autoUpdater.on('update-available', () => {
     console.log('Downloading an update');
+    update = true;
   });
 
 
   autoUpdater.on('update-not-available', () => {
-    win.close();
     create_main_window()
+    setTimeout(() => {
+      win.close();
+    }, 1000)
+    
   });
 
   autoUpdater.on('error', (err) => {
-    win.close();
     create_main_window()
+    setTimeout(() => {
+      win.close();
+    }, 1000)
   });
 
   autoUpdater.on('update-downloaded', () => {
@@ -137,16 +177,27 @@ function create_update_window() {
 
   });
 
+  setTimeout(() => {
+    //if (update) return
+    console.error('Close search update for timeout')
+    create_main_window()
+    setTimeout(() => {
+      win.close();
+    }, 1000)
+  }, 30 * 1000);
+
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
 
   console.log('Creating window...');
 
-  if (is_online) {
+  if (await isOnline()) {
+    console.log('Launche online');
     create_update_window()
   }
   else {
+    console.log('Launche offline');
     create_main_window()
   }
 
