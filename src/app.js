@@ -1,11 +1,12 @@
 
 const { app, BrowserWindow, Menu, globalShortcut } = require('electron');
+const { autoUpdater } = require('electron-updater');
+const log = require('electron-log');
 
 const path = require('path');
 const fs = require('fs');
 
 const Console = require('./logger');
-const { init_update } = require('./update');
 const if_dev = process.env.DEV == 'true';
 
 if (if_dev && !fs.existsSync(path.join(__dirname, '../data'))) fs.promises.mkdir(path.join(__dirname, '../data'));
@@ -55,7 +56,6 @@ async function create_main_window () {
 
   });
 
-  const Update = await init_update(win);
   const console = new Console(win);
 
   Menu.setApplicationMenu(null);
@@ -80,25 +80,11 @@ async function create_main_window () {
     alert_log(win);
   }, 60 * 1000);
 
-  console.log(appDataPath);
-
+  autoUpdater.logger = log;
+  autoUpdater.logger.transports.file.level = 'info';
 
   console.log('Check for update...')
-
-  try {
-
-    const update = await Update.check();
-
-    console.log(update || 'rr');
-
-    if (update && update.old_v !== update.new_v) {
-      await Update.install();
-    }
-
-  }
-  catch (err) {
-    console.error('An error has occured : ', err);
-  }
+  autoUpdater.checkForUpdatesAndNotify();
 
 }
 
@@ -112,6 +98,14 @@ app.whenReady().then(() => {
 
     if (BrowserWindow.getAllWindows().length === 0) create_main_window();
 
+  });
+
+  autoUpdater.on('update-available', () => {
+    win.webContents.send('update_available');
+  });
+
+  autoUpdater.on('update-downloaded', () => {
+    win.webContents.send('update_downloaded');
   });
 
 });
