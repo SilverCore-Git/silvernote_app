@@ -12,23 +12,23 @@
 
 
 
-  <swiper class="w-full" :spaceBetween="0" :slidesPerView="3" loop>
-    <swiper-slide>
-      <img src="/assets/img/banner.jpg" alt="Banner 1" class="w-full h-auto" />
-    </swiper-slide>
-    <swiper-slide>
-      <img src="/assets/img/banner.jpg" alt="Banner 2" class="w-full h-auto" />
-    </swiper-slide>
-    <swiper-slide>
-      <img src="/assets/img/banner.jpg" alt="Banner 3" class="w-full h-auto" />
-    </swiper-slide>
-    <swiper-slide>
-      <img src="/assets/img/banner.jpg" alt="Banner 4" class="w-full h-auto" />
-    </swiper-slide>
-    <swiper-slide>
-      <img src="/assets/img/banner.jpg" alt="Banner 5" class="w-full h-auto" />
-    </swiper-slide>
-  </swiper>
+        <swiper class="w-full" :spaceBetween="150" :slidesPerView="4" loop>
+            <swiper-slide>
+            <img src="/assets/img/banner.jpg" alt="Banner 1" class="w-80 h-auto" />
+            </swiper-slide>
+            <swiper-slide>
+            <img src="/assets/img/banner.jpg" alt="Banner 2" class="w-80 h-auto" />
+            </swiper-slide>
+            <swiper-slide>
+            <img src="/assets/img/banner.jpg" alt="Banner 3" class="w-80 h-auto" />
+            </swiper-slide>
+            <swiper-slide>
+            <img src="/assets/img/banner.jpg" alt="Banner 4" class="w-80 h-auto" />
+            </swiper-slide>
+            <swiper-slide>
+            <img src="/assets/img/banner.jpg" alt="Banner 5" class="w-80 h-auto" />
+            </swiper-slide>
+        </swiper>
 
     </section>
 
