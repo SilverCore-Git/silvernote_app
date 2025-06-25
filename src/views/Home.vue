@@ -355,7 +355,7 @@
     import { useRouter } from 'vue-router';
     import { onMounted, ref, watch, onUnmounted } from 'vue';
     import { Swiper, SwiperSlide } from 'swiper/vue';
-
+    import 'swiper/css';
 
     import db from '../assets/ts/database';
     import back from '../assets/ts/backend_link';

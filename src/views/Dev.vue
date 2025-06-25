@@ -29,9 +29,19 @@
                 <li>Version = {{ version }}</li>
             </ul>
 
-        </section>
+            <h1
+                style="font-family: 'Montserrat'" 
+                class="text-2xl mb-1 font-bold mt-5"
+            >Db</h1>
 
-        <section>
+            <ul class="ml-1">
+
+                <li class="flex flex-col">
+                    <button @click="load_template_db" class="second">load db template</button>
+                    <span>Attention cela réinitialise la db !</span>
+                </li>
+            </ul>
+
 
         </section>
 
@@ -45,6 +55,11 @@
     import { onMounted } from 'vue'
     import { useRouter } from 'vue-router';
     import { version } from '../../package.json';
+
+    import back from '../assets/ts/backend_link.ts';
+    import db from '../assets/ts/database';
+    import { init_theme } from '../assets/ts/theme';
+    onMounted(() => { init_theme() });
 
     import { hitbox as if_hitbox} from '../assets/ts/settings';
 
@@ -60,5 +75,12 @@
     const lang: string = navigator.language;
 
     const isOnline: boolean = navigator.onLine;
+
+    const load_template_db = async () => {
+        await db.reset();
+        await db.add_notes(back.dev_db.notes);
+        await db.add_tags(back.dev_db.tags);
+        alert('c fini')
+    }
 
 </script>

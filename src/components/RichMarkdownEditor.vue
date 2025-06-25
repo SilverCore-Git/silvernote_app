@@ -4,29 +4,29 @@
     <editor-content :editor="editor ?? undefined" class="prose h-full" />
   </div>
 
-  <div class="fixed w-full z-50" style="bottom: env(safe-area-inset-bottom);">
+  <div v-if="!isLargeScreen" class="fixed w-screen z-50" style="bottom: env(safe-area-inset-bottom);">
 
     <div 
       class="
-              absolute left-2 right-2 bottom-0
+              absolute left-0 right-0 bottom-0
               flex flex-row gap-1 justify-between items-center 
               bg-[var(--bg2)] border-t-1 border-[var(--text)]  text-[var(--text)]
             "
     >
 
-      <ul>
+      <ul class="ml-2">
         <button @click="toggleHeading(1)">H1</button>
         <button @click="toggleHeading(2)">H2</button>
         <button @click="toggleHeading(3)">H3</button>
         <button @click="toggleHeading(4)">H4</button>
       </ul>
 
-      <ul class="gap-1 flex flex-row">
+      <!-- <ul class="gap-1 flex flex-row">
         <li><button @click="if_open_color = !if_open_color" class="color-svg"></button></li>
         <li><button @click="handleCopyPaste" class="copy-svg"></button></li>
-      </ul>
+      </ul> -->
 
-      <ul>
+      <ul class="mr-2">
         <button @click="toggleBold" :class="{ active: isBoldActive }"><strong>B</strong></button>
         <button @click="toggleItalic" :class="{ active: isItalicActive }"><i>i</i></button>
         <button @click="toggleStrike" :class="{ active: isStrikeActive }"><s>S</s></button>
@@ -70,6 +70,15 @@ import { evaluate } from 'mathjs'
 import db from '../assets/ts/database'
 
 const props = defineProps<{ id: number }>()
+
+const isLargeScreen = ref<boolean>(window.innerWidth >= 1024);
+const updateSize = () => {
+    isLargeScreen.value = window.innerWidth >= 1024;
+}
+onMounted(() => {
+    window.addEventListener('resize', updateSize);
+})
+
 
 const editor = ref<Editor | undefined>();
 const content = ref<string>('');
