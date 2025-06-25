@@ -112,7 +112,7 @@ const dev_db = {
 
 
 const info_message = async (): Promise<{ message: string, title: string, btn: boolean, href: string } | undefined> => {
-    const res = await fetch('https://api.silvernote.fr/get_news').then(res => res.json());
+    const res = await fetch('http://localhost:3000/get_news').then(res => res.json());
     return res == false ? undefined : res;
 };
 

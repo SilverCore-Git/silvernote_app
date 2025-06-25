@@ -40,6 +40,10 @@
                     <button @click="load_template_db" class="second">load db template</button>
                     <span>Attention cela réinitialise la db !</span>
                 </li>
+
+                <li class="flex flex-col">
+                    <button @click="download_db" class="second">télécharger la db</button>
+                </li>
             </ul>
 
 
@@ -82,5 +86,19 @@
         await db.add_tags(back.dev_db.tags);
         alert('c fini')
     }
+
+    const download_db = async () => {
+        const data = { notes: await db.getAll('notes'), tags: await db.getAll('tags') };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const lien = document.createElement('a');
+        lien.href = url;
+        lien.download = 'db_silvernote.snote';
+
+        document.body.appendChild(lien); // création d'un <a> invisible
+        lien.click(); // simulation du click
+        document.body.removeChild(lien); // suprésion du <a>
+        URL.revokeObjectURL(url);
+    } 
 
 </script>

@@ -388,15 +388,11 @@
     const tip: boolean = false;
     const tag_name = ref<string>('');
     const tag_color = ref<string>('');
-    let if_danger_card: boolean; 
-    let Danger_card_props: { message: string, title: string, btn: boolean, href: string } | undefined;
-    (async () => { 
-        if_danger_card = await back.info_message() ? true : false; 
-        Danger_card_props = await back.info_message() 
-    });
+    const if_danger_card = ref<boolean>(false); 
+    const Danger_card_props = ref<{ message: string, title: string, btn: boolean, href: string } | undefined>(undefined);
 
     const list_notes = ref<Note[]>([]);
-    let all_tags = ref<Tag[] | undefined>(undefined);
+    const all_tags = ref<Tag[] | undefined>(undefined);
 
     const isRotating = ref(false);
     const if_open_dropdown = ref<boolean>(false);
@@ -527,6 +523,8 @@
         all_tags.value = await db.getAll('tags');
         await init_notes(list_notes);
         init_theme();
+        if_danger_card.value = await back.info_message() ? true : false; 
+        Danger_card_props.value = await back.info_message();
     });
 
 

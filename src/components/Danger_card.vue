@@ -2,7 +2,7 @@
 
     <div 
         :class="btn ? 'cursor-pointer' : ''" 
-        class="bg-[#fff2d0] mr-4 ml-4 text-[#D96E30] p-5 border-[#3B3B3B] border-2 relative" 
+        class="bg-[#fff2d0] mr-4 ml-4 text-[#D96E30] p-5 border-[var(--text)] border-2 relative" 
         style="border-radius: 15px; font-family: 'Montserrat';"
         @click="handleClick"
     >
