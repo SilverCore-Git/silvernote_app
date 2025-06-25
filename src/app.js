@@ -8,6 +8,7 @@ const fs = require('fs');
 
 const Console = require('./logger');
 const if_dev = process.env.DEV == 'true';
+const isLinux = process.platform === 'linux';
 const https = require('https');
 
 function isOnline(timeout = 3000) {
@@ -83,6 +84,7 @@ async function create_main_window () {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: true,
+      disableHardwareAcceleration: true
     }
 
   });
@@ -126,7 +128,7 @@ function create_update_window() {
     title: "Verification des mise a jours...",
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: true,
+      contextIsolation: true
     }
 
   });
@@ -157,11 +159,8 @@ function create_update_window() {
 
 
   autoUpdater.on('update-not-available', () => {
-    create_main_window()
-    setTimeout(() => {
-      win.close();
-    }, 1000)
-    
+    win.close();
+    create_main_window();
   });
 
   autoUpdater.on('error', (err) => {
@@ -178,12 +177,11 @@ function create_update_window() {
   });
 
   setTimeout(() => {
-    //if (update) return
-    console.error('Close search update for timeout')
-    create_main_window()
-    setTimeout(() => {
+    if (!update) {
+      console.error('Close search update for timeout');
       win.close();
-    }, 1000)
+      create_main_window();
+    }
   }, 30 * 1000);
 
 }
@@ -192,13 +190,13 @@ app.whenReady().then(async () => {
 
   console.log('Creating window...');
 
-  if (await isOnline()) {
+  if (await isOnline() && !isLinux) {
     console.log('Launche online');
-    create_update_window()
+    create_update_window();
   }
   else {
     console.log('Launche offline');
-    create_main_window()
+    create_main_window();
   }
 
   app.on('activate', () => {

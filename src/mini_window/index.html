@@ -59,6 +59,9 @@
       0%, 100% { height: 10px; }
       50% { height: 50px; }
     }
+
+
+
   </style>
 </head>
 
@@ -71,10 +74,23 @@
     <div class="loading-bar"></div>
   </div>
 
-  <script>
-    const darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.body.style.backgroundColor = darkMode ? '#2A2420' : '#FFF8F0';
-    document.body.style.color = darkMode ? '#FFF8F0' : '#3B3B3B';
-  </script>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    try {
+      const isDark = localStorage.getItem('theme') == 'dark' || false;
+      if (isDark === true) {
+        document.body.style.backgroundColor = '#2A2420';
+        document.body.style.color = '#FFF8F0';
+      } else {
+        document.body.style.backgroundColor = '#FFF8F0';
+        document.body.style.color = '#3B3B3B';
+      }
+    } catch (err) {
+      console.error('Erreur thème :', err);
+    }
+  });
+</script>
+
+
 </body>
 </html>
