@@ -6,7 +6,7 @@
 
   </header>
 
-    <main class=" relative h-screen w-screen flex flex-col justify-center items-center text-center ">
+    <main class=" relative h-screen w-screen flex flex-col justify-center items-center text-center px-10">
 
             <h1 class="text-5xl sm:text-6xl font-extrabold uppercase tracking-widest text-gray-900">
                 Silvernote
@@ -31,7 +31,7 @@
 
     </main>
 
-    <section class="w-screen flex flex-col items-center justify-center">
+    <section class="w-screen flex flex-col items-center justify-center py-50">
 
         <h2 class="text-3xl sm:text-4xl font-bold mb-8 text-center">
             Interface simple et épurée
@@ -69,6 +69,38 @@
             </SwiperSlide>
 
         </Swiper>
+
+    </section>
+
+    <section class="w-screen flex flex-raw items-center justify-center py-50">
+
+        <div>
+
+            <h2 class="text-3xl sm:text-4xl font-bold text-center">
+                traitement de texte
+            </h2>
+
+            <img
+                src="/assets/img/banner.jpg"
+                alt="Aperçu interface"
+                class="w-full h-auto rounded-lg shadow-md object-cover"
+            />
+
+        </div>
+
+        <div>
+
+            <h2 class="text-3xl sm:text-4xl font-bold text-center">
+                math automatiques
+            </h2>
+
+            <img
+                src="/assets/img/banner.jpg"
+                alt="Aperçu interface"
+                class="w-full h-auto rounded-lg shadow-md object-cover"
+            />
+
+        </div>
 
     </section>
 
