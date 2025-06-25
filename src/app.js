@@ -36,8 +36,8 @@ function isOnline(timeout = 3000) {
   });
 }
 
-if (if_dev && !fs.existsSync(path.join(__dirname, '../data'))) fs.promises.mkdir(path.join(__dirname, '../data'));
-const appDataPath = if_dev ? path.join(__dirname, '../data') : app.getPath(process.platform === 'win32' ? 'appData' : process.platform === 'darwin' ? 'appData' : '.config');
+//if (if_dev && !fs.existsSync(path.join(__dirname, '../data'))) fs.promises.mkdir(path.join(__dirname, '../data'));
+//const appDataPath = if_dev ? path.join(__dirname, '../data') : app.getPath(process.platform === 'win32' ? 'appData' : process.platform === 'darwin' ? 'appData' : '.config');
 
 function alert_log(window) {
 
