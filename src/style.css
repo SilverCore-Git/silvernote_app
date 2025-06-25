@@ -78,11 +78,17 @@ button.second {
   transition: border-color 0.25s, background-color 0.25s;
 }
 
-button:hover {
+button:hover.primary {
   border-color: #d5731c;
   background-color: #e67d13;
   color: white;
 }
+
+button:hover.second {
+  background-color: var(--btn);
+  color: white;
+}
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -97,8 +103,6 @@ button:focus-visible {
 
 #app {
   max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
   text-align: center;
   background-color: var(--bg);
 }
