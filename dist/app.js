@@ -20,7 +20,7 @@ app.use('/', express_1.default.static(path_1.default.join(__dirname, 'public', '
 // Import des routes
 const api_1 = __importDefault(require("./routes/api"));
 const user_1 = __importDefault(require("./routes/user"));
-app.use('/api', api_1.default);
+app.use('/', api_1.default);
 app.use('/user', user_1.default);
 // Middleware 404
 app.use((req, res) => {

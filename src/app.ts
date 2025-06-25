@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import path from 'path';
@@ -21,7 +21,7 @@ app.use('/', express.static(path.join(__dirname, 'public', 'index.html')));
 import api from './routes/api';
 import user from './routes/user';
 
-app.use('/api', api);
+app.use('/', api);
 app.use('/user', user);
 
 // Middleware 404
