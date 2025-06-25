@@ -114,17 +114,20 @@
 
     </header>
 
-    <div class="Search_bar flex flex-col lg:flex-row items-center mr-4 ml-4">
+    
+    <div class="Search_bar flex flex-col lg:flex-row items-center w-full px-4 gap-4">
 
-        <Search_bar class="mb-4 lg:mb-0 lg:min-w-[50%] " :desktop="isLargeScreen" pt="env(safe-area-inset-top)" />
+        <Search_bar class="mb-4 lg:mb-0 lg:w-1/2 w-full" :desktop="isLargeScreen" pt="env(safe-area-inset-top)" />
 
-        <ul 
+        <Swiper
             v-if="all_tags && all_tags.length" 
-            class="flex flex-row gap-3 pr-1.5 pl-1.5 whitespace-nowrap overflow-x-auto text-ellipsis w-full scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent"
+            :slides-per-view="5"
+            :space-between="8"
+            class="flex-shrink-0 w-full lg:w-1/2 pr-1.5 pl-1.5"
             :class="[hitbox ? 'bg-amber-400' : '', 'lg:scrollbar-thin', 'scrollbar-thumb-rounded']"
         >
 
-            <li 
+            <SwiperSlide 
                 v-for="(tag, index) in all_tags"
                 :key="index" 
             >
@@ -135,12 +138,12 @@
                     :tag="tag.name" 
                     :active="tag.active"
                     :color="tag.color"
-                    class="min-w-[70px]"
+                    class="min-w-[70px] flex-shrink-0"
                 />
 
-            </li>
+            </SwiperSlide>
             
-            <li 
+            <SwiperSlide 
                 class=" min-w-[70px]"
             >
 
@@ -151,11 +154,12 @@
                     :tag="''"
                     :active="false"
                     color="#fff5e8"
+                    class="flex-shrink-0"
                 />
 
-            </li>
+            </SwiperSlide>
 
-        </ul>
+        </Swiper>
     
         <ul 
             v-else-if="all_tags" 
@@ -350,6 +354,8 @@
 
     import { useRouter } from 'vue-router';
     import { onMounted, ref, watch, onUnmounted } from 'vue';
+    import { Swiper, SwiperSlide } from 'swiper/vue';
+    import 'swiper/css';
 
     import db from '../assets/ts/database';
     import back from '../assets/ts/backend_link';
