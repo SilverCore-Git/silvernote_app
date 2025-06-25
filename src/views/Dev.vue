@@ -6,9 +6,7 @@
 
     <div class="flex justify-start items-center mt-12 ml-4 mr-4">
 
-        <section
-
-        >
+        <section>
 
             <h1
                 style="font-family: 'Montserrat'" 
@@ -30,6 +28,10 @@
             <ul class="ml-1">
                 <li>Version = {{ version }}</li>
             </ul>
+
+        </section>
+
+        <section>
 
         </section>
 

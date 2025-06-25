@@ -355,7 +355,7 @@
     import { useRouter } from 'vue-router';
     import { onMounted, ref, watch, onUnmounted } from 'vue';
     import { Swiper, SwiperSlide } from 'swiper/vue';
-    import 'swiper/css';
+
 
     import db from '../assets/ts/database';
     import back from '../assets/ts/backend_link';
@@ -388,8 +388,12 @@
     const tip: boolean = false;
     const tag_name = ref<string>('');
     const tag_color = ref<string>('');
-    const if_danger_card: boolean = back.info_message() ? true : false;
-    const Danger_card_props: { message: string, title: string, btn: boolean, href: string } | void = back.info_message();
+    let if_danger_card: boolean; 
+    let Danger_card_props: { message: string, title: string, btn: boolean, href: string } | undefined;
+    (async () => { 
+        if_danger_card = await back.info_message() ? true : false; 
+        Danger_card_props = await back.info_message() 
+    });
 
     const list_notes = ref<Note[]>([]);
     let all_tags = ref<Tag[] | undefined>(undefined);

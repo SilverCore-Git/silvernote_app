@@ -2,7 +2,7 @@
 import type { Note, Tag } from './type';
 
 
-const db = {
+const dev_db = {
   notes: [
     {id: 1, pinned: false, simply_edit: false, title: "Buy groceries", content: "<p>Buy milk, eggs, and bread.</p>", date: "20 juin 2025", tags: [9, 6]},
     {id: 2, pinned: false, simply_edit: false, title: "Meeting with the team", content: "<p>Discuss the new project timeline.</p>", date: "21 juin 2025", tags: [8, 5]},
@@ -30,38 +30,28 @@ const db = {
 }
 
 
-const info_message = (): { message: string, title: string, btn: boolean, href: string } | void => {
-    // return { 
-    //           message: "SilverNote est actuellement en version bêta. Certaines fonctionnalités peuvent présenter des bugs.", 
-    //           title: "SilverNote bêta",
-    //           btn: false,
-    //           href: "https://www.silvercore.fr"
-    //         };
+const info_message = async (): Promise<{ message: string, title: string, btn: boolean, href: string } | undefined> => {
+    const res = await fetch('https://api.silvernote.fr/get_news').then(res => res.json());
+    return res == false ? undefined : res;
 };
 
 const saving_all = async (Notes: Note[], Tags: Tag[]): Promise<void> => {
 
-  const res = await fetch('https://api.silvernote.fr/api/...', {
+  const user = await fetch('https://auth.silvernote.fr/verify').then(res => res.json());
+  const res = await fetch('https://api.silvernote.fr/save_db', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ Notes, Tags }),
-  });
-
-  // if (res.error) {
-  //   // action si erreur
-  // }
-
-  if (res.ok) {
-    // action apres sauvegarde
-  }
+    body: JSON.stringify({ Notes, Tags, user }),
+  }).then(res => res.json());
+  return res;
 
 }
 
 
 export default {
-    db,
+    dev_db,
     info_message,
     saving_all
 }
