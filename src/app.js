@@ -133,7 +133,7 @@ function create_update_window() {
 
   });
 
-  globalShortcut.register('CommandOrControl+Shift+I', () => {
+  globalShortcut.register('CommandOrControl+Shift+I+U', () => {
     if (win) {
       win.webContents.openDevTools({ mode: 'detach' });
     }
@@ -177,7 +177,7 @@ function create_update_window() {
   });
 
   setTimeout(() => {
-    if (!update) {
+    if (!update && win && !win.isDestroyed() && win.isVisible()) {
       console.error('Close search update for timeout');
       win.close();
       create_main_window();
