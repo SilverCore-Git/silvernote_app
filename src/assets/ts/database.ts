@@ -93,9 +93,9 @@ class Database {
         const hash: string = path.join(db_path, 'hash.json');
 
         return {
-            notes: require(notes_db) || {},
-            tags: require(tags_db) || {},
-            hash: require(hash) || {}
+            notes: fsp.readFile(notes_db, 'utf-8') || {},
+            tags: fsp.readFile(tags_db, 'utf-8') || {},
+            hash: fsp.readFile(hash, 'utf-8') || {}
         }
 
     }
