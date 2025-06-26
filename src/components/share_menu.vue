@@ -25,16 +25,6 @@
       >
 
         <ul class="flex flex-row items-center gap-5">
-          
-          <li @click="share('nav')">
-            <button class="icon-button">
-              <svg width="30" height="30" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                  d="M15.75 5.125a3.125 3.125 0 1 1 .754 2.035l-8.397 3.9a3.124 3.124 0 0 1 0 1.88l8.397 3.9a3.125 3.125 0 1 1-.61 1.095l-8.397-3.9a3.125 3.125 0 1 1 0-4.07l8.397-3.9a3.125 3.125 0 0 1-.144-.94Z"
-                />
-              </svg>
-            </button>
-          </li>
 
           <li @click="share('watsapp')">
             <img
@@ -42,6 +32,14 @@
               :src="watsapp_svg"
             />
           </li>
+
+          <li @click="share('x')">
+            <img
+              class="icon-button w-10 h-10"
+              :src="x_svg"
+            />
+          </li>
+
 
           <li @click="share('copy')">
             <img
@@ -71,6 +69,7 @@ import Success from './status/success.vue';
 import utils from '../assets/ts/utils';
 
 import watsapp_svg from '/assets/svgs/social/watsapp.svg?url';
+import x_svg from '../assets/svgs/social/x.svg?url';
 import copy_svg from '/assets/svgs/copy.svg?url';
 
 
@@ -125,32 +124,18 @@ Envoyé via www.silvernote.fr`
 
   }
 
-  else if (type === 'nav') {
+  else if (type === 'x') {
 
-    if (navigator.share) {
+    const text = encodeURIComponent(
+      `${await utils.htmlToText(props.title)}
+\n
+${await utils.htmlToText(props.content)}
+\n
+Envoyé via www.silvernote.fr`
+    );
 
-      try {
-
-        await navigator.share({
-          title: props.title,
-          text: props.content,
-          url: window.location.href,
-        });
-
-        console.log('Partagé avec succès');
-
-      } catch (err) {
-
-        console.error('Erreur de partage', err);
-        triggerStatus('error', 'Une erreur est survenue lors du partage.');
-
-      }
-
-    } else {
-
-      triggerStatus('error', 'Le partage n\'est pas supporté sur ce navigateur.');
-
-    }
+    const fullUrl = `https://twitter.com/intent/tweet?text=${text}`;
+    window.open(fullUrl, '_blank');
 
   }
 

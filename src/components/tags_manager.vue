@@ -5,7 +5,7 @@
         <div
             v-if="props.active"
             class="fixed inset-0 z-50 flex items-center justify-center"
-            style="background-color: #00000060;"
+            style="background-color: #00000090; backdrop-filter: blur(3px);"
         >
 
             <div class="fixed inset-0 top-10 z-50 flex items-center justify-center px-4">
@@ -50,7 +50,7 @@
                     </ul>
 
                     <button
-                        class="px-3 py-1  rounded border hover:bg-gray-200 cursor-pointer mt-5"
+                        class="second mt-8"
                         @click="close"
                     >
                         Fermer

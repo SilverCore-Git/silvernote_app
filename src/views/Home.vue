@@ -8,128 +8,130 @@
             padding-top: calc(env(safe-area-inset-top)/2);
         " 
         class="
-                top-0 left-0 w-full 
+                top-0 left-0 w-screen 
                 text-2xl  font-bold
                 bg-[#F28C28]
                 flex items-center justify-center fixed z-50
             "
     >
 
-        <div class="flex flex-row justify-center items-center">
+        <div class="flex flex-row justify-between items-center w-full ml-[var(--mrl)] mr-[var(--mrl)]">
             
-            <h1 class="absolute left-4 text-white flex flex-row" :class="hitbox ? 'bg-red-600' : ''"><img src="/favicon.svg" class="w-6 mr-2" alt="logo">SilverNote</h1>
+            <div class="flex flex-row justify-center items-center">
+                <h1 class=" text-white flex flex-row gap-1 md:gap-3" :class="hitbox ? 'bg-red-600' : ''">
+                    <img src="/favicon.svg" class="w-6" alt="logo">SilverNote
+                </h1>
+            </div>
 
-            <div 
-                class="reload-svg absolute 
-                        right-47
-                        w-[24px] 
-                        h-[24px] 
-                    " 
-                :class="[
-                    isOnline ? 'wifi-on-svg' : 'wifi-off-svg',
-                    hitbox ? 'bg-teal-300' : ''
-                ]"
-                ref="online_btn"
-                @click="toggleOnline"
-            ></div>
+            <div class="flex flex-row justify-center items-center gap-3 md:gap-5">
+                <div 
+                    class="reload-svg 
+                            w-[24px] 
+                            h-[24px] 
+                        " 
+                    :class="[
+                        isOnline ? 'wifi-on-svg' : 'wifi-off-svg',
+                        hitbox ? 'bg-teal-300' : ''
+                    ]"
+                    ref="online_btn"
+                    @click="toggleOnline"
+                ></div>
 
-            <div 
-                class="reload-svg absolute 
-                        right-36
-                        w-[24px] 
-                        h-[24px] 
-                    " 
-                :class="[
-                    ifLight ? 'moon-svg' : 'sun-svg',
-                    hitbox ? 'bg-teal-300' : ''
-                ]"
-                ref="theme_btn"
-                @click="toggleTheme"
-            ></div>
+                <div 
+                    class="reload-svg 
+                            w-[24px] 
+                            h-[24px] 
+                        " 
+                    :class="[
+                        ifLight ? 'moon-svg' : 'sun-svg',
+                        hitbox ? 'bg-teal-300' : ''
+                    ]"
+                    ref="theme_btn"
+                    @click="toggleTheme"
+                ></div>
 
-            <div 
-                class="reload-svg absolute 
-                        right-25 
-                        w-[24px] 
-                        h-[24px] 
-                    " 
-                :class="[
-                    { rotating: isRotating },
-                    hitbox ? 'bg-teal-300' : ''
-                ]"
-                @click="reload_list"
-            ></div>
+                <div 
+                    class="reload-svg  
+                            w-[24px] 
+                            h-[24px] 
+                        " 
+                    :class="[
+                        { rotating: isRotating },
+                        hitbox ? 'bg-teal-300' : ''
+                    ]"
+                    @click="reload_list"
+                ></div>
 
-            <div 
-                class="saving-svg absolute
-                        right-14 
-                        w-[24px] 
-                        h-[24px] 
-                    " 
-                :class="[
-                    { 'jump': isJumping },
-                    hitbox ? 'bg-teal-300' : '' 
-                ]"
-                @click="saving_notes"
-            ></div>
+                <div 
+                    class="saving-svg 
+                            w-[24px] 
+                            h-[24px] 
+                        " 
+                    :class="[
+                        { 'jump': isJumping },
+                        hitbox ? 'bg-teal-300' : '' 
+                    ]"
+                    @click="saving_notes"
+                ></div>
 
-            <div
-                :class="[ hitbox ? 'bg-teal-300' : '' ]"
-                class="ellipsis-svg absolute
-                        right-4
-                        w-[30px]
-                        h-[30px]
-                    " 
-                @click="if_open_dropdown = !if_open_dropdown"
-            ></div>
-
-            <transition name="fade-slide">
                 <div
-                    v-if="if_open_dropdown"
-                    class="dropdown absolute right-0 bg-[#F28C28] 
-                        z-50 min-w-[200px] w-[40%] md:w-[20%] lg:w-[10%] flex flex-col justify-center items-center p-3"
-                    :style=" { top: `calc(3.5rem + env(safe-area-inset-top))` } "
-                >
-                    <ul class="text-xl text-white">
+                    :class="[ hitbox ? 'bg-teal-300' : '' ]"
+                    class="ellipsis-svg
+                            w-[30px]
+                            h-[30px]
+                        " 
+                    @click="if_open_dropdown = !if_open_dropdown"
+                ></div>
 
-                        <li 
-                            class="flex flex-row" 
-                            @click="router.push('/settings')"
-                        >
-                            <div class="gear-svg"></div>
-                            Paramètre
-                        </li>
+                <transition name="fade-slide">
+                    <div
+                        v-if="if_open_dropdown"
+                        class="dropdown absolute bg-[#F28C28] 
+                            z-50 min-w-[200px] w-[40%] md:w-[20%] lg:w-[10%] flex flex-col justify-center items-center p-3"
+                        :style=" { top: `calc(3.5rem + env(safe-area-inset-top))` } "
+                    >
+                        <ul class="text-xl text-white">
 
-                        <li class="flex flex-row" @click="router.push('/account')">
-                            <div class="nav-svg" style="filter: invert(0);">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                </svg>
-                            </div>
-                            Compte
-                        </li>
+                            <li 
+                                class="flex flex-row" 
+                                @click="router.push('/settings')"
+                            >
+                                <div class="gear-svg"></div>
+                                Paramètre
+                            </li>
 
-                        <li class="flex flex-row">
-                            <div class="nav-svg legal-svg">
+                            <li class="flex flex-row" @click="router.push('/account')">
+                                <div class="nav-svg" style="filter: invert(0);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                    </svg>
+                                </div>
+                                Compte
+                            </li>
 
-                            </div>
-                            Légal
-                        </li>
+                            <li class="flex flex-row">
+                                <div class="nav-svg legal-svg">
 
-                        <li class="flex flex-row mt-1 text-sm" v-if="if_dev" @click="router.push('/dev')">Développeurs</li>
+                                </div>
+                                Légal
+                            </li>
 
-                    </ul>
-                </div>
-            </transition>
+                            <li class="flex flex-row mt-1 text-sm" v-if="if_dev" @click="router.push('/dev')">Développeurs</li>
+
+                        </ul>
+                    </div>
+                </transition>
+
+            </div>
 
         </div>
 
     </header>
 
     
-    <div class="Search_bar flex flex-col lg:flex-row items-center w-full px-4 gap-4">
+    <div class="Search_bar flex flex-col lg:flex-row items-center w-full gap-4">
 
         <Search_bar class="mb-4 lg:mb-0 lg:w-1/2 w-full" :desktop="isLargeScreen" pt="env(safe-area-inset-top)" />
 
@@ -177,7 +179,7 @@
     
         <ul 
             v-else-if="all_tags" 
-            class="flex flex-row justify-center items-center gap-1.5 pr-1.5 pl-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
+            class="flex flex-row justify-center items-center gap-1.5 pr-1.5 pl-1.5 max-w-[100%] whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
         >
             <li 
                 class=" w-[20%] min-w-[70px]"
@@ -193,16 +195,6 @@
                 />
 
             </li>
-        </ul>
-
-        <ul 
-            v-else 
-            class="flex flex-row justify-center items-center gap-1.5 pr-1.5 pl-1.5 max-w-[100%] mr-4 ml-4 whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
-        >
-            <Tags_item_loader />
-            <Tags_item_loader />
-            <Tags_item_loader />
-            <Tags_item_loader />
         </ul>
 
     </div>
@@ -233,17 +225,14 @@
         >
 
             <ul 
-                class="grid grid-cols-1 
-                        md:grid-cols-[33%_33%_33%] 
-                        lg:grid-cols-[25%_25%_25%_25%] 
-                        xl:grid-cols-[20%_20%_20%_20%_20%] 
-                        md:mr-2 md:ml-2
+                class="grid grid-cols-1 gap-4
+                        md:grid-cols-[calc(100%/3_-_1rem)_calc(100%/3_-_1rem)_calc(100%/3_-_1rem)] 
+                        lg:grid-cols-[calc(100%/4_-_1rem)_calc(100%/4_-_1rem)_calc(100%/4_-_1rem)_calc(100%/4_-_1rem)] 
                        "
             >
 
                 <li 
-                    v-if="list_notes && list_notes.length" 
-                    class=""
+                    v-if="list_notes && list_notes.length"
                     v-for="(note, index) in list_notes" 
                     :key="index"
                 >
@@ -264,7 +253,7 @@
                 <li v-else-if="list_notes && list_notes.length == 0" class="flex flex-col">
 
                     <div 
-                        class="note-card bg-[var(--bg2)] mr-4 ml-4 p-3 border-2"
+                        class="note-card bg-[var(--bg2)] p-3 border-2"
                         style="border-radius: 15px;"
                     >
 
@@ -296,25 +285,25 @@
             </ul>
 
         </div>
-    
-        <div
-            v-if="list_notes && list_notes?.length" 
-            class="bg-transparent w-full z-50 fixed"
-            style="bottom: env(safe-area-inset-bottom);"
-        >
-            <button 
-                style="box-shadow: 0 0 15px #3636364f;" 
-                @click="create_new_note" 
-                class="add-note-btn cursor-pointer 
-                        flex items-center justify-center 
-                        absolute right-4 left-4 bottom-4
-                        md:left-1/4 md:right-1/4
-                        lg:left-1/3.5 lg:right-1/3.5
-                        xl:left-1/3 xl:right-1/3
-                      "
-            ><div class="add-note-svg"></div></button>
-        </div>
 
+    </div>
+
+    <div
+        v-if="list_notes && list_notes?.length" 
+        class="bg-transparent flex justify-center items-center w-full z-50 fixed left-0"
+        style="bottom: env(safe-area-inset-bottom);"
+    >
+        <button 
+            style="box-shadow: 0 0 15px #3636364f; " 
+            @click="create_new_note" 
+            class="add-note-btn cursor-pointer w-full
+                    flex items-center justify-center mb-8
+
+                    mr-[calc(var(--mrl))] ml-[calc(var(--mrl))]
+                    md:mr-[calc(var(--mrl)_+_1rem_+_10%)] md:ml-[calc(var(--mrl)_+_1rem_+_10%)]
+                    lg:mr-[calc(var(--mrl)_+_1rem_+_15%)] lg:ml-[calc(var(--mrl)_+_1rem_+_15%)]
+                  "
+        ><div class="add-note-svg"></div></button>
     </div>
 
     <div @click="if_open_create_tag = false" v-if="if_open_create_tag">
@@ -410,6 +399,7 @@
 
     const list_notes = ref<Note[]>([]);
     const all_tags = ref<Tag[] | undefined>(undefined);
+    const Tags = ref<Tag[] | undefined>(undefined);
 
     const isRotating = ref(false);
     const if_open_dropdown = ref<boolean>(false);
@@ -477,28 +467,31 @@
 
     const add_tag_filter = async (id: number): Promise<void> => {
 
-        const index = id - 1;
+        
+        const tag = all_tags.value?.find(tag => tag.id === id);
+        if (!tag) return;
 
-        if (all_tags.value?.[index].active) {
-            all_tags.value[index].active = false;
+        
+        tag.active = !tag.active;
+
+        
+        const activeTags = all_tags.value
+            ?.filter(tag => tag.active)
+            .map(tag => tag.id);
+
+            
+        if (!activeTags || activeTags.length === 0) {
             list_notes.value = await db.getAll('notes');
             return;
-        };
-
-        if (all_tags.value?.[index]) {
-            all_tags.value[index].active = !all_tags.value[index].active;
         }
 
-        const activeTags = all_tags.value
-                ?.filter(tag => tag.active)
-                .map(tag => tag.id);
-
-        if (activeTags?.length === 0) return;
-
         const notes = await db.getAll('notes');
-        list_notes.value = notes.filter(note => note.tags.some(tag => activeTags?.includes(Number(tag))));
+        list_notes.value = notes.filter(note =>
+            note.tags.some(tag => activeTags.includes(Number(tag)))
+        );
 
     };
+
 
     const create_tag = async (tagName: string, tagColor: string): Promise<void> => {
 
@@ -531,7 +524,9 @@
 
         setTimeout(async () => {
             list_notes.value = [];
+            all_tags.value = []
             await init_notes(list_notes);
+            all_tags.value = await db.getAll('tags');
             console.log('Rechargement des notes...')
             setTimeout(() => {
                 isRotating.value = false;
@@ -549,7 +544,7 @@
         requestAnimationFrame(() => {
             isJumping.value = true;
             setTimeout(() => {
-            isJumping.value = false;
+                isJumping.value = false;
             }, 500);
         });
         
@@ -576,7 +571,7 @@
         const db_tags_ids = all_tags.value?.map(tag => tag.id).sort();
         const all_tags_ids = db_tags.map(tag => tag.id).sort();
 
-        if (!hasActiveChanged && JSON.stringify(newVal) != JSON.stringify(oldVal) || JSON.stringify(db_tags_ids) !== JSON.stringify(all_tags_ids)) {
+        if (!hasActiveChanged && JSON.stringify(db_tags_ids) !== JSON.stringify(all_tags_ids)) {
             console.log('Update all_tags !');
             all_tags.value = await db.getAll('tags');
         }

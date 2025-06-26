@@ -12,29 +12,20 @@
       :style="{ backgroundColor: tag_color, color: text_color }"
     >
         <span class="pr-2 pl-2">{{ name }}</span>
-
-      <section
-        v-if="menu"
-        class="border-l-1 ml-1 pl-1 flex bg-[var(--bg2)]"
-      >
-
-        <ul class="flex flex-row">
-            <li @click.stop="del" class=" cursor-pointer"><div class="bin-svg w-5 h-5"></div></li>
-            <li @click.stop="if_open_manage_tag = true" class=" cursor-pointer"><div class="color-svg w-4 h-4"></div></li>
-        </ul>
-
-      </section>
-
     </div>
 
-        <div @click.stop="if_open_manage_tag = false" v-if="if_open_manage_tag">
+    <teleport to="body">
 
-        <div  class="fixed inset-0 bg-black/50 z-100"></div>
+      <div @click.stop="menu = false" v-if="menu">
 
-            <section class="flex flex-col gap-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-110">
+        <div  class="fixed inset-0 bg-[#00000090] z-100" style="backdrop-filter: blur(3px);"></div>
+
+        <section class="flex flex-col gap-4 text-center fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-110">
+
+          <h3 class="text-xl font-bold">modifier : {{ name }}</h3>
 
             <div @click.stop="" class="flex flex-col justify-center items-center border-2 h-full bg-[var(--bg2)]/80 border-[#F28C28] rounded-[var(--br-btn)] shadow-lg" >
-                <span>couleur de mon dossier</span>
+                <span class="font-bold">couleur de {{ name }}</span>
                 <input
                     v-model="tag_color"
                     type="color"
@@ -43,23 +34,29 @@
             </div>
 
             <button
-                @click.stop="save_tag_color; if_open_manage_tag = false; menu = false"
-                class="p-1 text-center w-full border-2 bg-white/80 font-bold cursor-pointer rounded-[var(--br-btn)] shadow-md
-                        hover:bg-[#f28c28]"
+                @click.stop="save_tag_color; menu = false; menu = false"
+                class="primary"
             >
                 <span>Sauvegarder</span>
             </button>
             <button
-                class="p-1 text-center w-full border-2 bg-white/80 font-bold cursor-pointer rounded-[var(--br-btn)] shadow-md
-                        hover:bg-[#f25728]"
-                @click.stop="if_open_manage_tag = false; menu = false; tag_color = color"
+                class="danger primary"
+                @click.stop="del(); menu = false"
+            >
+                <span>Supprimer</span>
+            </button>
+            <button
+                class="second"
+                @click.stop=" menu = false; tag_color = color"
             >
                 <span>Annuler</span>
             </button>
 
         </section>
 
-    </div>
+      </div>
+
+    </teleport>
 
 </template>
 
@@ -69,6 +66,8 @@ import { ref, onMounted } from 'vue';
 
 import utils from '../assets/ts/utils';
 import db from '../assets/ts/database';
+import { isOnline } from '../assets/ts/online';
+import back from '../assets/ts/backend_link';
 import type { Tag } from '../assets/ts/type'
 
 const props = defineProps<{
@@ -78,7 +77,6 @@ const props = defineProps<{
   color: string,
 }>();
 
-const if_open_manage_tag = ref<boolean>(false);
 const text_color: string = utils.get_text_color(props.color);
 const inputRef = ref<HTMLInputElement | null>(null);
 const tag_color = ref<string>(props.color);
@@ -89,8 +87,9 @@ const menu = ref<boolean>(false);
 const del = async (): Promise<void> => {
   const tags: Tag[] = await db.getAll('tags');
   const tag: Tag | undefined = tags.find(tag => tag.name == props.name);
-  if (tag) db.delete_tag(tag.id);
-  window.location.reload();
+  if (tag) await db.delete_tag(tag.id);
+  if (isOnline) await back.save_db();
+  //window.location.reload();
 }
 
 const save_tag_color = async () => {

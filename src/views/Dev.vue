@@ -1,7 +1,7 @@
 <template>
 
     <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
-        <div class="left-arrow absolute left-4" :class="hitbox ? 'bg-red-600' : ''" @click="router.push('/')"></div>
+        <div class="left-arrow absolute left-0" :class="hitbox ? 'bg-red-600' : ''" @click="router.push('/')"></div>
     </header>
 
     <div class="flex justify-start items-center mt-12 ml-4 mr-4">

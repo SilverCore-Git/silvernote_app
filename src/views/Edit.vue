@@ -2,9 +2,9 @@
 
   <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
 
-    <div class="left-arrow absolute left-4 cursor-pointer" @click="router.push('/')" :class="hitbox ? 'bg-red-600' : ''"></div>
+    <div class="left-arrow absolute left-0 cursor-pointer" @click="router.push('/')" :class="hitbox ? 'bg-red-600' : ''"></div>
 
-    <div class="flex flex-row gap-4 absolute right-4">
+    <div class="flex flex-row gap-4 absolute right-0">
 
       <!-- <div
         class="edit_note"
@@ -32,7 +32,7 @@
 
   </header>
 
-  <section class="flex flex-col justify-center items-center h-full  lg:mr-[20%] lg:ml-[20%] 2xl:mr-[30%] 2xl:ml-[30%] mt-12 overflow-x-hidden">
+  <section class="flex flex-col justify-center items-center h-full mb:mr-[10%] mb:ml-[10%] mt-12 overflow-x-hidden">
 
     <input 
       class="text-3xl mb-3 font-bold" 

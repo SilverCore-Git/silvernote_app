@@ -11,7 +11,16 @@
     --br-btn: 12px;
     --br-tag: 8px;
 
+    --mrl: 1rem;
 
+}
+
+body.lgdesktop {
+  --mrl: 15%;
+}
+
+body.xldesktop {
+  --mrl: 25%;
 }
 
 body.dark {

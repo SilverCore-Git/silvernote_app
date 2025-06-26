@@ -1,4 +1,5 @@
 
+import db from './database';
 import type { Note, Tag } from './type';
 
 const api_url: string = 'http://localhost:3000';
@@ -136,6 +137,7 @@ const get_all = async (): Promise<{ notes: Note[], tags: Tag[], hash: any }> => 
 
   //await fetch(`${auth_url}/verify`).then(res => res.json()) ||
   const user =  { sub: 'auth0|609e8b2e3b3f9c0071f7abcd' };
+
   const res = await fetch(`${api_url}/get_db`, {
     method: 'POST',
     headers: {
@@ -147,10 +149,27 @@ const get_all = async (): Promise<{ notes: Note[], tags: Tag[], hash: any }> => 
 
 }
 
+const save_db = async (): Promise<any> => {
 
+//await fetch(`${auth_url}/verify`).then(res => res.json()) ||
+  const user =  { sub: 'auth0|609e8b2e3b3f9c0071f7abcd' };
+  const Notes: Note[] = await db.getAll('notes');
+  const Tags: Tag[] = await db.getAll('tags');
+
+  const res = await fetch(`${api_url}/save_db`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ Notes, Tags, user }),
+  }).then(res => res.json());
+  return res;
+
+}
 export default {
     dev_db,
     info_message,
     saving_all,
-    get_all
+    get_all,
+    save_db
 }
