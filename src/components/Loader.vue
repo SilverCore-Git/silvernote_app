@@ -1,10 +1,16 @@
 <template>
 
-  <div class="loading-wave">
-    <div class="loading-bar"></div>
-    <div class="loading-bar"></div>
-    <div class="loading-bar"></div>
-    <div class="loading-bar"></div>
+  <div class=" flex flex-col justify-center items-center">
+
+    <div class="loading-wave">
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+      <div class="loading-bar"></div>
+    </div>
+
+    <img class="w-[150px] mt-5" src="/favicon.svg" alt="">
+
   </div>
 
 </template>
