@@ -21,6 +21,20 @@
 
             <div 
                 class="reload-svg absolute 
+                        right-47
+                        w-[24px] 
+                        h-[24px] 
+                    " 
+                :class="[
+                    isOnline ? 'wifi-on-svg' : 'wifi-off-svg',
+                    hitbox ? 'bg-teal-300' : ''
+                ]"
+                ref="online_btn"
+                @click="toggleOnline"
+            ></div>
+
+            <div 
+                class="reload-svg absolute 
                         right-36
                         w-[24px] 
                         h-[24px] 
@@ -348,12 +362,6 @@
 
     </div>
 
-    <div class=" absolute inset-0 bg-[var(--bg)] z-50" v-if="loader">
-        <div class="flex justify-center items-center w-screen h-screen">
-            <Loader />
-        </div>
-    </div>
-
 </template>
 
 <script setup lang='ts'>
@@ -368,10 +376,11 @@
     import { init_notes } from '../assets/ts/utils';
     import type { Note, Tag } from '../assets/ts/type';
     import { hitbox as if_hitbox, dev as if_dev } from '../assets/ts/settings';
-    import { toggle_theme, init_theme } from '../assets/ts/theme';
+    import { toggle_theme } from '../assets/ts/theme';
+    import { toggle_online } from '../assets/ts/online';
 
     let hitbox: boolean;
-    onMounted(async () => { hitbox = await if_hitbox() })
+    onMounted(async () => { hitbox = await if_hitbox() });
 
     import Danger_card from '../components/Danger_card.vue';
     import Note_card from '../components/Note_card.vue';
@@ -379,7 +388,6 @@
     import Search_bar from '../components/Search_bar.vue';
     import Tags_item from '../components/Tags_item.vue';
     import Tags_item_loader from '../components/Tags_item_loader.vue';
-    import Loader from '../components/Loader.vue';
     
     const router = useRouter();
 
@@ -389,9 +397,10 @@
 
     };
 
-    const loader = ref<boolean>(true);
     const ifLight = ref<boolean>(localStorage.getItem('theme') == 'light');
+    const isOnline = ref<boolean>(localStorage.getItem('online') == "true");
     const theme_btn = ref<HTMLDivElement | null>(null);
+    const online_btn = ref<HTMLDivElement | null>(null);
 
     const tip: boolean = false;
     const tag_name = ref<string>('');
@@ -427,13 +436,31 @@
         ifLight.value = newTheme
         theme_btn.value?.animate(
             [
-            { transform: 'scale(1)' },
-            { transform: 'scale(0.9)' },
-            { transform: 'scale(1)' }
+                { transform: 'scale(1)' },
+                { transform: 'scale(0.9)' },
+                { transform: 'scale(1)' }
             ],
             {
-            duration: 150,
-            easing: 'ease-out'
+                duration: 150,
+                easing: 'ease-out'
+            }
+        )
+    }
+
+    const toggleOnline = () => {
+        const newVal = !isOnline.value;
+        if (!navigator.onLine && newVal) return;
+        toggle_online(newVal);
+        isOnline.value = newVal;
+        online_btn.value?.animate(
+            [
+                { transform: 'scale(1)' },
+                { transform: 'scale(0.9)' },
+                { transform: 'scale(1)' }
+            ],
+            {
+                duration: 150,
+                easing: 'ease-out'
             }
         )
     }
@@ -491,6 +518,7 @@
     };
 
     const saving_notes = async (): Promise<void> => {
+        if (!isOnline.value) return;
         triggerJump();
         await back.saving_all(await db.getAll('notes'), await db.getAll('tags'));
     };
@@ -528,14 +556,12 @@
     };
 
     onMounted(async () => {
-        all_tags.value = await db.getAll('tags');
-        await init_notes(list_notes);
-        init_theme();
-        if_danger_card.value = await back.info_message() ? true : false; 
-        Danger_card_props.value = await back.info_message();
-        setTimeout(() => {
-            loader.value = false;
-        }, 100)
+        if_danger_card.value = isOnline.value ? await back.info_message() ? true : false : false; 
+        Danger_card_props.value = isOnline.value ? await back.info_message() : undefined;
+        setTimeout(async () => {
+            all_tags.value = await db.getAll('tags');
+            await init_notes(list_notes);
+        }, isOnline.value ? 500 : 0);
     });
 
 
@@ -656,6 +682,26 @@
         background-repeat: no-repeat;
         background-position: center;
         background-image: url('/assets/svgs/sun.svg');
+        filter: invert(1);
+        transition: all 0.3s;
+    }
+
+    .wifi-on-svg {
+        cursor: pointer;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-image: url('/assets/svgs/wifi_on.svg');
+        filter: invert(1);
+        transition: all 0.3s;
+    }
+
+    .wifi-off-svg {
+        cursor: pointer;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-image: url('/assets/svgs/wifi_off.svg');
         filter: invert(1);
         transition: all 0.3s;
     }

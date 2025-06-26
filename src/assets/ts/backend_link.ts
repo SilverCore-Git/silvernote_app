@@ -1,6 +1,8 @@
 
 import type { Note, Tag } from './type';
 
+const api_url: string = 'http://localhost:3000';
+const auth_url: string = 'https://auth.silvernote.fr';
 
 const dev_db = {
   notes: [
@@ -112,14 +114,14 @@ const dev_db = {
 
 
 const info_message = async (): Promise<{ message: string, title: string, btn: boolean, href: string } | undefined> => {
-    const res = await fetch('http://localhost:3000/get_news').then(res => res.json());
+    const res = await fetch(`${api_url}/get_news`).then(res => res.json());
     return res == false ? undefined : res;
 };
 
-const saving_all = async (Notes: Note[], Tags: Tag[]): Promise<void> => {
-
-  const user = await fetch('https://auth.silvernote.fr/verify').then(res => res.json());
-  const res = await fetch('https://api.silvernote.fr/save_db', {
+const saving_all = async (Notes: Note[], Tags: Tag[]): Promise<any> => {
+//await fetch(`${auth_url}/verify`).then(res => res.json()) ||
+  const user =  { sub: 'auth0|609e8b2e3b3f9c0071f7abcd' };
+  const res = await fetch(`${api_url}/save_db`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -130,9 +132,25 @@ const saving_all = async (Notes: Note[], Tags: Tag[]): Promise<void> => {
 
 }
 
+const get_all = async (): Promise<{ notes: Note[], tags: Tag[], hash: any }> => {
+
+  //await fetch(`${auth_url}/verify`).then(res => res.json()) ||
+  const user =  { sub: 'auth0|609e8b2e3b3f9c0071f7abcd' };
+  const res = await fetch(`${api_url}/get_db`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ user }),
+  }).then(res => res.json());
+  return res;
+
+}
+
 
 export default {
     dev_db,
     info_message,
-    saving_all
+    saving_all,
+    get_all
 }

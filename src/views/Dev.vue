@@ -17,6 +17,7 @@
                 <li>Platform = {{ platform }}</li>
                 <li>Lang = {{ lang }}</li>
                 <li>isOnline ? = {{ isOnline }}</li>
+                <li>isOnline mode ? = {{ isOnlineMode }}</li>
                 <li>userAgent = {{ userAgent }}</li>
             </ul>
 
@@ -60,10 +61,8 @@
     import { useRouter } from 'vue-router';
     import { version } from '../../package.json';
 
-    import back from '../assets/ts/backend_link.ts';
+    import back from '../assets/ts/backend_link';
     import db from '../assets/ts/database';
-    import { init_theme } from '../assets/ts/theme';
-    onMounted(() => { init_theme() });
 
     import { hitbox as if_hitbox} from '../assets/ts/settings';
 
@@ -79,6 +78,7 @@
     const lang: string = navigator.language;
 
     const isOnline: boolean = navigator.onLine;
+    const isOnlineMode: boolean = localStorage.getItem('online') == 'true';
 
     const load_template_db = async () => {
         await db.reset();

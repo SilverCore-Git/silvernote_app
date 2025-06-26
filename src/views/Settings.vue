@@ -141,9 +141,6 @@ import { hitbox as if_hitbox } from '../assets/ts/settings';
 import indexed_db from '../assets/ts/database';
 import utils from '../assets/ts/utils';
 
-import { init_theme } from '../assets/ts/theme';
-onMounted(() => { init_theme() });
-
 let hitbox: boolean;
 onMounted(async () => { hitbox = await if_hitbox() })
 
