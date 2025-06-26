@@ -2,7 +2,7 @@
 import type { Note, Tag } from './type';
 
 const api_url: string = 'http://localhost:3000';
-const auth_url: string = 'https://auth.silvernote.fr';
+//const auth_url: string = 'https://auth.silvernote.fr';
 
 const dev_db = {
   notes: [
