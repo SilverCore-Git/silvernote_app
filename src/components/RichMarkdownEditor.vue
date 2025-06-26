@@ -82,39 +82,39 @@ onMounted(() => {
 
 const editor = ref<Editor | undefined>();
 const content = ref<string>('');
-const text = ref<string>('');
+//const text = ref<string>('');
 const if_open_color = ref<boolean>(true);
 
-const handleCopyPaste = async () => {
+// const handleCopyPaste = async () => {
 
-  try {
+//   try {
 
-    const selection = editor.value?.state.doc.textBetween(
-      editor.value.state.selection.from,
-      editor.value.state.selection.to,
-      ' '
-    ) || ''
+//     const selection = editor.value?.state.doc.textBetween(
+//       editor.value.state.selection.from,
+//       editor.value.state.selection.to,
+//       ' '
+//     ) || ''
 
 
-    if (selection) {
+//     if (selection) {
 
-      await navigator.clipboard.writeText(selection)
-      console.log('Texte sélectionné copié:', selection)
-    } else {
+//       await navigator.clipboard.writeText(selection)
+//       console.log('Texte sélectionné copié:', selection)
+//     } else {
 
-      const fromClipboard = await navigator.clipboard.readText()
-      await editor.value?.chain().focus().insertContent(fromClipboard).run()
-      text.value = fromClipboard
-      console.log('Texte collé:', fromClipboard)
-      text.value = '';
+//       const fromClipboard = await navigator.clipboard.readText()
+//       await editor.value?.chain().focus().insertContent(fromClipboard).run()
+//       text.value = fromClipboard
+//       console.log('Texte collé:', fromClipboard)
+//       text.value = '';
 
-    }
+//     }
 
-  } catch (error) {
-    console.error('Erreur lors du copier/coller', error)
-  };
+//   } catch (error) {
+//     console.error('Erreur lors du copier/coller', error)
+//   };
 
-};
+// };
 
 
 const toggleBold = () => editor.value?.chain().focus().toggleBold().run();

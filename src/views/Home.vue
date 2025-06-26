@@ -348,6 +348,12 @@
 
     </div>
 
+    <div class=" absolute inset-0 bg-[var(--bg)] z-50" v-if="loader">
+        <div class="flex justify-center items-center w-screen h-screen">
+            <Loader />
+        </div>
+    </div>
+
 </template>
 
 <script setup lang='ts'>
@@ -373,6 +379,7 @@
     import Search_bar from '../components/Search_bar.vue';
     import Tags_item from '../components/Tags_item.vue';
     import Tags_item_loader from '../components/Tags_item_loader.vue';
+    import Loader from '../components/Loader.vue';
     
     const router = useRouter();
 
@@ -382,6 +389,7 @@
 
     };
 
+    const loader = ref<boolean>(true);
     const ifLight = ref<boolean>(localStorage.getItem('theme') == 'light');
     const theme_btn = ref<HTMLDivElement | null>(null);
 
@@ -525,6 +533,9 @@
         init_theme();
         if_danger_card.value = await back.info_message() ? true : false; 
         Danger_card_props.value = await back.info_message();
+        setTimeout(() => {
+            loader.value = false;
+        }, 100)
     });
 
 
