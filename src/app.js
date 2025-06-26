@@ -187,7 +187,7 @@ function create_update_window() {
 }
 
 app.whenReady().then(async () => {
-return create_update_window();
+
   console.log('Creating window...');
 
   if (await isOnline() && !isLinux) {
