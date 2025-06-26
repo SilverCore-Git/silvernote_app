@@ -376,7 +376,6 @@
     import Note_card_loader from '../components/Note_card_loader.vue';
     import Search_bar from '../components/Search_bar.vue';
     import Tags_item from '../components/Tags_item.vue';
-    import Tags_item_loader from '../components/Tags_item_loader.vue';
     
     const router = useRouter();
 
@@ -399,7 +398,6 @@
 
     const list_notes = ref<Note[]>([]);
     const all_tags = ref<Tag[] | undefined>(undefined);
-    const Tags = ref<Tag[] | undefined>(undefined);
 
     const isRotating = ref(false);
     const if_open_dropdown = ref<boolean>(false);
