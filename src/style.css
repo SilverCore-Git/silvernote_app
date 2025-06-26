@@ -5,13 +5,17 @@
 @import './assets/css/switch.css';
 @import './assets/css/theme.css';
 
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
 
 body {
-    background-color: var(--bg);
-    color: var(--text);
-    overflow-x: hidden;
-    font-family: 'Roboto';
-    transition: background-color 0.3s;
+  background-color: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  font-family: 'Roboto';
+  transition: background-color 900ms;
 }
 
 h1, h2, h3, h4, h5, h6 {
