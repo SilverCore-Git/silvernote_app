@@ -2,26 +2,10 @@
 
 :root {
   --bg: #FFF8F0;
-  --bg2: #fff5e8;
+  --bg2: #ffffff;
+  --bg3: #fff5e8;
   --text: #3B3B3B;
   --btn: #F28C28;
-
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light;
-  color: var(--text);
-  background-color: var(--bg);
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-h1, h2 {
-  font-family: 'Playfair Display', sans-serif;
 }
 
 a {
@@ -35,14 +19,10 @@ a:hover {
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: 'roboto', sans-serif;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
 }
 
 h1 {
@@ -54,9 +34,9 @@ h1 {
 button.primary {
   border-radius: 8px;
   border: 1px solid transparent;
-  padding: 0.4em 1rem;
+  padding: 0.8rem 1.5rem;
   font-size: 1em;
-  font-weight: 500;
+  font-weight: 600;
   font-family: inherit;
   background-color: var(--btn);
   color: white;
@@ -67,9 +47,9 @@ button.primary {
 button.second {
   border-radius: 8px;
   border: 2px solid var(--btn);
-  padding: 0.4em 1em;
+  padding: 0.7rem 1.4em;
   font-size: 1em;
-  font-weight: 500;
+  font-weight: 600;
   font-family: inherit;
   background-color: var(--btn);
   background-color: transparent;
@@ -100,10 +80,3 @@ button:focus-visible {
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
-
-#app {
-  max-width: 1280px;
-  text-align: center;
-  background-color: var(--bg);
-}
-
