@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "screen": "node scripts/take_a_screen.cjs"
   },
   "dependencies": {
     "swiper": "^9.4.1",
@@ -17,6 +18,8 @@
     "@tailwindcss/vite": "^4.1.10",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/tsconfig": "^0.7.0",
+    "path": "^0.12.7",
+    "puppeteer": "^24.11.0",
     "tailwindcss": "^4.1.10",
     "typescript": "~5.8.3",
     "vite": "^6.3.5",

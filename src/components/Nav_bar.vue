@@ -2,10 +2,10 @@
     
     <div class="bg-[var(--bg2)] shadow-sm py-4 px-6 md:px-12 flex justify-between items-center rounded-b-xl">
 
-        <img class="w-13" src="/favicon.svg" alt="logo">
+        <img class="w-13" src="/favicon.svg" @click="router.push('/')" alt="logo">
 
         <ul class="hidden md:flex items-center space-x-6">
-            <li @click="scroll_to('home')"><a>Maison</a></li>
+            <li @click="router.push('/')"><a>Maison</a></li>
             <li @click="scroll_to('function')"><a>Fonctionalités</a></li>
             <li @click="scroll_to('price_plan')"><a>Tarifs et abonements</a></li>
         </ul>
@@ -45,6 +45,10 @@
 </template>
 
 <script lang="ts" setup>
+
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const toggle_burger_menu = () => {
     const mobileMenu = document.getElementById('burger-menu');
