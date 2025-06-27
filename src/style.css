@@ -18,6 +18,12 @@ a:hover {
   color: #d5731c;
 }
 
+.underline {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--btn);
+}
+
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg);

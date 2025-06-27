@@ -6,7 +6,7 @@
 
         <h3 class="text-2xl font-semibold mb-3 text-gray-800">{{ title }}</h3>
 
-        <p class="text-gray-600">{{ content }}</p>
+        <p class="text-gray-600" v-html="content"></p>
 
     </div>
 
