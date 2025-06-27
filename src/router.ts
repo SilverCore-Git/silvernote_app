@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import Home from './views/Home.vue';
+import Politic from './views/Politique_de_confidentialite.vue';
 
 
 const routes = [
@@ -9,7 +10,14 @@ const routes = [
     name: 'Home', 
     component: Home,
     props: {},
-    meta: { title: 'SilverNote app de prise de note' }
+    meta: { title: 'SilverNote : vos notes partout !' }
+  },
+  { 
+    path: '/politique-de-confidentialite', 
+    name: 'politique-de-confidentialite', 
+    component: Politic,
+    props: {},
+    meta: { title: 'SilverNote - confidentialité' }
   }
 ]
 

@@ -3,8 +3,8 @@
     <div 
         v-if="mode_for !== 1 ? title !== 'Silver' : true"
         :class="recommended && mode_for != 3 
-                    ? 'min-w-90 pricing-card bg-[var(--bg2)] p-8 rounded-2xl shadow-lg border-2 border-[var(--btn)] scale-105 flex flex-col justify-between relative hover:shadow-xl transition-shadow duration-300'
-                    :'min-w-90 pricing-card bg-[var(--bg2)] p-8 rounded-2xl shadow-lg flex flex-col justify-between hover:shadow-xl transition-shadow duration-300'
+                    ? 'max-w-90 min-w-90 pricing-card bg-[var(--bg2)] p-8 rounded-2xl shadow-lg border-2 border-[var(--btn)] scale-105 flex flex-col justify-between relative hover:shadow-xl transition-shadow duration-300'
+                    :'max-w-90 min-w-90 pricing-card bg-[var(--bg2)] p-8 rounded-2xl shadow-lg flex flex-col justify-between hover:shadow-xl transition-shadow duration-300'
                 "
     >
 
@@ -27,13 +27,45 @@
 
             <div class="text-5xl font-extrabold text-[var(--btn)] mb-6">
 
-                {{ mode_for == 3 ? "Nous contacter" : `${price * mode_date}` }}
-                <span v-if="title != 'Silver'" class="text-lg -ml-3 -mr-1.5">.99</span>
-                €
+                {{ 
+                
+                    mode_for == 3 ? "Nous contacter" : // pour entreprises
+
+                    `${
+
+                        mode_for == 1 // pour solo
+
+                            ? mode_date == 1 // par mois
+
+                                ? price // pour solo par mois
+
+                                : mode_date == 2 // par ans
+
+                                    ? price * 8 // pour solo par ans
+
+                                    : price * 10 * 4 // pour solo a vie
+
+
+                        : // pour familles
+
+                            mode_date == 1 // par mois
+
+                                ? price * 3 // pour familles par mois
+
+                                : mode_date == 2 // par ans
+
+                                    ? price * 3 * 8 // pour familles par ans
+
+                                    : price * 3 * 10 * 4 // pour familles a vie
+
+                    }` 
+                }}
+                <span v-if="title !== 'Silver' && mode_for !== 3" class="text-lg -ml-3">.99</span>
+                <span v-if="mode_for !== 3">€</span>
 
                 <span v-if="price != -1" class="text-xl font-normal text-gray-500">
                     
-                    {{ mode_for != 3 ? mode_date == 1 ? '/ mois' : mode_date == 2 ? '/ ans' : 'a vie' : '' }}
+                    {{ title == 'Silver' ? "" : mode_for != 3 ? mode_date == 1 ? '/ mois' : mode_date == 2 ? '/ ans' : 'a vie' : '' }}
 
                 </span>
 
@@ -50,6 +82,14 @@
                 </li>
 
                 <li 
+                    v-if="mode_date == 3"
+                    class="flex items-center" 
+                >
+                    <svg  xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check text-green-500 mr-2"><polyline points="20 6 9 17 4 12"/></svg>
+                    mise à jours incluse
+                </li>
+
+                <li 
                     class="flex items-center" 
                     v-for="(potato, index) in functions"
                     :key="index"
@@ -63,7 +103,7 @@
 
         </div>
 
-        <button class="second w-full">{{ price == 0 ? 'Commencer gratuitement' : `Passer au plan ${title}` }}</button>
+        <button class="second w-full">{{ price == 0 ? 'Commencer gratuitement' : mode_for == 3 ? `Nous contacter` : `S'inscrir au plan ${title}` }}</button>
 
     </div>
 

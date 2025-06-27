@@ -55,13 +55,13 @@
 
     </section>
 
-    <section id="price_plan" class="py-16 md:py-24 rounded-xl mx-4 mb-8 w-[calc(100vw_-_2rem)]">
+    <section id="price_plan" class="py-16 md:py-24 rounded-xl mx-4 mb-8 w-screen flex flex-col justify-center items-center">
 
-        <div class="container mx-auto px-4 text-center max-w-6xl">
+        <div class="container w-screen text-center">
 
             <h2 class="text-4xl md:text-5xl font-bold mb-2 text-gray-900">Choisissez le plan qui vous convient.</h2>
 
-            <div class="w-full flex justify-center mt-6 mb-12 gap-20">
+            <div class="flex flex-row flex-wrap justify-center mt-6 mb-12 gap-20">
 
                 <div class="inline-flex bg-[var(--bg3)] rounded-full p-2.5 gap-2 shadow-md">
 
@@ -143,7 +143,7 @@
 
             </div>
 
-            <div class="flex flex-row justify-center items-center gap-8 ">
+            <div class="flex flex-row flex-wrap justify-center items-start gap-8 w-full">
 
                 <Pricing_card 
                     v-for="(plan, index) in pricing_plan_list"
@@ -155,7 +155,7 @@
                     :functions="plan.functions" 
                     :mode_for="selected_mode_for"
                     :mode_date="selected_mode_date"
-                    class="min-w-80"
+                    class="min-w-80 max-w-90"
                 />
                 
             </div>
@@ -166,9 +166,9 @@
 
     <section class="py-16 md:py-24 text-center rounded-xl mx-4 mb-8 w-[calc(100vw_-_2rem)]">
 
-        <div class="mx-auto px-4 max-w-4xl flex flex-row ">
+        <div class=" mx-auto px-4 max-w-4xl flex flex-col sm:flex-row ">
 
-            <div>
+            <div class="mb-8 sm:mb-0">
                 <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gray-900">Prêt à simplifier vos notes ?</h2>
                 <p class="text-xl md:text-2xl mb-10 text-gray-700">Rejoignez des milliers d'utilisateurs et commencez à organiser votre vie avec SilverNote dès aujourd'hui.</p>
                 <button class="primary text-xl px-8 py-4">Créer votre compte gratuit</button>
@@ -191,21 +191,25 @@
                 <SwiperSlide>
                     <span class="text-2xl" style="letter-spacing: 2px;">silvernote - home</span>
                     <img src="/assets/img/phone_view_home_light.png" alt="" class="w-full h-auto object-contain" />
+                    <div class="absolute bottom-0 left-0 right-0 h-10 bg-[var(--bg)]/70 backdrop:blur-2xl"></div>
                 </SwiperSlide>
 
                 <SwiperSlide>
                     <span class="text-2xl" style="letter-spacing: 2px;">silvernote - edit</span>
                     <img src="/assets/img/phone_view_edit_light.png" alt="" class="w-full h-auto object-contain" />
+                    <div class="absolute bottom-0 left-0 right-0 h-10 bg-[var(--bg)]/70 backdrop:blur-2xl"></div>
                 </SwiperSlide>
 
                 <SwiperSlide>
                     <span class="text-2xl" style="letter-spacing: 2px;">silvernote - home</span>
                     <img src="/assets/img/phone_view_home_dark.png" alt="" class="w-full h-auto object-contain" />
+                    <div class="absolute bottom-0 left-0 right-0 h-10 bg-[var(--bg)]/70 backdrop:blur-2xl"></div>
                 </SwiperSlide>
 
                 <SwiperSlide>
                     <span class="text-2xl" style="letter-spacing: 2px;">silvernote - edit</span>
                     <img src="/assets/img/phone_view_edit_dark.png" alt="" class="w-full h-auto object-contain" />
+                    <div class="absolute bottom-0 left-0 right-0 h-10 bg-[var(--bg)]/70 backdrop:blur-2xl"></div>
                 </SwiperSlide>
 
             </Swiper>
@@ -234,7 +238,7 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 
 import Nav_bar from '../components/Nav_bar.vue';
-import Card from './Card.vue';
+import Card from '../components/Card.vue';
 import Pricing_card from '../components/Pricing_card.vue'
 import Footer from '../components/Footer.vue';
 

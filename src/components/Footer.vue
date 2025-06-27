@@ -10,9 +10,9 @@
             </div>
 
             <div class="flex space-x-6">
-                <a href="#" class="text-gray-400 hover:text-white">Confidentialité</a>
-                <a href="#" class="text-gray-400 hover:text-white">Conditions d'utilisation</a>
-                <a href="#" class="text-gray-400 hover:text-white">Contact</a>
+                <a @click="router.push('/politique-de-confidentialite')" class="text-gray-400 hover:text-white">Confidentialité</a>
+                <a @click="" class="text-gray-400 hover:text-white">Conditions d'utilisation</a>
+                <a @click="" class="text-gray-400 hover:text-white">Contact</a>
             </div>
 
         </div>
@@ -20,3 +20,11 @@
     </div>
 
 </template>
+
+<script lang="ts" setup>
+
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+</script>
