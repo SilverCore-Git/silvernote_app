@@ -95,13 +95,23 @@
 
                 </div>
 
-                <div class="inline-flex bg-[var(--bg3)] rounded-full p-2.5 gap-2 shadow-md">
+                <div 
+                    style="transition: all 0.3s ease;"
+                    :class="[ 
+                        'inline-flex bg-[var(--bg3)] rounded-full p-2.5 gap-2 shadow-md',
+                        selected_mode_for === 3 
+                            ? ' contrast-90 text-gray-500'
+                            : '' 
+                    ]"
+                >
 
                     <button
                         @click="selected_mode_date = 1"
                         :class="[
                             baseClass,
-                            selected_mode_date === 1 ? activeClass : inactiveClass
+                            selected_mode_for === 3 
+                                ? 'border-0 bg-transparent' 
+                                : selected_mode_date === 1 ? activeClass : inactiveClass
                         ]"
                     >
                         Par mois
@@ -110,7 +120,9 @@
                         @click="selected_mode_date = 2"
                         :class="[
                             baseClass,
-                            selected_mode_date === 2 ? activeClass : inactiveClass
+                            selected_mode_for === 3 
+                                ? 'border-0 bg-transparent' 
+                                : selected_mode_date === 2 ? activeClass : inactiveClass
                         ]"
                     >
                         Par ans
@@ -119,7 +131,9 @@
                         @click="selected_mode_date = 3"
                         :class="[
                             baseClass,
-                            selected_mode_date === 3 ? activeClass : inactiveClass
+                            selected_mode_for === 3 
+                                ? 'border-0 bg-transparent' 
+                                : selected_mode_date === 3 ? activeClass : inactiveClass
                         ]"
                     >
                         A vie
@@ -129,7 +143,7 @@
 
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+            <div class="flex flex-row justify-center items-center gap-8 ">
 
                 <Pricing_card 
                     v-for="(plan, index) in pricing_plan_list"
@@ -141,6 +155,7 @@
                     :functions="plan.functions" 
                     :mode_for="selected_mode_for"
                     :mode_date="selected_mode_date"
+                    class="min-w-80"
                 />
                 
             </div>
@@ -272,42 +287,54 @@ const pricing_plan_list: {
     }[], 
     recommended: boolean 
 }[] = [
-  {
-    title: "Débutant",
-    for: "Individuals or freelancers just getting started",
-    price: 0,
-    functions: [
-      { name: "jusqu'a 50 notes", includ: true },
-      { name: "jusqu'a 20 dossiers", includ: true },
-      { name: "mode hors ligne", includ: false },
-      { name: "notes chiffrées", includ: false },
-    ],
-    recommended: false,
-  },
-  {
-    title: "Essentiel",
-    for: "Growing teams and small businesses",
-    price: 29,
-    functions: [
-      { name: "jusqu'a 100 notes", includ: true },
-      { name: "jusqu'a 50 dossiers", includ: true },
-      { name: "mode hors ligne", includ: true },
-      { name: "notes chiffrées", includ: true },
-    ],
-    recommended: true,
-  },
-  {
-    title: "Pro",
-    for: "Large organizations with custom needs",
-    price: 45,
-    functions: [
-      { name: "jusqu'a 1000 notes", includ: true },
-      { name: "jusqu'a 100 dossiers", includ: true },
-      { name: "mode hors ligne", includ: true },
-      { name: "notes chiffrées", includ: true },
-    ],
-    recommended: false,
-  }
+    {
+        title: "Silver",
+        for: "Utilisateurs désirant tester la simplicité de silvernote.",
+        price: 0,
+        functions: [
+            { name: "jusqu'a 50 notes", includ: true },
+            { name: "jusqu'a 20 dossiers", includ: true },
+            { name: "mode hors ligne", includ: false },
+            { name: "notes chiffrées", includ: false },
+        ],
+        recommended: false,
+    },
+    {
+        title: "Gold",
+        for: "Utilisateurs confirmé désirant plus de sécurité.",
+        price: 5, // + 0.99
+        functions: [
+            { name: "jusqu'a 100 notes", includ: true },
+            { name: "jusqu'a 50 dossiers", includ: true },
+            { name: "mode hors ligne", includ: true },
+            { name: "notes chiffrées", includ: true },
+        ],
+        recommended: true,
+    },
+    {
+        title: "Platinum",
+        for: "Utilisateurs avancé, avec une offre sans prise de tête.",
+        price: 10, // + 0.99
+        functions: [
+            { name: "jusqu'a 1000 notes", includ: true },
+            { name: "jusqu'a 100 dossiers", includ: true },
+            { name: "mode hors ligne", includ: true },
+            { name: "notes chiffrées", includ: true },
+        ],
+        recommended: false,
+    },
+    {
+        title: "Ultimate",
+        for: "Utilisteurs désirant l'éxcélence d'une offre illimité !",
+        price: 15, // + 0.99
+        functions: [
+            { name: "notes illimités", includ: true },
+            { name: "dossiers illimités", includ: true },
+            { name: "mode hors ligne", includ: true },
+            { name: "notes chiffrées", includ: true },
+        ],
+        recommended: false,
+    }
 ]
 
 </script>
