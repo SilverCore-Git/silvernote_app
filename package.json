@@ -6,9 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "build_force": "vite build",
+    "build:force": "vite build",
     "verify": "vue-tsc -b",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "screen:mobile": "node scripts/take_a_screen.cjs mobile",
+    "screen:desktop": "node scripts/take_a_screen.cjs desktop"
   },
   "repository": {
     "type": "git",
@@ -33,7 +35,9 @@
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.21",
+    "path": "^0.12.7",
     "postcss": "^8.5.3",
+    "puppeteer": "^24.11.0",
     "tailwindcss": "^4.1.7",
     "typescript": "~5.8.3",
     "vite": "^6.3.5",
