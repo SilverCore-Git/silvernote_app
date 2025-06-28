@@ -128,12 +128,14 @@
                         Par ans
                     </button>
                     <button
-                        @click="selected_mode_date = 3"
+                        @click="selected_mode_for !== 2 ? selected_mode_date = 3 : selected_mode_date = selected_mode_date"
                         :class="[
                             baseClass,
-                            selected_mode_for === 3 
-                                ? 'border-0 bg-transparent' 
-                                : selected_mode_date === 3 ? activeClass : inactiveClass
+                            selected_mode_for === 2
+                                ? 'contrast-60 bg-[var(--bg3)] text-gray-600'
+                                : selected_mode_for === 3 
+                                    ? 'border-0 bg-transparent' 
+                                    : selected_mode_date === 3 ? activeClass : inactiveClass
                         ]"
                     >
                         A vie
