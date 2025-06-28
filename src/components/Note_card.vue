@@ -1,8 +1,8 @@
 <template>
 
   <div
-    class="note-card bg-[var(--bg2)] text-[var(--text)] p-3 border-[var(--text)]
-            border-2 relative cursor-pointer mb-4 md:h-[28vh]"
+    class="note-card min-w-60 bg-[var(--bg2)] text-[var(--text)] p-3 border-[var(--text)]
+            border-2 relative cursor-pointer md:h-[28vh]"
     style="border-radius: var(--br-card);"
     @click="open_note"
   > 
@@ -37,7 +37,7 @@
             <ul>
 
               <li 
-                class="flex flex-row text-white"
+                class="flex flex-row"
                 @click.stop="() => { manage_tags = true; dropdown = false; }" 
                 :class="hitbox ? 'bg-teal-600 border-1 border-black' : ''" 
               >
@@ -100,7 +100,7 @@
       {{ utils.htmlToText(content) }}
     </p>
 
-    <div class="absolute left-1 bottom-1 w-[60%] whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
+    <div class="absolute left-1 bottom-1 max-w-[60%] overflow-scroll whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
       <span v-for="(tag, index) in Tags" :key="index" class="ml-2 border-1 border-[var(--text)] pr-1.5 pl-1.5 rounded-[var(--br-tag)]" :style="{ backgroundColor: tag.color, color: utils.get_text_color(tag.color) }" :class="hitbox ? 'bg-teal-500' : ''">{{ tag.name }}</span>
     </div>
     <label class="absolute right-2 bottom-1 z-10" :class="hitbox ? 'bg-teal-500' : ''">{{ date }}</label>

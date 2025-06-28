@@ -9,7 +9,7 @@
       <div class="loading-bar"></div>
     </div>
 
-    <img class="w-[150px] mt-5" src="/favicon.svg" alt="">
+    <img v-if="icon" class="w-[150px] mt-5" src="/favicon.svg" alt="">
 
   </div>
 
@@ -44,3 +44,14 @@
     }
 
 </style>
+
+
+<script lang="ts" setup>
+
+withDefaults(defineProps<{
+  icon?: boolean;
+}>(), {
+  icon: true
+})
+
+</script>

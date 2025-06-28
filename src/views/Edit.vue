@@ -6,17 +6,6 @@
 
     <div class="flex flex-row gap-4 absolute right-0">
 
-      <!-- <div
-        class="edit_note"
-        :style="{
-          backgroundImage: if_edit_note_active
-            ? `url(${edit_note_Full})`
-            : `url(${edit_note_Empty})`
-        }"
-        :class="hitbox ? 'bg-red-600' : ''"
-        @click="change_edit_state"
-      ></div> -->
-
       <div
         class="pin"
         :style="{
@@ -44,9 +33,7 @@
       :class="hitbox ? 'bg-indigo-600' : ''"
     />
 
-    <RichMarkdownEditor :class="hitbox ? 'bg-blue-600' : ''" :simplify_text="if_edit_note_active" :id="note.id" />
-
-    <!-- <MarkdownEditor :id="note.id" v-else /> -->
+    <RichMarkdownEditor v-bind="attrs" :class="hitbox ? 'bg-blue-600' : ''" :id="note.id" />
 
   </section>
 
@@ -54,7 +41,8 @@
 
 <script lang="ts" setup>
 
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, useAttrs } from 'vue';
+
 import { useRouter, useRoute } from 'vue-router';
 
 import db from '../assets/ts/database';
@@ -69,18 +57,14 @@ import type { Note } from '../assets/ts/type';
 const router = useRouter();
 const route = useRoute();
 
-// Importation des composants
 import RichMarkdownEditor from '../components/RichMarkdownEditor.vue';
-//import MarkdownEditor from '../components/MarkdownEditor.vue';
 
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';
-// import edit_note_Full from '/assets/webp/note-edit_plein.webp?url';
-// import edit_note_Empty from '/assets/webp/note-edit_vide.webp?url';
 
-// État pour la gestion de l'édition et du pin
 const if_pin_active = ref(route.query.pinned == "true");
-const if_edit_note_active = ref(route.query.simply_edit == 'true');
+
+const attrs = useAttrs()
 
 // Initialisation de la note
 const note = ref<Note>({
@@ -157,18 +141,6 @@ const change_pin_state = (): void => {
   });
   db.togle_pinned(Number(route.query.id));
 };
-
-// Fonction pour changer l'état
-// const change_edit_state = (): void => {
-//   if_edit_note_active.value = !if_edit_note_active.value;
-
-//   router.push({ 
-//     query: { 
-//       ...route.query,
-//       simply_edit: if_edit_note_active.value ? 'true' : 'false'
-//     }
-//   });
-// };
 
 </script>
 

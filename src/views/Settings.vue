@@ -18,7 +18,6 @@
         >
 
             <h1 
-                style="font-family: 'Montserrat'" 
                 class="text-2xl mb-1 font-bold"
                 v-if="!isDevModSection(Object.keys(settings)[sectionIndex]) || isDevModeEnabled()"
             >
@@ -66,7 +65,6 @@
         >
 
             <h1 
-                style="font-family: 'Montserrat'" 
                 class="text-2xl mb-1 font-bold"
             >
                 Paramètres base de données

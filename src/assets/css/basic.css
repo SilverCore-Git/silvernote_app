@@ -60,3 +60,13 @@
     color: #555;
     cursor: pointer;
 }
+
+.prose code {
+  color: var(--btn); 
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.95em;
+  white-space: pre-wrap;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

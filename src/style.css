@@ -18,12 +18,12 @@ body {
   background-color: var(--bg);
   color: var(--text);
   overflow-x: hidden;
-  font-family: 'Roboto';
+  font-family: 'Inter', sans-serif;
   transition: background-color 900ms;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Montserrat';
+  font-family: 'InterTight', sans-serif;
 }
 
 .scrollbar-none::-webkit-scrollbar {

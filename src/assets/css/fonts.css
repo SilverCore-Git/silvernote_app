@@ -1,15 +1,10 @@
 
 @font-face {
-  font-family: 'Roboto';
-  src: url('../fonts/roboto.ttf') format('truetype');
+  font-family: 'Inter';
+  src: url('../fonts/inter.ttf') format('truetype');
 }
 
 @font-face {
-  font-family: 'Montserrat';
-  src: url('../fonts/montserrat.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Exo2';
-  src: url('../fonts/exo2.ttf') format('truetype');
+  font-family: 'InterTight';
+  src: url('../fonts/InterTight.ttf') format('truetype');
 }

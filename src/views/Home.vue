@@ -3,7 +3,7 @@
 
     <header 
         style="
-            font-family: 'Montserrat', sans-serif; 
+            font-family: 'InterTight', sans-serif; 
             box-shadow: 0 0 15px #36363681;
             padding-top: calc(env(safe-area-inset-top)/2);
         " 
@@ -549,14 +549,23 @@
     };
 
     onMounted(async () => {
+
         if_danger_card.value = isOnline.value ? await back.info_message() ? true : false : false; 
         Danger_card_props.value = isOnline.value ? await back.info_message() : undefined;
+
+        all_tags.value = undefined;
+        list_notes.value = [];
+
         setTimeout(async () => {
             all_tags.value = await db.getAll('tags');
             await init_notes(list_notes);
-        }, isOnline.value ? 500 : 0);
+        }, isOnline.value ? 600 : 0);
+
     });
 
+    setTimeout(async () => {
+        await reload_list();
+    }, 0)
 
     watch(all_tags, async (newVal, oldVal) => {
 

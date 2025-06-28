@@ -2,55 +2,88 @@
 
   <div class="editor-container" @click="focusEditor">
     <editor-content :editor="editor ?? undefined" class="prose h-full" />
+    <loader v-if="loader" class=" absolute inset-0 " :icon="false" />
   </div>
 
-  <div v-if="!isLargeScreen" class="fixed w-screen z-50" style="bottom: env(safe-area-inset-bottom);">
+  <div v-if="!isLargeScreen" class="fixed bottom-0 inset-x-0 z-50 pb-[env(safe-area-inset-bottom)]">
 
-    <div 
-      class="
-              absolute left-0 right-0 bottom-0
-              flex flex-row gap-1 justify-between items-center 
-              bg-[var(--bg2)] border-t-1 border-[var(--text)]  text-[var(--text)]
-            "
+    <div
+      class="mx-2 mb-2 flex justify-between items-center gap-2 rounded-2xl bg-[var(--bg2)] text-[var(--text)] border border-[var(--btn)] px-4 py-2 shadow-lg backdrop-blur-sm"
     >
 
-      <ul class="ml-2">
-        <button @click="toggleHeading(1)">H1</button>
-        <button @click="toggleHeading(2)">H2</button>
-        <button @click="toggleHeading(3)">H3</button>
-        <button @click="toggleHeading(4)">H4</button>
-      </ul>
+      <div class="flex gap-1">
 
-      <!-- <ul class="gap-1 flex flex-row">
-        <li><button @click="if_open_color = !if_open_color" class="color-svg"></button></li>
-        <li><button @click="handleCopyPaste" class="copy-svg"></button></li>
-      </ul> -->
+        <button
+          v-for="n in 4"
+          :key="n"
+          @click="toggleHeading(n)"
+          class="px-2 py-1 rounded-md text-sm font-medium transition-colors hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer"
+        >H{{ n }}</button>
 
-      <ul class="mr-2">
-        <button @click="toggleBold" :class="{ active: isBoldActive }"><strong>B</strong></button>
-        <button @click="toggleItalic" :class="{ active: isItalicActive }"><i>i</i></button>
-        <button @click="toggleStrike" :class="{ active: isStrikeActive }"><s>S</s></button>
-        <button @click="toggleUnderline" :class="{ active: isUnderlineActive }"><u>U</u></button>
-      </ul>
+      </div>
+
+      <div class="flex gap-1">
+
+        <button 
+          @click="toggleBold" 
+          :class="[ 
+            'px-2 py-1 rounded-md text-sm font-medium transition-colors border-2 border-transparent hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer', 
+            { 'bg-[var(--text)] text-[var(--bg2)] border-2 border-[var(--btn)];': isBoldActive } 
+            ]"
+          >
+            <strong>B</strong>
+        </button>
+
+        <button 
+          @click="toggleItalic" 
+          :class="[ 
+            'px-2 py-1 rounded-md text-sm font-medium transition-colors border-2 border-transparent hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer', 
+            { 'bg-[var(--text)] text-[var(--bg2)] border-2 border-[var(--btn)];': isItalicActive } 
+            ]"
+          >
+            <em>i</em>
+        </button>
+
+        <button 
+          @click="toggleStrike" 
+          :class="[ 
+            'px-2 py-1 rounded-md text-sm font-medium transition-colors border-2 border-transparent hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer', 
+            { 'bg-[var(--text)] text-[var(--bg2)] border-2 border-[var(--btn)];': isStrikeActive } 
+            ]"
+          >
+            <s>S</s>
+        </button>
+
+        <button 
+          @click="toggleUnderline" 
+          :class="[ 
+            'px-2 py-1 rounded-md text-sm font-medium transition-colors border-2 border-transparent hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer', 
+            { 'bg-[var(--text)] text-[var(--bg2)] border-2 border-[var(--btn)];': isUnderlineActive } 
+            ]"
+          >
+            <u>U</u>
+        </button>
+
+      </div>
+
+      <div>
+
+        <button 
+          @click="toggleCode" 
+          :class="[ 
+            'px-2 py-1 rounded-md text-sm font-medium transition-colors border-2 border-transparent hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer', 
+            { 'bg-[var(--text)] text-[var(--bg2)] border-2 border-[var(--btn)];': isCodeActive } 
+            ]"
+          >
+            &lt;&gt;
+          </button>
+
+      </div>
 
     </div>
 
   </div>
 
-  <transition>
-
-    <section 
-      v-if="if_open_color"
-      class="absolute boottom-0 "
-    >
-
-      <div>
-
-      </div>
-
-    </section>
-
-  </transition>
 
 </template>
 
@@ -67,6 +100,7 @@ import { Extension } from '@tiptap/core'
 
 import { evaluate } from 'mathjs'
 
+import Loader from './Loader.vue'
 import db from '../assets/ts/database'
 
 const props = defineProps<{ id: number }>()
@@ -80,54 +114,24 @@ onMounted(() => {
 })
 
 
+const loader = ref<boolean>(true);
 const editor = ref<Editor | undefined>();
 const content = ref<string>('');
-//const text = ref<string>('');
-const if_open_color = ref<boolean>(true);
-
-// const handleCopyPaste = async () => {
-
-//   try {
-
-//     const selection = editor.value?.state.doc.textBetween(
-//       editor.value.state.selection.from,
-//       editor.value.state.selection.to,
-//       ' '
-//     ) || ''
-
-
-//     if (selection) {
-
-//       await navigator.clipboard.writeText(selection)
-//       console.log('Texte sélectionné copié:', selection)
-//     } else {
-
-//       const fromClipboard = await navigator.clipboard.readText()
-//       await editor.value?.chain().focus().insertContent(fromClipboard).run()
-//       text.value = fromClipboard
-//       console.log('Texte collé:', fromClipboard)
-//       text.value = '';
-
-//     }
-
-//   } catch (error) {
-//     console.error('Erreur lors du copier/coller', error)
-//   };
-
-// };
 
 
 const toggleBold = () => editor.value?.chain().focus().toggleBold().run();
 const toggleItalic = () => editor.value?.chain().focus().toggleItalic().run();
 const toggleStrike = () => editor.value?.chain().focus().toggleStrike().run();
+const toggleCode = () => editor.value?.chain().focus().toggleCode().run();
 const toggleUnderline = () => editor.value?.chain().focus().toggleUnderline().run();
-const toggleHeading = (level: 1 | 2 | 3 | 4) => editor.value?.chain().focus().toggleHeading({ level }).run();
+const toggleHeading = (level: any) => editor.value?.chain().focus().toggleHeading({ level }).run();
 
 // États des boutons (actifs ou non)
 const isBoldActive = computed(() => editor.value?.isActive('bold') || false);
 const isItalicActive = computed(() => editor.value?.isActive('italic') || false)
 const isStrikeActive = computed(() => editor.value?.isActive('strike') || false)
 const isUnderlineActive = computed(() => editor.value?.isActive('underline') || false)
+const isCodeActive = computed(() => editor.value?.isActive('code') || false)
 
 // Donne le focus à l'éditeur si non actif
 const focusEditor = () => {
@@ -232,6 +236,8 @@ onMounted(async () => {
       },
     })
 
+    loader.value = false;
+
   }, 500);
 
 })
@@ -271,15 +277,6 @@ onBeforeUnmount(() => {
   pointer-events: none;
 }
 
-button {
-  padding: 4px 8px;
-  border: 1px solid transparent;
-  cursor: pointer;
-  color: var(--text);
-}
-button.active {
-  border: 1px solid #F28C28;
-}
 
 .copy-svg {
   width: 28px;

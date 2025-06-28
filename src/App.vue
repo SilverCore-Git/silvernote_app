@@ -36,10 +36,12 @@
 
   const init_db = async () => {
     if (wasOnline) {
-        await db.reset()
         const data = await back.get_all();
-        await db.add_notes(data.notes);
-        await db.add_tags(data.tags);
+        if (data) {
+          await db.reset()
+          await db.add_notes(data.notes);
+          await db.add_tags(data.tags);
+        }
     }
   }
   init_db();
