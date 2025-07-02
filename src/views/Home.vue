@@ -225,7 +225,7 @@
         >
 
             <ul 
-                class="grid grid-cols-1 gap-4
+                class="grid grid-cols-1 gap-4 overflow-hidden
                         md:grid-cols-[calc(100%/3_-_1rem)_calc(100%/3_-_1rem)_calc(100%/3_-_1rem)] 
                         lg:grid-cols-[calc(100%/4_-_1rem)_calc(100%/4_-_1rem)_calc(100%/4_-_1rem)_calc(100%/4_-_1rem)] 
                        "

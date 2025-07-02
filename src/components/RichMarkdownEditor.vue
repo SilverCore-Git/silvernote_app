@@ -5,7 +5,7 @@
     <loader v-if="loader" class=" absolute inset-0 " :icon="false" />
   </div>
 
-  <div v-if="!isLargeScreen" class="fixed bottom-0 inset-x-0 z-50 pb-[env(safe-area-inset-bottom)]">
+  <div v-if="!isLargeScreen" class="fixed bottom-0 inset-x-0 z-50 pb-[env(safe-area-inset-bottom)] overflow-hidden">
 
     <div
       class="mx-2 mb-2 flex justify-between items-center gap-2 rounded-2xl bg-[var(--bg2)] text-[var(--text)] border border-[var(--btn)] px-4 py-2 shadow-lg backdrop-blur-sm"
