@@ -1,14 +1,28 @@
 <template>
 
-  <div class="mr-[var(--mrl)] ml-[var(--mrl)] relative">
-    <router-view></router-view>
-  </div>
+  <SignedIn>
 
-  <div class=" absolute inset-0 bg-[var(--bg)] z-50" v-if="loader">
-      <div class="flex justify-center items-center w-screen h-screen">
-          <Loader />
-      </div>
-  </div>
+    <div class="mr-[var(--mrl)] ml-[var(--mrl)] relative">
+      <router-view></router-view>
+    </div>
+
+    <div class=" absolute inset-0 bg-[var(--bg)] z-50" v-if="loader">
+        <div class="flex justify-center items-center w-screen h-screen">
+            <Loader />
+        </div>
+    </div>
+
+  </SignedIn>
+
+  <SignedOut>
+
+    <div class="flex justify-center items-center w-screen h-screen">
+
+      <SignIn />
+
+    </div>
+
+  </SignedOut>
 
 </template>
 
@@ -23,6 +37,8 @@
 
   import db from './assets/ts/database';
   import back from './assets/ts/backend_link';
+
+  import { SignedIn, SignedOut, SignIn } from '@clerk/vue';
 
   const loader = ref<boolean>(true);
   const wasOnline = localStorage.getItem('online') === 'true';
