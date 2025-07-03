@@ -21,7 +21,7 @@
                 {{ title }} {{ mode_for == 2 ? 'famille' : mode_for == 3 ? 'entreprise' : '' }}
             </h3>
 
-            <p class="text-gray-600 mb-6" v-html="for"></p>
+            <p class="text-gray-600 mb-6" v-html="foru"></p>
 
             <div class="text-5xl font-extrabold text-[var(--btn)] mb-6">
 
@@ -112,7 +112,7 @@
 
 defineProps<{
     title: string;
-    for: string;
+    foru: string;
     price: number;
     functions: { name: string, includ: boolean }[];
     recommended: boolean;

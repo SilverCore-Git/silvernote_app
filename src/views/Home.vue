@@ -151,7 +151,7 @@
                     v-for="(plan, index) in pricing_plan_list"
                     :key="index"
                     :title="plan.title" 
-                    :for="plan.for" 
+                    :foru="plan.for" 
                     :price="plan.price" 
                     :recommended="plan.recommended" 
                     :functions="plan.functions" 
@@ -233,8 +233,11 @@
 import { ref } from 'vue';
 
 import { Swiper, SwiperSlide } from 'swiper/vue'
-import SwiperCore, { Autoplay, Pagination } from 'swiper'
+import SwiperCore from 'swiper'
+import { Autoplay, Pagination } from 'swiper/modules'
+
 SwiperCore.use([Autoplay, Pagination])
+
 
 import 'swiper/css'
 import 'swiper/css/pagination'
