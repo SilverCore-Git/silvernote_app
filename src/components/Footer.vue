@@ -6,7 +6,7 @@
 
             <div class="mb-4 md:mb-0">
                 <h3 class="text-2xl font-bold mb-2">SilverNote</h3>
-                <p class="text-gray-400">&copy; 2025 SilverNote. Tous droits réservés.</p>
+                <p class="text-gray-400">&copy; {{ year }} SilverNote. Tous droits réservés.</p>
             </div>
 
             <div class="flex space-x-6">
@@ -26,5 +26,8 @@
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+
+const year: number = new Date().getFullYear();
+
 
 </script>

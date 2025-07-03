@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import Home from './views/Home.vue';
 import Politic from './views/Politique_de_confidentialite.vue';
-
+import Test from './views/Test.vue';
 
 const routes = [
   { 
@@ -18,6 +18,13 @@ const routes = [
     component: Politic,
     props: {},
     meta: { title: 'SilverNote - confidentialité' }
+  },
+  { 
+    path: '/test', 
+    name: 'test', 
+    component: Test,
+    props: {},
+    meta: { title: 'SilverNote - test' }
   }
 ]
 

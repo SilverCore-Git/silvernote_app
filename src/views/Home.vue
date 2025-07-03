@@ -171,14 +171,27 @@
         <div class=" mx-auto px-4 max-w-4xl flex flex-col sm:flex-row ">
 
             <div class="mb-8 sm:mb-0">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gray-900">Prêt à simplifier vos notes ?</h2>
-                <p class="text-xl md:text-2xl mb-10 text-gray-700">Rejoignez des milliers d'utilisateurs et commencez à organiser votre vie avec SilverNote dès aujourd'hui.</p>
-                <button class="primary text-xl px-8 py-4">Créer votre compte gratuit</button>
+
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
+                    Prêt à simplifier vos notes ?
+                </h2>
+
+                <p class="text-xl md:text-2xl mb-10 text-gray-700">
+                    Rejoignez des milliers d'utilisateurs et commencez à organiser votre vie avec SilverNote dès aujourd'hui.
+                </p>
+
+                <SignInButton>
+                    <button class="primary text-xl px-8 py-4">
+                        Créer votre compte gratuit
+                    </button>
+                </SignInButton>
+
             </div>
 
             <Swiper
                 :slides-per-view="1"
                 :space-between="10"
+                :modules="modules"
                 :loop="true"
                 :autoplay="{
                     delay: 5000,
@@ -232,15 +245,15 @@
 
 import { ref } from 'vue';
 
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import SwiperCore from 'swiper'
-import { Autoplay, Pagination } from 'swiper/modules'
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Autoplay, Pagination } from 'swiper/modules';
+const modules = [Autoplay, Pagination];
 
-SwiperCore.use([Autoplay, Pagination])
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
 
-
-import 'swiper/css'
-import 'swiper/css/pagination'
+import { SignInButton } from '@clerk/vue'
 
 import Nav_bar from '../components/Nav_bar.vue';
 import Card from '../components/Card.vue';

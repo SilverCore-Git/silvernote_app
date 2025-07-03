@@ -1,3 +1,3 @@
 <template>
-  <router-view></router-view>
+  <router-view class=" mx-auto"></router-view>
 </template>

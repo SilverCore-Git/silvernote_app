@@ -2,7 +2,7 @@
     
     <div class="bg-[var(--bg2)] shadow-sm py-4 px-6 md:px-12 flex justify-between items-center rounded-b-xl">
 
-        <img class="w-13" src="/favicon.svg" @click="router.push('/')" alt="logo">
+        <img class="w-13 cursor-pointer" src="/favicon.svg" @click="router.push('/')" alt="logo">
 
         <ul class="hidden md:flex items-center space-x-6">
             <li @click="router.push('/')"><a>Maison</a></li>
@@ -10,17 +10,7 @@
             <li @click="scroll_to('price_plan')"><a>Tarifs et abonements</a></li>
         </ul>
 
-        <div>
-
-            <button class="second mr-4">
-                Se connecter
-            </button>
-
-            <button class="primary">
-                S'inscrire
-            </button>
-
-        </div>
+        <Sing_in_btn /> 
 
         <div class="md:hidden">
 
@@ -46,6 +36,7 @@
 
 <script lang="ts" setup>
 
+import Sing_in_btn from './Sing_in_btn.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
