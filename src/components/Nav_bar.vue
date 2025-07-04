@@ -8,6 +8,7 @@
             <li @click="router.push('/')"><a>Maison</a></li>
             <li @click="scroll_to('function')"><a>Fonctionalités</a></li>
             <li @click="scroll_to('price_plan')"><a>Tarifs et abonements</a></li>
+            <li @click="router.push('/download')"><a>Télécharger</a></li>
         </ul>
 
         <Sing_in_btn /> 

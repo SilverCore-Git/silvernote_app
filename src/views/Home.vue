@@ -25,7 +25,7 @@
                 </p>
 
                 <div class=" flex flex-col sm:flex-row justify-center items-center">
-                    <button @click="" class="primary m-4">Commencer gratuitement</button>
+                    <a href="https://app.silvernote.fr"><button class="primary m-4">Découvrir silvernote</button></a>
                     <button @click="scroll_to('function')" style="backdrop-filter: blur(50px);" class="second">En savoir plus</button>
                 </div>
 
