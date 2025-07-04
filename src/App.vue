@@ -16,9 +16,27 @@
 
   <SignedOut>
 
-    <div class="flex justify-center items-center w-screen h-screen">
+    <div class="flex flex-col justify-center items-center w-screen h-screen">
 
-      <SignIn />
+      <img class="w-20 mb-2" src="/favicon.svg" alt="">
+
+      <h1 class="text-3xl font-bold mb-8">silvernote</h1>
+
+      <SignInButton class="mb-2">
+
+        <button class="second w-35">
+          Se connecter 
+        </button>
+
+      </SignInButton>
+
+      <SignUpButton>
+
+        <button class="primary w-35">
+          S'inscrire 
+        </button>
+
+      </SignUpButton>
 
     </div>
 
@@ -38,7 +56,7 @@
   import db from './assets/ts/database';
   import back from './assets/ts/backend_link';
 
-  import { SignedIn, SignedOut, SignIn } from '@clerk/vue';
+  import { SignedIn, SignedOut, SignInButton, SignUpButton } from '@clerk/vue';
 
   const loader = ref<boolean>(true);
   const wasOnline = localStorage.getItem('online') === 'true';
