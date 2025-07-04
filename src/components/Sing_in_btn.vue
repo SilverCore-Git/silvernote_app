@@ -6,25 +6,25 @@
 
       <SignInButton>
 
-        <div>
-
-            <button 
-                v-if="login || true" 
-                class="second mr-4"
-            >
-                Se connecter
-            </button>
-
-            <button 
-                v-if="register || true"
-                class="primary"
-            >
-                S'inscrire
-            </button>
-
-        </div>
+        <button 
+            v-if="login || true" 
+            class="second mr-4"
+        >
+            Se connecter
+        </button>
         
       </SignInButton>
+
+      <SignUpButton>
+
+        <button 
+            v-if="register || true"
+            class="primary"
+        >
+            S'inscrire
+        </button>
+
+      </SignUpButton>
 
     </SignedOut>
 
@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 
-    import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/vue'
+    import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/vue'
 
     defineProps<{
         register?: boolean;

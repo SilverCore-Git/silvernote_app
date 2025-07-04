@@ -180,11 +180,11 @@
                     Rejoignez des milliers d'utilisateurs et commencez à organiser votre vie avec SilverNote dès aujourd'hui.
                 </p>
 
-                <SignInButton>
+                <SignUpButton>
                     <button class="primary text-xl px-8 py-4">
                         Créer votre compte gratuit
                     </button>
-                </SignInButton>
+                </SignUpButton>
 
             </div>
 
@@ -253,7 +253,7 @@ const modules = [Autoplay, Pagination];
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-import { SignInButton } from '@clerk/vue'
+import { SignUpButton } from '@clerk/vue'
 
 import Nav_bar from '../components/Nav_bar.vue';
 import Card from '../components/Card.vue';
