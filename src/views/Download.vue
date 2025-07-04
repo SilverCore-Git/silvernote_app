@@ -4,57 +4,29 @@
         <Nav_bar />
     </nav>
 
-    <header class="mt-30 w-screen text-center">
+    <header class="mt-40 w-screen text-center">
         <h1 class="uppercase text-9xl font-extrabold">Télécharger silvernote</h1>
+		<span>version {{ version }}</span>
     </header>
 
-    <main class="px-10 py-20 max-w-4xl mx-auto text-left text-lg space-y-8 text-[var(--text)]">
+    <main class="px-10 py-20 max-w-4xl mx-auto text-left text-lg space-y-8 text-[var(--text)] mb-1">
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
 
             <Download_card
-                :svg="svg_win"
-                platform="windows"
-                platformName="Windows"
-                downloadLink="https://download.silvernote.fr/windows"
-                buttonText="Télécharger pour PC"
+
+				v-for="(truc, index) in platform_list"
+				:key="index"
+
+                :platform="truc.platform"
+                :platformName="truc.platformName"
+                :downloadLink="truc.downloadLink"
+                :buttonText="truc.buttonText"
+				:svgbg="truc.svg"
+				:linux_props="truc?.linux_props"
+
             />
 
-            <Download_card
-                platform="macos"
-                platformName="macOS"
-                downloadLink="https://download.silvernote.fr/macos"
-                buttonText="Télécharger pour Mac"
-            />
-
-            <Download_card
-                platform="android"
-                platformName="Android"
-                downloadLink="https://play.google.com/store/apps/details?id=com.silvernote"
-                buttonText="Obtenir sur Play Store"
-            />
-
-            <Download_card
-                platform="ios"
-                platformName="iOS"
-                downloadLink="https://apps.apple.com/app/silvernote"
-                buttonText="Obtenir sur l'App Store"
-            />
-
-            <Download_card
-                platform="web"
-                platformName="Version Web"
-                downloadLink="https://app.silvernote.fr"
-                buttonText="Lancer l'application web"
-            />
-
-            <Download_card
-                platform="linux"
-                platformName="Linux"
-                downloadLink="https://download.silvernote.fr/linux"
-                buttonText="Télécharger pour Linux"
-            />
-            
         </div>
 
     </main>
@@ -66,79 +38,118 @@
 </template>
 
 <script lang="ts" setup>
+
+import { onMounted, ref } from 'vue';
 import Nav_bar from '../components/Nav_bar.vue';
 import Footer from '../components/Footer.vue';
 import Download_card from '../components/Download_card.vue';
 
-const svg_win: string = `
-<svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-	 viewBox="0 0 32 32" xml:space="preserve">
-<style type="text/css">
-	.st0{fill:#FFFFFF;}
-	.st1{fill:#3A559F;}
-	.st2{fill:#F4F4F4;}
-	.st3{fill:#FF0084;}
-	.st4{fill:#0063DB;}
-	.st5{fill:#00ACED;}
-	.st6{fill:#FFEC06;}
-	.st7{fill:#FF0000;}
-	.st8{fill:#25D366;}
-	.st9{fill:#0088FF;}
-	.st10{fill:#314358;}
-	.st11{fill:#EE6996;}
-	.st12{fill:#01AEF3;}
-	.st13{fill:#FFFEFF;}
-	.st14{fill:#F06A35;}
-	.st15{fill:#00ADEF;}
-	.st16{fill:#1769FF;}
-	.st17{fill:#1AB7EA;}
-	.st18{fill:#6001D1;}
-	.st19{fill:#E41214;}
-	.st20{fill:#05CE78;}
-	.st21{fill:#7B519C;}
-	.st22{fill:#FF4500;}
-	.st23{fill:#00F076;}
-	.st24{fill:#FFC900;}
-	.st25{fill:#00D6FF;}
-	.st26{fill:#FF3A44;}
-	.st27{fill:#FF6A36;}
-	.st28{fill:#0061FE;}
-	.st29{fill:#F7981C;}
-	.st30{fill:#EE1B22;}
-	.st31{fill:#EF3561;}
-	.st32{fill:none;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}
-	.st33{fill:#0097D3;}
-	.st34{fill:#01308A;}
-	.st35{fill:#019CDE;}
-	.st36{fill:#FFD049;}
-	.st37{fill:#16A05D;}
-	.st38{fill:#4486F4;}
-	.st39{fill:none;}
-	.st40{fill:#34A853;}
-	.st41{fill:#4285F4;}
-	.st42{fill:#FBBC05;}
-	.st43{fill:#EA4335;}
-</style>
-<g>
-	<g>
-		<g>
-			<path class="st15" d="M30,15H17c-0.6,0-1-0.4-1-1V3.3c0-0.5,0.4-0.9,0.8-1l13-2.3c0.3,0,0.6,0,0.8,0.2C30.9,0.4,31,0.7,31,1v13
-				C31,14.6,30.6,15,30,15z"/>
-		</g>
-		<g>
-			<path class="st15" d="M13,15H1c-0.6,0-1-0.4-1-1V6c0-0.5,0.4-0.9,0.8-1l12-2c0.3,0,0.6,0,0.8,0.2C13.9,3.4,14,3.7,14,4v10
-				C14,14.6,13.6,15,13,15z"/>
-		</g>
-		<g>
-			<path class="st15" d="M30,32c-0.1,0-0.1,0-0.2,0l-13-2.3c-0.5-0.1-0.8-0.5-0.8-1V18c0-0.6,0.4-1,1-1h13c0.6,0,1,0.4,1,1v13
-				c0,0.3-0.1,0.6-0.4,0.8C30.5,31.9,30.2,32,30,32z"/>
-		</g>
-		<g>
-			<path class="st15" d="M13,29c-0.1,0-0.1,0-0.2,0l-12-2C0.4,26.9,0,26.5,0,26v-8c0-0.6,0.4-1,1-1h12c0.6,0,1,0.4,1,1v10
-				c0,0.3-0.1,0.6-0.4,0.8C13.5,28.9,13.2,29,13,29z"/>
-		</g>
-	</g>
-</g>
-</svg>`;
+const version = ref<string>('v-1');
+
+let win_url: string | undefined;
+let macos_url: string | undefined;
+let linux_appimage_url: string | undefined;
+let linux_deb_url: string | undefined;
+let linux_rpm_url: string | undefined;
+
+let platform_list = ref<{ 
+    platform: string;
+    platformName: string;
+    downloadLink: string | undefined;
+    buttonText: string;
+    svg: string;
+	linux_props?: { 
+		is: boolean, 
+		appimage: string | undefined, 
+		deb: string | undefined, 
+		rpm: string | undefined 
+	};
+}[] | undefined>(undefined);
+
+onMounted(async () => {
+
+	try {
+
+		const repo = await fetch('https://api.github.com/repos/silvercore-git/silvernote/releases/latest')
+		.then(res => {
+			return res.json() as Promise<{ tag_name: string; assets_url: string; }>;
+		});
+
+		version.value = repo.tag_name;
+
+		const assets = await fetch(repo.assets_url)
+		.then(res => {
+			return res.json() as Promise<{ name: string; browser_download_url: string; }[]>;
+		});
+
+		win_url = assets.find(asset => asset.name.includes('win-setup.exe'))?.browser_download_url;
+		console.log(win_url)
+
+		macos_url = assets.find(asset => asset.name.includes('macos.dmg'))?.browser_download_url;
+
+		linux_appimage_url = assets.find(asset => asset.name.includes('linux-setup.AppImage'))?.browser_download_url;
+		linux_deb_url = assets.find(asset => asset.name.includes('linux-setup.deb'))?.browser_download_url;
+		linux_rpm_url = assets.find(asset => asset.name.includes('linux-setup.rpm'))?.browser_download_url;
+
+	}
+	catch (err) {
+		console.error('Une erreur est survenue on get download link :', err);
+	}
+
+	platform_list.value = [
+		{
+			platform: 'windows',
+			platformName: 'Windows',
+			downloadLink: await win_url,
+			buttonText: 'Télécharger pour PC',
+			svg: '/assets/svg/windows.svg',
+		},
+		{
+			platform: 'macos',
+			platformName: 'macOS',
+			downloadLink: await macos_url,
+			buttonText: 'Télécharger pour Mac',
+			svg: '/assets/svg/apple.svg',
+		},
+		{
+			platform: 'android',
+			platformName: 'Android',
+			downloadLink: "https://a_mettre_dans_app_store",
+			buttonText: 'Obtenir sur Play Store',
+			svg: '/assets/svg/android.svg',
+		},
+		{
+			platform: 'ios',
+			platformName: 'iOS',
+			downloadLink: "https://a_mettre_dans_app_store",
+			buttonText: "Obtenir sur l'App Store",
+			svg: '/assets/svg/apple.svg', 
+		},
+		{
+			platform: 'web',
+			platformName: 'Version Web',
+			downloadLink: 'https://app.silvernote.fr',
+			buttonText: "Lancer l'application web",
+			svg: '/assets/svg/web.svg', 
+		},
+		{
+			platform: 'linux',
+			platformName: 'Linux',
+			downloadLink: '',
+			linux_props: {
+				is: true,
+				deb: await linux_deb_url,
+				appimage: await linux_appimage_url,
+				rpm: await linux_rpm_url
+			},
+			buttonText: 'Télécharger pour Linux',
+			svg: '/assets/svg/linux.svg',
+		},
+	];
+
+})
+
+
+
 
 </script>

@@ -6,8 +6,8 @@
 
         <ul class="hidden md:flex items-center space-x-6">
             <li @click="router.push('/')"><a>Maison</a></li>
-            <li @click="scroll_to('function')"><a>Fonctionalités</a></li>
-            <li @click="scroll_to('price_plan')"><a>Tarifs et abonements</a></li>
+            <li @click="router.push('/'); scroll_to('function')"><a>Fonctionalités</a></li>
+            <li @click="router.push('/'); scroll_to('price_plan')"><a>Tarifs et abonements</a></li>
             <li @click="router.push('/download')"><a>Télécharger</a></li>
         </ul>
 
@@ -26,9 +26,10 @@
     <div id="burger-menu" class="hidden md:hidden bg-white shadow-lg  py-4 rounded-b-xl mx-4">
 
         <ul class="flex items-center justify-center space-x-6">
-            <li @click="scroll_to('home')"><a>Maison</a></li>
-            <li @click="scroll_to('function')"><a>Fonctionalités</a></li>
-            <li @click="scroll_to('price_plan')"><a>Tarifs et abonements</a></li>
+            <li @click="router.push('/')"><a>Maison</a></li>
+            <li @click="router.push('/'); scroll_to('function')"><a>Fonctionalités</a></li>
+            <li @click="router.push('/'); scroll_to('price_plan')"><a>Tarifs et abonements</a></li>
+            <li @click="router.push('/download')"><a>Télécharger</a></li>
         </ul>
 
     </div>
