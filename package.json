@@ -3,7 +3,7 @@
   "productName": "Silvernote",
   "version": "0.0.0",
   "description": "My Electron application description",
-  "main": "src/app.js", 
+  "main": "src/app.js",
   "scripts": {
     "start": "DEV=false electron-forge start",
     "dev": "DEV=true electron-forge start",
