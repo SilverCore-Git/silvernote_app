@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import cors from 'cors';
 import path from 'path';
@@ -17,14 +18,15 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/', express.static(path.join(__dirname, 'public', 'index.html')));
 
-// Import des routes
+// Import routes
 import api from './routes/api';
 import user from './routes/user';
 
 app.use('/', api);
 app.use('/user', user);
 
-// Middleware 404
+
+// err 404
 app.use((req: Request, res: Response) => {
   res.status(404).json({ route: req.path, error: 'Route non trouvée' });
 });

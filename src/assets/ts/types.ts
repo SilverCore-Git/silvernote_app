@@ -1,15 +1,7 @@
+import { UUID } from "crypto";
 
 export interface User {
-  sub: string;
-  name: string;
-  given_name: string;
-  family_name: string;
-  nickname: string;
-  picture: string;
-  email: string;
-  email_verified: boolean;
-  updated_at: string;
-  locale: string;
+  id: string;
 }
 
 export interface Note {
@@ -35,9 +27,10 @@ export interface Layout_data {
     tags_lenght: number;
 }
 
-// export type Hash_data = {
-//     tags: Promise<string>;
-//     notes: Promise<string>;
-//     user: Promise<string>;
-//     layout: Promise<string>;
-// }
+export interface Session {
+    id: UUID;
+    start: Date;
+    end: Date;
+    user: string;
+    state: "open" | "close" | "error";
+}
