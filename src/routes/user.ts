@@ -10,6 +10,14 @@ router.post('/session/create', async (req: Request, res: Response) => {
 
   const sessions = await db.new_session(id);
 
+  res.cookie('session_id', sessions.id, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'strict',
+  });
+
+  res.json(sessions);
+
 })
 
 
