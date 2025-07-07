@@ -10,7 +10,8 @@ const app = express();
 const PORT: number = config.PORT;
 
 // Middlewares
-app.use(cors(config.corsOptions)); 
+app.use(cors(config.corsOptions));
+app.use(cookieParser('ma_clé_de_signature')); 
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
