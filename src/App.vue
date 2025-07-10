@@ -16,27 +16,48 @@
 
   <SignedOut>
 
-    <div class="flex flex-col justify-center items-center w-screen h-screen">
+    <div>
 
-      <img class="w-20 mb-2" src="/favicon.svg" alt="">
+      <div v-if="signin_form || signup_form" class="left-arrow absolute left-[var(--mrl)] top-[var(--mrl)]" @click="router.push('?form=main')"></div>
 
-      <h1 class="text-3xl font-bold mb-8">silvernote</h1>
+      <div v-if="main_form" class="flex flex-col justify-center items-center w-screen h-screen">
 
-      <a :href="`https://accounts.silvernote.fr/sign-in?redirect_url=${local_uri}`" class="mb-2">
+        <img class="w-20 mb-2" src="/favicon.svg" alt="">
 
-        <button class="second w-35">
-          Se connecter 
-        </button>
+        <h1 class="text-3xl font-bold mb-8">silvernote</h1>
 
-      </a>
+        <a @click="router.push('?form=signin')" class="mb-2">
 
-      <a :href="`https://accounts.silvernote.fr/sign-up?redirect_url=${local_uri}`">
+          <button class="second w-35">
+            Se connecter 
+          </button>
 
-        <button class="primary w-35">
-          S'inscrire 
-        </button>
+        </a>
 
-      </a>
+        <a @click="router.push('?form=signup')">
+
+          <button class="primary w-35">
+            S'inscrire 
+          </button>
+
+        </a>
+
+      </div>
+
+      <!-- for sign up -->
+      <div v-if="signup_form" class="flex flex-col justify-center items-center w-screen h-screen">
+
+        <SignUp />
+
+      </div>
+
+      <!-- for sign in -->
+      <div v-if="signin_form" class="flex flex-col justify-center items-center w-screen h-screen">
+
+        <SignIn />
+
+      </div>
+
 
     </div>
 
@@ -50,18 +71,31 @@
   init_theme();
 
   import { ref, onMounted, nextTick, watch } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
 
   import Loader from './components/Loader.vue';
 
   import db from './assets/ts/database';
   import back from './assets/ts/backend_link';
 
-  import { SignedIn, SignedOut } from '@clerk/vue';
+  import { SignedIn, SignedOut, SignIn, SignUp } from '@clerk/vue';
 
   const loader = ref<boolean>(true);
   const wasOnline = localStorage.getItem('online') === 'true';
   const isOnline = navigator.onLine;
-  const local_uri: string = encodeURIComponent(window.location.hostname === '' ? 'silvernote://oauth/callback' : `https://${window.location.hostname.replace('https://', '').replace('https://', '')}`);
+
+  const route = useRoute();
+  const router = useRouter();
+
+  const signin_form = ref<boolean>(route.query.form == "signin" ? true : false); 
+  const signup_form = ref<boolean>(route.query.form == "signup" ? true : false);
+  const main_form = ref<boolean>(route.query.form == "main" ? true : false);
+
+  watch(() => route.query.form, () => {
+    signin_form.value = route.query.form == "signin" ? true : false;
+    signup_form.value = route.query.form == "signup" ? true : false;
+    main_form.value = route.query.form == "main" ? true : false;
+  })
 
   if (!isOnline && wasOnline) {
     localStorage.setItem('online', 'false');
@@ -83,6 +117,8 @@
 
   onMounted(async () => {
   
+    if (!route.query.form) router.push('?form=main')
+
     await nextTick()
 
     setTimeout(() => {

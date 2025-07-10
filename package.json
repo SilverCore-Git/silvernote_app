@@ -17,6 +17,7 @@
     "url": "git+https://github.com/SilverCore-Git/silvernote.git"
   },
   "dependencies": {
+    "@clerk/clerk-js": "^5.71.0",
     "@clerk/vue": "^1.8.12",
     "@tiptap/extension-link": "^2.12.0",
     "@tiptap/extension-placeholder": "^2.12.0",
