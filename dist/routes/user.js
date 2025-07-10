@@ -5,54 +5,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
-const token_1 = __importDefault(require("../assets/ts/token"));
-;
-const user_accounts = [
-    { passwd: "mon_pass", mail: "fds@fds.fds", name: "jean", data: { user_key: '9e85834271241421d99e06a1c230419a', d: "data", access: { token: '', open: false, date: -1 } } },
-    { passwd: "passwd", mail: "mail@mail.mail", name: "michel", data: { user_key: '8a6db5829db4fb1e523b2546f5786931', d: "data", access: { token: '', open: false, date: -1 } } }
-];
-router.get('/', (req, res) => {
-    res.json({ message: '/user' });
+const database_1 = __importDefault(require("../assets/ts/database"));
+// route de création de session
+router.post('/session/create', async (req, res) => {
+    const { user_id, platform } = req.body; // id => user id || type => app type (web, electron, capacitor)
+    const sessions = await database_1.default.new_session(user_id);
+    if (platform == 'web') {
+        res.cookie('session_id', sessions.id, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+        });
+        res.cookie('user_id', user_id, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+        });
+        res.cookie('_platform', 'web', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+        });
+    }
+    res.json(sessions);
 });
-router.post('/session/create', (req, res) => {
-    const { passwd, mail } = req.body;
-    if (passwd && mail) {
-        const account = user_accounts.filter(user => user.mail == mail && user.passwd == passwd)[0];
-        if (account && account.passwd == passwd && account.mail == mail) {
-            account.data.access = { token: token_1.default.create(account), open: true, date: new Date().getDate() };
-            res.status(201).json({ success: true, key: account.data.access.token });
-        }
-        else {
-            res.status(402).json({ error: true, message: "Donnée de connections incorect." });
-        }
-        ;
+// route de fermeture de session
+router.post('/session/close', async (req, res) => {
+    const session_id = req.cookies.session_id;
+    const sessions = await database_1.default.verify_session(session_id);
+    if (sessions) {
+        const close = await database_1.default.close_session(session_id);
+        res.clearCookie('session_id', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+        });
+        res.clearCookie('user_id', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+        });
+        res.json(close);
     }
-    ;
 });
-router.post('/session/verify', (req, res) => {
-    const { token } = req.body;
-    try {
-        const session = token_1.default.verify(token);
-        if (session) {
-            res.status(201).json(session);
-        }
-    }
-    catch (err) {
-    }
-    ;
-});
-router.post('/login', (req, res) => {
-    const { passwd, mail } = req.body;
-    if (passwd && mail) {
-        const account = user_accounts.filter(user => user.mail == mail && user.passwd == passwd)[0];
-        if (account && account.passwd == passwd && account.mail == mail) {
-            res.status(200).json({ success: true, message: "Connecté avec success", data: account });
-        }
-        else {
-            res.status(402).json({ error: true, message: "Donnée de connections incorect." });
-        }
-        ;
-    }
-    ;
+// route de vérification de session
+router.post('/session/verify', async (req, res) => {
+    const session_id = req.cookies.session_id;
+    const sessions = await database_1.default.verify_session(session_id);
+    res.json(sessions);
 });
 exports.default = router;

@@ -4,6 +4,7 @@ const fsp = fs.promises;
 
 import utils from './utils';
 import type { Session, User } from './types';
+import { UUID } from 'crypto';
 
 class Database {
 
@@ -53,13 +54,13 @@ class Database {
 
         if (db_type == 'user') {
 
-            return await fsp.writeFile(this.db_users, JSON.stringify(data), 'utf-8');
+            return await fsp.writeFile(this.db_users, JSON.stringify(data, null, 2), 'utf-8');
 
         }
 
         if (db_type == 'sessions') {
 
-            return await fsp.writeFile(this.db_sessions, JSON.stringify(data), 'utf-8');
+            return await fsp.writeFile(this.db_sessions, JSON.stringify(data, null, 2), 'utf-8');
 
         }
 
@@ -89,6 +90,40 @@ class Database {
         await this.save('sessions', db);
 
         return session;
+
+    }
+
+    public async verify_session (session_id: UUID): Promise<boolean> {
+
+        const db: Session[] = await this.get('sessions');
+
+        const session: Session = db.filter(session => session.id = session_id )[0];
+
+        if (session && session?.state == "open") return true;
+        
+        return false
+
+    }
+
+    public async close_session (session_id: UUID): Promise<boolean | any> {
+
+        try {
+
+            const db: Session[] = await this.get('sessions');
+
+            const session: Session = db.filter(session => session.id = session_id )[0];
+            
+            session.state = "close";
+            session.end = new Date();
+
+            await this.save('sessions', db);
+
+            return true;
+
+        }
+        catch (err) {
+            return { error: true, message: err };
+        }
 
     }
 
