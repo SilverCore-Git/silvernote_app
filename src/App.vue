@@ -22,21 +22,21 @@
 
       <h1 class="text-3xl font-bold mb-8">silvernote</h1>
 
-      <SignInButton class="mb-2">
+      <a :href="`https://accounts.silvernote.fr/sign-in?redirect_url=${local_uri}`" class="mb-2">
 
         <button class="second w-35">
           Se connecter 
         </button>
 
-      </SignInButton>
+      </a>
 
-      <SignUpButton>
+      <a :href="`https://accounts.silvernote.fr/sign-up?redirect_url=${local_uri}`">
 
         <button class="primary w-35">
           S'inscrire 
         </button>
 
-      </SignUpButton>
+      </a>
 
     </div>
 
@@ -56,11 +56,12 @@
   import db from './assets/ts/database';
   import back from './assets/ts/backend_link';
 
-  import { SignedIn, SignedOut, SignInButton, SignUpButton } from '@clerk/vue';
+  import { SignedIn, SignedOut } from '@clerk/vue';
 
   const loader = ref<boolean>(true);
   const wasOnline = localStorage.getItem('online') === 'true';
   const isOnline = navigator.onLine;
+  const local_uri: string = encodeURIComponent(window.location.hostname === '' ? 'silvernote://oauth/callback' : `https://${window.location.hostname.replace('https://', '').replace('https://', '')}`);
 
   if (!isOnline && wasOnline) {
     localStorage.setItem('online', 'false');
