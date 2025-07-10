@@ -55,9 +55,17 @@
 
     </section>
 
-    <section id="price_plan" class="py-16 md:py-24 rounded-xl mx-4 mb-8 w-screen flex flex-col justify-center items-center">
+    <section id="price_plan" class="py-16 md:py-24 rounded-xl mx-4 mb-8 w-screen flex flex-col justify-center items-center relative">
 
-        <div class="container w-screen text-center">
+        <div 
+            class=" bg-[var(--bg)]/30 w-screen -ml-4 inset-0 absolute z-50 flex flex-col justify-center items-center text-6xl font-bold uppercase text-red-600"
+            style="backdrop-filter: blur(3px);"
+        >
+            App en développement
+            <span class="text-2xl mt-2">bientôt disponible</span>
+        </div>
+
+        <div class="container w-screen text-center saturate-0">
 
             <h2 class="text-4xl md:text-5xl font-bold mb-2 text-gray-900">Choisissez le plan qui vous convient.</h2>
 

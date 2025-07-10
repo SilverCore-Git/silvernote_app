@@ -9,9 +9,12 @@
 		<span>version {{ version }}</span>
     </header>
 
-    <main class="px-10 py-20 max-w-4xl mx-auto text-left text-lg space-y-8 text-[var(--text)] mb-1">
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+    <main  class="px-10 py-20 max-w-4xl mx-auto text-left text-lg space-y-8 text-[var(--text)] mb-1">
+
+		<Loader v-if="loader" :icon="false" />
+
+        <div v-if="!loader" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
 
             <Download_card
 
@@ -43,8 +46,10 @@ import { onMounted, ref } from 'vue';
 import Nav_bar from '../components/Nav_bar.vue';
 import Footer from '../components/Footer.vue';
 import Download_card from '../components/Download_card.vue';
+import Loader from '../components/Loader.vue';
 
 const version = ref<string>('v-1');
+const loader = ref<boolean>(true);
 
 let win_url: string | undefined;
 let macos_url: string | undefined;
@@ -146,6 +151,8 @@ onMounted(async () => {
 			svg: '/assets/svg/linux.svg',
 		},
 	];
+
+	loader.value = false;
 
 })
 
