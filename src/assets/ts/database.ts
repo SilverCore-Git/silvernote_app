@@ -1,5 +1,5 @@
 import path from 'path';
-import fs, { existsSync } from 'fs';
+import fs from 'fs';
 const fsp = fs.promises;
 
 import utils from './utils';

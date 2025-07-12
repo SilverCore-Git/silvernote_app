@@ -12,6 +12,16 @@ export interface News {
     href: string;
 };
 
+export interface Layout {
+    all: number;
+    file: number;
+    db: { 
+        file: string;
+        value: number;
+        full: boolean;
+    }[]
+}
+
 export interface Note {
     id: number;
     pinned: boolean;
