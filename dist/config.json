@@ -1,9 +1,16 @@
 {
     "PORT": 3000,
     "corsOptions": {
-        "origin": "*",
+        "origin": ["http://localhost:5173"],
         "methods": ["GET", "POST"],
         "allowedHeaders": ["Content-Type", "Authorization"],
         "credentials": true
+    },
+    "news": {
+        "active": true,
+        "message": "Message",
+        "title": "Titre",
+        "btn": false,
+        "href": "https://www.silvernote.fr"
     }
 }

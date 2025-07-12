@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { getAuth } from '@clerk/express';
 const router = express.Router();
 
 import db from '../assets/ts/database';
@@ -7,30 +8,40 @@ import db from '../assets/ts/database';
 // route de création de session
 router.post('/session/create', async (req: Request, res: Response) => {
 
-  const { user_id, platform } = req.body; // id => user id || type => app type (web, electron, capacitor)
+  const { platform, userId } = req.body; // platform => app type (web, electron, capacitor)
+  let sessions; 
 
-  const sessions = await db.new_session(user_id);
+  if (!userId) return
 
-  if (platform == 'web') {
+  try {
 
-    res.cookie('session_id', sessions.id, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-    });
+    if (!await db.exist_user(userId)) db.add_user(userId);
 
-    res.cookie('user_id', user_id, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-    });
+    sessions = await db.new_session(userId);
 
-    res.cookie('_platform', 'web', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-    });
+    if (platform == 'web') {
 
+      res.cookie('session_id', sessions.id, {
+        httpOnly: false,
+        secure: false, // remettre true apres
+      });
+
+      res.cookie('user_id', userId, {
+        httpOnly: false,
+        secure: false, // remettre true apres
+      });
+
+      res.cookie('_platform', 'web', {
+        httpOnly: false,
+        secure: false, // remettre true apres
+      });
+
+    }
+
+  }
+  catch (err) {
+    res.json({ error: true, message: err });
+    throw err;
   }
 
   res.json(sessions);
@@ -40,7 +51,7 @@ router.post('/session/create', async (req: Request, res: Response) => {
 // route de fermeture de session
 router.post('/session/close', async (req: Request, res: Response) => {
 
-  const session_id = req.cookies.session_id;
+  const session_id: any = req.cookies.session_id;
 
   const sessions = await db.verify_session(session_id);
   
@@ -48,18 +59,9 @@ router.post('/session/close', async (req: Request, res: Response) => {
 
     const close = await db.close_session(session_id)
 
+    res.clearCookie('session_id');
 
-    res.clearCookie('session_id', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-    });
-
-    res.clearCookie('user_id', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-    });
+    res.clearCookie('user_id');
 
     res.json(close);
 
@@ -73,7 +75,7 @@ router.post('/session/verify', async (req: Request, res: Response) => {
 
   const session_id = req.cookies.session_id;
 
-  const sessions = await db.verify_session(session_id);
+  const sessions: boolean = await db.verify_session(session_id);
   
   res.json(sessions);
 

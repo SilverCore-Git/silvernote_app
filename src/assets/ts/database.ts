@@ -111,7 +111,7 @@ class Database {
 
             const db: Session[] = await this.get('sessions');
 
-            const session: Session = db.filter(session => session.id = session_id )[0];
+            const session: Session = db.filter(session => session.id === session_id )[0];
             
             session.state = "close";
             session.end = new Date();
@@ -124,6 +124,38 @@ class Database {
         catch (err) {
             return { error: true, message: err };
         }
+
+    }
+
+    public async add_user(userId: string): Promise<void> {
+        try {
+
+            const db: User[] = await this.get('user');
+
+            db.push({ userId });
+
+            await this.save('user', db);
+
+        } catch (error) {
+            console.error('Error adding user:', error);
+        }
+    }
+
+    public async remove_user (user_id: string) {
+
+        const db: User[] = await this.get('user');
+
+        db.filter(user => user.userId !== user_id);
+
+        await this.save('user', db);
+
+    }
+
+    public async exist_user (userId: string) {
+
+        const db: User[] = await this.get('user');
+
+        return db.some(user => user.userId === userId);
 
     }
 

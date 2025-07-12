@@ -3,6 +3,8 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import cors from 'cors';
 import path from 'path';
+import { clerkMiddleware, requireAuth, getAuth } from '@clerk/express';
+import 'dotenv/config'
 
 import config from './config.json';
 
@@ -10,14 +12,13 @@ const app = express();
 const PORT: number = config.PORT;
 
 // Middlewares
+app.use(clerkMiddleware())
 app.use(cors(config.corsOptions));
-app.use(cookieParser('ma_clé_de_signature')); 
+app.use(cookieParser(process.env.COOKIE_SIGN_KEY)); 
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
-
-app.use('/', express.static(path.join(__dirname, 'public', 'index.html')));
 
 // Import routes
 import api from './routes/api';
@@ -25,7 +26,6 @@ import user from './routes/user';
 
 app.use('/', api);
 app.use('/user', user);
-
 
 // err 404
 app.use((req: Request, res: Response) => {

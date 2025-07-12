@@ -1,8 +1,16 @@
 import { UUID } from "crypto";
 
-export interface User {
-  id: string;
-}
+export interface User { 
+    userId: string 
+};
+
+export interface News { 
+    active: boolean;
+    message: string; 
+    title: string;
+    btn: boolean;
+    href: string;
+};
 
 export interface Note {
     id: number;
