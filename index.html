@@ -52,34 +52,47 @@
     <link rel="preload" as="image" href="/assets/svgs/wifi_on.svg" />
     <link rel="preload" as="image" href="/assets/svgs/wifi_off.svg" />
 
+    <script>
+
+      const handleClose = (event) => {
+        fetch('http://localhost:3000/user/session/close', {
+          method: 'POST',
+          credentials: "include"
+        });
+        //event.returnValue = "Êtes-vous sûr de vouloir quitter ?";
+      };
+      window.addEventListener('beforeunload', handleClose);
+
+    </script>
+
+    <style>
+
+      * {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      *::-webkit-scrollbar {
+        display: none;
+      }
+
+      body {
+        background-color: var(--bg);
+        color: var(--text);
+        overflow-x: hidden;
+        font-family: 'Inter', sans-serif;
+        transition: background-color 900ms;
+      }
+
+      #app {
+        min-width: 420px;
+        min-height: 500px;
+      }
+
+    </style>
+
+
   </head>
-
-  <style>
-
-    * {
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-
-    *::-webkit-scrollbar {
-      display: none;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      overflow-x: hidden;
-      font-family: 'Inter', sans-serif;
-      transition: background-color 900ms;
-    }
-
-    #app {
-      min-width: 420px;
-      min-height: 500px;
-    }
-
-  </style>
-
 
   <!-- body managed by vite/vue -->
 

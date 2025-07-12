@@ -246,6 +246,7 @@
                         :date="note.date"
                         :tags="note.tags.map(tag => Number(tag))"
                         :simply_edit="note.simply_edit"
+                        :function_reload="reload_list"
                     />
 
                 </li>
@@ -528,8 +529,8 @@
             console.log('Rechargement des notes...')
             setTimeout(() => {
                 isRotating.value = false;
-            }, 300);
-        }, 400);
+            }, 200);
+        }, 300);
 
     };
 
@@ -709,7 +710,7 @@
     }
 
     .rotating {
-        animation: rotate 0.8s linear infinite;
+        animation: rotate 0.6s linear infinite;
     }
 
     @keyframes rotate {

@@ -13,51 +13,29 @@
         
         <section
             class="flex flex-col w-full gap-4"
-            v-for="(section, sectionIndex) in Object.values(settings)"
-            :key="sectionIndex"
         >
 
             <h1 
                 class="text-2xl mb-1 font-bold"
-                v-if="!isDevModSection(Object.keys(settings)[sectionIndex]) || isDevModeEnabled()"
             >
-                Paramètres {{ Object.keys(settings)[sectionIndex] }}
+                Paramètres généraux
             </h1>
 
             <label
                 class="cursor-pointer w-full flex justify-between items-center"
-                v-for="(option, optionIndex) in section"
-                v-if="!isDevModSection(Object.keys(settings)[sectionIndex]) || isDevModeEnabled()"
-                :for="`switch-${sectionIndex}-${optionIndex}`"
-                :key="optionIndex"
                 :class="hitbox ? 'bg-red-600' : ''"
             >
 
-                <span>{{ option.name }}</span>
+              <span>Langue</span>
 
-                <div class="switch flex flex-row">
-
-                <div>
-
-                    <input
-                        :id="`switch-${sectionIndex}-${optionIndex}`"
-                        type="checkbox"
-                        v-model="option.active"
-                    />
-
-                    <span class="slider"></span>
-
-                </div>
-
-                </div>
+              <div id="gtranslate_wrapper" class="gtranslate_wrapper"></div>
 
             </label>
 
             <hr
-                v-if="!isDevModSection(Object.keys(settings)[sectionIndex]) || isDevModeEnabled()"
                 class="mb-2 mt-4 opacity-25"
             />
-            
+
         </section>
 
         <section

@@ -103,16 +103,14 @@ class Database {
 
     public async create(note: Note): Promise<{ id: number }> {
         const db = await this.dbPromise;
-        const all_notes = await db.getAll('notes');
-        note.id = all_notes.length + 1;
+        note.id = Math.floor(Math.random() * (999999999999 - 1000000 + 1)) + 1000;
         await db.add('notes', note);
         return { id: note.id };
     }
 
     public async create_tag(tag: Tag): Promise<void> {
         const db = await this.dbPromise;
-        const all_tags = await db.getAll('tags');
-        tag.id = all_tags.length + 1;
+        tag.id = Math.floor(Math.random() * (999999999999 - 1000000 + 1)) + 1000;
         await db.add('tags', tag);
     }
 

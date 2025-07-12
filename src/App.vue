@@ -70,15 +70,16 @@
   import { init_theme } from './assets/ts/theme';
   init_theme();
 
-  import { ref, onMounted, nextTick, watch } from 'vue';
+  import { ref, onMounted, nextTick, watch, onUnmounted, watchEffect } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
 
   import Loader from './components/Loader.vue';
 
   import db from './assets/ts/database';
-  import back from './assets/ts/backend_link';
+  import back, { Session  } from './assets/ts/backend_link';
+  const session = new Session;
 
-  import { SignedIn, SignedOut, SignIn, SignUp } from '@clerk/vue';
+  import { SignedIn, SignedOut, SignIn, SignUp, useUser } from '@clerk/vue';
 
   const loader = ref<boolean>(true);
   const wasOnline = localStorage.getItem('online') === 'true';
@@ -119,6 +120,15 @@
   
     if (!route.query.form) router.push('?form=main')
 
+    const { user, isLoaded } = useUser()
+
+    const interval = setInterval(async () => {
+      if (isLoaded.value && user.value) {
+        await session.create(user.value.id);
+        clearInterval(interval);
+      }
+    }, 100)
+
     await nextTick()
 
     setTimeout(() => {
@@ -136,6 +146,11 @@
   onMounted(() => {
       window.addEventListener('resize', updateSize);
   })
+
+  onUnmounted(() => {
+      window.removeEventListener('resize', updateSize);
+  })
+  
 
   const body = document.body
 

@@ -5,10 +5,14 @@ import type { Note, Tag } from './type';
 const api_url: string = 'http://localhost:3000';
 //const auth_url: string = 'https://auth.silvernote.fr';
 
+const generateRandomId = () => {
+  return Math.floor(Math.random() * (999999999999 - 1000000 + 1)) + 1000;
+}
+
 const dev_db = {
   notes: [
     {
-      id: 1,
+      id: generateRandomId(),
       pinned: false,
       simply_edit: false,
       title: "Buy groceries",
@@ -17,7 +21,7 @@ const dev_db = {
       tags: [9, 6]
     },
     {
-      id: 2,
+      id: generateRandomId(),
       pinned: false,
       simply_edit: false,
       title: "Meeting with the team",
@@ -26,7 +30,7 @@ const dev_db = {
       tags: [8, 5]
     },
     {
-      id: 3,
+      id: generateRandomId(),
       pinned: false,
       simply_edit: false,
       title: "Urgent: Fix bug in the app",
@@ -35,7 +39,7 @@ const dev_db = {
       tags: [1, 3]
     },
     {
-      id: 4,
+      id: generateRandomId(),
       pinned: false,
       simply_edit: false,
       title: "Write a new blog post",
@@ -44,7 +48,7 @@ const dev_db = {
       tags: [7, 5]
     },
     {
-      id: 5,
+      id: generateRandomId(),
       pinned: false,
       simply_edit: false,
       title: "Doctor appointment",
@@ -53,7 +57,7 @@ const dev_db = {
       tags: [10, 4]
     },
     {
-      id: 6,
+      id: generateRandomId(),
       pinned: false,
       simply_edit: false,
       title: "Plan weekend trip",
@@ -62,7 +66,7 @@ const dev_db = {
       tags: [4, 7]
     },
     {
-      id: 7,
+      id: generateRandomId(),
       pinned: false,
       simply_edit: false,
       title: "Call Mom",
@@ -71,7 +75,7 @@ const dev_db = {
       tags: [4, 6]
     },
     {
-      id: 8,
+      id: generateRandomId(),
       pinned: false,
       simply_edit: false,
       title: "Send email to client",
@@ -80,7 +84,7 @@ const dev_db = {
       tags: [5, 8]
     },
     {
-      id: 9,
+      id: generateRandomId(),
       pinned: false,
       simply_edit: false,
       title: "Finish project report",
@@ -89,7 +93,7 @@ const dev_db = {
       tags: [3, 5]
     },
     {
-      id: 10,
+      id: generateRandomId(),
       pinned: false,
       simply_edit: false,
       title: "Check car maintenance",
@@ -99,16 +103,16 @@ const dev_db = {
     }
   ],
   tags: [
-    {id: 1, name: "Urgent", active: false, color: "#FF5733"},
-    {id: 2, name: "To Do", active: false, color: "#33FF57"},
-    {id: 3, name: "Important", active: false, color: "#3357FF"},
-    {id: 4, name: "Personal", active: false, color: "#F0E68C"},
-    {id: 5, name: "Work", active: false, color: "#8A2BE2"},
-    {id: 6, name: "Reminder", active: false, color: "#FFD700"},
-    {id: 7, name: "Ideas", active: false, color: "#C71585"},
-    {id: 8, name: "Meeting", active: false, color: "#20B2AA"},
-    {id: 9, name: "Shopping", active: false, color: "#D2691E"},
-    {id: 10, name: "Health", active: false, color: "#008080"}
+    {id: generateRandomId(), name: "Urgent", active: false, color: "#FF5733"},
+    {id: generateRandomId(), name: "To Do", active: false, color: "#33FF57"},
+    {id: generateRandomId(), name: "Important", active: false, color: "#3357FF"},
+    {id: generateRandomId(), name: "Personal", active: false, color: "#F0E68C"},
+    {id: generateRandomId(), name: "Work", active: false, color: "#8A2BE2"},
+    {id: generateRandomId(), name: "Reminder", active: false, color: "#FFD700"},
+    {id: generateRandomId(), name: "Ideas", active: false, color: "#C71585"},
+    {id: generateRandomId(), name: "Meeting", active: false, color: "#20B2AA"},
+    {id: generateRandomId(), name: "Shopping", active: false, color: "#D2691E"},
+    {id: generateRandomId(), name: "Health", active: false, color: "#008080"}
   ]
 }
 
@@ -118,6 +122,35 @@ const info_message = async (): Promise<{ message: string, title: string, btn: bo
     const res = await fetch(`${api_url}/get_news`).then(res => res.json());
     return res == false ? undefined : res;
 };
+
+
+export class Session {
+
+  async create (id: string): Promise<void> {
+    await fetch(`${api_url}/user/session/create`, {
+      method: 'POST',
+      body: JSON.stringify({ platform: 'web', userId: id }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include'
+    }); 
+  }
+
+  async close (): Promise<any> {
+    return await fetch(`${api_url}/user/session/close`, {
+      'method': 'POST'
+    }).then(res => res.json());
+  }
+
+  async verify (): Promise<boolean> {
+    return await fetch(`${api_url}/user/session/verify`, {
+      'method': 'POST'
+    }).then(res => res.json());
+  }
+
+}
+
 
 const saving_all = async (Notes: Note[], Tags: Tag[]): Promise<any> => {
 //await fetch(`${auth_url}/verify`).then(res => res.json()) ||

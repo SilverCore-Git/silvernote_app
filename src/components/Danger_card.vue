@@ -6,7 +6,7 @@
         style="border-radius: 15px; font-family: 'Montserrat';"
         @click="handleClick"
     >
-        <span class="font-bold text-2xl">{{ title }}</span>
+        <h1 class="font-bold text-2xl">{{ title }}</h1>
         <p class="text-lg">{{ content }}</p>
     </div>
 

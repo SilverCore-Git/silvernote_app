@@ -154,13 +154,14 @@ const router = useRouter()
 
 const emit = defineEmits(['pin']);
 const props = defineProps<{
-  title: string
-  content: string
-  date: string
-  pinned: boolean
-  tags: number[]
-  simply_edit: boolean
-  id: number
+  title: string;
+  content: string;
+  date: string;
+  pinned: boolean;
+  tags: number[];
+  simply_edit: boolean;
+  id: number;
+  function_reload: () => Promise<any>;
 }>()
 
 const showDialog = ref<boolean>(false);
@@ -222,8 +223,9 @@ const delete_note = async (state: number): Promise<void> => {
   else if (state == 2) {
     await db.delete(props.id);
     showDialog.value = false;
+    await props.function_reload();
   };
-  //await db.delete(props.id);
+  
 };
 
 const open_note = () => {
