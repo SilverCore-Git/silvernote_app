@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import { getAuth } from '@clerk/express';
 const router = express.Router();
 
 import db from '../assets/ts/database';

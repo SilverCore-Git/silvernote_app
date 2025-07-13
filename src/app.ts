@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 import api from './routes/api';
 import user from './routes/user';
 
-app.use('/', api);
+app.use('/api', api);
 app.use('/user', user);
 
 // err 404

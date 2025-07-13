@@ -40,13 +40,11 @@ router.post('/session/create', async (req, res) => {
 // route de fermeture de session
 router.post('/session/close', async (req, res) => {
     const session_id = req.cookies.session_id;
-    console.log(session_id);
     const sessions = await database_1.default.verify_session(session_id);
     if (sessions) {
         const close = await database_1.default.close_session(session_id);
         res.clearCookie('session_id');
         res.clearCookie('user_id');
-        console.log('close');
         res.json(close);
     }
 });

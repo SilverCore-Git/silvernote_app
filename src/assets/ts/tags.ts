@@ -1,9 +1,9 @@
 import fs from "fs";
 const fsp = fs.promises;
-import type { Note, Layout } from "./types";
+import type { Tag, Layout } from "./types";
 import path from "path";
 
-class Notes {
+class Tags {
 
     private db_dir_path: string;
 
@@ -12,7 +12,7 @@ class Notes {
     }
 
     private dbPath(user_id: string) {
-        return path.join(this.db_dir_path, user_id, 'notes');
+        return path.join(this.db_dir_path, user_id, 'tags');
     }
 
     private async init_db (user_id: string) {
@@ -44,11 +44,11 @@ class Notes {
 
     }
 
-    private async save(data: Note[], db_path: string) {
+    private async save(data: Tag[], db_path: string) {
         return await fsp.writeFile(db_path, JSON.stringify(data, null, 2), 'utf-8');
     }
 
-    private async push(user_id: string, notes: Note[]) {
+    private async push(user_id: string, data: Tag[]) {
 
         const _path: string = this.dbPath(user_id);
         const layout_path: string = path.join(_path, 'layout.json');
@@ -56,7 +56,7 @@ class Notes {
         const layoutData = await fsp.readFile(layout_path, 'utf-8');
         const layout = JSON.parse(layoutData);
 
-        let remainingNotes = [...notes];
+        let remainingTags = [...data];
 
         for (const file of layout.db) {
 
@@ -64,10 +64,10 @@ class Notes {
 
             const db_path = path.join(_path, file.file);
             const dbData = await fsp.readFile(db_path, 'utf-8');
-            const db: Note[] = JSON.parse(dbData);
+            const db: Tag[] = JSON.parse(dbData);
 
             const spaceLeft = 20 - file.value;
-            const toAdd = remainingNotes.slice(0, spaceLeft);
+            const toAdd = remainingTags.slice(0, spaceLeft);
 
             db.push(...toAdd);
             await this.save(db, db_path);
@@ -76,19 +76,19 @@ class Notes {
             layout.all += toAdd.length;
             file.full = file.value >= 20;
 
-            remainingNotes = remainingNotes.slice(toAdd.length);
-            if (remainingNotes.length === 0) break;
+            remainingTags = remainingTags.slice(toAdd.length);
+            if (remainingTags.length === 0) break;
 
         }
 
         // Créer de nouveaux fichiers si besoin
-        while (remainingNotes.length > 0) {
+        while (remainingTags.length > 0) {
 
             const newIndex = layout.db.reduce((acc: number, f: { value: number }) => acc + f.value, 0);
             const newFileName = `${newIndex}.json`;
             const db_path = path.join(_path, newFileName);
 
-            const toAdd = remainingNotes.slice(0, 20);
+            const toAdd = remainingTags.slice(0, 20);
             await this.save(toAdd, db_path);
 
             layout.db.push({
@@ -97,7 +97,7 @@ class Notes {
                 full: toAdd.length === 20
             });
 
-            remainingNotes = remainingNotes.slice(toAdd.length);
+            remainingTags = remainingTags.slice(toAdd.length);
 
         }
 
@@ -110,7 +110,7 @@ class Notes {
 
 
 
-    public async save_notes (user_id: string, notes: Note[]) {
+    public async save_tags (user_id: string, tags: Tag[]) {
 
         try {
             await this.init_db(user_id);
@@ -120,7 +120,7 @@ class Notes {
         }
         
         try {
-            await this.push(user_id, notes);
+            await this.push(user_id, tags);
         }
         catch (err) {
             return { error: true, step: 'push', message: err };
@@ -133,4 +133,4 @@ class Notes {
 }
 
 
-export default new Notes();
+export default new Tags();
