@@ -5,9 +5,6 @@
 @import './assets/css/switch.css';
 @import './assets/css/theme.css';
 
-body {
-  font-family: 'Inter', sans-serif;
-} 
 
 p, span {
   font-family: 'Inter', sans-serif;

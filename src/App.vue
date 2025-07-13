@@ -104,17 +104,17 @@
     localStorage.setItem('online', localStorage.getItem('online') || String(isOnline));
   }
 
-  const init_db = async () => {
-    if (wasOnline) {
-        const data = await back.get_all();
-        if (data) {
-          await db.reset()
-          await db.add_notes(data.notes);
-          await db.add_tags(data.tags);
-        }
-    }
-  }
-  init_db();
+  // const init_db = async () => {
+  //   if (wasOnline) {
+  //       const data = await back.get_all();
+  //       if (data) {
+  //         await db.reset()
+  //         await db.add_notes(data.notes);
+  //         await db.add_tags(data.tags);
+  //       }
+  //   }
+  // }
+  // init_db();
 
   onMounted(async () => {
   

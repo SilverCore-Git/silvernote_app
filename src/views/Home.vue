@@ -512,7 +512,7 @@
     const saving_notes = async (): Promise<void> => {
         if (!isOnline.value) return;
         triggerJump();
-        await back.saving_all(await db.getAll('notes'), await db.getAll('tags'));
+        await back.save_all(await db.getAll('notes'), await db.getAll('tags'));
     };
 
     const reload_list = async () => {        

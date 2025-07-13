@@ -72,19 +72,41 @@ class utils {
 }
 
 const init_notes = async (list_notes: Ref<Note[] | undefined>): Promise<void> => {
-
+    
     list_notes.value = await db.getAll('notes');
 
-    const sort_notes = list_notes.value.sort((a: Note, b: Note) => {
-        if (a.pinned === b.pinned) {
-            return b.id - a.id;
-        }
-            return a.pinned ? -1 : 1;
-    });
+    const monthMap: Record<string, number> = {
+        janvier: 0,
+        février: 1,
+        mars: 2,
+        avril: 3,
+        mai: 4,
+        juin: 5,
+        juillet: 6,
+        août: 7,
+        septembre: 8,
+        octobre: 9,
+        novembre: 10,
+        décembre: 11,
+    };
 
-    list_notes.value = sort_notes;
+    function parseFrenchDate(dateStr: string): Date {
+        const [day, monthName, year] = dateStr.split(' ');
+        const month = monthMap[monthName.toLowerCase()];
+        return new Date(Number(year), month, Number(day));
+    }
+
+    list_notes.value.sort((a: Note, b: Note) => {
+        if (a.pinned === b.pinned) {
+        const dateA = parseFrenchDate(a.date);
+        const dateB = parseFrenchDate(b.date);
+        return dateB.getTime() - dateA.getTime();
+        }
+        return a.pinned ? -1 : 1;
+    });
     
-}
+};
+
 
 export default new utils();
 export {

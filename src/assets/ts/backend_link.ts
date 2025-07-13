@@ -1,5 +1,6 @@
 
 import db from './database';
+import { salert } from './salert';
 import type { Note, Tag } from './type';
 
 const api_url: string = 'http://localhost:3000';
@@ -119,7 +120,7 @@ const dev_db = {
 
 
 const info_message = async (): Promise<{ message: string, title: string, btn: boolean, href: string } | undefined> => {
-    const res = await fetch(`${api_url}/get_news`).then(res => res.json());
+    const res = await fetch(`${api_url}/api/get_news`).then(res => res.json());
     return res == false ? undefined : res;
 };
 
@@ -152,17 +153,30 @@ export class Session {
 }
 
 
-const saving_all = async (Notes: Note[], Tags: Tag[]): Promise<any> => {
-//await fetch(`${auth_url}/verify`).then(res => res.json()) ||
-  const user =  { sub: 'auth0|609e8b2e3b3f9c0071f7abcd' };
-  const res = await fetch(`${api_url}/save_db`, {
+const save_all = async (notes: Note[], tags: Tag[]): Promise<any> => {
+
+  const res_notes = await fetch(`${api_url}/api/save/db/notes`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ Notes, Tags, user }),
+    credentials: 'include',
+    body: JSON.stringify({ notes }),
   }).then(res => res.json());
-  return res;
+
+  const res_tags = await fetch(`${api_url}/api/save/db/tags`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify({ tags }),
+  }).then(res => res.json());
+
+  if (res_notes.error) return salert('Une erreur est survenue lors de la sauvegarde des notes', 'error');
+  if (res_tags.error) return salert('Une erreur est survenue lors de la sauvegarde des dossiers', 'error');
+
+  if (res_notes && res_tags) return salert('Notes et dossiers sauvegardé avec succès !', 'success');
 
 }
 
@@ -202,7 +216,7 @@ const save_db = async (): Promise<any> => {
 export default {
     dev_db,
     info_message,
-    saving_all,
+    save_all,
     get_all,
     save_db
 }
