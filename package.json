@@ -5,7 +5,7 @@
   "description": "My Electron application description",
   "main": "src/app.js",
   "scripts": {
-    "start": "DEV=false electron-forge start",
+    "start": " electron-forge start",
     "dev": "DEV=true electron-forge start",
     "build": "electron-builder",
     "build:win": "electron-builder --win",
@@ -23,6 +23,7 @@
   "dependencies": {
     "electron-log": "^5.4.1",
     "electron-updater": "^6.6.2",
+    "express": "^5.1.0",
     "nodemon": "^3.1.10",
     "unzipper": "^0.12.3",
     "util": "^0.12.5"
