@@ -334,7 +334,7 @@ const pricing_plan_list: {
         for: "Utilisateurs confirmé désirant plus de <span class=\"underline\">sécurité</span>.",
         price: 5, // + 0.99
         functions: [
-            { name: "jusqu'a 100 notes", includ: true },
+            { name: "jusqu'a 150 notes", includ: true },
             { name: "jusqu'a 50 dossiers", includ: true },
             { name: "mode hors ligne", includ: true },
             { name: "notes chiffrées", includ: true },
@@ -356,7 +356,7 @@ const pricing_plan_list: {
     {
         title: "Ultimate",
         for: "Utilisteurs désirant l'<span class=\"underline\">éxcélence</span> d'une offre <span class=\"underline\">illimité</span> !",
-        price: 15, // + 0.99
+        price: 19, // + 0.99
         functions: [
             { name: "notes illimités", includ: true },
             { name: "dossiers illimités", includ: true },
