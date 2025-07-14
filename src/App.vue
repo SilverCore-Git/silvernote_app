@@ -78,7 +78,7 @@
   import db from './assets/ts/database';
   import back, { Session  } from './assets/ts/backend_link';
   const session = new Session;
-
+ 
   import { SignedIn, SignedOut, SignIn, SignUp, useUser } from '@clerk/vue';
 
   const loader = ref<boolean>(true);
