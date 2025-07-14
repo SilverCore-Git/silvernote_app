@@ -45,8 +45,9 @@ async function create_main_window() {
   const console = new Console(win);
   Menu.setApplicationMenu(null);
 
-  // Chargement direct depuis le fichier HTML (file://)
-  win.loadFile(path.join(__dirname, './dist/index.html'));
+  
+  //win.loadFile(path.join(__dirname, './dist/index.html'));
+  win.loadURL('https://app.silvernote.fr');
 
   console.log('Initialising shortcut...');
 
