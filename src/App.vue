@@ -70,7 +70,7 @@
   import { init_theme } from './assets/ts/theme';
   init_theme();
 
-  import { ref, onMounted, nextTick, watch, onUnmounted, watchEffect } from 'vue';
+  import { ref, onMounted, nextTick, watch, onUnmounted } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
 
   import Loader from './components/Loader.vue';
@@ -104,17 +104,17 @@
     localStorage.setItem('online', localStorage.getItem('online') || String(isOnline));
   }
 
-  // const init_db = async () => {
-  //   if (wasOnline) {
-  //       const data = await back.get_all();
-  //       if (data) {
-  //         await db.reset()
-  //         await db.add_notes(data.notes);
-  //         await db.add_tags(data.tags);
-  //       }
-  //   }
-  // }
-  // init_db();
+  const init_db = async () => {
+    if (wasOnline) {
+        const data = await back.get_all();
+        if (data) {
+          await db.reset()
+          await db.add_notes(data.notes);
+          await db.add_tags(data.tags);
+        }
+    }
+  }
+  init_db();
 
   onMounted(async () => {
   

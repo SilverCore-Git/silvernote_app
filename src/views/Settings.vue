@@ -131,20 +131,6 @@ const settings = reactive<Settings>({
   dev_mode: []
 });
 
-const isDevModSection = (sectionName: string): boolean => {
-    return sectionName == 'dev_mode';
-};
-
-const isDevModeEnabled = (): boolean => {
-
-    const advenced = settings['avancé'];
-    if (!advenced) return false;
-
-    const devModeOption = advenced.find(opt => opt.name === 'Mode développeur');
-    if (devModeOption?.active) settings.dev_mode.map(parm => parm.active == false);
-    return devModeOption?.active ?? false;
-
-};
 
 const open_input = () => file_input.value?.click();
 
