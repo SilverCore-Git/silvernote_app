@@ -63,13 +63,13 @@
 
 import { defineProps, ref } from 'vue';
 
-import Error from './status/error.vue';
-import Success from './status/success.vue';
+import Error from '../status/error.vue';
+import Success from '../status/success.vue';
 
-import utils from '../assets/ts/utils';
+import utils from '@/assets/ts/utils';
 
 import watsapp_svg from '/assets/svgs/social/watsapp.svg?url';
-import x_svg from '../assets/svgs/social/x.svg?url';
+import x_svg from '@/assets/svgs/social/x.svg?url';
 import copy_svg from '/assets/svgs/copy.svg?url';
 
 

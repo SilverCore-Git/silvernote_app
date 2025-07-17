@@ -91,6 +91,11 @@
 
         </section>
 
+        <a class=" text-gray-500 hover:text-gray-700 cursor-pointer
+                absolute bottom-0 inset-x-0 text-center"
+          @click="router.push('/dev')"
+        >dev sandbox</a>
+
     </div>
 
   <ConfirmDialog
@@ -108,14 +113,14 @@
 import { onMounted, reactive, watch, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import ConfirmDialog from '../components/ConfirmDialog.vue';
+import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 
 import { version } from '../../package.json';
-import { SettingsDB, settings as settingsObj  } from '../assets/ts/settings';
-import type { Settings } from '../assets/ts/type';
-import { hitbox as if_hitbox } from '../assets/ts/settings';
-import indexed_db from '../assets/ts/database';
-import utils from '../assets/ts/utils';
+import { SettingsDB, settings as settingsObj  } from '@/assets/ts/settings';
+import type { Settings } from '@/assets/ts/type';
+import { hitbox as if_hitbox } from '@/assets/ts/settings';
+import indexed_db from '@/assets/ts/database';
+import utils from '@/assets/ts/utils';
 
 let hitbox: boolean;
 onMounted(async () => { hitbox = await if_hitbox() })

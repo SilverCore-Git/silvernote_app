@@ -1,22 +1,26 @@
 <template>
-
     <div
       v-bind="$attrs"
       @contextmenu.prevent="onLongPress"
       @touchstart="startPress"
       @touchend="cancelPress"
       @touchcancel="cancelPress"
-      :class="active ? 'p-0.5 lg:p-1.5 text-center border-3 border-[#F28C28] cursor-pointer' 
-                     : 'p-1 lg:p-2 text-center border-1 cursor-pointer'" 
-      class="rounded-[var(--br-btn)] text-mb lg:rounded-[var(--br-btn)] flex flex-row justify-center items-center select-none"
+      :class="active 
+        ? 'border-3 px-2.5 py-0.5 border-[#F28C28] cursor-pointer' 
+        : 'border-1 px-3 py-1 cursor-pointer'"
+      class="inline-flex items-center justify-center 
+            text-mb text-center rounded-[var(--br-btn)] 
+            whitespace-nowrap select-none"
       :style="{ backgroundColor: tag_color, color: text_color }"
     >
-        <span class="pr-2 pl-2">{{ name }}</span>
+      <span class="text-lg md:text-base">
+        {{ name }}
+      </span>
     </div>
 
     <teleport to="body">
 
-      <div @click.stop="menu = false" v-if="menu">
+      <div class="text-white" @click.stop="menu = false" v-if="menu">
 
         <div  class="fixed inset-0 bg-[#00000090] z-100" style="backdrop-filter: blur(3px);"></div>
 
@@ -24,7 +28,7 @@
 
           <h3 class="text-xl font-bold">modifier : {{ name }}</h3>
 
-            <div @click.stop="" class="flex flex-col justify-center items-center border-2 h-full bg-[var(--bg2)]/80 border-[#F28C28] rounded-[var(--br-btn)] shadow-lg" >
+            <div @click.stop="" class="text-[var(--text)] flex flex-col justify-center items-center border-2 h-full bg-[var(--bg2)]/80 border-[#F28C28] rounded-[var(--br-btn)] shadow-lg" >
                 <span class="font-bold">couleur de {{ name }}</span>
                 <input
                     v-model="tag_color"
@@ -46,7 +50,7 @@
                 <span>Supprimer</span>
             </button>
             <button
-                class="second"
+                class="second" style="color: white;"
                 @click.stop=" menu = false; tag_color = color"
             >
                 <span>Annuler</span>
@@ -64,11 +68,11 @@
 
 import { ref, onMounted } from 'vue';
 
-import utils from '../assets/ts/utils';
-import db from '../assets/ts/database';
-import { isOnline } from '../assets/ts/online';
-import back from '../assets/ts/backend_link';
-import type { Tag } from '../assets/ts/type'
+import utils from '../../assets/ts/utils';
+import db from '../../assets/ts/database';
+import { isOnline } from '../../assets/ts/online';
+import back from '../../assets/ts/backend_link';
+import type { Tag } from '../../assets/ts/type'
 
 const props = defineProps<{
   name: string,

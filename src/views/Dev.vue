@@ -1,15 +1,14 @@
 <template>
 
     <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
-        <div class="left-arrow absolute left-0" :class="hitbox ? 'bg-red-600' : ''" @click="router.push('/')"></div>
+        <div class="left-arrow absolute left-0" :class="hitbox ? 'bg-red-600' : ''" @click="router.push('/settings')"></div>
     </header>
 
-    <div class="flex justify-start items-center mt-12 ml-4 mr-4">
+    <div class="flex justify-start items-center my-12 ml-4 mr-4">
 
         <section>
 
             <h1
-                style="font-family: 'Montserrat'" 
                 class="text-2xl mb-1 font-bold"
             >Informations systeme</h1>
 
@@ -22,16 +21,28 @@
             </ul>
 
             <h1
-                style="font-family: 'Montserrat'" 
                 class="text-2xl mb-1 font-bold mt-5"
             >Informations app</h1>
 
             <ul class="ml-1">
                 <li>Version = {{ version }}</li>
+                <li>NB notes = {{ notes_nb }}</li>
+                <li>NB tags = {{ tags_nb }}</li>
+            </ul>
+
+            <h1 
+                class="text-2xl mb-1 font-bold mt-5"
+            >Informations de compte</h1>
+
+            <ul class="ml-1 space-y-1">
+                <li><strong>Pseudo :</strong> {{ user?.username }}</li>
+                <li><strong>Créer le :</strong> {{ user?.createdAt }}</li>
+                <li><strong>Nom :</strong> {{ user?.fullName }}</li>
+                <li><strong>Email :</strong> {{ user?.primaryEmailAddress?.emailAddress }}</li>
+                <li><strong>ID utilisateur :</strong> {{ user?.id }}</li>
             </ul>
 
             <h1
-                style="font-family: 'Montserrat'" 
                 class="text-2xl mb-1 font-bold mt-5"
             >Db</h1>
 
@@ -57,8 +68,10 @@
 
 <script lang="ts" setup>
 
-    import { onMounted } from 'vue'
+    import { onMounted, ref } from 'vue'
     import { useRouter } from 'vue-router';
+    import { useUser } from '@clerk/vue';
+    const { user } = useUser();
     import { version } from '../../package.json';
 
     import back from '../assets/ts/backend_link';
@@ -80,6 +93,9 @@
     const isOnline: boolean = navigator.onLine;
     const isOnlineMode: boolean = localStorage.getItem('online') == 'true';
 
+    const notes_nb = ref<number>(0);
+    const tags_nb = ref<number>(0);
+
     const load_template_db = async () => {
         await db.reset();
         await db.add_notes(back.dev_db.notes);
@@ -100,5 +116,11 @@
         document.body.removeChild(lien); // suprésion du <a>
         URL.revokeObjectURL(url);
     } 
+
+    onMounted(async () => {
+        console.log(user.value)
+        notes_nb.value = await db.getAll('notes').then(notes => notes.length);
+        tags_nb.value = await db.getAll('tags').then(notes => notes.length);
+    })
 
 </script>

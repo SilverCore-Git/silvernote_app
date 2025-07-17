@@ -18,16 +18,22 @@
         <div class="flex flex-row justify-between items-center w-full ml-[var(--mrl)] mr-[var(--mrl)]">
             
             <div class="flex flex-row justify-center items-center">
-                <h1 class=" text-white flex flex-row gap-1 md:gap-3" :class="hitbox ? 'bg-red-600' : ''">
-                    <img src="/favicon.svg" class="w-6" alt="logo">SilverNote
+
+                <div class="mr-3 flex items-center justify-center">
+                    <UserButton />
+                </div>
+
+                <h1 class=" text-white flex flex-row justify-center items-center gap-1 md:gap-3 text-3xl" :class="hitbox ? 'bg-red-600' : ''">
+                    <img src="/favicon.svg" class="mb:w-6 w-10" alt="logo"><span class="hidden sm:block">SilverNote</span>
                 </h1>
+
             </div>
 
-            <div class="flex flex-row justify-center items-center gap-3 md:gap-5">
+            <div class="flex flex-row justify-center items-center gap-5 md:gap-5">
                 <div 
                     class="reload-svg 
-                            w-[24px] 
-                            h-[24px] 
+                            md:w-[24px]  w-[30px]
+                            md:h-[24px]  h-[30px]
                         " 
                     :class="[
                         isOnline ? 'wifi-on-svg' : 'wifi-off-svg',
@@ -39,8 +45,8 @@
 
                 <div 
                     class="reload-svg 
-                            w-[24px] 
-                            h-[24px] 
+                            md:w-[24px]  w-[30px]
+                            md:h-[24px]  h-[30px]
                         " 
                     :class="[
                         ifLight ? 'moon-svg' : 'sun-svg',
@@ -52,8 +58,8 @@
 
                 <div 
                     class="reload-svg  
-                            w-[24px] 
-                            h-[24px] 
+                            md:w-[24px]  w-[30px]
+                            md:h-[24px]  h-[30px]
                         " 
                     :class="[
                         { rotating: isRotating },
@@ -64,8 +70,8 @@
 
                 <div 
                     class="saving-svg 
-                            w-[24px] 
-                            h-[24px] 
+                            md:w-[24px]  w-[30px]
+                            md:h-[24px]  h-[30px]
                         " 
                     :class="[
                         { 'jump': isJumping },
@@ -77,8 +83,8 @@
                 <div
                     :class="[ hitbox ? 'bg-teal-300' : '' ]"
                     class="ellipsis-svg
-                            w-[30px]
-                            h-[30px]
+                            md:w-[30px] w-[35px]
+                            md:h-[30px] h-[35px]
                         " 
                     @click="if_open_dropdown = !if_open_dropdown"
                 ></div>
@@ -87,10 +93,11 @@
                     <div
                         v-if="if_open_dropdown"
                         class="dropdown absolute bg-[#F28C28] 
-                            z-50 min-w-[200px] w-[40%] md:w-[20%] lg:w-[10%] flex flex-col justify-center items-center p-3"
+                            z-50 min-w-[200px] w-[40%] md:w-[20%] lg:w-[10%] 
+                            flex flex-col justify-center items-center p-3"
                         :style=" { top: `calc(3.5rem + env(safe-area-inset-top))` } "
                     >
-                        <ul class="text-xl text-white">
+                        <ul class="text-xl md:text-lg text-white">
 
                             <li 
                                 class="flex flex-row" 
@@ -100,7 +107,7 @@
                                 Paramètre
                             </li>
 
-                            <li class="flex flex-row" @click="router.push('/account')">
+                            <li class="text-xl md:text-lg flex flex-row" @click="router.push('/account')">
                                 <div class="nav-svg" style="filter: invert(0);">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -111,14 +118,12 @@
                                 Compte
                             </li>
 
-                            <li class="flex flex-row">
+                            <li class="text-xl md:text-lg flex flex-row">
                                 <div class="nav-svg legal-svg">
 
                                 </div>
                                 Légal
                             </li>
-
-                            <li class="flex flex-row mt-1 text-sm" v-if="if_dev" @click="router.push('/dev')">Développeurs</li>
 
                         </ul>
                     </div>
@@ -137,15 +142,16 @@
 
         <Swiper
             v-if="all_tags && all_tags.length" 
-            :slides-per-view="5"
+            :slides-per-view="'auto'"
             :space-between="8"
-            class="flex-shrink-0 w-full lg:w-1/2 pr-1.5 pl-1.5"
+            class=" w-full lg:w-1/2 pr-1.5 pl-1.5"
             :class="[hitbox ? 'bg-amber-400' : '', 'lg:scrollbar-thin', 'scrollbar-thumb-rounded']"
         >
 
             <SwiperSlide 
                 v-for="(tag, index) in all_tags"
-                :key="index" 
+                :key="index"
+                class="!w-auto"
             >
 
                 <Tags_item 
@@ -154,13 +160,12 @@
                     :tag="tag.name" 
                     :active="tag.active"
                     :color="tag.color"
-                    class="min-w-[70px] flex-shrink-0"
                 />
 
             </SwiperSlide>
             
             <SwiperSlide 
-                class=" min-w-[70px]"
+                class="!w-auto"
             >
 
                 <Tags_item 
@@ -170,7 +175,7 @@
                     :tag="''"
                     :active="false"
                     color="#fff5e8"
-                    class="flex-shrink-0"
+                    class="w-20"
                 />
 
             </SwiperSlide>
@@ -365,7 +370,7 @@
     import back from '../assets/ts/backend_link';
     import { init_notes } from '../assets/ts/utils';
     import type { Note, Tag } from '../assets/ts/type';
-    import { hitbox as if_hitbox, dev as if_dev } from '../assets/ts/settings';
+    import { hitbox as if_hitbox } from '../assets/ts/settings';
     import { toggle_theme } from '../assets/ts/theme';
     import { toggle_online } from '../assets/ts/online';
 
@@ -373,10 +378,11 @@
     onMounted(async () => { hitbox = await if_hitbox() });
 
     import Danger_card from '../components/Danger_card.vue';
-    import Note_card from '../components/Note_card.vue';
-    import Note_card_loader from '../components/Note_card_loader.vue';
+    import Note_card from '../components/notes/Note_card.vue';
+    import Note_card_loader from '../components/notes/Note_card_loader.vue';
     import Search_bar from '../components/Search_bar.vue';
-    import Tags_item from '../components/Tags_item.vue';
+    import Tags_item from '../components/tags/Tags_item.vue';
+import { UserButton } from '@clerk/vue';
     
     const router = useRouter();
 

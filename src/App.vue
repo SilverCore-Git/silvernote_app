@@ -1,67 +1,83 @@
 <template>
 
-  <SignedIn>
+  <div v-if="isElectron">
+      <div class="mr-[var(--mrl)] ml-[var(--mrl)] relative">
+        <router-view></router-view>
+      </div>
 
-    <div class="mr-[var(--mrl)] ml-[var(--mrl)] relative">
-      <router-view></router-view>
-    </div>
+      <div class=" absolute inset-0 bg-[var(--bg)] z-50" v-if="loader">
+          <div class="flex justify-center items-center w-screen h-screen">
+              <Loader />
+          </div>
+      </div>
+  </div>
 
-    <div class=" absolute inset-0 bg-[var(--bg)] z-50" v-if="loader">
-        <div class="flex justify-center items-center w-screen h-screen">
-            <Loader />
+  <div v-else>
+
+    <SignedIn>
+
+      <div class="mr-[var(--mrl)] ml-[var(--mrl)] relative">
+        <router-view></router-view>
+      </div>
+
+      <div class=" absolute inset-0 bg-[var(--bg)] z-50" v-if="loader">
+          <div class="flex justify-center items-center w-screen h-screen">
+              <Loader />
+          </div>
+      </div>
+
+    </SignedIn>
+
+    <SignedOut>
+
+      <div>
+
+        <div v-if="signin_form || signup_form" class="left-arrow absolute left-[var(--mrl)] top-[var(--mrl)]" @click="router.push('?form=main')"></div>
+
+        <div v-if="main_form" class="flex flex-col justify-center items-center w-screen h-screen">
+
+          <img class="w-20 mb-2" src="/favicon.svg" alt="">
+
+          <h1 class="text-3xl font-bold mb-8">silvernote</h1>
+
+          <a @click="router.push('?form=signin')" class="mb-2">
+
+            <button class="second w-35">
+              Se connecter 
+            </button>
+
+          </a>
+
+          <a @click="router.push('?form=signup')">
+
+            <button class="primary w-35">
+              S'inscrire 
+            </button>
+
+          </a>
+
         </div>
-    </div>
 
-  </SignedIn>
+        <!-- for sign up -->
+        <div v-if="signup_form" class="flex flex-col justify-center items-center w-screen h-screen">
 
-  <SignedOut>
+          <SignUp />
 
-    <div>
+        </div>
 
-      <div v-if="signin_form || signup_form" class="left-arrow absolute left-[var(--mrl)] top-[var(--mrl)]" @click="router.push('?form=main')"></div>
+        <!-- for sign in -->
+        <div v-if="signin_form" class="flex flex-col justify-center items-center w-screen h-screen">
 
-      <div v-if="main_form" class="flex flex-col justify-center items-center w-screen h-screen">
+          <SignIn />
 
-        <img class="w-20 mb-2" src="/favicon.svg" alt="">
+        </div>
 
-        <h1 class="text-3xl font-bold mb-8">silvernote</h1>
-
-        <a @click="router.push('?form=signin')" class="mb-2">
-
-          <button class="second w-35">
-            Se connecter 
-          </button>
-
-        </a>
-
-        <a @click="router.push('?form=signup')">
-
-          <button class="primary w-35">
-            S'inscrire 
-          </button>
-
-        </a>
 
       </div>
 
-      <!-- for sign up -->
-      <div v-if="signup_form" class="flex flex-col justify-center items-center w-screen h-screen">
+    </SignedOut>
 
-        <SignUp />
-
-      </div>
-
-      <!-- for sign in -->
-      <div v-if="signin_form" class="flex flex-col justify-center items-center w-screen h-screen">
-
-        <SignIn />
-
-      </div>
-
-
-    </div>
-
-  </SignedOut>
+  </div>
 
 </template>
 
@@ -81,9 +97,11 @@
  
   import { SignedIn, SignedOut, SignIn, SignUp, useUser } from '@clerk/vue';
 
+  const isElectron = !!(window as any)?.process?.versions?.electron;
   const loader = ref<boolean>(true);
   const wasOnline = localStorage.getItem('online') === 'true';
   const isOnline = navigator.onLine;
+  const isRootEmpty = document.documentElement.innerHTML.trim() === '';
 
   const route = useRoute();
   const router = useRouter();
@@ -93,6 +111,7 @@
   const main_form = ref<boolean>(route.query.form == "main" ? true : false);
 
   watch(() => route.query.form, () => {
+    if (!isRootEmpty) return;
     signin_form.value = route.query.form == "signin" ? true : false;
     signup_form.value = route.query.form == "signup" ? true : false;
     main_form.value = route.query.form == "main" ? true : false;
@@ -118,15 +137,29 @@
 
   onMounted(async () => {
   
-    if (!route.query.form) router.push('?form=main')
+    if (!route.query.form && isRootEmpty) router.push('?form=main')
 
     const { user, isLoaded } = useUser()
+    let index: number = 0;
 
     const interval = setInterval(async () => {
+
+      console.log(`Tentative de création de session : ${index}/5`)
+
       if (isLoaded.value && user.value) {
+
+        if (index >= 5) {
+          console.warn('Tentative de création de session echoué.') 
+          clearInterval(interval);
+        }
+
+        index++;
+
         await session.create(user.value.id);
         clearInterval(interval);
+
       }
+
     }, 100)
 
     await nextTick()

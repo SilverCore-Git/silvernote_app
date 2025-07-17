@@ -41,7 +41,7 @@
 
 <script lang="ts" setup>
 
-import { ref, onMounted, onUnmounted, useAttrs } from 'vue';
+import { ref, onMounted, onUnmounted, useAttrs, watch } from 'vue';
 
 import { useRouter, useRoute } from 'vue-router';
 
@@ -88,10 +88,6 @@ const save_title = () => {
 // Fonction pour récupérer la note
 onMounted(async () => {
 
-  setTimeout(() => {
-    title.value?.focus();
-  }, 200);
-
   if (route.query.id == 'new') {
     console.log('Création d\'une nouvelle note')
     const Note = await db.create({ 
@@ -104,7 +100,7 @@ onMounted(async () => {
                                   tags: []
                               });
 
-    console.log(Note.id)
+    console.log(Note)
     note.value.id = Note.id || -1;
     router.push({ 
       query: { 
@@ -112,6 +108,11 @@ onMounted(async () => {
         id: Note.id
       }
     });
+
+    setTimeout(() => {
+      title.value?.focus();
+    }, 1000);
+
 };
 
   const fetchedNote = await db.getNote(Number(route.query.id));
@@ -141,6 +142,14 @@ const change_pin_state = (): void => {
   });
   db.togle_pinned(Number(route.query.id));
 };
+
+const update_title = () => {
+  document.title = `SilverNote - edit - ${note.value.title}`;
+}
+
+watch(() => note.value.title, () => {
+  update_title();
+})
 
 </script>
 

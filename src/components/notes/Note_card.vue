@@ -37,7 +37,7 @@
             <ul>
 
               <li 
-                class="flex flex-row"
+                class="text-xl md:text-lg flex flex-row"
                 @click.stop="() => { manage_tags = true; dropdown = false; }" 
                 :class="hitbox ? 'bg-teal-600 border-1 border-black' : ''" 
               >
@@ -47,8 +47,9 @@
                   </svg>
                 </div>dossiers
               </li>
+
               <li 
-                class="flex flex-row"
+                class="text-xl md:text-lg flex flex-row"
                 @click.stop="share_it()"   
                 :class="hitbox ? 'bg-teal-600 border-1 border-black' : ''" 
               >
@@ -60,8 +61,9 @@
                   </svg>
                 </div>partager
               </li>
+              
               <li 
-                @click.stop="delete_note(1)" class="text-red-600 flex flex-row" 
+                @click.stop="delete_note(1)" class="text-red-600 text-xl md:text-lg flex flex-row" 
                 :class="hitbox ? 'bg-teal-600 border-1 border-black' : ''" 
               >
                 <div class="dropdown-svg bin"></div>supprimer
@@ -125,7 +127,7 @@
     :active="manage_tags"
     :tags="tags"
     @update:tags="onTagsUpdate"
-    @update:active="manage_tags = $event"
+    @update:active="manage_tags = $event; function_reload()"
   />
 
 </template>
@@ -135,14 +137,14 @@
 import { onMounted, onUnmounted, ref, watch, defineProps } from 'vue';
 import { useRouter } from 'vue-router';
 
-import ConfirmDialog from './ConfirmDialog.vue';
-import share_menu from './share_menu.vue';
-import Tags_manager from './tags_manager.vue';
+import ConfirmDialog from '../popup/ConfirmDialog.vue';
+import share_menu from '../popup/share_menu.vue';
+import Tags_manager from '../tags/tags_manager.vue';
 
-import db from '../assets/ts/database';
-import utils from '../assets/ts/utils';
-import type { Tag } from '../assets/ts/type';
-import { hitbox as if_hitbox } from '../assets/ts/settings';
+import db from '../../assets/ts/database';
+import utils from '../../assets/ts/utils';
+import type { Tag } from '../../assets/ts/type';
+import { hitbox as if_hitbox } from '../../assets/ts/settings';
 
 let hitbox: boolean;
 onMounted(async () => { hitbox = await if_hitbox() })
@@ -223,7 +225,6 @@ const delete_note = async (state: number): Promise<void> => {
   else if (state == 2) {
     await db.delete(props.id);
     showDialog.value = false;
-    await props.function_reload();
   };
   
 };

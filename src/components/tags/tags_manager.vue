@@ -15,7 +15,7 @@
                     style="border-radius: 15px;"
                 >
 
-                    <h1 class="text-2xl font-bold" style="font-family: 'Montserrat'; letter-spacing: 2px;">Gérer les dossiers</h1>
+                    <h1 class="text-2xl font-bold" style="letter-spacing: 2px;">Gérer les dossiers</h1>
                     <span>Sélectionnez les dossiers contenant la note</span>
 
                     <ul class="flex flex-col items-center gap-5 w-full max-h-[60vh] overflow-auto pr-20 pl-20 mt-10">
@@ -71,8 +71,8 @@
 
 import { onMounted, ref, watch, defineEmits, defineProps } from 'vue';
 
-import db from '../assets/ts/database';
-import type { Tag } from '../assets/ts/type';
+import db from '@/assets/ts/database';
+import type { Tag } from '@/assets/ts/type';
 
 const props = defineProps<{
     tags: number[];

@@ -2,7 +2,7 @@
 
   <div
     :class="desktop && filteredNotes.length && searchQuery != '' 
-            ? 'note-card bg-[var(--bg2)] text-[var(--text)] absolute right-4 left-4  flex flex-col pl-4 pt-2.5 pb-2.5 border border-[var(--text)] z-30'
+            ? 'note-card bg-[var(--bg2)] text-[var(--text)] fixed right-4 left-4  flex flex-col pl-4 pt-2.5 pb-2.5 border border-[var(--text)] z-30'
             : 'note-card bg-[var(--bg2)] text-[var(--text)] relative lg:ml-0 ml-4 mr-4 w-full flex flex-col pl-4 pt-2.5 pb-2.5 border border-[var(--text)] z-30'"
     style="box-shadow: 0 0 15px #3636364f; border-radius: var(--br-btn);"
     :style="desktop && filteredNotes.length && searchQuery != '' 
@@ -27,7 +27,7 @@
 
     <div 
         v-if="filteredNotes.length && searchQuery != '' && !desktop" 
-        class="mt-4 space-y-2 w-[100%] relative overflow-x-auto pr-4" 
+        class="space-y-2 w-[100%] relative overflow-x-auto pr-4" 
         :style="{ maxHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)`, minHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)` }"
     >
 
@@ -35,16 +35,32 @@
         v-for="note in filteredNotes" 
         :key="note.id"
         @click="router.push(`/edit?id=${note.id}&pinned=${note.pinned}`)"
-        class="bg-[var(--bg2)] p-2 rounded shadow cursor-pointer border-1 border-[var(--text)]"
+        class="bg-[var(--bg2)] p-2 shadow cursor-pointer border-1 border-[var(--text)]"
+        style="border-radius: var(--br-card);"
       >
         <h3 
             class="font-semibold"
             v-html="highlightMatch(utils.clean_html(note.title), searchQuery)"
         ></h3>
+
         <p 
-            class="text-sm max-h-20 overflow-hidden"
+            class="text-sm max-h-20 overflow-hidden mb-3"
             v-html="highlightMatch(utils.clean_html(note.content), searchQuery)"
         ></p>
+
+        <div class="w-full flex flex-row justify-start items-center
+          overflow-scroll whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
+
+          <div 
+            v-for="(tag, index) in all_tags.filter(tag => note.tags.includes(tag.id))" 
+            :key="index" 
+            class="ml-2 border-1 border-[var(--text)] pr-1.5 pl-1.5 rounded-[var(--br-tag)]" 
+            :style="{ backgroundColor: tag.color, color: utils.get_text_color(tag.color) }" 
+            :class="hitbox ? 'bg-teal-500' : ''"
+            v-html="highlightMatch(utils.clean_html(tag.name), searchQuery)"
+          ></div>
+
+        </div>
 
       </div>
 
@@ -58,7 +74,7 @@
     <ul 
         v-else-if="filteredNotes.length && searchQuery != '' && desktop" 
         class="mt-4 space-y-2 w-full relative overflow-x-auto gap-4
-              pr-4 grid lg:grid-cols-[23%_23%_23%_23%] xl:grid-cols-[18%_18%_18%_18%_18%] " 
+              pr-4 " 
         :style="{ maxHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)`,  minHeight: `calc(80vh - 3.5rem - ${props.pt})` }"
     >
 
@@ -66,35 +82,36 @@
         v-for="note in filteredNotes" 
         :key="note.id"
         @click="router.push(`/edit?id=${note.id}&pinned=${note.pinned}`)"
-        class="bg-[var(--bg2)] p-3 rounded-[15px] shadow cursor-pointer relative h-fullborder-[var(--text)]"
+        class="bg-[var(--bg2)] p-2 shadow cursor-pointer border-1 border-[var(--text)]"
+        style="border-radius: var(--br-card);"
       >
+        <h3 
+            class="font-semibold"
+            v-html="highlightMatch(utils.clean_html(note.title), searchQuery)"
+        ></h3>
 
-          <h3 
-              class="font-semibold"
-              v-html="highlightMatch(utils.clean_html(note.title), searchQuery)"
-              :class="hitbox ? 'bg-blue-200' : ''"
-          ></h3>
-          <p 
-              class="text-sm overflow-hidden mb-5"
-              v-html="highlightMatch(utils.clean_html(note.content), searchQuery)"
-              :class="hitbox ? 'bg-blue-500' : ''"
-          ></p>
+        <p 
+            class="text-sm max-h-20 overflow-hidden mb-3"
+            v-html="highlightMatch(utils.clean_html(note.content), searchQuery)"
+        ></p>
 
-          <div class="absolute left-1 bottom-1 w-[60%] whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
-            <div 
-                v-for="(tag) in all_tags.filter(tag => note.tags.includes(tag.id))" 
-                :key="tag.id" 
-                class="ml-2 underline" 
-                :class="hitbox ? 'bg-teal-500' : ''"
-                v-html="highlightMatch(tag.name, searchQuery)"
-            ></div>
-          </div>
+        <div class="w-full flex flex-row justify-start items-center
+          overflow-scroll whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
 
-          <label class="absolute right-2.5 bottom-1.5 z-10" :class="hitbox ? 'bg-teal-500' : ''">{{ note.date }}</label>
-          
-        </li>
+          <div 
+            v-for="(tag, index) in all_tags.filter(tag => note.tags.includes(tag.id))" 
+            :key="index" 
+            class="ml-2 border-1 border-[var(--text)] pr-1.5 pl-1.5 rounded-[var(--br-tag)]" 
+            :style="{ backgroundColor: tag.color, color: utils.get_text_color(tag.color) }" 
+            :class="hitbox ? 'bg-teal-500' : ''"
+            v-html="highlightMatch(utils.clean_html(tag.name), searchQuery)"
+          ></div>
 
-      </ul>
+        </div>
+
+      </li>
+
+    </ul>
 
   </div>
 
