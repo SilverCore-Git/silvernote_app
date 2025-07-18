@@ -51,11 +51,11 @@ import Loader from '../components/Loader.vue';
 const version = ref<string>('v-1');
 const loader = ref<boolean>(true);
 
-let win_url: string | undefined;
-let macos_url: string | undefined;
-let linux_appimage_url: string | undefined;
-let linux_deb_url: string | undefined;
-let linux_rpm_url: string | undefined;
+// let win_url: string | undefined;
+// let macos_url: string | undefined;
+// let linux_appimage_url: string | undefined;
+// let linux_deb_url: string | undefined;
+// let linux_rpm_url: string | undefined;
 
 let platform_list = ref<{ 
     platform: string;
@@ -82,19 +82,18 @@ onMounted(async () => {
 
 		version.value = repo.tag_name;
 
-		const assets = await fetch(repo.assets_url)
-		.then(res => {
-			return res.json() as Promise<{ name: string; browser_download_url: string; }[]>;
-		});
+		// const assets = await fetch(repo.assets_url)
+		// 	.then(res => {
+		// 		return res.json() as Promise<{ name: string; browser_download_url: string; }[]>;
+		// 	});
 
-		win_url = assets.find(asset => asset.name.includes('win-setup.exe'))?.browser_download_url;
-		console.log(win_url)
+		// win_url = assets.find(asset => asset.name.includes('win-setup.exe'))?.browser_download_url;
 
-		macos_url = assets.find(asset => asset.name.includes('macos.dmg'))?.browser_download_url;
+		// macos_url = assets.find(asset => asset.name.includes('macos.dmg'))?.browser_download_url;
 
-		linux_appimage_url = assets.find(asset => asset.name.includes('linux-setup.AppImage'))?.browser_download_url;
-		linux_deb_url = assets.find(asset => asset.name.includes('linux-setup.deb'))?.browser_download_url;
-		linux_rpm_url = assets.find(asset => asset.name.includes('linux-setup.rpm'))?.browser_download_url;
+		// linux_appimage_url = assets.find(asset => asset.name.includes('linux-setup.AppImage'))?.browser_download_url;
+		// linux_deb_url = assets.find(asset => asset.name.includes('linux-setup.deb'))?.browser_download_url;
+		// linux_rpm_url = assets.find(asset => asset.name.includes('linux-setup.rpm'))?.browser_download_url;
 
 	}
 	catch (err) {
@@ -102,34 +101,34 @@ onMounted(async () => {
 	}
 
 	platform_list.value = [
-		{
-			platform: 'windows',
-			platformName: 'Windows',
-			downloadLink: await win_url,
-			buttonText: 'Télécharger pour PC',
-			svg: '/assets/svg/windows.svg',
-		},
-		{
-			platform: 'macos',
-			platformName: 'macOS',
-			downloadLink: await macos_url,
-			buttonText: 'Télécharger pour Mac',
-			svg: '/assets/svg/apple.svg',
-		},
-		{
-			platform: 'android',
-			platformName: 'Android',
-			downloadLink: "https://a_mettre_dans_app_store",
-			buttonText: 'Obtenir sur Play Store',
-			svg: '/assets/svg/android.svg',
-		},
-		{
-			platform: 'ios',
-			platformName: 'iOS',
-			downloadLink: "https://a_mettre_dans_app_store",
-			buttonText: "Obtenir sur l'App Store",
-			svg: '/assets/svg/apple.svg', 
-		},
+		// {
+		// 	platform: 'windows',
+		// 	platformName: 'Windows',
+		// 	downloadLink: await win_url,
+		// 	buttonText: 'Télécharger pour PC',
+		// 	svg: '/assets/svg/windows.svg',
+		// },
+		// {
+		// 	platform: 'macos',
+		// 	platformName: 'macOS',
+		// 	downloadLink: await macos_url,
+		// 	buttonText: 'Télécharger pour Mac',
+		// 	svg: '/assets/svg/apple.svg',
+		// },
+		// {
+		// 	platform: 'android',
+		// 	platformName: 'Android',
+		// 	downloadLink: "https://a_mettre_dans_app_store",
+		// 	buttonText: 'Obtenir sur Play Store',
+		// 	svg: '/assets/svg/android.svg',
+		// },
+		// {
+		// 	platform: 'ios',
+		// 	platformName: 'iOS',
+		// 	downloadLink: "https://a_mettre_dans_app_store",
+		// 	buttonText: "Obtenir sur l'App Store",
+		// 	svg: '/assets/svg/apple.svg', 
+		// },
 		{
 			platform: 'web',
 			platformName: 'Version Web',
@@ -137,19 +136,19 @@ onMounted(async () => {
 			buttonText: "Lancer l'application web",
 			svg: '/assets/svg/web.svg', 
 		},
-		{
-			platform: 'linux',
-			platformName: 'Linux',
-			downloadLink: '',
-			linux_props: {
-				is: true,
-				deb: await linux_deb_url,
-				appimage: await linux_appimage_url,
-				rpm: await linux_rpm_url
-			},
-			buttonText: 'Télécharger pour Linux',
-			svg: '/assets/svg/linux.svg',
-		},
+		// {
+		// 	platform: 'linux',
+		// 	platformName: 'Linux',
+		// 	downloadLink: '',
+		// 	linux_props: {
+		// 		is: true,
+		// 		deb: await linux_deb_url,
+		// 		appimage: await linux_appimage_url,
+		// 		rpm: await linux_rpm_url
+		// 	},
+		// 	buttonText: 'Télécharger pour Linux',
+		// 	svg: '/assets/svg/linux.svg',
+		// },
 	];
 
 	loader.value = false;

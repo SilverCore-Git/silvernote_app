@@ -1,6 +1,6 @@
 <template>
 
-    <nav class="absolute h-21 top-0 left-0 w-screen z-50 bg-[var(--bg2)] ">
+    <nav class="absolute h-21 top-0 left-0 w-screen z-50 bg-[var(--bg2)] flex justify-center items-center">
 
         <Nav_bar />
 
@@ -22,6 +22,7 @@
 
                 <p class="text-xl md:text-2xl mb-10 text-gray-700">
                     SilverNote est l'application de prise de notes simple et intuitive conçue pour vous, disponible sur mobile, PC et en tant qu'application web.
+                    <br>Projet en développement, beta gratuite disponible.
                 </p>
 
                 <div class=" flex flex-col sm:flex-row justify-center items-center">
@@ -55,14 +56,14 @@
 
     </section>
 
-    <section id="price_plan" class="py-16 md:py-24 rounded-xl mx-4 mb-8 w-screen flex flex-col justify-center items-center relative">
+    <section id="price_plan" class="py-16 md:py-24 rounded-xl mx-4 mb-8 flex flex-col justify-center items-center relative">
 
         <div 
-            class=" bg-[var(--bg)]/30 w-screen -ml-4 inset-0 absolute z-50 flex flex-col justify-center items-center text-6xl font-bold uppercase text-red-600"
+            class=" bg-[var(--bg)]/30 w-screen -ml-4 inset-0 absolute z-30 flex flex-col justify-center items-center text-6xl font-bold uppercase text-red-600 text-center"
             style="backdrop-filter: blur(3px);"
         >
-            App en développement
-            <span class="text-2xl mt-2">bientôt disponible</span>
+            beta gratuite disponible
+            <span class="text-2xl mt-2">abonnement bientôt disponible</span>
         </div>
 
         <div class="container w-screen text-center saturate-0">
@@ -185,14 +186,22 @@
                 </h2>
 
                 <p class="text-xl md:text-2xl mb-10 text-gray-700">
-                    Rejoignez des milliers d'utilisateurs et commencez à organiser votre vie avec SilverNote dès aujourd'hui.
+                    Tester SilverNote dès aujourd'hui, dans un navigateur.
                 </p>
 
-                <SignUpButton>
-                    <button class="primary text-xl px-8 py-4">
-                        Créer votre compte gratuit
-                    </button>
-                </SignUpButton>
+                <SignedIn>
+                    <a href="https://app.silvernote.fr"><button class="primary text-xl px-8 py-4">
+                        Ouvrir silvernote
+                    </button></a>
+                </SignedIn>
+
+                <SignedOut>
+                    <SignUpButton>
+                        <button class="primary text-xl px-8 py-4">
+                            Créer votre compte gratuit
+                        </button>
+                    </SignUpButton>
+                </SignedOut>
 
             </div>
 
@@ -261,7 +270,7 @@ const modules = [Autoplay, Pagination];
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-import { SignUpButton } from '@clerk/vue'
+import { SignedIn, SignedOut, SignUpButton } from '@clerk/vue'
 
 import Nav_bar from '../components/Nav_bar.vue';
 import Card from '../components/Card.vue';

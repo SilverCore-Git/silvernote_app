@@ -1,6 +1,6 @@
 <template>
     
-    <div class="bg-[var(--bg2)] shadow-sm py-4 px-6 md:px-12 flex justify-between items-center rounded-b-xl">
+    <nav class="container mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8 z-50">
 
         <img class="w-13 cursor-pointer" src="/favicon.svg" @click="router.push('/')" alt="logo">
 
@@ -13,40 +13,43 @@
 
         <Sing_in_btn /> 
 
-        <div class="md:hidden">
+        <button 
+          @click="menu = !menu" 
+          class="cursor-pointer  xl:hidden text-gray-600 hover:text-[var(--primary )] focus:outline-none z-50"
+          style="transition: all 0.3s;"
+          :class="menu ? 'rotate-90' : 'rotate-0'"
+        >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
 
-            <button @click="toggle_burger_menu" class="text-gray-600 hover:text-gray-900 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-            </button>
-            
-        </div>
+    </nav>
 
-    </div>
+    <nav 
+      :class="menu ? 'right-0' : '-right-160'"
+      class="flex flex-col justify-center items-center bg-white xl:hiden fixed top-0 gap-9 px-10 h-screen z-40 shadow-sm"
+      style="transition: all 0.3s;"
+    >
 
-    <div id="burger-menu" class="hidden md:hidden bg-white shadow-lg  py-4 rounded-b-xl mx-4">
-
-        <ul class="flex items-center justify-center space-x-6">
-            <li @click="router.push('/')"><a>Maison</a></li>
-            <li @click="router.push('/'); scroll_to('function')"><a>Fonctionalités</a></li>
-            <li @click="router.push('/'); scroll_to('price_plan')"><a>Tarifs et abonements</a></li>
-            <li @click="router.push('/download')"><a>Télécharger</a></li>
+        <ul class="flex flex-col items-center justify-center gap-6">
+            <li @click="menu = false; router.push('/')"><a>Maison</a></li>
+            <li @click="menu = false; router.push('/'); scroll_to('function')"><a>Fonctionalités</a></li>
+            <li @click="menu = false; router.push('/'); scroll_to('price_plan')"><a>Tarifs et abonements</a></li>
+            <li @click="menu = false; router.push('/download')"><a>Télécharger</a></li>
         </ul>
 
-    </div>
+    </nav>
 
 </template>
 
 <script lang="ts" setup>
 
 import Sing_in_btn from './Sing_in_btn.vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-const toggle_burger_menu = () => {
-    const mobileMenu = document.getElementById('burger-menu');
-    mobileMenu?.classList.toggle('hidden');
-}
+const menu = ref<boolean>(false);
 
 const scroll_to = (id: 'function' | 'home' | 'price_plan') => {
     const element = document.getElementById(id)
