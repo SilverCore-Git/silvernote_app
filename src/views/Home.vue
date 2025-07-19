@@ -63,7 +63,7 @@
             style="backdrop-filter: blur(3px);"
         >
             beta gratuite disponible
-            <span class="text-2xl mt-2">abonnement bientôt disponible</span>
+            <span class="text-2xl mt-2">abonnement a venir</span>
         </div>
 
         <div class="container w-screen text-center saturate-0">
