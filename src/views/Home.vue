@@ -30,7 +30,8 @@
             </div>
 
             <div class="flex flex-row justify-center items-center gap-5 md:gap-5">
-                <div 
+
+                <!-- <div // metttre en auto
                     class="reload-svg 
                             md:w-[24px]  w-[30px]
                             md:h-[24px]  h-[30px]
@@ -41,7 +42,7 @@
                     ]"
                     ref="online_btn"
                     @click="toggleOnline"
-                ></div>
+                ></div> -->
 
                 <div 
                     class="reload-svg 
@@ -49,7 +50,7 @@
                             md:h-[24px]  h-[30px]
                         " 
                     :class="[
-                        ifLight ? 'moon-svg' : 'sun-svg',
+                        ifLight ? 'sun-svg' : 'moon-svg',
                         hitbox ? 'bg-teal-300' : ''
                     ]"
                     ref="theme_btn"
@@ -372,7 +373,7 @@
     import type { Note, Tag } from '../assets/ts/type';
     import { hitbox as if_hitbox } from '../assets/ts/settings';
     import { toggle_theme } from '../assets/ts/theme';
-    import { toggle_online } from '../assets/ts/online';
+    //import { toggle_online } from '../assets/ts/online';
 
     let hitbox: boolean;
     onMounted(async () => { hitbox = await if_hitbox() });
@@ -395,7 +396,7 @@ import { UserButton } from '@clerk/vue';
     const ifLight = ref<boolean>(localStorage.getItem('theme') == 'light');
     const isOnline = ref<boolean>(localStorage.getItem('online') == "true");
     const theme_btn = ref<HTMLDivElement | null>(null);
-    const online_btn = ref<HTMLDivElement | null>(null);
+    //const online_btn = ref<HTMLDivElement | null>(null);
 
     const tip: boolean = false;
     const tag_name = ref<string>('');
@@ -442,23 +443,23 @@ import { UserButton } from '@clerk/vue';
         )
     }
 
-    const toggleOnline = () => {
-        const newVal = !isOnline.value;
-        if (!navigator.onLine && newVal) return;
-        toggle_online(newVal);
-        isOnline.value = newVal;
-        online_btn.value?.animate(
-            [
-                { transform: 'scale(1)' },
-                { transform: 'scale(0.9)' },
-                { transform: 'scale(1)' }
-            ],
-            {
-                duration: 150,
-                easing: 'ease-out'
-            }
-        )
-    }
+    // const toggleOnline = () => {
+    //     const newVal = !isOnline.value;
+    //     if (!navigator.onLine && newVal) return;
+    //     toggle_online(newVal);
+    //     isOnline.value = newVal;
+    //     online_btn.value?.animate(
+    //         [
+    //             { transform: 'scale(1)' },
+    //             { transform: 'scale(0.9)' },
+    //             { transform: 'scale(1)' }
+    //         ],
+    //         {
+    //             duration: 150,
+    //             easing: 'ease-out'
+    //         }
+    //     )
+    // }
 
     const withdraw = async () => {
         const notes: Note[] = await db.getAll('notes');
