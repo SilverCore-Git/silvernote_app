@@ -1,7 +1,9 @@
 <template>
 
-    <nav class="absolute h-21 top-0 left-0 w-screen z-50 bg-[var(--bg2)] ">
+    <nav class="absolute h-21 top-0 left-0 w-screen z-50 bg-[var(--bg2)] flex justify-center items-center">
+
         <Nav_bar />
+
     </nav>
 
     <header class="mt-40 w-screen text-center">

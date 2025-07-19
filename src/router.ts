@@ -1,10 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import Home from './views/Home.vue';
-import Politic from './views/Politique_de_confidentialite.vue';
 import Download from './views/Download.vue';
+import Conditions_general_utilisation from './views/Conditions_general_utilisation.vue';
+import Politique_de_confidentialite from './views/Politique_de_confidentialite.vue';
+import Mentions_legales from './views/Mentions_legales.vue';
+import Cancel from './views/pay/Cancel.vue';
+import Success from './views/pay/Success.vue';
 
 const routes = [
+
   { 
     path: '/', 
     name: 'Home', 
@@ -13,19 +18,50 @@ const routes = [
     meta: { title: 'SilverNote : vos notes partout !' }
   },
   { 
-    path: '/politique-de-confidentialite', 
-    name: 'politique-de-confidentialite', 
-    component: Politic,
-    props: {},
-    meta: { title: 'SilverNote - confidentialité' }
-  },
-  { 
     path: '/download', 
     name: 'download', 
     component: Download,
     props: {},
     meta: { title: 'SilverNote - download' }
-  }
+  },
+
+  { 
+    path: '/politique-de-confidentialite', 
+    name: 'politique-de-confidentialite', 
+    component: Politique_de_confidentialite,
+    props: {},
+    meta: { title: 'SilverNote - confidentialité' }
+  },
+  { 
+    path: '/conditions-general-utilisation', 
+    name: 'conditions-general-utilisation', 
+    component: Conditions_general_utilisation,
+    props: {},
+    meta: { title: 'SilverNote - conditions general utilisation' }
+  },
+  { 
+    path: '/mentions-legales', 
+    name: 'mentions-legales', 
+    component: Mentions_legales,
+    props: {},
+    meta: { title: 'SilverNote - mentions legales' }
+  },
+
+  { 
+    path: '/pay/success', 
+    name: 'pay success', 
+    component: Success,
+    props: {},
+    meta: { title: 'SilverNote - fin du payement' }
+  },
+  { 
+    path: '/pay/cancel', 
+    name: 'pay cancel', 
+    component: Cancel,
+    props: {},
+    meta: { title: 'SilverNote - annulation du payement' }
+  },
+
 ]
 
 const router = createRouter({
