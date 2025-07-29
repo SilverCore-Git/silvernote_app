@@ -167,9 +167,9 @@ class Database {
 
     public async set_user_plan (userId: string, planId: UUID) {
 
-        this.remove_user(userId);
+        await this.remove_user(userId);
         
-        this.add_user(userId, planId)
+        await this.add_user(userId, planId)
         
     }
 

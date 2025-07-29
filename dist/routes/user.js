@@ -6,6 +6,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const database_1 = __importDefault(require("../assets/ts/database"));
+// route de gestion de plan
+router.post('/plan/set', async (req, res) => {
+    const { userId, planId } = req.body;
+    let sessions;
+    if (!userId || !planId)
+        return;
+    try {
+        await database_1.default.set_user_plan(userId, planId);
+        res.cookie('plan_id', planId, {
+            httpOnly: true,
+            secure: true,
+        });
+    }
+    catch (err) {
+        res.json({ error: true, message: err });
+        throw err;
+    }
+    res.json(true);
+});
 // route de création de session
 router.post('/session/create', async (req, res) => {
     const { platform, userId } = req.body; // platform => app type (web, electron, capacitor)
@@ -18,16 +37,16 @@ router.post('/session/create', async (req, res) => {
         sessions = await database_1.default.new_session(userId);
         if (platform == 'web') {
             res.cookie('session_id', sessions.id, {
-                httpOnly: false,
-                secure: false, // remettre true apres
+                httpOnly: true,
+                secure: true,
             });
             res.cookie('user_id', userId, {
-                httpOnly: false,
-                secure: false, // remettre true apres
+                httpOnly: true,
+                secure: true,
             });
             res.cookie('_platform', 'web', {
-                httpOnly: false,
-                secure: false, // remettre true apres
+                httpOnly: true,
+                secure: true,
             });
         }
     }
