@@ -1,7 +1,9 @@
 import { UUID } from "crypto";
+import { Plan } from "./plan";
 
 export interface User { 
-    userId: string 
+    userId: string;
+    plan: Plan;
 };
 
 export interface News { 

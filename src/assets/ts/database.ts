@@ -5,6 +5,7 @@ const fsp = fs.promises;
 import utils from './utils';
 import type { Session, User } from './types';
 import { UUID } from 'crypto';
+import { get_plan_by_id, get_silver_plan } from './plan';
 
 class Database {
 
@@ -127,19 +128,22 @@ class Database {
 
     }
 
-    public async add_user(userId: string): Promise<void> {
+    public async add_user(userId: string, planId?: UUID): Promise<void> {
         try {
 
             const db: User[] = await this.get('user');
 
-            db.push({ userId });
+            db.push({ 
+                userId, 
+                plan: get_plan_by_id(planId)
+            });
 
             await this.save('user', db);
 
         } catch (error) {
             console.error('Error adding user:', error);
         }
-    }
+    } 
 
     public async remove_user (user_id: string) {
 
@@ -159,6 +163,15 @@ class Database {
 
     }
 
+
+
+    public async set_user_plan (userId: string, planId: UUID) {
+
+        this.remove_user(userId);
+        
+        this.add_user(userId, planId)
+        
+    }
 
 }
 

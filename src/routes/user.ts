@@ -3,6 +3,32 @@ const router = express.Router();
 
 import db from '../assets/ts/database';
 
+// route de gestion de plan
+router.post('/plan/set', async (req: Request, res: Response) => {
+
+  const { userId, planId } = req.body;
+  let sessions; 
+
+  if (!userId || !planId) return;
+
+  try {
+
+    await db.set_user_plan(userId, planId);
+    
+    res.cookie('plan_id', planId, {
+      httpOnly: true,
+      secure: true,
+    });
+
+  }
+  catch (err) {
+    res.json({ error: true, message: err });
+    throw err;
+  }
+
+  res.json(true);
+
+})
 
 // route de création de session
 router.post('/session/create', async (req: Request, res: Response) => {
@@ -21,18 +47,18 @@ router.post('/session/create', async (req: Request, res: Response) => {
     if (platform == 'web') {
 
       res.cookie('session_id', sessions.id, {
-        httpOnly: false,
-        secure: false, // remettre true apres
+        httpOnly: true,
+        secure: true,
       });
 
       res.cookie('user_id', userId, {
-        httpOnly: false,
-        secure: false, // remettre true apres
+        httpOnly: true,
+        secure: true,
       });
 
       res.cookie('_platform', 'web', {
-        httpOnly: false,
-        secure: false, // remettre true apres
+        httpOnly: true,
+        secure: true,
       });
 
     }
