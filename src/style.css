@@ -77,27 +77,55 @@ button:hover.second {
 }
 
 button.premium {
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid transparent;
-  padding: 0.8rem 1.5rem;
+  padding: 1.1rem 2rem;
   font-size: 1.5em;
   text-transform: uppercase;
-  font-weight: 600;
-  font-family: inherit;
-  background-color: var(--btn);
+  font-weight: 900;
+  letter-spacing: 1px;
+  font-family: 'Segoe UI', sans-serif;
+
+  background: linear-gradient(135deg, #f7a440, #F28C28);
   color: white;
+
   cursor: pointer;
-  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.25s, background-color 0.25s;
+  position: relative;
+  overflow: hidden;
+
+  box-shadow: 0 8px 30px rgba(242, 140, 40, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.4s ease, background 0.3s ease;
 }
 
-
-button:hover.premium {
-  border-color: #d5731c;
-  background-color: #e67d13;
-  color: white;
-  transform: scale(0.98);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); 
+button.premium::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  animation: glowPulse 4s infinite ease-in-out;
+  z-index: 0;
 }
+
+button.premium:hover {
+  transform: scale(1.03);
+  background: linear-gradient(135deg, #fda94b, #f28c28);
+  box-shadow: 0 0 50px rgba(242, 140, 40, 0.7);
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+    opacity: 1;
+  }
+}
+
 
 button:focus,
 button:focus-visible {
@@ -110,3 +138,33 @@ button:focus-visible {
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
+
+
+
+
+
+
+
+
+.tooltip {
+  cursor: pointer;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 0.5em 0.8em;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  border-radius: 6px;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+}
+
+

@@ -7,10 +7,29 @@
     </nav>
 
 
-    <main class="flex flex-col items-center justify-center py-20 my-15 max-w-4xl mx-auto text-center text-[var(--text)] space-y-12">
+    <main class="flex flex-col items-center justify-center  text-center w-screen h-screen">
 
-        <h1 class="text-6xl md:text-8xl font-extrabold uppercase tracking-tight text-[var(--text-strong)] leading-tight">
-            Découvrez <br class="md:hidden">SilverNote {{ plans[priceId].name }}
+
+        <h2 class="text-3xl md:text-5xl font-bold uppercase mb-10 ">
+            silvernote <span class="text-[var(--btn)]">{{ plans[priceId].name }}</span> dès <span class="text-[var(--btn)]">{{ price }}€</span>{{ parsedEach }}
+        </h2>
+
+        <button v-if="!isLoader" @click="create_checkout()" class="premium mt-5">
+            Rejoidre le clan {{ plans[priceId].name }}
+        </button>
+
+        <Loader v-else :icon="false" />
+
+        <div @click="scroll_to('more')" class=" absolute bottom-10 w-12 arrow tooltip" data-tooltip="Plus d'info !">
+            <svg fill="#000000" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><path d="M81.8457,25.3876a6.0239,6.0239,0,0,0-8.45.7676L48,56.6257l-25.396-30.47a5.999,5.999,0,1,0-9.2114,7.6879L43.3943,69.8452a5.9969,5.9969,0,0,0,9.2114,0L82.6074,33.8431A6.0076,6.0076,0,0,0,81.8457,25.3876Z"/></svg>
+        </div>
+
+    </main>
+
+    <section id="more" class="flex flex-col items-center justify-center max-w-4xl mx-auto text-center text-[var(--text)] space-y-12 pt-20 mb-50">
+
+        <h1 class=" font-extrabold uppercase tracking-tight leading-tight">
+            Plus d'info !
         </h1>
 
         <p class="text-xl md:text-2xl max-w-2xl text-[var(--text)]">{{ plans[priceId].hook }}</p>
@@ -30,21 +49,8 @@
 
         </div>
 
-        <section class="mt-25">
 
-            <h1 class="text-2xl md:text-4xl font-bold uppercase text-[var(--text-strong)] mb-10">
-                silvernote {{ plans[priceId].name }} dès {{ price }}€{{ parsedEach }}
-            </h1>
-
-            <button v-if="!isLoader" @click="create_checkout()" class="premium">
-                Rejoidre le clan {{ plans[priceId].name }}
-            </button>
-
-            <Loader v-else :icon="false" />
-
-        </section>
-
-    </main>
+    </section>
 
     <footer class="z-50 w-screen">
         <Footer />
@@ -65,9 +71,9 @@ const route = useRoute();
 const isLoader = ref<boolean>(false);
 const each = route.query.each;
 
-const price = 54;
-const parsedEach = each == 'mounth' ? '/mois' : each == 'year' ? '/ans' : ''
-const mode = 'payment' // or 'subscription'
+const parsedEach = each == 'mounthly' ? '/mois' : each == 'yearly' ? '/ans' : ''
+const price = route.query.price;
+const mode = route.query.mode; // 'payment' or 'subscription'
 
 const props = defineProps<{
     priceId: 'gold' | 'platinum' | 'ultimate'
@@ -78,14 +84,34 @@ const create_checkout = async (): Promise<void> => {
 
     isLoader.value = true;
 
-    const checkoutLink: { url: string } = await fetch(`https://api.silvernote.fr/create/checkout/link/for/${plans[props.priceId].id}/withmode/${mode}`).then(res => res.json())
+    try {
 
-    window.location.href = checkoutLink.url;
+        const response = await fetch(
+            `http://localhost:3000/money/create/checkout/link/for/${plans[props.priceId].id}/withmode/${mode}`,
+            { method: "POST" }
+        );
 
-}
+        if (!response.ok) {
+            throw new Error(`Server responded with status ${response.status}`);
+        }
+
+        const checkoutLink: { url: string } = await response.json();
+
+        if (!checkoutLink?.url) {
+            throw new Error("Invalid response format: missing URL");
+        }
+
+        window.location.href = checkoutLink.url;
+
+    } catch (error) {
+        console.error("Checkout creation failed:", error);
+    } finally {
+        isLoader.value = false;
+    }
+};
 
 const plans: {
-    
+
     gold: {
         id: string;
         name: string;
@@ -117,7 +143,7 @@ const plans: {
 } = {
     
     gold: {
-        id: "price_465",
+        id: "price_1RqJczI2ZY3BvIYk2afc7OQE",
         name: "Gold",
         hook: "Idéal pour les utilisateurs confirmés qui cherchent plus de **sécurité** et de capacité.",
         assets: [
@@ -141,7 +167,7 @@ const plans: {
     },
 
     platinum: {
-        id: "price_465",
+        id: "price_1RqJczI2ZY3BvIYk2afc7OQE",
         name: "Platinum",
         hook: "Une offre avancée et **sans prise de tête** pour une gestion de notes simplifiée.",
         assets: [
@@ -165,7 +191,7 @@ const plans: {
     },
 
     ultimate: {
-        id: "price_465",
+        id: "price_1RqJczI2ZY3BvIYk2afc7OQE",
         name: "Ultimate",
         hook: "L'**excellence** d'une offre illimitée pour une liberté totale dans SilverNote.",
         assets: [
@@ -189,4 +215,30 @@ const plans: {
     }
 };
 
+
+const scroll_to = (id: string) => {
+    const element = document.getElementById(id)
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+    }
+}
+
 </script>
+
+<style scoped>
+
+@keyframes bounceArrow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+.arrow {
+  display: inline-block;
+  animation: bounceArrow 1.2s ease-in-out infinite;
+}
+
+</style>
