@@ -84,8 +84,39 @@ const create_checkout = async (): Promise<void> => {
 
 }
 
-const plans = {
-    goldid: {
+const plans: {
+    
+    gold: {
+        id: string;
+        name: string;
+        hook: string;
+        assets: {
+            title: string;
+            description: string;
+        }[];
+    },
+    platinum: {
+        id: string;
+        name: string;
+        hook: string;
+        assets: {
+            title: string;
+            description: string;
+        }[];
+    },
+    ultimate: {
+        id: string;
+        name: string;
+        hook: string;
+        assets: {
+            title: string;
+            description: string;
+        }[];
+    }
+
+} = {
+    
+    gold: {
         id: "price_465",
         name: "Gold",
         hook: "Idéal pour les utilisateurs confirmés qui cherchent plus de **sécurité** et de capacité.",
