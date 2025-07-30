@@ -67,8 +67,9 @@ const each = route.query.each;
 
 const price = 54;
 const parsedEach = each == 'mounth' ? '/mois' : each == 'year' ? '/ans' : ''
+const mode = 'payment' // or 'subscription'
 
-defineProps<{
+const props = defineProps<{
     priceId: 'gold' | 'platinum' | 'ultimate'
 }>()
 
@@ -77,10 +78,15 @@ const create_checkout = async (): Promise<void> => {
 
     isLoader.value = true;
 
+    const checkoutLink: { url: string } = await fetch(`https://api.silvernote.fr/create/checkout/link/for/${plans[props.priceId].id}/withmode/${mode}`).then(res => res.json())
+
+    window.location.href = checkoutLink.url;
+
 }
 
 const plans = {
-    gold: {
+    goldid: {
+        id: "price_465",
         name: "Gold",
         hook: "Idéal pour les utilisateurs confirmés qui cherchent plus de **sécurité** et de capacité.",
         assets: [
@@ -104,6 +110,7 @@ const plans = {
     },
 
     platinum: {
+        id: "price_465",
         name: "Platinum",
         hook: "Une offre avancée et **sans prise de tête** pour une gestion de notes simplifiée.",
         assets: [
@@ -127,6 +134,7 @@ const plans = {
     },
 
     ultimate: {
+        id: "price_465",
         name: "Ultimate",
         hook: "L'**excellence** d'une offre illimitée pour une liberté totale dans SilverNote.",
         assets: [
