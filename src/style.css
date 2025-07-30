@@ -76,6 +76,29 @@ button:hover.second {
   color: white;
 }
 
+button.premium {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.5em;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-family: inherit;
+  background-color: var(--btn);
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.25s, background-color 0.25s;
+}
+
+
+button:hover.premium {
+  border-color: #d5731c;
+  background-color: #e67d13;
+  color: white;
+  transform: scale(0.98);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); 
+}
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;

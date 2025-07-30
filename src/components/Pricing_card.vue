@@ -101,7 +101,9 @@
 
         </div>
 
-        <button class="second w-full">{{ price == 0 ? 'Commencer gratuitement' : mode_for == 3 ? `Nous contacter` : `S'inscrir au plan ${title}` }}</button>
+        <button @click="router.push({ name: 'Checkout', params: { planId: 'price_abc123' } })" class="second w-full">
+            {{ price == 0 ? 'Commencer gratuitement' : mode_for == 3 ? `Nous contacter` : `S'inscrir au plan ${title}` }}
+        </button>
 
     </div>
 
@@ -109,6 +111,9 @@
 
 <script lang="ts" setup>
 
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 defineProps<{
     title: string;

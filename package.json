@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "init": "npm i && vite",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "screen": "node scripts/take_a_screen.cjs"

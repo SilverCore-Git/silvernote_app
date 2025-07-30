@@ -7,6 +7,7 @@ import Politique_de_confidentialite from './views/Politique_de_confidentialite.v
 import Mentions_legales from './views/Mentions_legales.vue';
 import Cancel from './views/pay/Cancel.vue';
 import Success from './views/pay/Success.vue';
+import Pricing from './views/pay/Pricing.vue';
 
 const routes = [
 
@@ -60,6 +61,13 @@ const routes = [
     component: Cancel,
     props: {},
     meta: { title: 'SilverNote - annulation du payement' }
+  },
+  { 
+    path: '/pay/pricing/:priceId', 
+    name: 'pricing', 
+    component: Pricing,
+    props: true,
+    meta: { title: 'SilverNote - annoncement du produit' }
   },
 
 ]

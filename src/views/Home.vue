@@ -58,13 +58,13 @@
 
     <section id="price_plan" class="py-16 md:py-24 rounded-xl mx-4 mb-8 flex flex-col justify-center items-center relative">
 
-        <div 
+        <!-- <div 
             class=" bg-[var(--bg)]/30 w-screen -ml-4 inset-0 absolute z-30 flex flex-col justify-center items-center text-6xl font-bold uppercase text-red-600 text-center"
             style="backdrop-filter: blur(3px);"
         >
             beta gratuite disponible
             <span class="text-2xl mt-2">abonnement a venir</span>
-        </div>
+        </div> -->
 
         <div class="container w-screen text-center saturate-0">
 
