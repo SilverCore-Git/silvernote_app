@@ -5,12 +5,18 @@ const router = express.Router();
 
 type Mode = "payment" | "subscription";
 const Mode = (value: string) => { return value === "payment" || value === "subscription"; }
-type PricesId = "price_1RqJczI2ZY3BvIYk2afc7OQE" | "price_1RmDmAI2ZY3BvIYklqDlUwoH";
 
 interface CheckoutParams {
-  mode: Mode;
-  priceId: string;
-  quantity?: number;
+    mode: Mode;
+    priceId: string;
+    quantity?: number;
+}
+
+interface PriceParams {
+    name: string;
+    description: string;
+    amount: number;
+    interval: 'day' | 'month' | 'week' | 'year';
 }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -20,7 +26,13 @@ async function create_checkout (
         mode,
         priceId,
         quantity = 1
-    }: CheckoutParams
+    }: CheckoutParams,
+    {
+        name,
+        description,
+        amount,
+        interval
+    }: PriceParams
 ) {
 
     try {
@@ -31,17 +43,31 @@ async function create_checkout (
             mode,
 
             line_items: [
+
                 {
-                    price: priceId,
-                    quantity,
-                },
+
+                    price_data: {
+                        currency: 'eur',
+                        product_data: {
+                            name,
+                            description,
+                        },
+                        unit_amount: amount, // en centimes (ex: 19.99€ = 1999)
+                        recurring: {
+                            interval, // 'mounth' ou 'year'
+                        }
+                    },
+                    quantity
+                }
+                    
             ],
-            success_url: `https://www.silvernote.fr/pay/success?plan=${priceId}&user=user`,
-            cancel_url: `https://www.silvernote.fr/pay/cancel?plan=${priceId}&user=user`,
+
+            success_url: `http://localhost:5173/pay/success?plan=${priceId}&user=user`,
+            cancel_url: `http://localhost:5173/pay/cancel?plan=${priceId}&user=user`,
 
         });
 
-        return session.url;
+        return { error: false, url: session.url };
 
     } catch (err: any) {
         console.error('Error creating checkout session:', err.message);
@@ -52,13 +78,18 @@ async function create_checkout (
 
 router.post('/create/checkout/link/for/:priceId/withmode/:mode', async (req, res) => {
 
+    const { name, description, amount, interval } = req.body;
+
     const rawPricesId: string = req.params.priceId;
     const priceId: string = rawPricesId;
 
     const rawMode: string = req.params.mode;
     const mode: Mode = Mode(rawMode) ? rawMode : "payment";
 
-    const session = await create_checkout({ mode, priceId });
+    const session = await create_checkout(
+        { mode, priceId },
+        { name, description, amount, interval }
+    );
 
     res.json(session);
 
