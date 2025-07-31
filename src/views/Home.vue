@@ -26,8 +26,14 @@
                 </p>
 
                 <div class=" flex flex-col sm:flex-row justify-center items-center">
-                    <a href="https://app.silvernote.fr"><button class="primary m-4">Découvrir silvernote</button></a>
-                    <button @click="scroll_to('function')" style="backdrop-filter: blur(50px);" class="second">En savoir plus</button>
+                    
+                    <a href="https://app.silvernote.fr"><button class="premium m-4">Découvrir silvernote</button></a>
+                    
+                    <div class="hidden">
+                        <a href="https://app.silvernote.fr"><button class="primary m-4">Ouvrir silvernote</button></a>
+                        <button @click="scroll_to('function')" style="backdrop-filter: blur(50px);" class="second">En savoir plus</button>
+                    </div>
+
                 </div>
 
             </div>
@@ -56,7 +62,7 @@
 
     </section>
 
-    <section id="price_plan" class="py-16 md:py-24 rounded-xl mx-4 mb-8 flex flex-col justify-center items-center relative">
+    <section v-if="we_can_buy" id="price_plan" class="py-16 md:py-24 rounded-xl mx-4 mb-8 flex flex-col justify-center items-center relative">
 
         <!-- <div 
             class=" bg-[var(--bg)]/30 w-screen -ml-4 inset-0 absolute z-30 flex flex-col justify-center items-center text-6xl font-bold uppercase text-red-600 text-center"
@@ -70,7 +76,7 @@
 
             <h2 class="text-4xl md:text-5xl font-bold mb-2 text-gray-900">Choisissez le plan qui vous convient.</h2>
 
-            <div class="flex flex-row flex-wrap justify-center mt-6 mb-12 gap-20">
+            <div class="flex flex-row flex-wrap justify-center mt-12 gap-10">
 
                 <div class="inline-flex bg-[var(--bg3)] rounded-full p-2.5 gap-2 shadow-md">
 
@@ -154,7 +160,7 @@
 
             </div>
 
-            <div class="flex flex-row flex-wrap justify-center items-start gap-8 w-full">
+            <div class="hidden lg:flex flex-row justify-center items-center gap-8 h-160 w-full pl-140 2xl:pl-0  overflow-x-auto">
 
                 <Pricing_card 
                     v-for="(plan, index) in pricing_plan_list"
@@ -171,7 +177,49 @@
                 
             </div>
 
+            <div class="flex lg:hidden flex-row justify-center items-center w-full mt-12 ">
+
+                <Swiper 
+                    :slides-per-view="1"
+                    :space-between="10"
+                    :modules="modules"
+                    :loop="true"
+                    navigation
+                    :autoplay="{
+                        delay: 3000,
+                        disableOnInteraction: true
+                    }"
+                    :pagination="{
+                        clickable: true
+                    }"
+                    class="w-full h-140 flex justify-center"
+
+                >
+
+                    <SwiperSlide
+                        v-for="(plan, index) in pricing_plan_list"
+                        :key="index"
+                        class="w-full h-full"
+                    >
+                        <Pricing_card 
+                            :title="plan.title" 
+                            :foru="plan.for" 
+                            :price="plan.price" 
+                            :recommended="plan.recommended" 
+                            :functions="plan.functions" 
+                            :mode_for="selected_mode_for"
+                            :mode_date="selected_mode_date"
+                            class="min-w-80 max-w-90 mx-auto mt-8"
+                        />
+                    </SwiperSlide>
+                    
+                </Swiper>
+
+            </div>
+
         </div>
+
+
 
     </section>
 
@@ -263,16 +311,17 @@
 import { ref } from 'vue';
 
 import { Swiper, SwiperSlide } from 'swiper/vue';
-import { Autoplay, Pagination } from 'swiper/modules';
-const modules = [Autoplay, Pagination];
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+const modules = [Autoplay, Pagination, Navigation];
 
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
+import 'swiper/css/navigation';
 
 import { SignedIn, SignedOut, SignUpButton } from '@clerk/vue'
 
-import { pricing_plan_list, function_list } from '../assets/config';
+import { pricing_plan_list, function_list, we_can_buy } from '../assets/config';
 import { scroll_to } from '../assets/utils';
 
 import Nav_bar from '../components/Nav_bar.vue';
@@ -289,3 +338,12 @@ const inactiveClass = 'text-gray-600 hover:text-[var(--btn)]';
 
 
 </script>
+
+<style>
+
+.swiper-button-prev,
+.swiper-button-next {
+    color: var(--btn);
+}
+
+</style>

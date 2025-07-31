@@ -250,9 +250,14 @@ const plans: {
 };
 
 
+const we_can_buy: boolean = false;
+const we_can_download: boolean = true;
+
 export {
     function_list,
     pricing_plan_list,
     plans,
-    pricing_plan_prices
+    pricing_plan_prices,
+    we_can_buy,
+    we_can_download
 }

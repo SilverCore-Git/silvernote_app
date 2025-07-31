@@ -126,6 +126,18 @@ button.premium:hover {
   }
 }
 
+@media (max-width: 488px) {
+  button.premium {
+    font-size: 1.2em;
+  }
+}
+
+@media (max-width: 416px) {
+  button.premium {
+    font-size: 1em;
+  }
+}
+
 
 button:focus,
 button:focus-visible {

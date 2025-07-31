@@ -58,7 +58,7 @@
         </div>
 
         <SignedOut>
-            <SignInButton><button v-if="!isLoader" @click="create_checkout()" class="premium mt-5">
+            <SignInButton><button v-if="!isLoader" class="premium mt-5">
                 Rejoindre le clan {{ plans[priceId].name }}
             </button></SignInButton>
         </SignedOut>
@@ -87,9 +87,10 @@ import { onMounted, ref } from 'vue';
 
 import { plans, pricing_plan_prices } from '../../assets/config';
 import { scroll_to } from '../../assets/utils';
-import { SignedIn, SignedOut, SignInButton } from '@clerk/vue';
+import { SignedIn, SignedOut, SignInButton, useUser } from '@clerk/vue';
 
 const route = useRoute();
+const { user } = useUser();
 
 const props = defineProps<{
     priceId: 'Gold' | 'Platinum' | 'Ultimate'
@@ -100,7 +101,7 @@ const each = route.query.each;
 
 const parsedEach = each == 'month' ? '/mois' : each == 'year' ? '/ans' : '';
 const isFamily: boolean = route.query.family == 'true' ? true : false;
-console.log(props.priceId)
+
 const theyPrice = pricing_plan_prices[props.priceId];
 const reelPrice: number | null = !isFamily 
     ? each == 'month'
@@ -135,10 +136,11 @@ const create_checkout = async (): Promise<void> => {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
-                    name: `abbonement ${plans[props.priceId].name}`, 
+                    name: plans[props.priceId].name, 
                     description: plans[props.priceId].hook, 
                     amount: price,
-                    interval: each 
+                    interval: each,
+                    user_id: user.value?.id
                 })
             }
         );

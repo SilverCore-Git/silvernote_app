@@ -7,8 +7,8 @@
         <ul class="hidden md:flex items-center space-x-6">
             <li @click="router.push('/')"><a>Maison</a></li>
             <li @click="router.push('/'); scroll_to('function')"><a>Fonctionalités</a></li>
-            <li @click="router.push('/'); scroll_to('price_plan')"><a>Tarifs et abonements</a></li>
-            <li @click="router.push('/download')"><a>Télécharger</a></li>
+            <li @click="router.push('/'); scroll_to('price_plan')" v-if="we_can_buy"><a>Tarifs et abonements</a></li>
+            <li @click="router.push('/download')" v-if="we_can_download"><a>Télécharger</a></li>
         </ul>
 
         <Sing_in_btn /> 
@@ -33,8 +33,8 @@
         <ul class="flex flex-col items-center justify-center gap-6">
             <li @click="menu = false; router.push('/')"><a>Maison</a></li>
             <li @click="menu = false; router.push('/'); scroll_to('function')"><a>Fonctionalités</a></li>
-            <li @click="menu = false; router.push('/'); scroll_to('price_plan')"><a>Tarifs et abonements</a></li>
-            <li @click="menu = false; router.push('/download')"><a>Télécharger</a></li>
+            <li @click="menu = false; router.push('/'); scroll_to('price_plan')" v-if="we_can_buy"><a>Tarifs et abonements</a></li>
+            <li @click="menu = false; router.push('/download')" v-if="we_can_download"><a>Télécharger</a></li>
         </ul>
 
     </nav>
@@ -46,6 +46,7 @@
 import Sing_in_btn from './Sing_in_btn.vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { we_can_buy, we_can_download } from '../assets/config';
 
 const router = useRouter();
 
