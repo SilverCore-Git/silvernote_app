@@ -45,19 +45,6 @@
                 ></div> -->
 
                 <div 
-                    class="reload-svg 
-                            md:w-[24px]  w-[30px]
-                            md:h-[24px]  h-[30px]
-                        " 
-                    :class="[
-                        ifLight ? 'sun-svg' : 'moon-svg',
-                        hitbox ? 'bg-teal-300' : ''
-                    ]"
-                    ref="theme_btn"
-                    @click="toggleTheme"
-                ></div>
-
-                <div 
                     class="reload-svg  
                             md:w-[24px]  w-[30px]
                             md:h-[24px]  h-[30px]
@@ -157,6 +144,7 @@
 
                 <Tags_item 
                     @click.stop="add_tag_filter(tag.id)" 
+                    @reload="reload_list"
                     :id="tag.id" :name="tag.name" 
                     :tag="tag.name" 
                     :active="tag.active"
@@ -198,6 +186,7 @@
                     :tag="''"
                     :active="false"
                     color="#fff5e8"
+                    class="w-20"
                 />
 
             </li>
@@ -340,15 +329,13 @@
             </div>
 
             <button
-                class="p-1 text-center w-full border-2 bg-white/80 font-bold cursor-pointer rounded-[var(--br-btn)] shadow-md
-                        hover:bg-[#f28c28]"
+                class="primary"
                 @click.stop="create_tag(tag_name, tag_color)"
             >
                 <span>Créer mon dossier</span>
             </button>
             <button
-                class="p-1 text-center w-full border-2 bg-white/80 font-bold cursor-pointer rounded-[var(--br-btn)] shadow-md
-                        hover:bg-[#f25728]"
+                class="primary danger"
                 @click.stop="if_open_create_tag = false"
             >
                 <span>Annuler</span>
@@ -393,9 +380,7 @@ import { UserButton } from '@clerk/vue';
 
     };
 
-    const ifLight = ref<boolean>(localStorage.getItem('theme') == 'light');
     const isOnline = ref<boolean>(localStorage.getItem('online') == "true");
-    const theme_btn = ref<HTMLDivElement | null>(null);
     //const online_btn = ref<HTMLDivElement | null>(null);
 
     const tip: boolean = false;
@@ -425,23 +410,6 @@ import { UserButton } from '@clerk/vue';
     onUnmounted(() => {
         window.removeEventListener('resize', updateSize);
     })
-
-    const toggleTheme = () => {
-        const newTheme = !ifLight.value
-        toggle_theme(newTheme)
-        ifLight.value = newTheme
-        theme_btn.value?.animate(
-            [
-                { transform: 'scale(1)' },
-                { transform: 'scale(0.9)' },
-                { transform: 'scale(1)' }
-            ],
-            {
-                duration: 150,
-                easing: 'ease-out'
-            }
-        )
-    }
 
     // const toggleOnline = () => {
     //     const newVal = !isOnline.value;

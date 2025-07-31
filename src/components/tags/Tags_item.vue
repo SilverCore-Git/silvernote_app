@@ -45,7 +45,7 @@
             </button>
             <button
                 class="danger primary"
-                @click.stop="del(); menu = false"
+                @click.stop="del(1); menu = false"
             >
                 <span>Supprimer</span>
             </button>
@@ -60,6 +60,13 @@
 
       </div>
 
+      <ConfirmDialog 
+        :visible="dialog"
+        message="Êtes vous sur de vouloir supprimer ce dossier ?"
+        @confirm="del(2); dialog = false"
+        @cancel="dialog = false"
+      />
+
     </teleport>
 
 </template>
@@ -73,6 +80,7 @@ import db from '../../assets/ts/database';
 import { isOnline } from '../../assets/ts/online';
 import back from '../../assets/ts/backend_link';
 import type { Tag } from '../../assets/ts/type'
+import ConfirmDialog from '../popup/ConfirmDialog.vue';
 
 const props = defineProps<{
   name: string,
@@ -81,19 +89,30 @@ const props = defineProps<{
   color: string,
 }>();
 
+const emit = defineEmits([
+  'reload'
+])
+
 const text_color: string = utils.get_text_color(props.color);
 const inputRef = ref<HTMLInputElement | null>(null);
 const tag_color = ref<string>(props.color);
-
+const dialog = ref<boolean>(false);
 
 const menu = ref<boolean>(false);
 
-const del = async (): Promise<void> => {
-  const tags: Tag[] = await db.getAll('tags');
-  const tag: Tag | undefined = tags.find(tag => tag.name == props.name);
-  if (tag) await db.delete_tag(tag.id);
-  if (isOnline) await back.save_db();
-  //window.location.reload();
+const del = async (state: 1 | 2): Promise<void> => {
+
+  if (state == 1) {
+    dialog.value = true;
+  } 
+  else 
+  {
+    const tags: Tag[] = await db.getAll('tags');
+    const tag: Tag | undefined = tags.find(tag => tag.name == props.name);
+    if (tag) await db.delete_tag(tag.id);
+    if (isOnline) await back.save_db();
+    emit('reload');
+  }
 }
 
 const save_tag_color = async () => {

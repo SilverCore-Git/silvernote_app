@@ -9,7 +9,7 @@
 
     </header>
 
-    <div class="flex flex-col justify-start relative items-start min-h-[80VH] ml-4 mr-4 mt-12 overflow-x-hidden">
+    <div class="flex flex-col justify-start relative items-start min-h-[80VH] ml-[20%] mr-[20%] mt-12 overflow-x-hidden">
         
         <section
             class="flex flex-col w-full gap-4"
@@ -30,6 +30,28 @@
 
               <div id="gtranslate_wrapper" class="gtranslate_wrapper"></div>
 
+            </label>
+
+            <label
+                class="cursor-pointer w-full flex justify-between items-center"
+                :class="hitbox ? 'bg-red-600' : ''"
+                @click="toggleTheme"
+            >
+
+              <span>Theme</span>
+
+              <div
+                class="reload-svg 
+                        md:w-[24px]  w-[30px]
+                        md:h-[24px]  h-[30px]
+                    " 
+                :class="[
+                    ifLight ? 'sun-svg' : 'moon-svg',
+                    hitbox ? 'bg-teal-300' : ''
+                ]"
+                ref="theme_btn"
+              ></div>
+              
             </label>
 
             <hr
@@ -121,12 +143,16 @@ import type { Settings } from '@/assets/ts/type';
 import { hitbox as if_hitbox } from '@/assets/ts/settings';
 import indexed_db from '@/assets/ts/database';
 import utils from '@/assets/ts/utils';
+import Switch from '@/components/Switch.vue';
+import { toggle_theme } from '@/assets/ts/theme';
 
 let hitbox: boolean;
 onMounted(async () => { hitbox = await if_hitbox() })
 
 const showDialog = ref<boolean>(false);
 const file_input = ref<HTMLInputElement | undefined>(undefined);
+const ifLight = ref<boolean>(localStorage.getItem('theme') == 'light');
+const theme_btn = ref<HTMLDivElement | null>(null);
 
 const db = new SettingsDB(settingsObj);
 const router = useRouter();
@@ -136,6 +162,22 @@ const settings = reactive<Settings>({
   dev_mode: []
 });
 
+const toggleTheme = () => {
+    const newTheme = !ifLight.value
+    toggle_theme(newTheme)
+    ifLight.value = newTheme
+    theme_btn.value?.animate(
+        [
+            { transform: 'scale(1)' },
+            { transform: 'scale(0.9)' },
+            { transform: 'scale(1)' }
+        ],
+        {
+            duration: 150,
+            easing: 'ease-out'
+        }
+    )
+}
 
 const open_input = () => file_input.value?.click();
 
@@ -289,6 +331,31 @@ watch(settings, async () => {
   filter: brightness(0) saturate(100%) invert(55%) sepia(65%) saturate(538%) hue-rotate(343deg) brightness(98%) contrast(98%);
 }
 
+.reload-svg {
+    cursor: pointer;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url('../assets/svgs/reload.svg');
+}
 
+.moon-svg {
+    cursor: pointer;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url('/assets/svgs/moon.svg');
+    filter: invert(1);
+    transition: all 0.3s;
+}
+
+.sun-svg {
+    cursor: pointer;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url('/assets/svgs/sun.svg');
+    transition: all 0.3s;
+}
 
 </style>

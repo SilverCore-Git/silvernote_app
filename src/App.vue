@@ -7,7 +7,7 @@
 
       <div class=" absolute inset-0 bg-[var(--bg)] z-50" v-if="loader">
           <div class="flex justify-center items-center w-screen h-screen">
-              <Loader />
+              <Loader :icon="false" />
           </div>
       </div>
   </div>
@@ -22,7 +22,7 @@
 
       <div class=" absolute inset-0 bg-[var(--bg)] z-50" v-if="loader">
           <div class="flex justify-center items-center w-screen h-screen">
-              <Loader />
+              <Loader :icon="false" />
           </div>
       </div>
 
@@ -165,7 +165,12 @@
     await nextTick()
 
     setTimeout(() => {
-      loader.value = false;
+      const interval = setInterval(() => {
+        if (isLoaded) {
+          loader.value = false;
+          clearInterval(interval);
+        }
+      }, 1000)
     }, wasOnline ? 1000 : 0)
 
   })
