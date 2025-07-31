@@ -25,39 +25,8 @@
 
             <div class="text-5xl font-extrabold text-[var(--btn)] mb-6">
 
-                {{ 
-                
-                    mode_for == 3 ? "Nous contacter" : // pour entreprises
+                {{ mode_for === 3 ? "Nous contacter" : ReelPrice }}
 
-                    `${
-
-                        mode_for == 1 // pour solo
-
-                            ? mode_date == 1 // par mois
-
-                                ? price // pour solo par mois
-
-                                : mode_date == 2 // par ans
-
-                                    ? price * 8 // pour solo par ans
-
-                                    : price * 10 * 4 // pour solo a vie
-
-
-                        : // pour familles
-
-                            mode_date == 1 // par mois
-
-                                ? price * 3 // pour familles par mois
-
-                                : mode_date == 2 // par ans
-
-                                    ? price * 3 * 8 // pour familles par ans
-
-                                    : price * 3 * 10 * 4 // pour familles a vie
-
-                    }` 
-                }}
                 <span v-if="title !== 'Silver' && mode_for !== 3" class="text-lg -ml-3">.99</span>
                 <span v-if="mode_for !== 3">€</span>
 
@@ -101,7 +70,7 @@
 
         </div>
 
-        <button @click="router.push({ name: 'Checkout', params: { planId: 'price_abc123' } })" class="second w-full">
+        <button @click="router.push(`/pay/pricing/gold?price=${ReelPrice}99&mode=subscription&each=month`)" class="second w-full">
             {{ price == 0 ? 'Commencer gratuitement' : mode_for == 3 ? `Nous contacter` : `S'inscrir au plan ${title}` }}
         </button>
 
@@ -111,19 +80,43 @@
 
 <script lang="ts" setup>
 
+import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
+
+import { pricing_plan_prices } from '../assets/config';
 
 const router = useRouter();
 
-defineProps<{
-    title: string;
-    foru: string;
-    price: number;
-    functions: { name: string, includ: boolean }[];
-    recommended: boolean;
-    mode_for: number;
-    mode_date: number;
-}>()
+const props = defineProps<{
+  title: 'Silver' | 'Gold' | 'Platinum' | 'Ultimate'; 
+  price: number;
+  foru: string;
+  functions: { name: string; includ: boolean }[];
+  recommended: boolean;
+  mode_for: number; 
+  mode_date: number;
+}>();
 
+const theyPrice = pricing_plan_prices[props.title];
+
+const ReelPrice = ref<number | null>(0);
+
+const set_realPrice = () => {
+    ReelPrice.value = props.mode_for === 1 
+    ? props.mode_date === 1
+      ? theyPrice.solo.mounth
+      : props.mode_date === 2
+        ? theyPrice.solo.year
+        : theyPrice.solo.life
+    : props.mode_date === 1
+      ? theyPrice.family.mounth
+      : props.mode_date === 2
+        ? theyPrice.family.year
+        : null;
+}
+
+set_realPrice();
+watch(() => props.mode_for, () => { set_realPrice() });
+watch(() => props.mode_date, () => { set_realPrice() });
 
 </script>
