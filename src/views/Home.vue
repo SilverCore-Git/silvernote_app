@@ -66,7 +66,7 @@
             <span class="text-2xl mt-2">abonnement a venir</span>
         </div> -->
 
-        <div class="container w-screen text-center saturate-0">
+        <div class="container w-screen text-center ">
 
             <h2 class="text-4xl md:text-5xl font-bold mb-2 text-gray-900">Choisissez le plan qui vous convient.</h2>
 

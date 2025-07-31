@@ -152,7 +152,7 @@ const pricing_plan_prices: Record<PricingTier, PricingStructure> = {
 
 
 const plans: {
-    gold: {
+    Gold: {
         name: string;
         hook: string;
         assets: {
@@ -160,7 +160,7 @@ const plans: {
             description: string;
         }[];
     },
-    platinum: {
+    Platinum: {
         name: string;
         hook: string;
         assets: {
@@ -168,7 +168,7 @@ const plans: {
             description: string;
         }[];
     },
-    ultimate: {
+    Ultimate: {
         name: string;
         hook: string;
         assets: {
@@ -179,7 +179,7 @@ const plans: {
 
 } = {
     
-    gold: {
+    Gold: {
         name: "Gold",
         hook: "Idéal pour les utilisateurs confirmés qui cherchent plus de **sécurité** et de capacité.",
         assets: [
@@ -202,7 +202,7 @@ const plans: {
         ]
     },
 
-    platinum: {
+    Platinum: {
         name: "Platinum",
         hook: "Une offre avancée et **sans prise de tête** pour une gestion de notes simplifiée.",
         assets: [
@@ -225,7 +225,7 @@ const plans: {
         ]
     },
 
-    ultimate: {
+    Ultimate: {
         name: "Ultimate",
         hook: "L'**excellence** d'une offre illimitée pour une liberté totale dans SilverNote.",
         assets: [

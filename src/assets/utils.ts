@@ -5,6 +5,11 @@ const scroll_to = (id: string) => {
     }
 }
 
+const openApp = (blank?: boolean) => {
+    window.open('https://app.silvernote.fr', blank ? '_blank' : '')
+}
+
 export {
-    scroll_to
+    scroll_to,
+    openApp
 }

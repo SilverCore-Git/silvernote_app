@@ -70,7 +70,10 @@
 
         </div>
 
-        <button @click="router.push(`/pay/pricing/gold?price=${ReelPrice}99&mode=subscription&each=month`)" class="second w-full">
+        <button 
+            @click="onClick()"
+            class="second w-full"
+        >
             {{ price == 0 ? 'Commencer gratuitement' : mode_for == 3 ? `Nous contacter` : `S'inscrir au plan ${title}` }}
         </button>
 
@@ -80,12 +83,18 @@
 
 <script lang="ts" setup>
 
-import { onMounted, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { pricing_plan_prices } from '../assets/config';
+import { openApp } from '../assets/utils';
 
 const router = useRouter();
+
+const onClick = () => 
+    props.title == 'Silver' 
+        ? openApp(false) 
+        : router.push(`/pay/pricing/${props.title}?mode=${props.mode_date == 3 ? 'payment' : 'subscription'}&each=${props.mode_date == 1 ? "month" : props.mode_date == 2 ? 'year' : 'life'}&family=${props.mode_for == 2}`)
 
 const props = defineProps<{
   title: 'Silver' | 'Gold' | 'Platinum' | 'Ultimate'; 
