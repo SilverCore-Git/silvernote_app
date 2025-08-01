@@ -6,14 +6,14 @@ import db from '../assets/ts/database';
 // route de gestion de plan
 router.post('/plan/set', async (req: Request, res: Response) => {
 
-  const { userId, planId } = req.body;
+  const { userId, planId, plan_data } = req.body;
   let sessions; 
 
   if (!userId || !planId) return;
 
   try {
 
-    await db.set_user_plan(userId, planId);
+    await db.set_user_plan(userId, planId, plan_data);
     
     res.cookie('plan_id', planId, {
       httpOnly: true,

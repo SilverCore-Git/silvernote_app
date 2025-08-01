@@ -128,14 +128,24 @@ class Database {
 
     }
 
-    public async add_user(userId: string, planId?: string): Promise<void> {
+    public async add_user(
+
+        userId: string, 
+        planId?: string, 
+        plan_data?: { 
+            each: 'year' | 'month' | 'life', 
+            family?: boolean, 
+            family_data?: { owner?: boolean } 
+        }
+    ): Promise<void> {
+
         try {
 
             const db: User[] = await this.get('user');
 
             db.push({ 
                 userId, 
-                plan: get_plan_by_name(planId)
+                plan: get_plan_by_name(planId, plan_data)
             });
 
             await this.save('user', db);
@@ -143,6 +153,7 @@ class Database {
         } catch (error) {
             console.error('Error adding user:', error);
         }
+
     } 
 
     public async remove_user (user_id: string) {
@@ -165,11 +176,19 @@ class Database {
 
 
 
-    public async set_user_plan (userId: string, planId: UUID) {
+    public async set_user_plan (
+        userId: string, 
+        planId: UUID,
+        plan_data?: { 
+            each: 'year' | 'month' | 'life', 
+            family?: boolean, 
+            family_data?: { owner?: boolean }
+        }
+    ) {
 
         await this.remove_user(userId);
         
-        await this.add_user(userId, planId)
+        await this.add_user(userId, planId, plan_data)
         
     }
 

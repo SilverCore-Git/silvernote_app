@@ -5,6 +5,13 @@ export interface Plan {
     name: string;
     uuid: UUID;
     void?: boolean;
+    plan_data?: {
+        each?: 'month' | 'year' | 'life';
+        family?: boolean;
+        family_data?: {
+            owner?: boolean;
+        }
+    }
 };
 
 
@@ -36,8 +43,25 @@ export const get_silver_plan = (): Plan => {
     return plans.filter(plan => plan.name == 'silver')[0];
 } 
 
-export function get_plan_by_name (name?: string) {
+export function get_plan_by_name (
+    name?: string, 
+    plan_data?: {
+        each?: 'month' | 'year' | 'life',
+        family?: boolean, 
+        family_data?: {
+            owner?: boolean
+        }
+    } 
+) {
 
-    return plans.find(plan => plan.name == name) || get_silver_plan();
+    let plan = plans.find(plan => plan.name == name) || get_silver_plan();
+
+    const isSilver: boolean = plan.name == "Silver" ? true : false;
+
+    if (!isSilver) {
+        plan.plan_data = plan_data;
+    }
+
+    return plan;
 
 }

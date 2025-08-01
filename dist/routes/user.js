@@ -8,12 +8,12 @@ const router = express_1.default.Router();
 const database_1 = __importDefault(require("../assets/ts/database"));
 // route de gestion de plan
 router.post('/plan/set', async (req, res) => {
-    const { userId, planId } = req.body;
+    const { userId, planId, plan_data } = req.body;
     let sessions;
     if (!userId || !planId)
         return;
     try {
-        await database_1.default.set_user_plan(userId, planId);
+        await database_1.default.set_user_plan(userId, planId, plan_data);
         res.cookie('plan_id', planId, {
             httpOnly: true,
             secure: true,
