@@ -140,7 +140,8 @@ const create_checkout = async (): Promise<void> => {
                     description: plans[props.priceId].hook, 
                     amount: price,
                     interval: each,
-                    user_id: user.value?.id
+                    user_id: user.value?.id,
+                    family: isFamily
                 })
             }
         );
