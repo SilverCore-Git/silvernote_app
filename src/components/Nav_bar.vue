@@ -11,7 +11,7 @@
             <li @click="router.push('/download')" v-if="we_can_download"><a>Télécharger</a></li>
         </ul>
 
-        <Sing_in_btn /> 
+        <Sing_in_btn />
 
         <button 
           @click="menu = !menu" 

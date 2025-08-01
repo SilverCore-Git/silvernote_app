@@ -8,6 +8,7 @@ import Mentions_legales from './views/Mentions_legales.vue';
 import Cancel from './views/pay/Cancel.vue';
 import Success from './views/pay/Success.vue';
 import Pricing from './views/pay/Pricing.vue';
+import Profile from './views/user/Profile.vue';
 
 const routes = [
 
@@ -68,6 +69,14 @@ const routes = [
     component: Pricing,
     props: true,
     meta: { title: 'SilverNote - annoncement du produit' }
+  },
+
+  { 
+    path: '/user/profile', 
+    name: 'profile', 
+    component: Profile,
+    props: {},
+    meta: { title: 'SilverNote - profile' }
   },
 
 ]
