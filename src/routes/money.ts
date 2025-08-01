@@ -1,3 +1,4 @@
+import { randomUUID, UUID } from 'crypto';
 import express from 'express';
 import Stripe from 'stripe';
 
@@ -19,9 +20,12 @@ interface PriceParams {
     interval: 'day' | 'month' | 'week' | 'year';
 }
 
+let session_db: { session_id: UUID, client_id: string, date: Date, plan: string }[] = [];
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 async function create_checkout (
+    client_id: string,
     {
         mode,
         priceId,
@@ -36,6 +40,13 @@ async function create_checkout (
 ) {
 
     try {
+
+        const session_id: UUID = randomUUID();
+
+        const client_session = { session_id, client_id, date: new Date(), plan: priceId};
+
+        session_db.push(client_session)
+        console.log('nouvelle session client :', client_session); // a enlever en prod
 
         const session = await stripe.checkout.sessions.create({
 
@@ -53,17 +64,17 @@ async function create_checkout (
                             description,
                         },
                         unit_amount: amount, // en centimes (ex: 19.99€ = 1999)
-                        recurring: {
+                        recurring: interval ? {
                             interval, // 'mounth' ou 'year'
-                        }
+                        } : undefined
                     },
                     quantity
                 }
                     
             ],
 
-            success_url: `http://localhost:5173/pay/success?plan=${priceId}&user=user`,
-            cancel_url: `http://localhost:5173/pay/cancel?plan=${priceId}&user=user`,
+            success_url: `http://localhost:5173/pay/success?plan=${priceId}&session_id=${session_id}`,
+            cancel_url: `http://localhost:5173/pay/cancel?plan=${priceId}&session_id=${session_id}`,
 
         });
 
@@ -78,7 +89,7 @@ async function create_checkout (
 
 router.post('/create/checkout/link/for/:priceId/withmode/:mode', async (req, res) => {
 
-    const { name, description, amount, interval } = req.body;
+    const { name, description, amount, interval, user_id } = req.body;
 
     const rawPricesId: string = req.params.priceId;
     const priceId: string = rawPricesId;
@@ -87,6 +98,7 @@ router.post('/create/checkout/link/for/:priceId/withmode/:mode', async (req, res
     const mode: Mode = Mode(rawMode) ? rawMode : "payment";
 
     const session = await create_checkout(
+        user_id,
         { mode, priceId },
         { name, description, amount, interval }
     );
@@ -94,5 +106,24 @@ router.post('/create/checkout/link/for/:priceId/withmode/:mode', async (req, res
     res.json(session);
 
 });
+
+router.post('/success/checkout', async (req, res) => {
+    const { session_id, user_id } = req.body;
+
+    console.log(user_id)
+    const session = session_db.find(session => session.session_id === session_id);
+    session_db.filter(session => session.session_id !== session_id)
+
+    res.json({ ok: true, plan: session?.plan });
+
+})
+
+router.post('/cancel/checkout', async (req, res) => {
+    const { session_id } = req.body;
+
+    session_db.filter(session => session.session_id !== session_id)
+
+})
+
 
 export default router;

@@ -5,7 +5,7 @@ const fsp = fs.promises;
 import utils from './utils';
 import type { Session, User } from './types';
 import { UUID } from 'crypto';
-import { get_plan_by_id, get_silver_plan } from './plan';
+import { get_plan_by_name, get_silver_plan } from './plan';
 
 class Database {
 
@@ -128,14 +128,14 @@ class Database {
 
     }
 
-    public async add_user(userId: string, planId?: UUID): Promise<void> {
+    public async add_user(userId: string, planId?: string): Promise<void> {
         try {
 
             const db: User[] = await this.get('user');
 
             db.push({ 
                 userId, 
-                plan: get_plan_by_id(planId)
+                plan: get_plan_by_name(planId)
             });
 
             await this.save('user', db);
@@ -149,9 +149,9 @@ class Database {
 
         const db: User[] = await this.get('user');
 
-        db.filter(user => user.userId !== user_id);
+        const updatedDB = db.filter(user => user.userId !== user_id);
 
-        await this.save('user', db);
+        await this.save('user', updatedDB);
 
     }
 
