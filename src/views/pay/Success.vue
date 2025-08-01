@@ -56,16 +56,31 @@ const plan = ref<string | null>(null);
 onMounted(() => {
     plan.value = route.query.plan?.toString() as string;
 
-    const interval = setInterval(() => {
-        if (isLoaded) {
-            fetch('http://localhost:3000/money/success/checkout', {
+    const interval = setInterval(async () => {
+
+        if (isLoaded && loader.value !== false) {
+
+            const response: Promise<{ ok?: boolean, plan: string, error?: boolean }> = await fetch('http://localhost:3000/money/success/checkout', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ session_id: route.query.session_id, user_id: user.value?.id })
-            })
+            }).then(res => res.json());
+
+            if ((await response).ok) {
+                await fetch('http://localhost:3000/user/plan/set',
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ userId: user.value?.id, planId: (await response).plan })
+                    }
+                )
+            }
+
             loader.value = false;
             clearInterval(interval);
+
         }
+
     }, 1000)
     
 });
