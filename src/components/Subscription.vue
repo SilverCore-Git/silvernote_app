@@ -14,16 +14,31 @@
             <div class="flex items-center justify-between">
 
                 <h2 class="text-2xl font-bold" :style="{ color: plan_color }">
-                    {{ localuser.plan.name }} Plan
+                    {{ localuser.plan.name }} Plan <span class="text-red-600 font-bold">{{ sub.cancel_at_period_end ? '- Résilier' : '' }}</span>
                 </h2>
 
                 <span 
+                    v-if="!sub.cancel_at_period_end"
                     class="text-sm bg-yellow-100 px-3 py-1 rounded-full uppercase tracking-wide"
                     :style="{ color: plan_color }"
                 >
                     {{ sub.items.data[0].price.unit_amount / 100 }} 
                     {{ sub.items.data[0].price.currency.toUpperCase() }} / 
                     {{ sub.items.data[0].price.recurring.interval }}
+                </span>
+
+                <span 
+                    v-if="sub.cancel_at_period_end"
+                    class="text-sm bg-yellow-100 px-3 py-1 rounded-full uppercase tracking-wide text-red-600 font-bold"
+                >
+                    fini le {{ 
+                        new Date(sub.cancel_at * 1000).toLocaleDateString('fr-FR', {
+                            weekday: 'long', 
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })
+                    }}
                 </span>
 
             </div>

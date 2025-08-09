@@ -25,12 +25,22 @@
     <section class="px-10 py-20 flex items-center flex-col mx-auto text-lg space-y-8 text-[var(--text)]">
 
         <div class="max-w-[55rem] w-full">
-            <h2 class="uppercase text-4xl font-extrabold mb-2">Mon abonnement</h2>
+            <h2 class="uppercase text-4xl font-extrabold mb-2">mes abonnements</h2>
             <div class="w-full max-w-[55rem] px-0 mx-auto">
                 <Subscription />
             </div>
         </div>
 
+    </section>
+
+    <section class="px-10 py-20 flex items-center flex-col mx-auto text-lg space-y-8 text-[var(--text)]">
+    
+        <h2 class="uppercase text-4xl font-extrabold mb-2">mes id</h2>
+        <ul>
+            <li>Clerk user Id : {{ myuser?.userId }}</li>
+            <li>Stripe customer Id : {{ myuser?.customerId }}</li>
+        </ul>
+        
     </section>
 
     <footer class="z-50 w-screen">
@@ -40,8 +50,28 @@
 </template>
 
 <script lang="ts" setup>
+
 import Nav_bar from '../../components/Nav_bar.vue';
 import Footer from '../../components/Footer.vue';
-import { UserProfile } from '@clerk/vue';
+import { UserProfile, useUser } from '@clerk/vue';
 import Subscription from '../../components/Subscription.vue';
+import { onMounted, ref } from 'vue';
+import Loader from '../../components/Loader.vue';
+
+const myuser = ref<any | undefined>(undefined);
+const { user, isLoaded } = useUser();
+
+onMounted(async () => {
+
+    const loaded = await isLoaded;
+    console.log(await loaded);
+
+    myuser.value = await fetch('http://localhost:3000/user/get/data', {
+        method: 'POSt',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: user.value?.id })
+    }).then(res => res.json());
+
+})
+
 </script>
