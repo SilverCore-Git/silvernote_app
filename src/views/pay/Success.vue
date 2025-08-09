@@ -60,7 +60,7 @@ onMounted(() => {
 
         if (isLoaded && loader.value !== false) {
 
-            const response: Promise<{ ok?: boolean, plan: string, error?: boolean, plan_data: any }> = await fetch('http://localhost:3000/money/success/checkout', {
+            const response: Promise<{ ok?: boolean, plan: string, error?: boolean, plan_data: any, customerId: string }> = await fetch('http://localhost:3000/money/success/checkout', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ session_id: route.query.session_id, user_id: user.value?.id })
@@ -74,7 +74,8 @@ onMounted(() => {
                         body: JSON.stringify({ 
                             userId: user.value?.id, 
                             planId: (await response).plan, 
-                            plan_data: (await response).plan_data
+                            plan_data: (await response).plan_data,
+                            customerId: (await response).customerId
                         })
                     }
                 )
