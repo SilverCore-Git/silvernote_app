@@ -65,6 +65,20 @@ button.second {
   transition: border-color 0.25s, background-color 0.25s;
 }
 
+button.perso {
+  border-radius: 8px;
+  border: 2px solid var(--btn-color);
+  padding: 0.7rem 1.4em;
+  font-size: 1em;
+  font-weight: 600;
+  font-family: inherit;
+  background-color: var(--btn-color);
+  background-color: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.25s, background-color 0.25s;
+}
+
 button:hover.primary {
   border-color: #d5731c;
   background-color: #e67d13;
@@ -73,6 +87,11 @@ button:hover.primary {
 
 button:hover.second {
   background-color: var(--btn);
+  color: white;
+}
+
+button:hover.perso {
+  background-color: var(--btn-color);
   color: white;
 }
 
