@@ -151,7 +151,7 @@ class Database {
             const user: User = { 
                 userId, 
                 customerId,
-                plan: get_plan_by_name(planId, plan_data)
+                plan: [ get_plan_by_name(planId, plan_data) ]
             }
 
             db.push(user);
@@ -194,8 +194,6 @@ class Database {
 
     }
 
-
-
     public async set_user_plan (
         userId: string, 
         planId: UUID,
@@ -208,10 +206,20 @@ class Database {
         }
     ) {
 
-        await this.remove_user(userId);
+        const db: User[] = await this.get('user');
+
+        const userIndex = db.findIndex(user => user.userId === userId);
         
-        await this.add_user({ userId, customerId, plan_data, planId })
-        
+        if (userIndex === -1) {
+            throw new Error('Utilisateur non trouvé');
+        }
+
+        db[userIndex].plan = [ ...db[userIndex].plan,  get_plan_by_name(planId, plan_data) ];
+        db[userIndex].customerId = customerId;
+
+        await this.save('user', db);
+
+        return db[userIndex];
     }
 
 }

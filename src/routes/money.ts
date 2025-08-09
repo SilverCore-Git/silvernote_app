@@ -217,4 +217,41 @@ router.post('/cancel/subscription', async (req, res) => {
 
 
 
+
+router.get('/customer/:id/:secondid', async (req, res) => {
+
+  try {
+
+    const user = await db.get_user(req.params.secondid);
+
+    const customerId = req.params.id;
+
+    const customer = await stripe.customers.retrieve(customerId);
+
+    const subscriptions = await stripe.subscriptions.list({
+        customer: customerId,
+        status: 'all',
+        expand: ['data.default_payment_method'],
+    });
+
+    const paymentMethods = await stripe.paymentMethods.list({
+        customer: customerId,
+        type: 'card',
+    });
+
+    res.json({
+        localuser: user,
+        customer,
+        subscriptions: subscriptions.data,
+        paymentMethods: paymentMethods.data,
+    });
+
+  } catch (err) {
+        console.error('Erreur Stripe:', err);
+        res.status(500).json({ error: err });
+  }
+
+});
+
+
 export default router;

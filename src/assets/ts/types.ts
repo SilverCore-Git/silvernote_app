@@ -4,7 +4,7 @@ import { Plan } from "./plan";
 export interface User { 
     userId: string;
     customerId?: string;
-    plan?: Plan;
+    plan: Plan[];
 };
 
 export interface News { 
