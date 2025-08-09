@@ -1,19 +1,24 @@
 import express, { Request, Response } from 'express';
+import Stripe from 'stripe';
 const router = express.Router();
 
 import db from '../assets/ts/database';
+import { EmailAddress, User } from '@clerk/express';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
 
 // route de gestion de plan
 router.post('/plan/set', async (req: Request, res: Response) => {
 
-  const { userId, planId, plan_data } = req.body;
+  const { userId, planId, customerId, plan_data } = req.body;
   let sessions; 
 
   if (!userId || !planId) return;
 
   try {
 
-    await db.set_user_plan(userId, planId, plan_data);
+    await db.set_user_plan(userId, planId, customerId, plan_data);
     
     res.cookie('plan_id', planId, {
       httpOnly: true,
@@ -105,6 +110,83 @@ router.post('/session/verify', async (req: Request, res: Response) => {
   res.json(sessions);
 
 })
+
+
+router.post('/get/data', async (req: Request, res: Response) => {
+
+  const { user_id } = req.body;
+
+  const user = await db.get_user(user_id);
+
+  res.json(user);
+
+})
+
+
+
+
+router.get('/stripe/portal/for/:id', async (req: Request, res: Response) => {
+
+  const customerId = req.params.id;
+
+  const session = await stripe.billingPortal.sessions.create({
+    customer: customerId,
+    return_url: 'http://localhost:5173/user/profile',
+  });
+
+  if (req.query.redirect == '1') return res.redirect(session.url);
+  res.json({ url: session.url });
+
+});
+
+
+
+
+
+
+async function createStripeCustomer(user: {
+    email: string;
+    name?: string;
+    metadata?: Record<string, string>;
+}) {
+    const customer = await stripe.customers.create({
+        email: user.email,
+        name: user.name,
+    });
+
+    console.log("Customer créé :", customer.id);
+    return customer.id; // ex : 'cus_L8s9erM3DvJt2a'
+}
+
+
+
+router.post('/create', async (req: Request, res: Response) => {
+
+  const user: User = req.body.user;
+  
+  const strip_user_id: string = await createStripeCustomer({
+    email: String(user.emailAddresses[0].emailAddress),
+    name: user.fullName!
+  })
+
+  const db_user = await db.add_user({
+    userId: user.id,
+    customerId: strip_user_id,
+    planId: 'Silver'
+  })
+
+  res.json(db.get_user(user.id));
+  
+})
+
+router.post('/verify', async (req: Request, res: Response) => {
+
+  const { user_id } = req.body;
+
+  res.json(await db.exist_user(user_id));
+  
+})
+
 
 
 export default router;

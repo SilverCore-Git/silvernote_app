@@ -3,7 +3,8 @@ import { Plan } from "./plan";
 
 export interface User { 
     userId: string;
-    plan: Plan;
+    customerId?: string;
+    plan?: Plan;
 };
 
 export interface News { 

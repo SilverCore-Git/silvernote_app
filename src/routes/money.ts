@@ -1,6 +1,7 @@
 import { randomUUID, UUID } from 'crypto';
 import express from 'express';
 import Stripe from 'stripe';
+import db from '../assets/ts/database';
 
 const router = express.Router();
 
@@ -28,7 +29,8 @@ let session_db: {
     date: Date, 
     plan: string, 
     plan_data: {
-        each: String,
+        strip_session_id: string | Stripe.Subscription | null,
+        each: string,
         family: Boolean,
         family_data?: {
             owner: Boolean
@@ -57,29 +59,15 @@ async function create_checkout (
 
     try {
 
+        const user = await db.get_user(client_id);
+        const customer = (await user).customerId; console.log(customer);
         const session_id: UUID = randomUUID();
-
-        const client_session = { 
-                            session_id, 
-                            client_id, 
-                            date: new Date(), 
-                            plan: priceId,
-                            plan_data: {
-                                each: interval,
-                                family,
-                                family_data: family ? {
-                                    owner: true
-                                } : undefined
-                            },
-                        };
-
-        session_db.push(client_session)
-        console.log('nouvelle session client :', client_session); // a enlever en prod
 
         const session = await stripe.checkout.sessions.create({
 
             payment_method_types: ['card'],
             mode,
+            customer,
 
             line_items: [
 
@@ -93,7 +81,7 @@ async function create_checkout (
                         },
                         unit_amount: amount, // en centimes (ex: 19.99€ = 1999)
                         recurring: interval ? {
-                            interval, // 'mounth' ou 'year'
+                            interval, // 'month' ou 'year'
                         } : undefined
                     },
                     quantity
@@ -106,7 +94,26 @@ async function create_checkout (
 
         });
 
-        return { error: false, url: session.url };
+
+        const client_session = { 
+                            session_id, 
+                            client_id, 
+                            date: new Date(), 
+                            plan: priceId,
+                            plan_data: {
+                                strip_session_id: session.subscription,
+                                each: interval,
+                                family,
+                                family_data: family ? {
+                                    owner: true
+                                } : undefined
+                            },
+                        };
+
+        session_db.push(client_session)
+        console.log('nouvelle session client :', client_session); // a enlever en prod
+
+        return { error: false, url: session.url, session_id: session.subscription };
 
     } catch (err: any) {
         console.error('Error creating checkout session:', err.message);
@@ -114,6 +121,41 @@ async function create_checkout (
     }
 
 } 
+
+
+async function delet_sub (subId: string) {
+
+    try {
+    
+        await stripe.subscriptions.update(subId, {
+            cancel_at_period_end: true, 
+        });
+
+        return { success: true };
+    
+    } catch (err) {
+
+        console.error(err);
+        return { error: true };
+    
+    }
+
+}
+
+async function createStripeCustomer(user: {
+    email: string;
+    name?: string;
+    metadata?: Record<string, string>;
+}) {
+    const customer = await stripe.customers.create({
+        email: user.email,
+        name: user.name,
+        metadata: user.metadata, // optionnel : stocke ton `client_id` interne par ex.
+    });
+
+    console.log("Customer créé :", customer.id);
+    return customer.id; // ex : 'cus_L8s9erM3DvJt2a'
+}
 
 router.post('/create/checkout/link/for/:priceId/withmode/:mode', async (req, res) => {
 
@@ -143,9 +185,16 @@ router.post('/success/checkout', async (req, res) => {
 
     console.log(user_id, ' Vient de souscrir :', session)
 
+    const user = db.get_user(user_id);
+
     session_db.filter(session => session.session_id !== session_id)
 
-    res.json({ ok: true, plan: session?.plan, plan_data: session?.plan_data });
+    res.json({ 
+                ok: true, 
+                plan: session?.plan, 
+                plan_data: session?.plan_data, 
+                customerId: (await user).customerId
+            });
 
 })
 
@@ -155,6 +204,17 @@ router.post('/cancel/checkout', async (req, res) => {
     session_db.filter(session => session.session_id !== session_id)
 
 })
+
+
+
+router.post('/cancel/subscription', async (req, res) => {
+
+    const { subId } = req.body.userId;
+    
+
+    
+});
+
 
 
 export default router;

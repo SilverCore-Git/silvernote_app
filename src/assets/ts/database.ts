@@ -5,7 +5,7 @@ const fsp = fs.promises;
 import utils from './utils';
 import type { Session, User } from './types';
 import { UUID } from 'crypto';
-import { get_plan_by_name, get_silver_plan } from './plan';
+import { get_plan_by_name } from './plan';
 
 class Database {
 
@@ -128,27 +128,37 @@ class Database {
 
     }
 
-    public async add_user(
-
-        userId: string, 
-        planId?: string, 
-        plan_data?: { 
-            each: 'year' | 'month' | 'life', 
-            family?: boolean, 
-            family_data?: { owner?: boolean } 
-        }
-    ): Promise<void> {
+    public async add_user({
+            userId,
+            customerId,
+            planId,
+            plan_data,
+        }: {
+            userId: string;
+            customerId?: string;
+            planId: string;
+            plan_data?: {
+                each: 'year' | 'month' | 'life';
+                family?: boolean;
+                family_data?: { owner?: boolean };
+            };
+    }): Promise<any> {
 
         try {
 
             const db: User[] = await this.get('user');
 
-            db.push({ 
+            const user: User = { 
                 userId, 
+                customerId,
                 plan: get_plan_by_name(planId, plan_data)
-            });
+            }
+
+            db.push(user);
 
             await this.save('user', db);
+
+            return user;
 
         } catch (error) {
             console.error('Error adding user:', error);
@@ -174,12 +184,24 @@ class Database {
 
     }
 
+    public async get_user (userId: string) {
+
+        const db: User[] = await this.get('user');
+
+        const user = await db.find(user => user.userId == userId)
+
+        return user as User;
+
+    }
+
 
 
     public async set_user_plan (
         userId: string, 
         planId: UUID,
+        customerId: string,
         plan_data?: { 
+            strip_session_id: string,
             each: 'year' | 'month' | 'life', 
             family?: boolean, 
             family_data?: { owner?: boolean }
@@ -188,7 +210,7 @@ class Database {
 
         await this.remove_user(userId);
         
-        await this.add_user(userId, planId, plan_data)
+        await this.add_user({ userId, customerId, plan_data, planId })
         
     }
 

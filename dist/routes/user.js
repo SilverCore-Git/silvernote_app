@@ -4,16 +4,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const stripe_1 = __importDefault(require("stripe"));
 const router = express_1.default.Router();
 const database_1 = __importDefault(require("../assets/ts/database"));
+const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY);
 // route de gestion de plan
 router.post('/plan/set', async (req, res) => {
-    const { userId, planId, plan_data } = req.body;
+    const { userId, planId, customerId, plan_data } = req.body;
     let sessions;
     if (!userId || !planId)
         return;
     try {
-        await database_1.default.set_user_plan(userId, planId, plan_data);
+        await database_1.default.set_user_plan(userId, planId, customerId, plan_data);
         res.cookie('plan_id', planId, {
             httpOnly: true,
             secure: true,
@@ -72,5 +74,45 @@ router.post('/session/verify', async (req, res) => {
     const session_id = req.cookies.session_id;
     const sessions = await database_1.default.verify_session(session_id);
     res.json(sessions);
+});
+router.post('/get/data', async (req, res) => {
+    const { user_id } = req.body;
+    const user = await database_1.default.get_user(user_id);
+    res.json(user);
+});
+router.get('/stripe/portal/for/:id', async (req, res) => {
+    const customerId = req.params.id;
+    const session = await stripe.billingPortal.sessions.create({
+        customer: customerId,
+        return_url: 'http://localhost:5173/user/profile',
+    });
+    if (req.query.redirect == '1')
+        return res.redirect(session.url);
+    res.json({ url: session.url });
+});
+async function createStripeCustomer(user) {
+    const customer = await stripe.customers.create({
+        email: user.email,
+        name: user.name,
+    });
+    console.log("Customer créé :", customer.id);
+    return customer.id; // ex : 'cus_L8s9erM3DvJt2a'
+}
+router.post('/create', async (req, res) => {
+    const user = req.body.user;
+    const strip_user_id = await createStripeCustomer({
+        email: String(user.emailAddresses[0].emailAddress),
+        name: user.fullName
+    });
+    const db_user = await database_1.default.add_user({
+        userId: user.id,
+        customerId: strip_user_id,
+        planId: 'Silver'
+    });
+    res.json(database_1.default.get_user(user.id));
+});
+router.post('/verify', async (req, res) => {
+    const { user_id } = req.body;
+    res.json(await database_1.default.exist_user(user_id));
 });
 exports.default = router;
