@@ -46,7 +46,9 @@
 
   </header>
 
-  <div v-if="user_dropdown" class="absolute top-20 right-0 w-60 rounded-2xl bg-[var(--bg2)]">
+  <div v-if="user_dropdown" @click="user_dropdown = false" class=" absolute inset-0 w-screen h-screen z-10"></div>
+
+  <div v-if="user_dropdown" class="z-50 absolute top-20 right-[5%] w-60 rounded-2xl bg-[var(--bg2)]">
 
       <div class="p-4 border-b flex-row flex justify-between">
 

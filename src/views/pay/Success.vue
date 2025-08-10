@@ -41,6 +41,7 @@
 
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import confetti from "canvas-confetti"
 
 import Nav_bar from '../../components/Nav_bar.vue';
 import Footer from '../../components/Footer.vue';
@@ -60,7 +61,9 @@ onMounted(() => {
 
         if (isLoaded && loader.value !== false) {
 
-            const response: Promise<{ ok?: boolean, plan: string, error?: boolean, plan_data: any, customerId: string }> = await fetch('http://localhost:3000/money/success/checkout', {
+            const response
+                    : Promise<{ ok?: boolean, plan: string, error?: boolean, plan_data: any, sub_id: string, customerId: string }> 
+                    = await fetch('http://localhost:3000/money/success/checkout', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ session_id: route.query.session_id, user_id: user.value?.id })
@@ -75,13 +78,16 @@ onMounted(() => {
                             userId: user.value?.id, 
                             planId: (await response).plan, 
                             plan_data: (await response).plan_data,
-                            customerId: (await response).customerId
+                            customerId: (await response).customerId,
+                            sub_id: (await response).sub_id
                         })
                     }
                 )
             }
 
             loader.value = false;
+
+            setTimeout(() => waw(), 500);
             clearInterval(interval);
 
         }
@@ -89,5 +95,14 @@ onMounted(() => {
     }, 1000)
     
 });
+
+
+function waw() {
+  confetti({
+    particleCount: 200,
+    spread: 100,
+    origin: { y: 0.6 }
+  })
+}
 
 </script>

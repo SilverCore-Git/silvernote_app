@@ -56,7 +56,6 @@ import Footer from '../../components/Footer.vue';
 import { UserProfile, useUser } from '@clerk/vue';
 import Subscription from '../../components/Subscription.vue';
 import { onMounted, ref } from 'vue';
-import Loader from '../../components/Loader.vue';
 
 const myuser = ref<any | undefined>(undefined);
 const { user, isLoaded } = useUser();

@@ -6,21 +6,21 @@
     >
 
         <section 
-            v-if="subscriptions && localuser && !loading"
+            v-if="subscriptions.length && localuser && !loading"
             v-for="sub in subscriptions" :key="sub.id"    
             class="bg-[var(--bg2)] rounded-2xl shadow-xl p-6 border border-gray-200 hover:shadow-2xl transition-all duration-300"
         >
             
             <div class="flex items-center justify-between">
 
-                <h2 class="text-2xl font-bold" :style="{ color: plan_color }">
-                    {{ localuser.plan.name }} Plan <span class="text-red-600 font-bold">{{ sub.cancel_at_period_end ? '- Résilier' : '' }}</span>
+                <h2 class="text-2xl font-bold" :style="{ color: localuser.plan.find(plan => plan.sub_id == sub.id)?.color || 'var(--btn)' }">
+                    {{ localuser.plan.find(plan => plan.sub_id == sub.id)?.name || 'undefined' }} Plan <span class="text-red-600 font-bold">{{ sub.cancel_at_period_end ? '- Résilier' : '' }}</span>
                 </h2>
 
                 <span 
                     v-if="!sub.cancel_at_period_end"
                     class="text-sm bg-yellow-100 px-3 py-1 rounded-full uppercase tracking-wide"
-                    :style="{ color: plan_color }"
+                    :style="{ color: localuser.plan.find(plan => plan.sub_id == sub.id)?.color || 'var(--btn)' }"
                 >
                     {{ sub.items.data[0].price.unit_amount / 100 }} 
                     {{ sub.items.data[0].price.currency.toUpperCase() }} / 
@@ -57,21 +57,26 @@
 
                         <p>
                             <strong>Formule:</strong>
-                            {{ localuser.plan.family ? 'Famille' : 'Individuelle' }}
+                                {{ 
+                                    localuser.plan.find(plan => plan.sub_id == sub.id)?.plan_data?.family == true 
+                                        ? 'Famille' 
+                                        : localuser.plan.find(plan => plan.sub_id == sub.id)?.plan_data?.family == false ? 'Individuelle' 
+                                            : 'undefined'
+                                }}
                         </p>
                         
                     </div>
 
                     <div class="text-gray-400 text-xs mt-4 truncate">
                         <span><strong>SUBSCRIPTIONS_ID :</strong> {{ sub.id || "undefined" }}</span><br />
-                        <span><strong>PLAN_ID :</strong> {{ localuser.plan.uuid || "undefined" }}</span>
+                        <span><strong>PLAN_ID :</strong> {{ localuser.plan.find(plan => plan.sub_id == sub.id)?.uuid || "undefined" }}</span>
                     </div>
 
                 </div>
 
                 <button 
                     class="perso" 
-                    :style="{ '--btn-color': plan_color }"
+                    :style="{ '--btn-color': localuser.plan.find(plan => plan.sub_id == sub.id)?.color || 'var(--btn)' }"
                 >
                     Résilier l'abonnement
                 </button>
@@ -79,6 +84,13 @@
 
             </div>
 
+        </section>
+
+        <section 
+            v-else-if="!loading" 
+            class="bg-[var(--bg2)] rounded-2xl shadow-xl p-6 border border-gray-200 hover:shadow-2xl transition-all duration-300"
+        >
+            <h2>Aucun abonement trouvée !</h2>
         </section>
 
 
@@ -152,6 +164,7 @@
 
         </section>
 
+        <h2 v-if="error" class="text-red-600">{{ error }}</h2>
 
     </div>
 
@@ -170,9 +183,7 @@ const paymentMethods = ref([]);
 const subscriptions = ref([]);
 const loading = ref(true);
 const error = ref(null);
-const plan_color = ref('');
 
-const customerId = 'cus_SppxMS2MA5aEBd'
 const { user, isloaded } = useUser();
 
 async function fetchCustomerData() {
@@ -182,21 +193,27 @@ async function fetchCustomerData() {
     const loaded = await isloaded;
     console.log(await loaded);
 
-    const res = await fetch(`http://localhost:3000/money/customer/${customerId}/${user.value.id}`);
+    const user_back_db = await fetch('http://localhost:3000/user/get/data', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: user.value.id })
+    }).then(res => res.json());
+
+    const res = await fetch(`http://localhost:3000/money/customer/${(await user_back_db).customerId}/${user.value.id}`);
 
     if (!res.ok) throw new Error(`Erreur API: ${res.status}`);
     const data = await res.json();
+
+    if (data?.error?.code == "resource_missing") return;
 
     localuser.value = data.localuser;
     customer.value = data.customer;
     paymentMethods.value = data.paymentMethods || [];
     subscriptions.value = data.subscriptions || [];
 
-    plan_color.value = localuser.value.plan.color || 'var(--btn)';
-
   } catch (err) {
     error.value = err.message;
-
+    loading.value = false;
   } finally {
     loading.value = false;
   }
