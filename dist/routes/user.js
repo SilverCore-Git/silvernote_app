@@ -90,6 +90,13 @@ router.get('/stripe/portal/for/:id', async (req, res) => {
         return res.redirect(session.url);
     res.json({ url: session.url });
 });
+router.post('/stripe/cancel/sub', async (req, res) => {
+    const { subId } = req.body;
+    const response = await stripe.subscriptions.update(subId, {
+        cancel_at_period_end: true,
+    });
+    res.json(response || true);
+});
 async function createStripeCustomer(user) {
     const customer = await stripe.customers.create({
         email: user.email,

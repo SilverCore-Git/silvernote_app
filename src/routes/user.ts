@@ -139,6 +139,18 @@ router.get('/stripe/portal/for/:id', async (req: Request, res: Response) => {
 
 });
 
+router.post('/stripe/cancel/sub', async (req: Request, res: Response) => {
+
+  const { subId } = req.body;
+
+  const response = await stripe.subscriptions.update(subId, {
+    cancel_at_period_end: true,
+  });
+
+  res.json(response || true);
+
+});
+
 
 
 
