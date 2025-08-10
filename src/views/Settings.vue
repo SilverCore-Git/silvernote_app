@@ -24,17 +24,6 @@
             <label
                 class="cursor-pointer w-full flex justify-between items-center"
                 :class="hitbox ? 'bg-red-600' : ''"
-            >
-
-              <span>Langue</span>
-
-              <div id="gtranslate_wrapper" class="gtranslate_wrapper"></div>
-
-            </label>
-
-            <label
-                class="cursor-pointer w-full flex justify-between items-center"
-                :class="hitbox ? 'bg-red-600' : ''"
                 @click="toggleTheme"
             >
 
