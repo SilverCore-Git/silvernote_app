@@ -151,7 +151,7 @@ class Database {
             const user: User = { 
                 userId, 
                 customerId,
-                plan: [ get_plan_by_name(planId, plan_data) ]
+                plan: [ get_plan_by_name(planId, 'none', plan_data) ]
             }
 
             db.push(user);
@@ -197,6 +197,7 @@ class Database {
     public async set_user_plan (
         userId: string, 
         planId: UUID,
+        sub_id: string,
         customerId: string,
         plan_data?: { 
             strip_session_id: string,
@@ -214,7 +215,7 @@ class Database {
             throw new Error('Utilisateur non trouvé');
         }
 
-        db[userIndex].plan = [ ...db[userIndex].plan,  get_plan_by_name(planId, plan_data) ];
+        db[userIndex].plan = [ ...db[userIndex].plan,  get_plan_by_name(planId, sub_id, plan_data) ];
         db[userIndex].customerId = customerId;
 
         await this.save('user', db);

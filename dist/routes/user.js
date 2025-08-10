@@ -10,13 +10,13 @@ const database_1 = __importDefault(require("../assets/ts/database"));
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY);
 // route de gestion de plan
 router.post('/plan/set', async (req, res) => {
-    const { userId, planId, customerId, plan_data } = req.body;
+    const { userId, planId, customerId, plan_data, sub_id } = req.body;
     let sessions;
     if (!userId || !planId)
         return;
     try {
-        await database_1.default.set_user_plan(userId, planId, customerId, plan_data);
-        res.cookie('plan_id', planId, {
+        await database_1.default.set_user_plan(userId, planId, sub_id, customerId, plan_data);
+        res.cookie('_sub', sub_id, {
             httpOnly: true,
             secure: true,
         });

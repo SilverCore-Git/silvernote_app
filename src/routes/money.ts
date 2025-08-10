@@ -29,7 +29,7 @@ let session_db: {
     date: Date, 
     plan: string, 
     plan_data: {
-        strip_session_id: string | Stripe.Subscription | null,
+        strip_session_id: string,
         each: string,
         family: Boolean,
         family_data?: {
@@ -101,7 +101,7 @@ async function create_checkout (
                             date: new Date(), 
                             plan: priceId,
                             plan_data: {
-                                strip_session_id: session.subscription,
+                                strip_session_id: session.id,
                                 each: interval,
                                 family,
                                 family_data: family ? {
@@ -182,8 +182,8 @@ router.post('/success/checkout', async (req, res) => {
     const { session_id, user_id } = req.body;
 
     const session = session_db.find(session => session.session_id === session_id);
-
-    console.log(user_id, ' Vient de souscrir :', session)
+    
+    const stripe_session = await stripe.checkout.sessions.retrieve(session!.plan_data.strip_session_id);
 
     const user = db.get_user(user_id);
 
@@ -192,7 +192,8 @@ router.post('/success/checkout', async (req, res) => {
     res.json({ 
                 ok: true, 
                 plan: session?.plan, 
-                plan_data: session?.plan_data, 
+                plan_data: session?.plan_data,
+                sub_id: stripe_session.subscription,
                 customerId: (await user).customerId
             });
 

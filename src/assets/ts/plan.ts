@@ -5,6 +5,7 @@ export interface Plan {
     name: string;
     uuid: UUID;
     color: string;
+    sub_id?: string;
     void?: boolean;
     plan_data?: {
         each?: 'month' | 'year' | 'life';
@@ -52,6 +53,7 @@ export const get_silver_plan = (): Plan => {
 
 export function get_plan_by_name(
   name: string,
+  sub_id: string,
   plan_data?: {
     each?: 'month' | 'year' | 'life';
     family?: boolean;
@@ -61,6 +63,7 @@ export function get_plan_by_name(
   const defaultPlan = get_silver_plan();
 
   const found = plans.find(p => p.name === name);
+  if (found) found.sub_id = sub_id;
   const basePlan = found || defaultPlan;
 
   const isSilver = basePlan.name === "Silver";
