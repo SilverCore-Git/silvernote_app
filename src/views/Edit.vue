@@ -17,7 +17,35 @@
         @click="change_pin_state"
       ></div>
 
+      <div
+        class="ellipsis-svg w-[30px] h-[30px]"
+        :class="hitbox ? 'bg-red-600' : ''"
+        @click="if_open_dropdown = !if_open_dropdown"
+      ></div>
+
     </div>
+
+    <transition name="fade-slide">
+      
+      <div
+        v-if="if_open_dropdown"
+        class="absolute right-0 border-2 border-[var(--btn)]
+            z-50 min-w-[200px] w-[40%] md:w-[20%] lg:w-[10%] 
+            flex flex-col justify-center items-center p-3"
+        :style=" { top: `calc(3.5rem + env(safe-area-inset-top))` } "
+      >
+      
+      <ul class="text-xl md:text-lg ">
+
+            <li>Mode de la note</li>
+            <li>Vider</li>
+            <li>Suprimer</li>
+
+        </ul>
+      
+      </div>
+    
+    </transition>
 
   </header>
 
@@ -33,7 +61,8 @@
       :class="hitbox ? 'bg-indigo-600' : ''"
     />
 
-    <RichMarkdownEditor v-bind="attrs" :class="hitbox ? 'bg-blue-600' : ''" :id="note.id" />
+    <ToDoList :data="JSON.parse(note.content) || []" :id="note.id" v-if="AToDoList" />
+    <RichMarkdownEditor v-else v-bind="attrs" :class="hitbox ? 'bg-blue-600' : ''" :id="note.id" />
 
   </section>
 
@@ -44,6 +73,8 @@
 import { ref, onMounted, onUnmounted, useAttrs, watch } from 'vue';
 
 import { useRouter, useRoute } from 'vue-router';
+
+import ToDoList from '@/components/notes/ToDoList.vue';
 
 import db from '../assets/ts/database';
 import utils from '../assets/ts/utils';
@@ -63,20 +94,22 @@ import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';
 
 const if_pin_active = ref(route.query.pinned == "true");
-
-const attrs = useAttrs()
+const if_open_dropdown = ref<boolean>(false);
+const attrs = useAttrs();
 
 // Initialisation de la note
 const note = ref<Note>({
     title: '',
     content: '',
     pinned: false,
+    istodo: false,
     simply_edit: false,
     date: '',
     id: -1,
     tags: []
 });
 
+const AToDoList = ref<boolean>(note.value.istodo || false);
 const title = ref<HTMLInputElement | null>(null);
 
 const save_title = () => {
@@ -96,6 +129,7 @@ onMounted(async () => {
                                   simply_edit: false,
                                   title: note.value.title,
                                   content: note.value.content,
+                                  istodo: note.value.istodo,
                                   date: utils.date(),
                                   tags: []
                               });
@@ -171,6 +205,16 @@ input {
   outline: none;
   width: 90%;
   text-decoration: none;
+}
+
+.ellipsis-svg {
+    cursor: pointer;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url('/assets/svgs/ellipsis.svg');
+    filter: brightness(0) saturate(100%) invert(61%) sepia(43%) saturate(1182%) hue-rotate(343deg) brightness(99%) contrast(92%);
+    transition: all 0.3s ease;
 }
 
 </style>

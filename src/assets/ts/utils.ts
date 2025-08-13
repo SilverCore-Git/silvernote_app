@@ -68,7 +68,6 @@ class utils {
 
     }
 
-
 }
 
 const init_notes = async (list_notes: Ref<Note[] | undefined>): Promise<void> => {

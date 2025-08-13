@@ -775,21 +775,4 @@ import { UserButton } from '@clerk/vue';
         height: 55px;
     }
 
-    .fade-slide-enter-active,
-    .fade-slide-leave-active {
-        transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .fade-slide-enter-from,
-    .fade-slide-leave-to {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-
-    .fade-slide-enter-to,
-    .fade-slide-leave-from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
 </style>
