@@ -2,16 +2,14 @@
 
   <teleport to="body">
 
-    <Error
+    <Danger
       v-if="if_error"
-      class="z-50 fixed top-14 ml-2"
-      :content="error_content"
+      :value="error_content"
     />
 
     <Success
       v-if="if_success"
-      class="z-50 fixed top-14 ml-2"
-      :content="success_content"
+      :value="success_content"
     />
 
     <div
@@ -63,8 +61,8 @@
 
 import { defineProps, ref } from 'vue';
 
-import Error from '../status/error.vue';
-import Success from '../status/success.vue';
+import Danger from '../alert/Danger.vue';
+import Success from '../alert/Success.vue';
 
 import utils from '@/assets/ts/utils';
 

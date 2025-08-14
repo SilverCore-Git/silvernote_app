@@ -117,6 +117,9 @@
     @cancel="showDialog = false"
   />
 
+  <Success v-if="success.value" :value="success.text" />
+  <Danger v-if="danger.value" :value="danger.text" />
+
 </template>
 
 <script lang="ts" setup>
@@ -134,9 +137,14 @@ import indexed_db from '@/assets/ts/database';
 import utils from '@/assets/ts/utils';
 import Switch from '@/components/Switch.vue';
 import { toggle_theme } from '@/assets/ts/theme';
+import Success from '@/components/alert/Success.vue';
+import Danger from '@/components/alert/Danger.vue';
 
 let hitbox: boolean;
 onMounted(async () => { hitbox = await if_hitbox() })
+
+const danger = ref<{ text: string, value: boolean }>({ text: "", value: false });
+const success = ref<{ text: string, value: boolean }>({ text: "", value: false });
 
 const showDialog = ref<boolean>(false);
 const file_input = ref<HTMLInputElement | undefined>(undefined);
@@ -173,6 +181,9 @@ const open_input = () => file_input.value?.click();
 
 const download_db = async () => {
 
+  success.value.value = false;
+  danger.value.value = false;
+
   const tags = await indexed_db.getAll('tags');
   const notes = await indexed_db.getAll('notes');
 
@@ -202,25 +213,42 @@ const download_db = async () => {
     }
   };
 
-  const blob = new Blob([JSON.stringify(json_file)], { type: 'application/json' }); // utilisation de blob pour créer une ressource avec des données brut
+  try {
 
-  const url = URL.createObjectURL(blob);
-  const lien = document.createElement('a');
-  lien.href = url;
-  lien.download = 'mes_data_silvernote.snote';
+      const blob = new Blob([JSON.stringify(json_file)], { type: 'application/json' }); // utilisation de blob pour créer une ressource avec des données brut
 
-  document.body.appendChild(lien); // création d'un <a> invisible
-  lien.click(); // simulation du click
-  document.body.removeChild(lien); // suprésion du <a>
-  URL.revokeObjectURL(url);
+      const url = URL.createObjectURL(blob);
+      const lien = document.createElement('a');
+      lien.href = url;
+      lien.download = 'mes_data_silvernote.snote';
+
+      document.body.appendChild(lien); // création d'un <a> invisible
+      lien.click(); // simulation du click
+      document.body.removeChild(lien); // suprésion du <a>
+      URL.revokeObjectURL(url);
+
+      success.value.text = 'Fichier générer et télécharger.';
+      success.value.value = true;
+
+  }
+
+  catch (err) {
+    danger.value.text = 'Une erreur est survenue.';
+    danger.value.value = true;
+    return console.error('Une erreur est survenur lors de la préparation du téléchargement de la db : ', err);
+  }
 
 }
 
 const get_db_file = async (event: Event): Promise<void> => {
 
+  danger.value.value = false;
+  success.value.value = false;
+
   const input = event.target as HTMLInputElement;
 
   if (input.files) {
+    
     const file = input.files[0];
 
     const reader = new FileReader();
@@ -261,14 +289,20 @@ const get_db_file = async (event: Event): Promise<void> => {
           }
           else 
           {
+            danger.value.text = "Fichier refusé, défaillant ou trafiqué.";
+            danger.value.value = true;
             throw new Error(`Hash not valid.\n\n Hashes:\n  Tags: ${await utils.hash(data.tags)} || ${data.hash.tags}\n  Notes: ${await utils.hash(data.notes)} || ${data.hash.notes}\n  Sender Info: ${await utils.hash(data.sender_info)} || ${data.hash.sender_info}\n  Data Info: ${await utils.hash(data.data_info)} || ${data.hash.data_info}\n\nValidation:\n  Tags OK: ${await utils.hash(data.tags) === data.hash.tags}\n  Notes OK: ${await utils.hash(data.notes) === data.hash.notes}\n  Sender Info OK: ${await utils.hash(data.sender_info) === data.hash.sender_info}\n  Data Info OK: ${await utils.hash(data.data_info) === data.hash.data_info}`)
           }
 
         } catch (err) {
+          danger.value.text = "Une erreur est survenue";
+          danger.value.value = true;
           return console.error("Une erreur est survenue, step : parse data / eating data / verify hash :", err)
         }
 
         console.log('Database eat end !');
+        success.value.text = 'Fichier injecté.';
+        success.value.value = true;
 
       }
     }
@@ -282,8 +316,22 @@ const get_db_file = async (event: Event): Promise<void> => {
 const reset_db = async (step: number): Promise<void> => {
 
   if (step == 2) {
-    showDialog.value = false
-    await indexed_db.reset();
+    showDialog.value = false;
+    success.value.value = false;
+    danger.value.value = false;
+
+    try {
+      await indexed_db.reset();
+      success.value.text = 'Base de données réinitialiser !'
+      success.value.value = true;
+    }
+    catch (err) {
+      danger.value.text = 'Une erreur est survenue.';
+      danger.value.value = true;
+      return console.error("Une erreur est survenue, step : reset db :", err)
+    }
+
+  
   } 
   else 
   {

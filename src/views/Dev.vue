@@ -58,17 +58,52 @@
                 </li>
             </ul>
 
+            <h1
+                class="text-2xl mb-1 font-bold mt-5"
+            >Popup && alert</h1>
+
+            <ul class="ml-1 gap-2 flex flex-raw">
+
+                <li>
+                    <button class="second" @click="confirmDialog = true;">ConfirmDialog</button>
+                </li>
+
+                <li>
+                    <button class="primary" @click="success.value = true;">success</button>
+                </li>
+
+                <li>
+                    <button class="primary danger" @click="danger.value = true;">danger</button>
+                </li>
+
+                <li>
+                    <button class="second" @click="warning.value = true;">warning</button>
+                </li>
+
+            </ul>
+
 
         </section>
 
     </div>
+
+    <ConfirmDialog 
+        title="titre de la fenetre" 
+        message="Message de la fenetre" 
+        :visible="confirmDialog"
+        @cancel="confirmDialog = false"
+        @confirm="confirmDialog = false" 
+    />
+    <Warning v-if="warning.value" :value="warning.text" />
+    <Danger v-if="danger.value" :value="danger.text" />
+    <Success v-if="success.value" :value="success.text" />
 
 </template>
 
 
 <script lang="ts" setup>
 
-    import { onMounted, ref } from 'vue'
+    import { onMounted, ref, watch } from 'vue'
     import { useRouter } from 'vue-router';
     import { useUser } from '@clerk/vue';
     const { user } = useUser();
@@ -78,18 +113,24 @@
     import db from '../assets/ts/database';
 
     import { hitbox as if_hitbox} from '../assets/ts/settings';
+    import Warning from '@/components/alert/Warning.vue';
+    import Danger from '@/components/alert/Danger.vue';
+    import Success from '@/components/alert/Success.vue';
+    import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 
     let hitbox: boolean;
     onMounted(async () => { hitbox = await if_hitbox() })
 
     const router = useRouter();
 
+    const confirmDialog = ref<boolean>(false);
+    const danger = ref<{ text: string, value: boolean }>({ text: "Message de test", value: false });
+    const success = ref<{ text: string, value: boolean }>({ text: "Message de test", value: false });
+    const warning = ref<{ text: string, value: boolean }>({ text: "Message de test", value: false });
+
     const userAgent: string = navigator.userAgent;
-
     const platform: string = navigator.platform;
-
     const lang: string = navigator.language;
-
     const isOnline: boolean = navigator.onLine;
     const isOnlineMode: boolean = localStorage.getItem('online') == 'true';
 
@@ -122,5 +163,10 @@
         notes_nb.value = await db.getAll('notes').then(notes => notes.length);
         tags_nb.value = await db.getAll('tags').then(notes => notes.length);
     })
+
+    watch(() => danger.value.value, () => { setTimeout(() => { danger.value.value = false }, 5500) })
+    watch(() => success.value.value, () => { setTimeout(() => { success.value.value = false }, 5500) })
+    watch(() => warning.value.value, () => { setTimeout(() => { warning.value.value = false }, 5500) })
+
 
 </script>
