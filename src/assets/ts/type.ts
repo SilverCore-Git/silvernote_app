@@ -4,7 +4,7 @@ export interface Note {
     id: number;
     pinned: boolean;
     simply_edit: boolean;
-    istodo?: boolean;
+    type?: string;
     title: string;
     content: string;
     date: string;

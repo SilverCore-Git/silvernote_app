@@ -29,7 +29,7 @@
       
       <div
         v-if="if_open_dropdown"
-        class="absolute right-0 border-2 border-[var(--btn)]
+        class="dropdown absolute right-0 border-2 border-[var(--btn)]
             z-50 min-w-[200px] w-[40%] md:w-[20%] lg:w-[10%] 
             flex flex-col justify-center items-center p-3"
         :style=" { top: `calc(3.5rem + env(safe-area-inset-top))` } "
@@ -37,9 +37,9 @@
       
       <ul class="text-xl md:text-lg ">
 
-            <li>Mode de la note</li>
-            <li>Vider</li>
-            <li>Suprimer</li>
+            <li @click="noteTypeManager = true; if_open_dropdown = false"><a class="cursor-pointer">Paramettres</a></li>
+            <li><a class="cursor-pointer">Vider</a></li>
+            <li><a class="cursor-pointer">Suprimer</a></li>
 
         </ul>
       
@@ -65,6 +65,8 @@
     <RichMarkdownEditor v-else v-bind="attrs" :class="hitbox ? 'bg-blue-600' : ''" :id="note.id" />
 
   </section>
+
+  <Note_type_manager :id="note.id" v-if="noteTypeManager" />
 
 </template>
 
@@ -92,9 +94,11 @@ import RichMarkdownEditor from '../components/RichMarkdownEditor.vue';
 
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';
+import Note_type_manager from '@/components/notes/Note_type_manager.vue';
 
 const if_pin_active = ref(route.query.pinned == "true");
 const if_open_dropdown = ref<boolean>(false);
+const noteTypeManager = ref<boolean>(false);
 const attrs = useAttrs();
 
 // Initialisation de la note
@@ -102,14 +106,14 @@ const note = ref<Note>({
     title: '',
     content: '',
     pinned: false,
-    istodo: false,
+    type: 'text',
     simply_edit: false,
     date: '',
     id: -1,
     tags: []
 });
 
-const AToDoList = ref<boolean>(note.value.istodo || false);
+const AToDoList = ref<boolean>(note.value.type == "todolist");
 const title = ref<HTMLInputElement | null>(null);
 
 const save_title = () => {
@@ -129,7 +133,7 @@ onMounted(async () => {
                                   simply_edit: false,
                                   title: note.value.title,
                                   content: note.value.content,
-                                  istodo: note.value.istodo,
+                                  type: note.value.type,
                                   date: utils.date(),
                                   tags: []
                               });
@@ -215,6 +219,11 @@ input {
     background-image: url('/assets/svgs/ellipsis.svg');
     filter: brightness(0) saturate(100%) invert(61%) sepia(43%) saturate(1182%) hue-rotate(343deg) brightness(99%) contrast(92%);
     transition: all 0.3s ease;
+}
+
+.dropdown {
+    border-bottom-left-radius: var(--br-btn);
+    border-bottom-right-radius: var(--br-btn);
 }
 
 </style>
