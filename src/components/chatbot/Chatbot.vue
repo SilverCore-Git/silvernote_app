@@ -3,7 +3,8 @@
     <div class="relative h-150 w-100 bg-[var(--bg2)] rounded-2xl shadow">
 
         <header class="absolute h-[10%] top-0 inset-x-0 bg-[#F28C28] rounded-t-2xl
-                        flex justify-between items-center px-5 text-white flex-row"
+                        flex justify-between items-center px-5 text-white flex-row 
+                        shadow-orange-400 shadow-sm"
         >
 
             <div class="flex justify-center items-center flex-row">
@@ -65,8 +66,6 @@
 
     </div>
 
-    <button @click="add_response('cdsjfsdkhfjds')">caca</button>
-
 </template>
 
 <script lang="ts" setup>
@@ -89,6 +88,7 @@ const add_message = (content: string) => {
         AllMessage.value.push({ origin: 'user', text: content });
         scroll_to_bottom();
         loading.value = true;
+        send(content)
     }
 }
 
@@ -103,7 +103,17 @@ const scroll_to_bottom = () => {
     if (container) container.scrollTop = container.scrollHeight;
 }
 
-const send = async (content: string) => {
+const send = async (prompt: string) => {
+
+    const res = await fetch('http://localhost:3000/api/ai/prompt', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt })
+    }).then(res => res.json())
+
+    add_response(res.output || 'Une erreur est survenue.')
 
 }
 
