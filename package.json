@@ -27,6 +27,7 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.10",
+    "openai": "^5.12.2",
     "stripe": "^18.3.0",
     "typescript": "^5.8.3"
   },

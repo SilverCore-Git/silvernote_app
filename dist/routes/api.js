@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const openai_1 = __importDefault(require("openai"));
+const AIclient = new openai_1.default({ apiKey: process.env.OPENAI_SECRET_KEY });
 const database_1 = __importDefault(require("../assets/ts/database"));
 const notes_1 = __importDefault(require("../assets/ts/notes"));
 const tags_1 = __importDefault(require("../assets/ts/tags"));
@@ -36,5 +38,25 @@ router.post('/save/db/tags', async (req, res) => {
     }
     const save = await tags_1.default.save_tags(user_id, tags);
     res.json(save);
+});
+router.post('/ai/prompt', async (req, res) => {
+    const { prompt } = req.body;
+    const input = `Parle francais sauf instruction contraire dans cette demande : ` + prompt;
+    const response = AIclient.responses.create({
+        model: 'gpt-5-mini',
+        input
+    });
+    res.json({ input: prompt, output: (await response).output_text });
+});
+router.post('/ai/minify', async (req, res) => {
+    const { note } = req.body;
+    if (!note)
+        return;
+    const input = `Parle francais, voici une note ecrit en html, prise sur l'app de prise de note silvernote. tu dois la resumé de maniere inteligente, organiser et claire, t'a reponse ne doit contenir que la note résumé : ${note}`;
+    const response = AIclient.responses.create({
+        model: 'gpt-5-mini',
+        input
+    });
+    res.json({ input, output: (await response).output_text });
 });
 exports.default = router;
