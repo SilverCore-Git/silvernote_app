@@ -4,6 +4,7 @@ import Home from './views/Home.vue';
 import Edit from './views/Edit.vue';
 import Settings from './views/Settings.vue';
 import Dev from './views/Dev.vue';
+import Chatbot from './components/chatbot/Chatbot.vue';
 
 const routes = [
   { 
@@ -33,6 +34,14 @@ const routes = [
     component: Dev,
     props: {},
     meta: { title: 'SilverNote - dev access' }
+  },
+
+  { 
+    path: '/view/chatbot', 
+    name: 'chatbot', 
+    component: Chatbot,
+    props: {},
+    meta: { title: 'SilverNote - view chatbot' }
   }
 ]
 
