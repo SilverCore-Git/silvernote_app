@@ -16,14 +16,27 @@
 
     <SignedIn>
 
-      <div class="mr-[var(--mrl)] ml-[var(--mrl)] relative">
-        <router-view></router-view>
-      </div>
+      <div>
 
-      <div class=" absolute inset-0 bg-[var(--bg)] z-50" v-if="loader">
-          <div class="flex justify-center items-center w-screen h-screen">
-              <Loader :icon="false" />
-          </div>
+        <div class="mr-[var(--mrl)] ml-[var(--mrl)] relative">
+
+          <router-view></router-view>
+
+        </div>
+
+        <div class="z-50 relative">
+
+          <Chatbot v-if="chatbot" @close="chatbot = false" />
+          <button @click="chatbot = !chatbot" class="absolute bottom-0 right-10 primary">ici</button>
+
+        </div>
+
+        <div class=" absolute inset-0 bg-[var(--bg)] z-50" v-if="loader">
+            <div class="flex justify-center items-center w-screen h-screen">
+                <Loader :icon="false" />
+            </div>
+        </div>
+
       </div>
 
     </SignedIn>
@@ -90,6 +103,7 @@
   import { useRoute, useRouter } from 'vue-router';
 
   import Loader from './components/Loader.vue';
+  import Chatbot from './components/chatbot/Chatbot.vue';
 
   import db from './assets/ts/database';
   import back, { Session  } from './assets/ts/backend_link';
@@ -98,6 +112,7 @@
   import { SignedIn, SignedOut, SignIn, SignUp, useUser } from '@clerk/vue';
 
   const isElectron = !!(window as any)?.process?.versions?.electron;
+  const chatbot = ref<boolean>(false);
   const loader = ref<boolean>(true);
   const wasOnline = localStorage.getItem('online') === 'true';
   const isOnline = navigator.onLine;
@@ -160,7 +175,7 @@
 
       }
 
-    }, 100)
+    }, 1000)
 
     await nextTick()
 

@@ -66,7 +66,7 @@
 
   </section>
 
-  <Note_type_manager :id="note.id" v-if="noteTypeManager" />
+  <Note_settings :id="note.id" v-if="noteTypeManager" />
 
 </template>
 
@@ -94,7 +94,7 @@ import RichMarkdownEditor from '../components/RichMarkdownEditor.vue';
 
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';
-import Note_type_manager from '@/components/notes/Note_type_manager.vue';
+import Note_settings from '@/components/notes/Note_settings.vue';
 
 const if_pin_active = ref(route.query.pinned == "true");
 const if_open_dropdown = ref<boolean>(false);
