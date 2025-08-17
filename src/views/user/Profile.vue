@@ -65,7 +65,7 @@ onMounted(async () => {
     const loaded = await isLoaded;
     console.log(await loaded);
 
-    myuser.value = await fetch('http://localhost:3000/user/get/data', {
+    myuser.value = await fetch('https://api.silvernote.fr/user/get/data', {
         method: 'POSt',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: user.value?.id })

@@ -2,7 +2,10 @@
     
     <nav class="container mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8 z-50">
 
-        <img class="w-13 cursor-pointer" src="/favicon.svg" @click="router.push('/')" alt="logo">
+        <div class="flex items-center justify-center flex-row gap-2">
+            <img class="w-13 cursor-pointer" src="/favicon.svg" @click="router.push('/')" alt="logo">
+            <div class=" uppercase font-bold rounded-sm px-3 py-1.5 border-2 border-[var(--btn)]">beta</div>
+        </div>
 
         <ul class="hidden md:flex items-center space-x-6">
             <li @click="router.push('/')"><a>Maison</a></li>

@@ -21,7 +21,7 @@ watch(isLoaded, async () => {
 
   if (!isLoaded) return;
 
-  const verify = await fetch('http://localhost:3000/user/verify', {
+  const verify = await fetch('https://api.silvernote.fr/user/verify', {
     method: 'POST',
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ user_id: user.value?.id })
@@ -29,7 +29,7 @@ watch(isLoaded, async () => {
 
   if (await verify) return;
 
-  await fetch('http://localhost:3000/user/create', {
+  await fetch('https://api.silvernote.fr/user/create', {
     method: 'POST',
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ user: user.value })

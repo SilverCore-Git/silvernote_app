@@ -45,7 +45,7 @@ const plan = ref<'silver' | 'gold' | 'platinium' | 'ultimate' | null>(null);
 onMounted(() => {
     plan.value = route.query.plan?.toString() as 'silver' | 'gold' | 'platinium' | 'ultimate';
     
-    fetch('http://localhost:3000/money/success/checkout', {
+    fetch('https://api.silvernote.fr/money/success/checkout', {
         method: 'POST',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ session_id: route.query.session_id })

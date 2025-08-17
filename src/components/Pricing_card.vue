@@ -97,7 +97,7 @@ const onClick = () =>
         : router.push(`/pay/pricing/${props.title}?mode=${props.mode_date == 3 ? 'payment' : 'subscription'}&each=${props.mode_date == 1 ? "month" : props.mode_date == 2 ? 'year' : 'life'}&family=${props.mode_for == 2}`)
 
 const props = defineProps<{
-  title: 'Silver' | 'Gold' | 'Platinum' | 'Ultimate'; 
+  title: string; 
   price: number;
   foru: string;
   functions: { name: string; includ: boolean }[];

@@ -131,7 +131,7 @@ const create_checkout = async (): Promise<void> => {
     try {
 
         const response = await fetch(
-            `http://localhost:3000/money/create/checkout/link/for/${props.priceId}/withmode/${mode}`,
+            `https://api.silvernote.fr/money/create/checkout/link/for/${props.priceId}/withmode/${mode}`,
             { 
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
