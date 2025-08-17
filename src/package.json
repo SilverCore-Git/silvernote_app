@@ -4,11 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "pm2 start app.js --name silvernote",
-    "stop": "pm2 stop silvernote",
-    "log": "pm2 logs silvernote",
-    "dev": "nodemon app.js",
-    "build": "npx tsc"
+    "start": "pm2 start app.js --name silvernote_api",
+    "stop": "pm2 stop silvernote_api",
+    "log": "pm2 logs silvernote_api",
+    "dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -19,16 +18,23 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@clerk/express": "^1.7.13",
+    "@types/express": "^5.0.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "nodemon": "^3.1.10",
+    "openai": "^5.12.2",
+    "stripe": "^18.3.0",
     "typescript": "^5.8.3"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
     "@types/morgan": "^1.9.10",
     "@types/node": "^22.15.30",
     "pm2": "^5.3.0"

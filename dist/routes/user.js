@@ -11,7 +11,6 @@ const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY);
 // route de gestion de plan
 router.post('/plan/set', async (req, res) => {
     const { userId, planId, customerId, plan_data, sub_id } = req.body;
-    let sessions;
     if (!userId || !planId)
         return;
     try {
