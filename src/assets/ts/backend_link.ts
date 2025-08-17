@@ -3,8 +3,7 @@ import db from './database';
 import { salert } from './salert';
 import type { Note, Tag } from './type';
 
-const api_url: string = 'http://localhost:3000';
-//const auth_url: string = 'https://auth.silvernote.fr';
+const api_url: string = 'https://api.silvernote.fr';
 
 
 const dev_db = {
@@ -177,8 +176,8 @@ const save_all = async (notes: Note[], tags: Tag[]): Promise<any> => {
 
 }
 
-const get_all = async (): Promise<{ notes: Note[], tags: Tag[], hash: any }> => {
-
+const get_all = async (): Promise<{ notes: Note[], tags: Tag[], hash: any } | undefined> => {
+return undefined
   //await fetch(`${auth_url}/verify`).then(res => res.json()) ||
   const user =  { sub: 'auth0|609e8b2e3b3f9c0071f7abcd' };
 
@@ -194,7 +193,7 @@ const get_all = async (): Promise<{ notes: Note[], tags: Tag[], hash: any }> => 
 }
 
 const save_db = async (): Promise<any> => {
-
+return
 //await fetch(`${auth_url}/verify`).then(res => res.json()) ||
   const user =  { sub: 'auth0|609e8b2e3b3f9c0071f7abcd' };
   const Notes: Note[] = await db.getAll('notes');

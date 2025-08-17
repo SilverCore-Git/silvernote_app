@@ -22,10 +22,10 @@
                     </label>
 
                     <select
-                        v-if="note_with_parms.type"
+                        v-if="note_with_parms!.type"
                         id="type_of_note"
                         name="type_of_note"
-                        v-model="note_with_parms.type"
+                        v-model="note_with_parms!.type"
                         class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/90 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[var(--btn)] focus:border-[var(--btn)] transition-all duration-200"
                     >
                         <option value="text">Texte</option>

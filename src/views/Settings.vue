@@ -135,7 +135,7 @@ import type { Settings } from '@/assets/ts/type';
 import { hitbox as if_hitbox } from '@/assets/ts/settings';
 import indexed_db from '@/assets/ts/database';
 import utils from '@/assets/ts/utils';
-import Switch from '@/components/Switch.vue';
+// import Switch from '@/components/Switch.vue';
 import { toggle_theme } from '@/assets/ts/theme';
 import Success from '@/components/alert/Success.vue';
 import Danger from '@/components/alert/Danger.vue';

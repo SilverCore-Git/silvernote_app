@@ -58,7 +58,7 @@
 import { ref, watch } from "vue";
 import draggable from "vuedraggable";
 
-import db from '../../assets/ts/database';
+//import db from '../../assets/ts/database';
 
 interface ToDoType { 
     id: number; 
@@ -86,9 +86,9 @@ const del_a_do = (id: number) => {
 }
 
 const saveContent = () => {
-    if (ToDo.value) {
-        db.saveContent(JSON.stringify(ToDo.value), props.id)
-    }
+    // if (ToDo.value) {
+    //     db.saveContent(JSON.stringify(ToDo.value), props.id)
+    // }
 }
 
 watch(ToDo.value, saveContent);

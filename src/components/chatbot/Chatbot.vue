@@ -99,7 +99,8 @@ const add_message = (content: string) => {
         AllMessage.value.push({ origin: 'user', text: content });
         scroll_to_bottom();
         loading.value = true;
-        send(content)
+        //add_response('Jeremy est le chatbot de SilverNote, actuelement désactivé pour la beta.');
+        //send(content)
     }
 }
 
@@ -116,7 +117,7 @@ const scroll_to_bottom = () => {
 
 const send = async (prompt: string) => {
 
-    const res = await fetch('http://localhost:3000/api/ai/prompt', {
+    const res = await fetch('https://api.silvernote.fr/api/ai/prompt', {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
