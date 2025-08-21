@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 const router = express.Router();
 
 import db from '../assets/ts/database';
-import { EmailAddress, User } from '@clerk/express';
+import { User } from '@clerk/express';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -12,7 +12,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 router.post('/plan/set', async (req: Request, res: Response) => {
 
   const { userId, planId, customerId, plan_data, sub_id } = req.body;
-  let sessions; 
 
   if (!userId || !planId) return;
 
