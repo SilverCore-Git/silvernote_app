@@ -7,8 +7,8 @@ const AIclient = new OpenAI({ apiKey: process.env.OPENAI_SECRET_KEY });
 
 const router = Router();
 
-let chats: { uuid: UUID, userID: string, messages: { role: "system" | "user" | "assistant", content: string }[] }[] = [];
-
+type Chat = { uuid: UUID, userID: string, messages: { role: "system" | "user" | "assistant", content: string  }[] }
+let chats: Chat[]  = [];
 
 
 router.post('/create', async (req: Request, res: Response) => {
@@ -19,15 +19,17 @@ router.post('/create', async (req: Request, res: Response) => {
 
         if (!await db.get_user(userID)) res.status(400).json({ error: true, message: 'Utilisateur introuvable.' });
 
-        chats.push({ 
+        const session: Chat = { 
             uuid: randomUUID(),
             userID,
             messages: [
                 { role: "system", content: prompt_system }
             ]
-        })
+        }
 
-        res.json({ success: true })
+        chats.push(session)
+
+        res.json({ success: true, session })
 
     }
     catch (err) {
@@ -61,26 +63,36 @@ router.post('/close', async (req: Request, res: Response) => {
 
 router.post('/send', async (req: Request, res: Response) => {
 
-    const { uuid, userID, message } = req.body;
+    const { uuid, message } = req.body;
 
     try {
 
-        if (!await db.get_user(userID)) res.status(400).json({ error: true, message: 'Utilisateur introuvable.' });
+        const chat = chats.find(chat => chat.uuid == uuid);
 
-        const chat = chats.find(chat => chat.uuid == uuid && chat.userID == userID);
-        if (!chat) res.json({ error: true, message: 'idk // chat is not defined' })
-        
-        chat!.messages.push({
-            role: 'user',
-            content: message
-        })
+        if (!chat) { 
+            res.json({ error: true, message: 'idk // chat is not defined' })
+        }
 
-        const response = await AIclient.chat.completions.create({
-            model: "gpt-5-mini",
-            messages: chat!.messages
-        });
+        else {
 
-        res.json({ output: response.choices[0].message.content, allout: response.choices })
+            chat!.messages.push({
+                role: 'user',
+                content: message
+            })
+
+            const response = await AIclient.chat.completions.create({
+                model: "gpt-5-mini",
+                messages: chat!.messages
+            });
+
+            chat!.messages.push({
+                role: 'assistant',
+                content: response.choices[0].message.content || ''
+            })
+
+            res.json({ success: true, output: response.choices[0].message.content, allout: response.choices, chat: chat?.messages })
+
+        }
 
     }
 
