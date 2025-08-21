@@ -1,6 +1,6 @@
 <template>
     
-    <Dragable :initx="1500" :inity="-650">
+    <Dragable :initx="0" :inity="-600">
 
         <div class="relative resize overflow-auto z-50 w-100 h-140 bg-[var(--bg2)] rounded-2xl shadow">
 
@@ -26,7 +26,7 @@
                 <ul class="space-y-2 w-full relative">
                     <li
                         v-for="(message, index) in AllMessage"
-                        :class="message.origin == 'ai' ? 'mr-[47%]' : 'ml-[47%]'"
+                        :class="message.origin == 'ai' ? 'mr-[47%]' : message.origin == 'error' ? 'mr-[47%]' : 'ml-[47%]'"
                         :id="`message-${index}`"
                     >
                         <MessageDubble
@@ -74,39 +74,55 @@
 
 <script lang="ts" setup>
 
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import MessageDubble from './MessageDubble.vue';
 import Loader from './Loader.vue';
 import Dragable from '../Dragable.vue';
+import { useUser } from '@clerk/vue';
 
+const { isLoaded } = useUser();
+const { user } = useUser();
 
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
-
 const max_LenghtOfMessage: number = 150;
 
 const loading = ref<boolean>(false);
-const AllMessage = ref<{ origin: 'ai' | 'user', text: string }[]>([]);
+const AllMessage = ref<{ origin: 'ai' | 'user' | 'error', text: string }[]>([]);
 const message = ref<string>("");
 const lengthOfMessage = ref<number>(max_LenghtOfMessage);
+const session_id = ref<string>('');
 
 watch(() => message.value, () => lengthOfMessage.value = max_LenghtOfMessage - message.value.length)
 
 const add_message = (content: string) => {
+    
+    //comands 
+    if (content == '/clear') {
+        loading.value = false;
+        return AllMessage.value = [];
+    }
+
     if (content && content !== '') {
         AllMessage.value.push({ origin: 'user', text: content });
         scroll_to_bottom();
         loading.value = true;
         //add_response('Jeremy est le chatbot de SilverNote, actuelement désactivé pour la beta.');
-        //send(content)
+        send(content)
     }
 }
 
 const add_response = (content: string) => {
     loading.value = false;
     AllMessage.value.push({ origin: 'ai', text: content });
+    scroll_to_bottom();
+}
+
+const add_error = (content: string) => {
+    loading.value = false;
+    AllMessage.value.push({ origin: 'error', text: `error: ${content}` });
     scroll_to_bottom();
 }
 
@@ -117,17 +133,50 @@ const scroll_to_bottom = () => {
 
 const send = async (prompt: string) => {
 
-    const res = await fetch('https://api.silvernote.fr/api/ai/prompt', {
+    const res = await fetch('http://localhost:3000/api/ai/send', {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt })
+        body: JSON.stringify({ uuid: session_id.value, message: prompt })
     }).then(res => res.json())
 
-    add_response(res.output || 'Une erreur est survenue.')
+    if (res.error) {
+        return add_error(res.message);
+    }
+
+    if (res.success) {
+        add_response(res.output)
+    }
 
 }
+
+onMounted(async () => {
+
+    const loaded = isLoaded;
+    console.log(loaded);
+
+    // créer la session
+    const res = await fetch('http://localhost:3000/api/ai/create', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userID: user.value?.id })
+    }).then(res => res.json())
+
+    if (res.error) {
+        return add_error(res.message);
+    }
+
+    if (res.success) {
+        session_id.value = res.session.uuid;console.log(session_id.value)
+        return add_response('Bonjour je suis Jeremy le chatbot de silvernote, je peut vous aider sur tout les sujet mais spécialement sur vos notes !')
+    }
+
+    
+
+})
 
 </script>
 
@@ -163,7 +212,7 @@ const send = async (prompt: string) => {
 }
 
 .shadow {
-    box-shadow: 0 0 8px #33333346;
+    box-shadow: 0 0 8px var(--shadow);
 }
 
 </style>

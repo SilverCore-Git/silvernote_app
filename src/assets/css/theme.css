@@ -4,6 +4,7 @@
     --bg: black;
     --bg2: black;
     --text: black;
+    --shadow: #33333346;
     --btn: #F28C28;
 
     --br-main: 24px;
@@ -27,6 +28,7 @@ body.dark {
   --bg:  #2A2420;
   --bg2: #3A322D;
   --text: #FFF8F0;
+  --shadow: #ffffff46;
 }
 
 
@@ -34,4 +36,5 @@ body.light {
     --bg: #FFF8F0;
     --bg2: #fff5e8;
     --text: #3B3B3B;
+    --shadow: #33333346;
 }
