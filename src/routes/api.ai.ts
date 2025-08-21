@@ -7,23 +7,30 @@ const AIclient = new OpenAI({ apiKey: process.env.OPENAI_SECRET_KEY });
 
 const router = Router();
 
-type Chat = { uuid: UUID, userID: string, messages: { role: "system" | "user" | "assistant", content: string  }[] }
+type Chat = { uuid: UUID, userID: string, data: { notes: any, tags: any }, messages: { role: "system" | "user" | "assistant", content: string  }[] }
 let chats: Chat[]  = [];
 
 
 router.post('/create', async (req: Request, res: Response) => {
 
-    const { userID } = req.body;
+    const { user, notes, tags } = req.body;
 
     try {
 
-        if (!await db.get_user(userID)) res.status(400).json({ error: true, message: 'Utilisateur introuvable.' });
+        if (!await db.get_user(user.id)) res.status(400).json({ error: true, message: 'Utilisateur introuvable.' });
 
         const session: Chat = { 
             uuid: randomUUID(),
-            userID,
+            userID: user.id,
+            data: {
+                notes,
+                tags
+            },
             messages: [
-                { role: "system", content: prompt_system }
+                { 
+                    role: "system", 
+                    content: `${prompt_system}. L'utilisateur se nome : ${user.fullName}. Voici les donnés de l'utilisateur en format json : notes: ${JSON.stringify(notes)} tags: ${JSON.stringify(tags)}` 
+                }
             ]
         }
 
