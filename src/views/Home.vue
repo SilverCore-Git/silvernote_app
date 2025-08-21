@@ -19,10 +19,6 @@
             
             <div class="flex flex-row justify-center items-center">
 
-                <div class="mr-3 flex items-center justify-center">
-                    <UserButton />
-                </div>
-
                 <h1 class=" text-white flex flex-row justify-center items-center gap-1 md:gap-3 text-3xl" :class="hitbox ? 'bg-red-600' : ''">
                     <img src="/favicon.svg" class="mb:w-6 w-10" alt="logo"><span class="hidden sm:block">SilverNote</span>
                 </h1>
@@ -43,6 +39,10 @@
                     ref="online_btn"
                     @click="toggleOnline"
                 ></div> -->
+
+                <div class="flex items-center justify-center h-full">
+                    <UserButton />
+                </div>
 
                 <div 
                     class="reload-svg  

@@ -1,12 +1,11 @@
 <template>
+    <div class="fixed right-8 bottom-8 w-120 flex flex-col max-h-[85%]">
     
-    <Dragable :initx="0" :inity="-600">
+        <div class="relative z-50 w-full bg-[var(--bg2)] rounded-2xl shadow flex flex-col justify-between h-full">
 
-        <div class="relative resize overflow-auto z-50 w-100 h-140 bg-[var(--bg2)] rounded-2xl shadow">
-
-            <header class="absolute h-[10%] top-0 inset-x-0 bg-[#F28C28] rounded-t-2xl
+            <header class="h-15 bg-[#F28C28] rounded-t-2xl
                             flex justify-between items-center px-5 text-white flex-row 
-                            shadow-orange-400 shadow-sm draggable"
+                            shadow-orange-400 shadow-sm draggable z-30"
             >
 
                 <div class="flex justify-center items-center flex-row">
@@ -14,19 +13,16 @@
                     <div class="round"></div>
                 </div>
 
-                <div class="svg cross w-10 h-10 cursor-pointer" @click="emit('close')"></div>
+                <div class="svg cross w-10 h-10 cursor-pointer" @click="close"></div>
 
             </header>
 
+            <section class="overflow-y-auto h-150 flex flex-col flex-grow z-20 px-3 py-2">
 
-            <section class="absolute inset-y-[10%] inset-x-3 overflow-y-auto
-                            flex justify-between
-            ">
-
-                <ul class="space-y-2 w-full relative">
+                <ul class="space-y-2 w-full flex flex-col justify-end">
                     <li
                         v-for="(message, index) in AllMessage"
-                        :class="message.origin == 'ai' ? 'mr-[47%]' : message.origin == 'error' ? 'mr-[47%]' : 'ml-[47%]'"
+                        :class="message.origin == 'ai' ? 'mr-0' : message.origin == 'error' ? 'mr-[47%]' : 'ml-[47%]'"
                         :id="`message-${index}`"
                     >
                         <MessageDubble
@@ -34,8 +30,8 @@
                             :text="message.text"
                         />
                     </li>
-                    
-                    <Loader v-if="loading" class=" absolute bottom-2 left-0" />
+
+                    <Loader v-if="loading" class="absolute bottom-2 left-0" />
 
                 </ul>
 
@@ -43,10 +39,7 @@
 
 
             <footer 
-                class="absolute h-[10%] bottom-0 inset-x-0 
-                        border-t-1 border-gray-400
-                        rounded-b-2xl flex justify-between items-center flex-row
-                "
+                class="h-15 rounded-b-2xl flex justify-between items-center flex-row"
             >
 
                 <input 
@@ -68,17 +61,17 @@
 
         </div>
 
-    </Dragable>
+    </div>
 
 </template>
 
 <script lang="ts" setup>
 
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import MessageDubble from './MessageDubble.vue';
 import Loader from './Loader.vue';
-import Dragable from '../Dragable.vue';
 import { useUser } from '@clerk/vue';
+import db from '@/assets/ts/database';
 
 const { isLoaded } = useUser();
 const { user } = useUser();
@@ -94,6 +87,7 @@ const AllMessage = ref<{ origin: 'ai' | 'user' | 'error', text: string }[]>([]);
 const message = ref<string>("");
 const lengthOfMessage = ref<number>(max_LenghtOfMessage);
 const session_id = ref<string>('');
+const user_id = ref<string | undefined>('');
 
 watch(() => message.value, () => lengthOfMessage.value = max_LenghtOfMessage - message.value.length)
 
@@ -108,9 +102,8 @@ const add_message = (content: string) => {
     if (content && content !== '') {
         AllMessage.value.push({ origin: 'user', text: content });
         scroll_to_bottom();
-        loading.value = true;
-        //add_response('Jeremy est le chatbot de SilverNote, actuelement désactivé pour la beta.');
-        send(content)
+        //loading.value = true;
+        //send(content)
     }
 }
 
@@ -151,10 +144,27 @@ const send = async (prompt: string) => {
 
 }
 
+const close = async () => {
+
+    // fermer la session
+    const res = await fetch('http://localhost:3000/api/ai/close', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userID: user_id.value, uuid: session_id.value })
+    }).then(res => res.json())
+
+    if (res.error) return console.error(res.message);
+
+    emit('close');
+
+}
+
 onMounted(async () => {
 
     const loaded = isLoaded;
-    console.log(loaded);
+    console.log(loaded.value);
 
     // créer la session
     const res = await fetch('http://localhost:3000/api/ai/create', {
@@ -162,7 +172,11 @@ onMounted(async () => {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userID: user.value?.id })
+        body: JSON.stringify({ 
+            user: user.value,
+            notes: await db.getAll('notes'),
+            tags: await db.getAll('tags')
+        })
     }).then(res => res.json())
 
     if (res.error) {
@@ -170,13 +184,14 @@ onMounted(async () => {
     }
 
     if (res.success) {
-        session_id.value = res.session.uuid;console.log(session_id.value)
+        session_id.value = res.session.uuid;
+        user_id.value = user.value?.id;
         return add_response('Bonjour je suis Jeremy le chatbot de silvernote, je peut vous aider sur tout les sujet mais spécialement sur vos notes !')
     }
 
-    
-
 })
+
+onUnmounted(() => close())
 
 </script>
 
@@ -214,5 +229,16 @@ onMounted(async () => {
 .shadow {
     box-shadow: 0 0 8px var(--shadow);
 }
+
+footer {
+    border: 2px solid transparent;
+    border-top: 2px solid rgb(180, 180, 180);
+}
+
+footer:has(input:focus) {
+    border: 2px solid var(--btn);
+    border-top: 2px solid var(--btn);
+}
+
 
 </style>
