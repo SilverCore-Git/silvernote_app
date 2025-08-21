@@ -23,10 +23,7 @@
       </div>
   
       <div class="z-50 relative">
-        <Chatbot v-if="chatbot" @close="chatbot = false" />
-        <button @click="chatbot = !chatbot" class="absolute bottom-0 right-10 primary">
-          Chat
-        </button>
+        <Chatbot />
       </div>
   
       <div v-if="loader" class="absolute inset-0 bg-[var(--bg)] z-50">
@@ -91,7 +88,6 @@ import { init_theme } from "./assets/ts/theme";
 import { SignedIn, SignedOut, SignIn, SignUp, useUser } from "@clerk/vue";
 
 const isElectron = !!(window as any)?.process?.versions?.electron;
-const chatbot = ref(false);
 const loader = ref(true);
 const session = new Session();
 const route = useRoute();
