@@ -184,11 +184,11 @@ class Database {
 
     }
 
-    public async get_user (userId: string) {
+    public async get_user (userId: string): Promise<User | null> {
 
         const db: User[] = await this.get('user');
 
-        const user = await db.find(user => user.userId == userId)
+        const user = await db.find(user => user.userId == userId) || null;
 
         return user as User;
 

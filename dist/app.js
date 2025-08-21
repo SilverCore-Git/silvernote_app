@@ -23,9 +23,11 @@ app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 app.use(express_1.default.urlencoded({ extended: true }));
 // Import routes
 const api_1 = __importDefault(require("./routes/api"));
+const api_ai_1 = __importDefault(require("./routes/api.ai"));
 const user_1 = __importDefault(require("./routes/user"));
 const money_1 = __importDefault(require("./routes/money"));
 app.use('/api', api_1.default);
+app.use('/api/ai', api_ai_1.default);
 app.use('/user', user_1.default);
 app.use('/money', money_1.default);
 // err 404

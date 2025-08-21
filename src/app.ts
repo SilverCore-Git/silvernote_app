@@ -22,10 +22,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // Import routes
 import api from './routes/api';
+import api_ai from './routes/api.ai';
 import user from './routes/user';
 import money from './routes/money';
 
 app.use('/api', api);
+app.use('/api/ai', api_ai);
 app.use('/user', user);
 app.use('/money', money);
 

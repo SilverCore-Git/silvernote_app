@@ -60,7 +60,7 @@ async function create_checkout (
     try {
 
         const user = await db.get_user(client_id);
-        const customer = (await user).customerId; console.log(customer);
+        const customer = (await user)?.customerId; console.log(customer);
         const session_id: UUID = randomUUID();
 
         const session = await stripe.checkout.sessions.create({
@@ -194,7 +194,7 @@ router.post('/success/checkout', async (req, res) => {
                 plan: session?.plan, 
                 plan_data: session?.plan_data,
                 sub_id: stripe_session.subscription,
-                customerId: (await user).customerId
+                customerId: (await user)?.customerId
             });
 
 })
