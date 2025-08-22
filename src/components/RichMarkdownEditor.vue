@@ -5,27 +5,28 @@
     <loader v-if="loader" class=" absolute inset-0 " :icon="false" />
   </div>
 
-  <div v-if="!isLargeScreen" class="fixed bottom-0 inset-x-0 z-50 pb-[env(safe-area-inset-bottom)] overflow-hidden">
+  <div class="fixed bottom-0 inset-x-0 md:inset-x-[20%] lg:inset-x-[25%] z-50 pb-[env(safe-area-inset-bottom)] overflow-hidden">
 
     <div
       class="mx-2 mb-2 flex justify-between items-center gap-2 rounded-2xl bg-[var(--bg2)] text-[var(--text)] border border-[var(--btn)] px-4 py-2 shadow-lg backdrop-blur-sm"
     >
 
-      <div class="flex gap-1">
+      <div class="flex gap-1 justify-center items-center">
 
         <button
           v-for="n in 4"
           :key="n"
           @click="toggleHeading(n)"
-          class="px-2 py-1 rounded-md text-sm font-medium transition-colors hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer"
+          class="w-10 h-10 px-2 py-1 rounded-md text-sm font-medium transition-colors hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer"
         >H{{ n }}</button>
 
       </div>
 
-      <div class="flex gap-1">
+      <div class="flex gap-1 justify-center items-center">
 
         <button 
-          @click="toggleBold" 
+          @click="toggleBold"
+          class="w-10 h-10" 
           :class="[ 
             'px-2 py-1 rounded-md text-sm font-medium transition-colors border-2 border-transparent hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer', 
             { 'bg-[var(--text)] text-[var(--bg2)] border-2 border-[var(--btn)];': isBoldActive } 
@@ -35,7 +36,8 @@
         </button>
 
         <button 
-          @click="toggleItalic" 
+          @click="toggleItalic"
+          class="w-10 h-10" 
           :class="[ 
             'px-2 py-1 rounded-md text-sm font-medium transition-colors border-2 border-transparent hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer', 
             { 'bg-[var(--text)] text-[var(--bg2)] border-2 border-[var(--btn)];': isItalicActive } 
@@ -45,7 +47,8 @@
         </button>
 
         <button 
-          @click="toggleStrike" 
+          @click="toggleStrike"
+          class="w-10 h-10" 
           :class="[ 
             'px-2 py-1 rounded-md text-sm font-medium transition-colors border-2 border-transparent hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer', 
             { 'bg-[var(--text)] text-[var(--bg2)] border-2 border-[var(--btn)];': isStrikeActive } 
@@ -55,7 +58,8 @@
         </button>
 
         <button 
-          @click="toggleUnderline" 
+          @click="toggleUnderline"
+          class="w-10 h-10" 
           :class="[ 
             'px-2 py-1 rounded-md text-sm font-medium transition-colors border-2 border-transparent hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer', 
             { 'bg-[var(--text)] text-[var(--bg2)] border-2 border-[var(--btn)];': isUnderlineActive } 
@@ -66,10 +70,25 @@
 
       </div>
 
-      <div>
+      <div class="flex gap-1 justify-center items-center">
 
         <button 
-          @click="toggleCode" 
+          @click="toggleToDoList"
+          class="w-10 h-10"
+          style="filter: invert(1);"
+          :class="[ 
+            'px-2 py-1 rounded-md text-sm font-medium transition-colors border-2 border-transparent hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer', 
+            { 'bg-[var(--text)] text-[var(--bg2)] border-2 border-[var(--btn)];': isCodeActive } 
+            ]"
+          >
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 6L21 6.00078M8 12L21 12.0008M8 18L21 18.0007M3 6.5H4V5.5H3V6.5ZM3 12.5H4V11.5H3V12.5ZM3 18.5H4V17.5H3V18.5Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+
+        <button 
+          @click="toggleCode"
+          class="w-10 h-10" 
           :class="[ 
             'px-2 py-1 rounded-md text-sm font-medium transition-colors border-2 border-transparent hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer', 
             { 'bg-[var(--text)] text-[var(--bg2)] border-2 border-[var(--btn)];': isCodeActive } 
@@ -96,7 +115,9 @@ import StarterKit from '@tiptap/starter-kit'
 import Underline from '@tiptap/extension-underline'
 import Placeholder from '@tiptap/extension-placeholder'
 import Link from '@tiptap/extension-link'
-import { Extension } from '@tiptap/core'
+import TaskList from '@tiptap/extension-task-list'
+import TaskItem from '@tiptap/extension-task-item'
+import { Extension, InputRule } from '@tiptap/core'
 
 import { evaluate } from 'mathjs'
 
@@ -123,6 +144,7 @@ const toggleBold = () => editor.value?.chain().focus().toggleBold().run();
 const toggleItalic = () => editor.value?.chain().focus().toggleItalic().run();
 const toggleStrike = () => editor.value?.chain().focus().toggleStrike().run();
 const toggleCode = () => editor.value?.chain().focus().toggleCode().run();
+const toggleToDoList = () => editor.value?.chain().focus().toggleTaskList().run();
 const toggleUnderline = () => editor.value?.chain().focus().toggleUnderline().run();
 const toggleHeading = (level: any) => editor.value?.chain().focus().toggleHeading({ level }).run();
 
@@ -188,6 +210,24 @@ function checkForMath() {
   })
 }
 
+
+const TodoInput = TaskItem.extend({
+  addInputRules() {
+    return [
+      new InputRule({
+        find: /^\s*-\[\]\s$/,   
+        handler: ({ state, range, chain }) => {
+          chain()
+            .deleteRange(range) 
+            .toggleTaskList()
+            .run()
+        },
+      }),
+    ]
+  },
+})
+
+
 // Sauvegarde du contenu dans la base
 const saveContent = () => {
   if (editor.value) {
@@ -218,6 +258,9 @@ onMounted(async () => {
     editor.value = new Editor({
       extensions: [
         StarterKit,
+        TaskItem,
+        TaskList,
+        TodoInput,
         Link.configure({
           openOnClick: false,
           autolink: true,
@@ -252,6 +295,7 @@ onBeforeUnmount(() => {
 <style>
 
 @import '../assets/css/basic.css';
+@import '../assets/css/ToDoList.css';
 
 .editor-container {
   width: 90%;

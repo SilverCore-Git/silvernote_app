@@ -131,7 +131,6 @@ import Loader from './Loader.vue';
 import { useUser } from '@clerk/vue';
 import db from '@/assets/ts/database';
 
-const { isLoaded } = useUser();
 const { user } = useUser();
 
 const max_LenghtOfMessage: number = 150;

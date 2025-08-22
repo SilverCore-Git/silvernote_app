@@ -1,0 +1,71 @@
+/* Conteneur de la todo-list */
+ul[data-type="taskList"] {
+  list-style: none; /* supprime les puces */
+  padding-left: 0;
+  margin: 0.5em 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+}
+
+/* Chaque élément de tâche */
+ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6em;
+  padding: 0.2em 0;
+}
+
+/* Checkbox */
+ul[data-type="taskList"] li > label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* La vraie checkbox */
+ul[data-type="taskList"] li > label input[type="checkbox"] {
+  display: none; /* on cache l’input natif */
+}
+
+/* Le span qui remplace la case */
+ul[data-type="taskList"] li > label span {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--btn);
+  border-radius: 4px; /* carré comme Markdown */
+  display: inline-block;
+  background-color: transparent;
+  position: relative;
+  transition: all 0.2s;
+}
+
+/* Quand c’est coché */
+ul[data-type="taskList"] li[data-checked="true"] > label span {
+  background-color: var(--btn);
+  border-color: var(--btn);
+}
+
+ul[data-type="taskList"] li[data-checked="true"] > label span::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  font-size: 13px;
+  color: white;
+}
+
+/* Texte des tâches */
+ul[data-type="taskList"] li div p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+/* Texte barré quand coché */
+ul[data-type="taskList"] li[data-checked="true"] div p {
+  text-decoration: line-through;
+  color: #999;
+}
