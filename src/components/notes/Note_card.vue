@@ -9,7 +9,7 @@
   
     <p class="font-bold text-xl w-[80%] whitespace-nowrap overflow-hidden text-ellipsis" :class="hitbox ? 'bg-teal-500' : ''">{{ utils.htmlToText(title) }}</p>
 
-    <div class="absolute right-0 top-3 h-full flex flex-row-reverse gap-1.5">
+    <div class="absolute right-0 top-3 h-full flex flex-row-reverse gap-2">
 
       <div 
         ref="dropdown_rootRef" 
@@ -18,7 +18,7 @@
       >
 
         <div
-          class="ellipsis"
+          class="ellipsis w-8 h-8 md:w-7 md:h-7 mr-2 md:mr-1"
           :class="hitbox ? 'bg-red-600' : ''"
         ></div>
 
@@ -83,7 +83,7 @@
       ></div> -->
 
       <div
-        class="pin"
+        class="pin w-7 h-7 md:w-6 md:h-6"
         :style="{
           backgroundImage: if_pin_active
             ? `url(${pinFull})`
@@ -96,7 +96,7 @@
     </div>
 
     <p 
-      class="text-mb mb-5 w-[65%] h-[80%] whitespace-nowrap md:whitespace-normal overflow-hidden text-ellipsis"
+      class="text-[3vw] md:text-lg my-5 w-[65%] h-[80%] whitespace-nowrap md:whitespace-normal overflow-hidden text-ellipsis"
       :class="hitbox ? 'bg-blue-500' : ''"
     >
       {{ utils.htmlToText(content) }}
@@ -311,8 +311,6 @@ watch(theme, () => {
 }
 
 .ellipsis {
-    width: 30px;
-    height: 30px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -322,8 +320,6 @@ watch(theme, () => {
 }
 
 .pin {
-  width: 25px;
-  height: 25px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

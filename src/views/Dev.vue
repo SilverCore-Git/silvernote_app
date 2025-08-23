@@ -14,7 +14,7 @@
 
             <ul class="ml-1">
                 <li>Platform = {{ platform }}</li>
-                <li>Lang = {{ lang }}</li>
+                <li>Lang = {{ lang }}</li> 
                 <li>isOnline ? = {{ isOnline }}</li>
                 <li>isOnline mode ? = {{ isOnlineMode }}</li>
                 <li>userAgent = {{ userAgent }}</li>

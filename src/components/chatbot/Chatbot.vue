@@ -53,8 +53,12 @@
     </div>
 
     <div
-        :class="open ? 'bottom-8 right-8' : '-bottom-200 -right-130'"
-        class="fixed w-120 flex flex-col max-h-[85%] transition-all duration-400"
+        :class="open ? 'right-0 top-0 bottom-8 md:top-auto md:right-8' : '-bottom-200 -right-130'"
+        class="
+            fixed w-screen h-[90%]
+            md:w-120 md:max-h-[85%] 
+            flex flex-col transition-all transform duration-500 ease-in-out
+        "
     >
     
         <div 
@@ -68,7 +72,7 @@
 
                 <div class="flex justify-center items-center flex-row">
                     <span class="font-bold mr-2 text-xl">Jeremy</span>
-                    <div class="round"></div>
+                    <div class="round" :class="jeremy_active ? 'green' : 'red'"></div>
                 </div>
 
                 <div class="svg cross w-10 h-10 cursor-pointer" @click="open = false"></div>
@@ -108,7 +112,7 @@
                     placeholder="Envoyer un message"
                     v-model="message"
                     class=" outline-0 h-full w-[70%] pl-5"
-                    @keyup.enter="add_message(message); message = ''"
+                    @keyup.enter="add_message(message); message = ''; "
                 >
 
                 <span :class="lengthOfMessage < 11 ? 'text-red-500' : ''">{{ lengthOfMessage }}</span>
@@ -142,6 +146,7 @@ const message = ref<string>("");
 const lengthOfMessage = ref<number>(max_LenghtOfMessage);
 const session_id = ref<string>('');
 const user_id = ref<string | undefined>('');
+const jeremy_active = ref<boolean>(false);
 
 watch(() => message.value, () => lengthOfMessage.value = max_LenghtOfMessage - message.value.length)
 
@@ -157,6 +162,9 @@ const add_message = (content: string) => {
     if (content && content !== '') {
         AllMessage.value.push({ origin: 'user', text: content });
         scroll_to_bottom();
+        if (!jeremy_active.value) {
+            return add_error("Jeremy n'est actuelement pas en ligne.")
+        }
         loading.value = true;
         send(content)
     }
@@ -271,12 +279,21 @@ onMounted(() => Open());
 }
 
 .round {
-  width: 10px;
-  height: 10px;
-  background-color: #39FF14;
-  border-radius: 50%;
-  box-shadow: 0 0 15px #39FF14;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
 }
+
+.red {
+    background-color: #ff1414;
+    box-shadow: 0 0 15px #ff1414;
+}
+
+.green {
+    background-color: #39FF14;
+    box-shadow: 0 0 15px #39FF14;
+}
+
 
 .shadow {
     box-shadow: 0 0 8px var(--shadow);

@@ -9,7 +9,7 @@
 
     </header>
 
-    <div class="flex flex-col justify-start relative items-start min-h-[80VH] ml-[20%] mr-[20%] mt-12 overflow-x-hidden">
+    <div class="flex flex-col justify-start relative items-start min-h-[80VH] md:mx-[20%] mt-12 overflow-x-hidden">
         
         <section
             class="flex flex-col w-full gap-4"

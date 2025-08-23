@@ -8,8 +8,8 @@
             padding-top: calc(env(safe-area-inset-top)/2);
         " 
         class="
-                top-0 left-0 w-screen 
-                text-2xl  font-bold
+                top-0 left-0 w-screen
+                text-2xl font-bold
                 bg-[#F28C28]
                 flex items-center justify-center fixed z-50
             "
@@ -19,13 +19,13 @@
             
             <div class="flex flex-row justify-center items-center">
 
-                <h1 class=" text-white flex flex-row justify-center items-center gap-1 md:gap-3 text-3xl" :class="hitbox ? 'bg-red-600' : ''">
-                    <img src="/favicon.svg" class="mb:w-6 w-10" alt="logo"><span class="hidden sm:block">SilverNote</span>
+                <h1 class=" text-white flex flex-row justify-center items-center gap-2 text-[3vw] lg:text-3xl" :class="hitbox ? 'bg-red-600' : ''">
+                    <img src="/favicon.svg" class="w-[3vw] min-w-8 max-w-8" alt="logo"><span class="hidden sm:block">SilverNote</span>
                 </h1>
 
             </div>
 
-            <div class="flex flex-row justify-center items-center gap-5 md:gap-5">
+            <div class="flex flex-row justify-center items-center gap-6 md:gap-5">
 
                 <!-- <div // metttre en auto
                     class="reload-svg 
@@ -40,14 +40,14 @@
                     @click="toggleOnline"
                 ></div> -->
 
-                <div class="flex items-center justify-center h-full">
+                <div class="flex items-center justify-center">
                     <UserButton />
                 </div>
 
                 <div 
                     class="reload-svg  
-                            md:w-[24px]  w-[30px]
-                            md:h-[24px]  h-[30px]
+                            w-7
+                            h-7
                         " 
                     :class="[
                         { rotating: isRotating },
@@ -58,8 +58,8 @@
 
                 <div 
                     class="saving-svg 
-                            md:w-[24px]  w-[30px]
-                            md:h-[24px]  h-[30px]
+                            w-7
+                            h-7
                         " 
                     :class="[
                         { 'jump': isJumping },
@@ -71,40 +71,41 @@
                 <div
                     :class="[ hitbox ? 'bg-teal-300' : '' ]"
                     class="ellipsis-svg
-                            md:w-[30px] w-[35px]
-                            md:h-[30px] h-[35px]
+                            w-8
+                            h-8
                         " 
                     @click="if_open_dropdown = !if_open_dropdown"
                 ></div>
 
                 <transition name="fade-slide">
+
                     <div
                         v-if="if_open_dropdown"
                         class="dropdown absolute bg-[#F28C28] 
-                            z-50 min-w-[200px] w-[40%] md:w-[20%] lg:w-[10%] 
-                            flex flex-col justify-center items-center p-3"
-                        :style=" { top: `calc(3.5rem + env(safe-area-inset-top))` } "
+                            z-50 py-3 px-5 right-0 md:right-auto
+                            flex flex-col justify-center items-center"
+                        :style=" { top: `calc(3rem + env(safe-area-inset-top))` } "
                     >
-                        <ul class="text-xl md:text-lg text-white">
+                        <ul class="text-xl md:text-[2vw] lg:text-xl space-y-1 pt-1 text-white">
 
                             <li 
-                                class="flex flex-row" 
+                                class="flex flex-row items-center" 
                                 @click="router.push('/settings')"
                             >
-                                <div class="gear-svg"></div>
+                                <div class="gear-svg nav-svg max-w-6 max-h-6 min-w-6 min-h-6"></div>
                                 Paramètre
                             </li>
 
-                            <li class="text-xl md:text-lg flex flex-row" @click="openAccount">
-                                <div class="nav-svg" style="filter: invert(0);">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <li class="text-xl md:text-[2vw] lg:text-xl flex flex-row items-center" @click="openAccount">
+                                <div class="nav-svg max-w-6 max-h-6 min-w-6 min-h-6" style="filter: invert(0);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                         <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
                                         <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
                                     </svg>
                                 </div>
                                 Compte
-                                <div class="nav-svg mr-0 ml-2" style="filter: invert(1);">
+                                <div class="nav-svg max-w-6 max-h-6 min-w-6 min-h-6 mr-0 ml-2" style="filter: invert(1);">
                                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <g id="Interface / External_Link">
                                         <path id="Vector" d="M10.0002 5H8.2002C7.08009 5 6.51962 5 6.0918 5.21799C5.71547 5.40973 5.40973 5.71547 5.21799 6.0918C5 6.51962 5 7.08009 5 8.2002V15.8002C5 16.9203 5 17.4801 5.21799 17.9079C5.40973 18.2842 5.71547 18.5905 6.0918 18.7822C6.5192 19 7.07899 19 8.19691 19H15.8031C16.921 19 17.48 19 17.9074 18.7822C18.2837 18.5905 18.5905 18.2839 18.7822 17.9076C19 17.4802 19 16.921 19 15.8031V14M20 9V4M20 4H15M20 4L13 11" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -113,8 +114,8 @@
                                 </div>
                             </li>
 
-                            <li class="text-xl md:text-lg flex flex-row">
-                                <div class="nav-svg legal-svg">
+                            <li class="text-xl md:text-[2vw] lg:text-xl flex flex-row items-center">
+                                <div class="nav-svg max-w-6 max-h-6 min-w-6 min-h-6 legal-svg">
 
                                 </div>
                                 Légal
@@ -268,7 +269,7 @@
                             <button 
                                 style="box-shadow: 0 0 15px #3636364f;" 
                                 @click="create_new_note" 
-                                class="add-note-btn cursor-pointer flex items-center justify-center w-full"
+                                class="add-note-btn cursor-pointer rounded-[var(--br-btn)] flex items-center justify-center w-full"
                             >
                                 <div class="add-note-svg"></div>
                             </button>
@@ -299,12 +300,8 @@
         <button 
             style="box-shadow: 0 0 15px #3636364f; " 
             @click="create_new_note" 
-            class="add-note-btn cursor-pointer w-full
-                    flex items-center justify-center mb-8
-
-                    mr-[calc(var(--mrl))] ml-[calc(var(--mrl))]
-                    md:mr-[calc(var(--mrl)_+_1rem_+_10%)] md:ml-[calc(var(--mrl)_+_1rem_+_10%)]
-                    lg:mr-[calc(var(--mrl)_+_1rem_+_15%)] lg:ml-[calc(var(--mrl)_+_1rem_+_15%)]
+            class="add-note-btn cursor-pointer rounded-full
+                    flex items-center justify-center mb-8 p-2
                   "
         ><div class="add-note-svg"></div></button>
     </div>
@@ -578,8 +575,8 @@ import { UserButton } from '@clerk/vue';
 
     .nav-svg {
         filter: invert(1);
-        width: 25px;
-        height: 25px;
+        width: 3vw;
+        height: 3vw;
         cursor: pointer;
         background-size: contain;
         background-repeat: no-repeat;
@@ -591,7 +588,7 @@ import { UserButton } from '@clerk/vue';
         height: calc(3.5rem + env(safe-area-inset-top));
 
         @media (min-width: 1280px) {
-            height: calc(4rem + env(safe-area-inset-top));
+            height: calc(3.6rem + env(safe-area-inset-top));
         }
     }
 
@@ -606,15 +603,10 @@ import { UserButton } from '@clerk/vue';
     }
     
     .gear-svg {
-        width: 25px;
-        height: 25px;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
         background-image: url('../assets/svgs/gear.svg');
-        filter: invert(1);
-        transition: all 0.3s ease;
-        margin-right: 10px;
     }
 
     .ellipsis-svg {
@@ -749,8 +741,6 @@ import { UserButton } from '@clerk/vue';
 
     .add-note-btn {
         background-color: #F28C28;
-        border-radius: var(--br-btn);
-        height: 55px;
         transition: all 0.3s;
     }
 
