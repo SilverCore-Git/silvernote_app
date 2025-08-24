@@ -38,7 +38,7 @@
             </div>
 
             <button
-                @click.stop="save_tag_color; menu = false; menu = false"
+                @click.stop="save_tag_color(); menu = false; menu = false"
                 class="primary"
             >
                 <span>Sauvegarder</span>

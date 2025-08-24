@@ -86,6 +86,7 @@ import db from "./assets/ts/database";
 import back, { api_url, Session } from "./assets/ts/backend_link";
 import { init_theme } from "./assets/ts/theme";
 import { SignedIn, SignedOut, SignIn, SignUp, useUser } from "@clerk/vue";
+import { loaded } from "./assets/ts/utils";
 
 const isElectron = !!(window as any)?.process?.versions?.electron;
 const loader = ref(true);
@@ -143,6 +144,8 @@ onMounted(async () => {
 
   }, 1000);
 
+  await db.reset();
+
   let ii = 0
   const inter = setInterval(async () => {
 
@@ -152,19 +155,46 @@ onMounted(async () => {
       
       if (data) {
 
-        await db.reset();
-
         for (const note of data.notes) {
 
           db.save(note);
 
         }
 
+        ii = -1;
+        return clearInterval(inter);
+
       }
 
       ii++
-
       if (ii >= 4) return clearInterval(inter);
+
+    }
+
+  }, 1000)
+
+  let ii2 = 0
+  const inter2 = setInterval(async () => {
+
+    if (isLoaded.value && user.value) {
+
+      const data = await fetch(`${api_url}/api/db/get/user/tags?user_id=${user.value.id}`).then(res => res.json());
+      
+      if (data) {
+
+        for (const tag of data.tags) {
+
+          db.create_tag(tag, true);
+
+        }
+
+        ii2 = -1;
+        return clearInterval(inter2);
+
+      }
+
+      ii2++;
+      if (ii2 >= 4) return clearInterval(inter2);
 
     }
 
@@ -174,7 +204,8 @@ onMounted(async () => {
 
   const stopLoader = setInterval(() => {
 
-    if (isLoaded.value) {
+    if (isLoaded.value && ii == -1 && ii2 == -1) {
+      loaded.value = true;
       loader.value = false;
       clearInterval(stopLoader);
     }

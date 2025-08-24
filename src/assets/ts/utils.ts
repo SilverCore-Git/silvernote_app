@@ -1,4 +1,4 @@
-import type { Ref } from 'vue';
+import { ref, type Ref } from 'vue';
 
 import DOMPurify from 'dompurify';
 import type { Note } from './type';
@@ -112,8 +112,11 @@ const init_notes = async (list_notes: Ref<Note[] | undefined>): Promise<void> =>
     
 };
 
+const loaded = ref<boolean>(false);
+
 
 export default new utils();
 export {
-    init_notes
+    init_notes,
+    loaded
 }

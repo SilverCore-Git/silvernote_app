@@ -134,6 +134,8 @@ import MessageDubble from './MessageDubble.vue';
 import Loader from './Loader.vue';
 import { useUser } from '@clerk/vue';
 import db from '@/assets/ts/database';
+import { api_url } from '@/assets/ts/backend_link';
+import { loaded } from '@/assets/ts/utils';
 
 const { user } = useUser();
 
@@ -210,7 +212,7 @@ const send = async (prompt: string) => {
 const close = async () => {
 
     // fermer la session
-    const res = await fetch('http://localhost:3000/api/ai/close', {
+    const res = await fetch(`${api_url}/api/ai/close`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
@@ -223,32 +225,42 @@ const close = async () => {
 }
 
 
-const Open = async (): Promise<void> => {
+const Open = (): void => {
 
-    // créer la session
-    const res = await fetch('http://localhost:3000/api/ai/create', {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
-            user: user.value,
-            notes: await db.getAll('notes'),
-            tags: await db.getAll('tags')
-        })
-    }).then(res => res.json())
+    const int = setInterval(async () => {
 
-    if (res.error) {
-        jeremy_active.value = false;
-        return add_error(res.message);
-    }
+        if (loaded.value) {
 
-    if (res.success) {
-        jeremy_active.value = true;
-        session_id.value = res.session.uuid;
-        user_id.value = user.value?.id;
-        if (AllMessage.value.length == 0) return add_response('Bonjour je suis Jeremy le chatbot de silvernote, je peux vous aider sur tous les sujets mais spécialement sur vos notes !')
-    }
+            // créer la session
+            const res = await fetch(`${api_url}/api/ai/create`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ 
+                    user: user.value,
+                    notes: await db.getAll('notes'),
+                    tags: await db.getAll('tags')
+                })
+            }).then(res => res.json())
+
+            if (res.error) {
+                jeremy_active.value = false;
+                add_error(res.message);
+                return clearInterval(int)
+            }
+
+            if (res.success) {
+                jeremy_active.value = true;
+                session_id.value = res.session.uuid;
+                user_id.value = user.value?.id;
+                if (AllMessage.value.length == 0) add_response('Bonjour je suis Jeremy le chatbot de silvernote, je peux vous aider sur tous les sujets mais spécialement sur vos notes !')
+                return clearInterval(int)
+            }
+
+        }
+
+    }, 1000);
 
 }
 

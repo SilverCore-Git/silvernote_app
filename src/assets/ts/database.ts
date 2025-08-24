@@ -108,13 +108,33 @@ class Database {
         }
     }
 
-    public async delete(id: number): Promise<void> {
+    public async delete(id: number, noDb?: boolean): Promise<void> {
         const db = await this.dbPromise;
+        if (!noDb) {
+            await fetch(`${api_url}/api/db/delete/a/note?id=${id}`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            })
+        }  
         await db.delete('notes', id);
     }
 
-    public async delete_tag(id: number): Promise<void> {
+    public async delete_tag(id: number, noDb?: boolean): Promise<void> {
         const db = await this.dbPromise;
+
+        if (!noDb) {
+            await fetch(`${api_url}/api/db/delete/a/tag?id=${id}`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            })
+        }  
+
         await db.delete('tags', id);
     }
 
@@ -138,9 +158,19 @@ class Database {
 
     }
 
-    public async create_tag(tag: Tag): Promise<void> {
+    public async create_tag(tag: Tag, t?: boolean): Promise<void> {
         const db = await this.dbPromise;
         tag.id = Math.floor(Math.random() * (999999999999 - 1000000 + 1)) + 1000;
+        if (!t) {
+            await fetch(`${api_url}/api/db/new/tag`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ tag }),
+            })
+        }
         await db.add('tags', tag);
     }
 
@@ -181,8 +211,20 @@ class Database {
         const tag = await db.get('tags', id);
 
         if (tag) {
+
             tag.color = color;
+            
+            await fetch(`${api_url}/api/db/update/a/tag`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ tag }),
+            })
+
             await db.put('tags', tag);
+
         }
 
     }
@@ -193,11 +235,11 @@ class Database {
         const tags = await this.getAll('tags');
 
         for (const tag of tags) {
-            await this.delete_tag(tag.id);
+            await this.delete_tag(tag.id, true);
         }
 
         for (const note of notes) {
-            await this.delete(note.id);
+            await this.delete(note.id, true);
         }
 
     }
