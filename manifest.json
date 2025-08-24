@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Silvernote",
+  "version": "1.0",
+  "description": "Extansion chrome de silvernote.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "src/popup/index.html"
+  }
+}
