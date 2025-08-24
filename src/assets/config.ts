@@ -63,22 +63,22 @@ const pricing_plan_list: {
         for: "Utilisateurs désirant tester la <span class=\"underline\">simplicité</span> de silvernote.",
         price: 0,
         functions: [
-            { name: "jusqu'a 50 notes", includ: true },
+            { name: "jusqu'a 100 notes", includ: true },
             { name: "jusqu'a 20 dossiers", includ: true },
-            { name: "mode hors ligne", includ: false },
-            { name: "notes chiffrées", includ: false },
+            { name: "Jeremy", includ: false },
+            { name: "Partage de note", includ: false },
         ],
         recommended: false,
     },
     {
         title: "Gold",
-        for: "Utilisateurs confirmé désirant plus de <span class=\"underline\">sécurité</span>.",
+        for: "Utilisateurs confirmé.",
         price: 4, // + 0.99
         functions: [
-            { name: "jusqu'a 150 notes", includ: true },
+            { name: "jusqu'a 200 notes", includ: true },
             { name: "jusqu'a 50 dossiers", includ: true },
-            { name: "mode hors ligne", includ: true },
-            { name: "notes chiffrées", includ: true },
+            { name: "Jeremy (50 message /jours max)", includ: true },
+            { name: "Partage de note", includ: true },
         ],
         recommended: true,
     },
@@ -89,20 +89,20 @@ const pricing_plan_list: {
         functions: [
             { name: "jusqu'a 1000 notes", includ: true },
             { name: "jusqu'a 100 dossiers", includ: true },
-            { name: "mode hors ligne", includ: true },
-            { name: "notes chiffrées", includ: true },
+            { name: "Jeremy (100 message /jours max)", includ: true },
+            { name: "Partage de note", includ: true },
         ],
         recommended: false,
     },
     {
         title: "Ultimate",
-        for: "Utilisteurs désirant l'<span class=\"underline\">éxcélence</span> d'une offre <span class=\"underline\">illimité</span> !",
+        for: "Utilisteurs désirant le <span class=\"underline\">confort</span> d'une offre <span class=\"underline\">illimité</span> !",
         price: 19, // + 0.99
         functions: [
             { name: "notes illimités", includ: true },
             { name: "dossiers illimités", includ: true },
-            { name: "mode hors ligne", includ: true },
-            { name: "notes chiffrées", includ: true },
+            { name: "Jeremy illimité", includ: true },
+            { name: "Partage de note", includ: true },
         ],
         recommended: false,
     }
@@ -191,53 +191,41 @@ const plans: {
     
     Gold: {
         name: "Gold",
-        hook: "Idéal pour les utilisateurs confirmés qui cherchent plus de **sécurité** et de capacité.",
+        hook: "Idéal pour les utilisateurs confirmés qui cherchent plus de capacité.",
         assets: [
             {
-                title: 'Jusqu\'à 150 Notes & 50 Dossiers',
+                title: 'Jusqu\'à 200 Notes & 50 Dossiers',
                 description: 'Organisez vos idées et projets avec une capacité étendue pour toutes vos notes et dossiers.'
             },
             {
-                title: 'Mode Hors Ligne',
-                description: 'Accédez et modifiez vos notes même sans connexion internet, pour une productivité sans interruption.'
+                title: 'Jeremy',
+                description: 'Découvrez Jeremy le chatbot la pour vous aider 24h/24h.'
             },
             {
-                title: 'Notes Chiffrées',
-                description: 'Protégez vos informations les plus sensibles grâce à un chiffrement robuste, assurant votre confidentialité.'
-            },
-            {
-                title: 'Accès Recommandé',
-                description: 'Le choix parfait pour un équilibre optimal entre fonctionnalités avancées et sécurité.'
+                title: 'Partage de note',
+                description: 'Partagez vos ou travailler a plusieur sur une même dernière.'
             }
         ]
     },
 
     Platinum: {
         name: "Platinum",
-        hook: "Une offre avancée et **sans prise de tête** pour une gestion de notes simplifiée.",
+        hook: "Une offre avancée et sans prise de tête pour une gestion de notes simplifiée.",
         assets: [
             {
                 title: 'Jusqu\'à 1000 Notes & 100 Dossiers',
                 description: 'Élargissez votre espace de travail avec une capacité massive pour toutes vos créations et classifications.'
             },
             {
-                title: 'Mode Hors Ligne Intégral',
-                description: 'Profitez d\'une liberté totale pour travailler sur vos notes n\'importe où, n\'importe quand, sans dépendre du réseau.'
-            },
-            {
-                title: 'Chiffrement Renforcé',
-                description: 'Assurez la sécurité maximale de toutes vos données grâce à des protocoles de chiffrement de pointe.'
-            },
-            {
-                title: 'Expérience Fluide',
-                description: 'Conçu pour les utilisateurs avancés qui veulent l\'efficacité sans les complications.'
+                title: 'Jeremy Intégral',
+                description: 'Libérez vous l\'espris avec Jeremy.'
             }
         ]
     },
 
     Ultimate: {
         name: "Ultimate",
-        hook: "L'**excellence** d'une offre illimitée pour une liberté totale dans SilverNote.",
+        hook: "Le confort d'une offre illimitée pour une liberté totale dans SilverNote.",
         assets: [
             {
                 title: 'Notes Illimitées',
@@ -248,19 +236,15 @@ const plans: {
                 description: 'Organisez vos projets de manière exhaustive avec un nombre illimité de dossiers, selon vos besoins.'
             },
             {
-                title: 'Accès Hors Ligne Complet',
-                description: 'Travaillez en toute sérénité, vos notes sont toujours accessibles, que vous soyez connecté ou non.'
-            },
-            {
-                title: 'Sécurité Maximale',
-                description: 'Toutes vos notes sont chiffrées, garantissant une protection inégalée de vos données les plus importantes.'
+                title: 'Jeremy Illimité',
+                description: 'Discutez sans limittes avec Jeremy en optimisant votre productivité.'
             }
         ]
     }
 };
 
 
-const we_can_buy: boolean = false;
+const we_can_buy: boolean = true;
 const we_can_download: boolean = false;
 
 export {

@@ -7,7 +7,7 @@
     </nav>
 
 
-    <main id="main" class="flex flex-col items-center justify-center  text-center w-screen h-screen">
+    <main id="main" class="flex flex-col items-center justify-center text-center w-screen mt-50 mb-20">
 
 
         <h2 class="text-3xl md:text-5xl font-bold uppercase mb-10 ">
@@ -28,11 +28,13 @@
 
         <Loader v-if="isLoader" :icon="false" />
 
-        <div @click="scroll_to('more')" class=" absolute bottom-10 w-12 arrow tooltip" data-tooltip="Plus d'info !">
+    </main>
+
+    <!-- <div class="w-screen flex justify-center mt-30">
+        <div @click="scroll_to('more')" class="w-12 arrow tooltip " data-tooltip="Plus d'info !">
             <svg fill="#000000" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg"><path d="M81.8457,25.3876a6.0239,6.0239,0,0,0-8.45.7676L48,56.6257l-25.396-30.47a5.999,5.999,0,1,0-9.2114,7.6879L43.3943,69.8452a5.9969,5.9969,0,0,0,9.2114,0L82.6074,33.8431A6.0076,6.0076,0,0,0,81.8457,25.3876Z"/></svg>
         </div>
-
-    </main>
+    </div> -->
 
     <section id="more" class="flex flex-col items-center justify-center max-w-4xl mx-auto text-center text-[var(--text)] space-y-12 pt-20 mb-50">
 
