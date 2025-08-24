@@ -3,13 +3,14 @@
     <nav class="container mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8 z-50">
 
         <div class="flex items-center justify-center flex-row gap-2">
-            <img class="w-13 cursor-pointer" src="/favicon.svg" @click="router.push('/')" alt="logo">
+            <img class="hidden md:block w-13 cursor-pointer" src="/favicon.svg" @click="router.push('/')" alt="logo">
             <div class=" uppercase font-bold rounded-sm px-3 py-1.5 border-2 border-[var(--btn)]">beta</div>
         </div>
 
         <ul class="hidden md:flex items-center space-x-6">
             <li @click="router.push('/')"><a>Maison</a></li>
             <li @click="router.push('/'); scroll_to('function')"><a>Fonctionalités</a></li>
+            <li @click="router.push('/'); scroll_to('jeremy')"><a>Jeremy</a></li>
             <li @click="router.push('/'); scroll_to('price_plan')" v-if="we_can_buy"><a>Tarifs et abonements</a></li>
             <li @click="router.push('/download')" v-if="we_can_download"><a>Télécharger</a></li>
         </ul>
@@ -55,7 +56,7 @@ const router = useRouter();
 
 const menu = ref<boolean>(false);
 
-const scroll_to = (id: 'function' | 'home' | 'price_plan') => {
+const scroll_to = (id: 'function' | 'home' | 'price_plan' | 'jeremy') => {
     const element = document.getElementById(id)
     if (element) {
         element.scrollIntoView({ behavior: 'smooth' })

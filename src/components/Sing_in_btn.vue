@@ -2,7 +2,7 @@
 
   <header>
 
-    <SignedOut>
+    <SignedOut class="flex justify-center items-center flex-row">
 
       <SignInButton>
 
@@ -38,7 +38,8 @@
           backgroundPosition: 'center',
           backgroundSize: 'cover'
         }" 
-        class="w-8 h-8 rounded-full cursor-pointer"
+        class="w-8 h-8 rounded-full cursor-pointer border-[var(--btn)]
+               hover:border-2 transition-all duration-100"
       ></div>
         
     </SignedIn>
@@ -82,7 +83,7 @@
 
         <li>
           <SignOutButton>
-            <button class="w-full text-left px-4 py-3 hover:bg-gray-100 flex items-center gap-2 cursor-pointer text-red-600">
+            <button class="w-full text-left px-4 py-3 hover:bg-gray-100 rounded-2xl flex items-center gap-2 cursor-pointer text-red-600">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7"/>
               </svg>
