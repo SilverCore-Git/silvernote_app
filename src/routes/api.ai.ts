@@ -17,7 +17,15 @@ router.post('/create', async (req: Request, res: Response) => {
 
     try {
 
-        if (!await db.get_user(user.id)) res.status(400).json({ error: true, message: 'Utilisateur introuvable.' });
+        if (!await db.exist_user(user.id)) {
+            res.status(400).json({ 
+                error: true, 
+                message: 'Utilisateur introuvable.', 
+                exist_user: await db.exist_user(user.id), 
+                user_id: user.id
+            });
+            return;
+        }
 
         const session: Chat = { 
             uuid: randomUUID(),

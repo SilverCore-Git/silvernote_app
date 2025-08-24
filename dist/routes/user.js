@@ -34,7 +34,7 @@ router.post('/session/create', async (req, res) => {
         return;
     try {
         if (!await database_1.default.exist_user(userId))
-            database_1.default.add_user(userId);
+            return;
         sessions = await database_1.default.new_session(userId);
         if (platform == 'web') {
             res.cookie('session_id', sessions.id, {

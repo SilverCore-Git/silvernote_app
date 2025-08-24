@@ -37,14 +37,14 @@ router.post('/plan/set', async (req: Request, res: Response) => {
 // route de création de session
 router.post('/session/create', async (req: Request, res: Response) => {
 
-  const { platform, userId } = req.body; // platform => app type (web, electron, capacitor)
+  const { platform, userId }: { platform: string, userId: string } = req.body; // platform => app type (web, electron, capacitor)
   let sessions; 
 
   if (!userId) return
 
   try {
 
-    if (!await db.exist_user(userId)) db.add_user(userId);
+    if (!await db.exist_user(userId)) return;
 
     sessions = await db.new_session(userId);
 

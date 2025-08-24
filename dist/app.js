@@ -8,7 +8,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
-//import { clerkMiddleware, requireAuth, getAuth } from '@clerk/express';
+const token_1 = __importDefault(require("./assets/ts/token"));
 require("dotenv/config");
 const config_json_1 = __importDefault(require("./config.json"));
 const app = (0, express_1.default)();
@@ -21,13 +21,35 @@ app.use((0, morgan_1.default)('dev'));
 app.use(express_1.default.json());
 app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 app.use(express_1.default.urlencoded({ extended: true }));
+app.use(async (req, res, next) => {
+    try {
+        let token = req.cookies.api_token;
+        if (!token) {
+            token = await token_1.default.create();
+            res.cookie('api_token', token, { maxAge: 12 * 60 * 3600 * 100, httpOnly: true });
+        }
+        const verify = await token_1.default.verify(token);
+        if (!verify) {
+            res.status(401).json({ error: true, message: 'Token expired' });
+            return;
+        }
+        next();
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ error: true, message: 'Erreur serveur' });
+        return;
+    }
+});
 // Import routes
 const api_1 = __importDefault(require("./routes/api"));
+const api_db_1 = __importDefault(require("./routes/api.db"));
 const api_ai_1 = __importDefault(require("./routes/api.ai"));
 const user_1 = __importDefault(require("./routes/user"));
 const money_1 = __importDefault(require("./routes/money"));
 app.use('/api', api_1.default);
 app.use('/api/ai', api_ai_1.default);
+app.use('/api/db', api_db_1.default);
 app.use('/user', user_1.default);
 app.use('/money', money_1.default);
 // err 404

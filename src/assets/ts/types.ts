@@ -26,14 +26,16 @@ export interface Layout {
 }
 
 export interface Note {
-    id: number;
-    pinned: boolean;
-    simply_edit: boolean;
+    uuid?: string;
+    user_id: string;
     title: string;
     content: string;
-    date: string;
-    tags: Number[];
-};
+    tags?: string[];
+    pinned?: boolean;
+    created_at?: number;
+    updated_at?: number;
+}
+
 
 export interface Tag {
     id: number;
