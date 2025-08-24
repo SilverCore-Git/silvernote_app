@@ -1,6 +1,8 @@
 import { openDB } from 'idb';
 import type { DBSchema, IDBPDatabase } from 'idb';
 import type { Note, Tag } from './type';
+import { api_url } from './backend_link';
+import utils from './utils';
 
 // import back from './backend_link';
 
@@ -19,6 +21,7 @@ interface NotesDB extends DBSchema {
 }
 
 class Database {
+
     private dbPromise: Promise<IDBPDatabase<NotesDB>>;
 
     constructor(initialNotes?: Note[], initialTags?: Tag[]) {
@@ -45,12 +48,23 @@ class Database {
         });
     }
 
+    private async push_note(note: Note) {
+        await fetch(`${api_url}/api/db/update/a/note`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ note }),
+        })
+    }
+
     public async getAll<T extends 'notes' | 'tags'>(type: T): Promise<T extends 'notes' ? Note[] : Tag[]> {
         const db = await this.dbPromise;
         return db.getAll(type) as any;
     }
 
-    public async save(note: Note): Promise<void> {
+    public async save(note: Note): Promise<void> { // equivelent a un push
         const db = await this.dbPromise;
         await db.put('notes', note);
     }
@@ -60,6 +74,7 @@ class Database {
         const note = await db.get('notes', id);
         if (note) {
             note.tags = tags;
+            this.push_note(note);
             await db.put('notes', note);
         }
     }
@@ -69,6 +84,7 @@ class Database {
         const note = await db.get('notes', id);
         if (note) {
             note.content = content;
+            this.push_note(note);
             await db.put('notes', note);
         }
     }
@@ -78,6 +94,7 @@ class Database {
         const note = await db.get('notes', id);
         if (note) {
             note.title = title;
+            this.push_note(note);
             await db.put('notes', note);
         }
     }
@@ -102,10 +119,23 @@ class Database {
     }
 
     public async create(note: Note): Promise<{ id: number }> {
+
         const db = await this.dbPromise;
         note.id = Math.floor(Math.random() * (999999999999 - 1000000 + 1)) + 1000;
+        note.uuid = await utils.UUID();
         await db.add('notes', note);
+
+        await fetch(`${api_url}/api/db/new/note`, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ note }),
+        })
+
         return { id: note.id };
+
     }
 
     public async create_tag(tag: Tag): Promise<void> {

@@ -3,7 +3,7 @@ import db from './database';
 import { salert } from './salert';
 import type { Note, Tag } from './type';
 
-const api_url: string = 'https://api.silvernote.fr';
+export const api_url: string = 'http://localhost:3000'; // 'https://api.silvernote.fr' || 'http://localhost:3000'
 
 
 const dev_db = {

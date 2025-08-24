@@ -139,6 +139,7 @@ import utils from '@/assets/ts/utils';
 import { toggle_theme } from '@/assets/ts/theme';
 import Success from '@/components/alert/Success.vue';
 import Danger from '@/components/alert/Danger.vue';
+import { api_url } from '@/assets/ts/backend_link';
 
 let hitbox: boolean;
 onMounted(async () => { hitbox = await if_hitbox() })
@@ -322,6 +323,13 @@ const reset_db = async (step: number): Promise<void> => {
 
     try {
       await indexed_db.reset();
+      await fetch(`${api_url}/api/db/delete/notes`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+      })
       success.value.text = 'Base de données réinitialiser !'
       success.value.value = true;
     }

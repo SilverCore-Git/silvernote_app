@@ -68,6 +68,12 @@ class utils {
 
     }
 
+    public async UUID(): Promise<string> {
+        const res = await fetch('https://www.uuidtools.com/api/generate/v4');
+        const data: string[] = await res.json();
+        return data[0];
+    }
+
 }
 
 const init_notes = async (list_notes: Ref<Note[] | undefined>): Promise<void> => {

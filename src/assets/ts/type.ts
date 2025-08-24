@@ -2,6 +2,7 @@
 
 export interface Note {
     id: number;
+    uuid: string;
     pinned: boolean;
     simply_edit: boolean;
     type?: string;

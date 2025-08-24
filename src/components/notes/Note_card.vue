@@ -96,7 +96,7 @@
     </div>
 
     <p 
-      class="text-[3vw] md:text-lg my-5 w-[65%] h-[80%] whitespace-nowrap md:whitespace-normal overflow-hidden text-ellipsis"
+      class="text-[3vw] md:text-lg my-5 md:my-0 w-[65%] h-[80%] whitespace-nowrap md:whitespace-normal overflow-hidden text-ellipsis"
       :class="hitbox ? 'bg-blue-500' : ''"
     >
       {{ utils.htmlToText(content) }}

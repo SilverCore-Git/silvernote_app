@@ -239,10 +239,12 @@ const Open = async (): Promise<void> => {
     }).then(res => res.json())
 
     if (res.error) {
+        jeremy_active.value = false;
         return add_error(res.message);
     }
 
     if (res.success) {
+        jeremy_active.value = true;
         session_id.value = res.session.uuid;
         user_id.value = user.value?.id;
         if (AllMessage.value.length == 0) return add_response('Bonjour je suis Jeremy le chatbot de silvernote, je peux vous aider sur tous les sujets mais spécialement sur vos notes !')

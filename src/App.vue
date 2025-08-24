@@ -83,7 +83,7 @@ import { useRoute, useRouter } from "vue-router";
 import Loader from "./components/Loader.vue";
 import Chatbot from "./components/chatbot/Chatbot.vue";
 import db from "./assets/ts/database";
-import back, { Session } from "./assets/ts/backend_link";
+import back, { api_url, Session } from "./assets/ts/backend_link";
 import { init_theme } from "./assets/ts/theme";
 import { SignedIn, SignedOut, SignIn, SignUp, useUser } from "@clerk/vue";
 
@@ -125,6 +125,7 @@ onMounted(async () => {
   init_theme();
   if (!route.query.form) router.push({ query: { form: "main" } });
   let tries = 0;
+
   const interval = setInterval(async () => {
 
     if (isLoaded.value && user.value) {
@@ -141,6 +142,35 @@ onMounted(async () => {
     }
 
   }, 1000);
+
+  let ii = 0
+  const inter = setInterval(async () => {
+
+    if (isLoaded.value && user.value) {
+
+      const data = await fetch(`${api_url}/api/db/get/user/notes?user_id=${user.value.id}`).then(res => res.json());
+      
+      if (data) {
+
+        await db.reset();
+
+        for (const note of data.notes) {
+
+          db.save(note);
+
+        }
+
+      }
+
+      ii++
+
+      if (ii >= 4) return clearInterval(inter);
+
+    }
+
+  }, 1000)
+
+
 
   const stopLoader = setInterval(() => {
 
