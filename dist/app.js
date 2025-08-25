@@ -30,14 +30,13 @@ app.use(async (req, res, next) => {
         }
         const verify = await token_1.default.verify(token);
         if (!verify) {
-            res.status(401).json({ error: true, message: 'Token expired' });
-            return;
+            token = await token_1.default.create();
+            res.cookie('api_token', token, { maxAge: 12 * 60 * 3600 * 100, httpOnly: true });
         }
         next();
     }
     catch (err) {
-        console.error(err);
-        res.status(500).json({ error: true, message: 'Erreur serveur' });
+        res.status(500).json({ error: true, message: err });
         return;
     }
 });

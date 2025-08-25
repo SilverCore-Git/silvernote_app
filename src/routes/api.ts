@@ -41,10 +41,11 @@ interface Share {
 
 }
 
-router.get('/share/:uuid/:visitor_userid', async (req, res) => {
+router.get('/share/:uuid', async (req, res) => {
 
-    const { uuid, visitor_userid } = req.params;
+    const { uuid } = req.params;
     const passwd = req.query.passwd;
+    const visitor_userid = req.cookies.user_id;
 
     const TheShare = await share.getByUUID(uuid);
 
@@ -66,7 +67,7 @@ router.get('/share/:uuid/:visitor_userid', async (req, res) => {
 
         const note = await notes.getNoteByUUID(TheShare.note_uuid);
 
-        res.json({ success: true, note });
+        res.json({ success: true, note: note.note });
 
     }
 
@@ -83,7 +84,8 @@ router.get('/share/data', async (req, res) => {
 
 router.post('/share', async (req, res) => {
 
-    const { user_id, note_uuid, parms } = req.body;
+    const { note_uuid, parms } = req.body;
+    const user_id = req.cookies.user_id;
 
     try {
 
