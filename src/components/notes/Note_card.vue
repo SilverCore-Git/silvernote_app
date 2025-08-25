@@ -118,6 +118,7 @@
   />
 
   <share_menu
+    :uuid="uuid"
     :visible="share" 
     :title="title"
     :content="content"
@@ -163,6 +164,7 @@ const props = defineProps<{
   tags: number[];
   simply_edit: boolean;
   id: number;
+  uuid: string;
   function_reload: () => Promise<any>;
 }>()
 

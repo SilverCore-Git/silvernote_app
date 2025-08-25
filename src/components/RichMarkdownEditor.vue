@@ -123,8 +123,12 @@ import { evaluate } from 'mathjs'
 
 import Loader from './Loader.vue'
 import db from '../assets/ts/database'
+import type { Note } from '@/assets/ts/type'
 
-const props = defineProps<{ id: number }>()
+const props = defineProps<{
+  id: number;
+  data?: Note; 
+}>()
 
 const isLargeScreen = ref<boolean>(window.innerWidth >= 1024);
 const updateSize = () => {
@@ -165,9 +169,20 @@ const focusEditor = () => {
 // Charge le contenu de la note
 const loadContent = async () => {
   try {
-    const note = await db.getNote(props.id)
+
+    let note: Note | undefined;
+
+    if (props.id == -2) {
+      note = props.data;
+    }
+    else {
+      note = await db.getNote(props.id)
+    }
+
     content.value = note?.content || ''
     console.log(note)
+
+
   } catch (error) {
     console.error('Erreur lors du chargement de la note:', error)
     content.value = 'Erreur de chargement.'

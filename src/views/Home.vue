@@ -243,6 +243,7 @@
                     <Note_card
                         @pin="withdraw"
                         :id="note.id"
+                        :uuid="note.uuid"
                         :pinned="note.pinned"
                         :title="note.title" 
                         :content="note.content" 

@@ -182,7 +182,7 @@ const change_pin_state = (): void => {
 };
 
 const update_title = () => {
-  document.title = `SilverNote - edit - ${note.value.title}`;
+  document.title = `SilverNote - ${note.value.title}`;
 }
 
 watch(() => note.value.title, () => {

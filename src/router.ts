@@ -5,6 +5,7 @@ import Edit from './views/Edit.vue';
 import Settings from './views/Settings.vue';
 import Dev from './views/Dev.vue';
 import Chatbot from './components/chatbot/Chatbot.vue';
+import Share from './views/Share.vue';
 
 const routes = [
   { 
@@ -37,11 +38,11 @@ const routes = [
   },
 
   { 
-    path: '/view/chatbot', 
-    name: 'chatbot', 
-    component: Chatbot,
-    props: {},
-    meta: { title: 'SilverNote - view chatbot' }
+    path: '/share/:uuid', 
+    name: 'share', 
+    component: Share,
+    props: true,
+    meta: { title: 'SilverNote - Partage' }
   }
 ]
 

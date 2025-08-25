@@ -124,7 +124,7 @@ const { user, isLoaded } = useUser();
 onMounted(async () => {
   
   init_theme();
-  if (!route.query.form) router.push({ query: { form: "main" } });
+  if (!user) router.push({ query: { form: "main" } });
   let tries = 0;
 
   const interval = setInterval(async () => {
@@ -205,7 +205,7 @@ onMounted(async () => {
   const stopLoader = setInterval(() => {
 
     if (isLoaded.value && ii == -1 && ii2 == -1) {
-      loaded.value = true;
+      setTimeout(() => {}, 1000)
       loader.value = false;
       clearInterval(stopLoader);
     }
