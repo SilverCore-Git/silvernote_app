@@ -38,10 +38,14 @@ export interface Note {
 
 
 export interface Tag {
+    uuid?: string;
+    user_id?: string;
     id: number;
     active: boolean;
     name: string;
     color: string;
+    created_at?: number;
+    updated_at?: number;
 };
 
 export interface Layout_data {
