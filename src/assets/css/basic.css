@@ -70,3 +70,8 @@
   white-space: pre-wrap;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+.prose p {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}

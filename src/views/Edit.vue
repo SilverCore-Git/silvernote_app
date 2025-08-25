@@ -90,7 +90,7 @@ import type { Note } from '../assets/ts/type';
 const router = useRouter();
 const route = useRoute();
 
-import RichMarkdownEditor from '../components/RichMarkdownEditor.vue';
+import RichMarkdownEditor from '../components/Markdown/RichMarkdownEditor.vue';
 
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';

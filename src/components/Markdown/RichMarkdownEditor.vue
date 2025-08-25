@@ -1,11 +1,11 @@
 <template>
 
   <div class="editor-container" @click="focusEditor">
-    <editor-content :editor="editor ?? undefined" class="prose h-full" />
+    <editor-content v-if="editor && !loader" :editor="editor" class="prose h-full" />
     <loader v-if="loader" class=" absolute inset-0 " :icon="false" />
   </div>
 
-  <div class="fixed bottom-0 inset-x-0 md:inset-x-[20%] lg:inset-x-[25%] z-50 pb-[env(safe-area-inset-bottom)] overflow-hidden">
+  <div v-if="!isLargeScreen" class="fixed bottom-0 inset-x-0 md:inset-x-[20%] lg:inset-x-[25%] z-50 pb-[env(safe-area-inset-bottom)] overflow-hidden">
 
     <div
       class="mx-2 mb-2 flex justify-between items-center gap-2 rounded-2xl bg-[var(--bg2)] text-[var(--text)] border border-[var(--btn)] px-4 py-2 shadow-lg backdrop-blur-sm"
@@ -103,7 +103,6 @@
 
   </div>
 
-
 </template>
 
 <script setup lang="ts">
@@ -117,12 +116,14 @@ import Placeholder from '@tiptap/extension-placeholder'
 import Link from '@tiptap/extension-link'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
+import SlashCommand from './SlachCommand'
 import { Extension, InputRule } from '@tiptap/core'
+
 
 import { evaluate } from 'mathjs'
 
-import Loader from './Loader.vue'
-import db from '../assets/ts/database'
+import Loader from '../Loader.vue'
+import db from '../../assets/ts/database'
 import type { Note } from '@/assets/ts/type'
 
 const props = defineProps<{
@@ -140,7 +141,7 @@ onMounted(() => {
 
 
 const loader = ref<boolean>(true);
-const editor = ref<Editor | undefined>();
+const editor = ref<Editor | undefined>(undefined);
 const content = ref<string>('');
 
 
@@ -180,7 +181,7 @@ const loadContent = async () => {
     }
 
     content.value = note?.content || ''
-    console.log(note)
+    if (note) console.log(note);
 
 
   } catch (error) {
@@ -225,7 +226,6 @@ function checkForMath() {
   })
 }
 
-
 const TodoInput = TaskItem.extend({
   addInputRules() {
     return [
@@ -266,39 +266,36 @@ const MathEvalShortcut = Extension.create({
 // Initialisation
 onMounted(async () => {
 
-  setTimeout(async () => {
+  await loadContent();
 
-    await loadContent()
+  setTimeout(() => {}, 1000);
+  
+  editor.value = new Editor({
+    extensions: [
+      StarterKit,
+      TaskList,
+      TodoInput,
+      SlashCommand,
+      Link.configure({
+        openOnClick: false,
+        autolink: true,
+        linkOnPaste: true,
+      }),
+      Underline,
+      Placeholder.configure({
+        placeholder: 'Commencez à écrire ici...',
+      }),
+      MathEvalShortcut,
+    ],
+    content: content.value,
+    onUpdate: () => {
+      saveContent();
+      checkForMath();
+    },
+  });
 
-    editor.value = new Editor({
-      extensions: [
-        StarterKit,
-        TaskItem,
-        TaskList,
-        TodoInput,
-        Link.configure({
-          openOnClick: false,
-          autolink: true,
-          linkOnPaste: true,
-        }),
-        Underline,
-        Placeholder.configure({
-          placeholder: 'Commencez à écrire ici...',
-        }),
-        MathEvalShortcut,
-      ],
-      content: content.value,
-      onUpdate: () => {
-        saveContent()
-        checkForMath()
-      },
-    })
-
-    loader.value = false;
-
-  }, 500);
-
-})
+  loader.value = false;
+});
  
 // Nettoyage
 onBeforeUnmount(() => {
@@ -309,8 +306,8 @@ onBeforeUnmount(() => {
 
 <style>
 
-@import '../assets/css/basic.css';
-@import '../assets/css/ToDoList.css';
+@import '../../assets/css/basic.css';
+@import '../../assets/css/ToDoList.css';
 
 .editor-container {
   width: 90%;

@@ -80,7 +80,7 @@
 import { api_url } from '@/assets/ts/backend_link';
 import type { Note } from '@/assets/ts/type';
 import Loader from '@/components/Loader.vue';
-import RichMarkdownEditor from '@/components/RichMarkdownEditor.vue';
+import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
 import { onMounted, ref } from 'vue';
 
 
