@@ -72,7 +72,7 @@
                 Jeremy, votre assistant IA.
             </h2>
 
-            <div class="flex flex-col lg:flex-row items-center justify-between h-145 gap-12">
+            <div class="flex flex-col lg:flex-row items-center justify-between h-[700px] gap-12">
 
                 <div class="flex gap-20 md:justify-between items-start h-full flex-col lg:w-1/2 text-center lg:text-left ">
 
@@ -136,10 +136,11 @@
 
                 <div class="lg:w-1/2 mt-8 lg:mt-0 relative">
 
-                    <div class="relative w-full h-150 overflow-hidden ">
+                    <div class="relative w-[420px] h-[700px] overflow-hidden shadow-2xl rounded-xl ">
+                        <!-- size og image : w-[482px] h-[804px] -->
                         <img 
-                            src="/assets/img/jeremy_mockup.png" 
-                            class="absolute inset-0 w-full h-full shadow-2xl rounded-2xl object-cover"/>
+                            src="/assets/img/jeremy_mockup.jpg" 
+                            class="absolute inset-0 w-full h-full object-cover"/>
                     </div>
 
                 </div>
