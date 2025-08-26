@@ -1,10 +1,11 @@
 import { Router, Request, Response } from 'express';
 import fs from 'fs';
-import type { News } from '../assets/ts/types';
+import type { News, Note } from '../assets/ts/types';
 import path from 'path';
 import JsonListManager from '../assets/ts/db_json_manager';
 import { randomUUID } from 'crypto';
 import notes from '../assets/ts/notes';
+
 
 const router = Router();
 
@@ -21,7 +22,7 @@ router.get('/get_news', async (req: Request, res: Response) => {
 
 
 // partage de notes
-const share = new JsonListManager('share');
+const share = new JsonListManager('share.json');
 
 interface Share { 
 
@@ -39,6 +40,12 @@ interface Share {
     visitor: string[]; // user ids
     banned: string[]; // user ids
 
+}
+
+const delete_a_share = (uuid: string) => {
+    setTimeout(async () => {
+        await share.delete(uuid);
+    }, 1 * 60 * 2600 * 100)
 }
 
 router.get('/share/:uuid', async (req, res) => {
@@ -61,14 +68,28 @@ router.get('/share/:uuid', async (req, res) => {
             return;
         }
 
-        TheShare.visitor.push(visitor_userid);
+        if (!TheShare.visitor.includes(visitor_userid)) TheShare.visitor.push(visitor_userid);
 
         await share.update(TheShare);
+
+        const createdTime = new Date(TheShare.created_at).getTime();
+        const now = Date.now();
+        const isExpired: boolean = now - createdTime > TheShare.parms.life;
+
+        if (isExpired) {
+            res.json({ expired: isExpired });
+            delete_a_share(TheShare.uuid);
+            return;
+        }
 
         const note = await notes.getNoteByUUID(TheShare.note_uuid);
 
         res.json({ success: true, note: note.note });
+        return;
 
+    }
+    else {
+        res.json({ error: true, message: 'Partage non trouvée.' })
     }
 
 })
@@ -146,6 +167,7 @@ router.post('/share/banned', async (req, res) => {
     }
 
 })
+
 
 
 export default router;

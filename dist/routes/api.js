@@ -16,7 +16,12 @@ router.get('/get_news', async (req, res) => {
     res.json((await news).active ? news : false);
 });
 // partage de notes
-const share = new db_json_manager_1.default('share');
+const share = new db_json_manager_1.default('share.json');
+const delete_a_share = (uuid) => {
+    setTimeout(async () => {
+        await share.delete(uuid);
+    }, 1 * 60 * 2600 * 100);
+};
 router.get('/share/:uuid', async (req, res) => {
     const { uuid } = req.params;
     const passwd = req.query.passwd;
@@ -31,10 +36,23 @@ router.get('/share/:uuid', async (req, res) => {
             res.json({ success: false, banned: true });
             return;
         }
-        TheShare.visitor.push(visitor_userid);
+        if (!TheShare.visitor.includes(visitor_userid))
+            TheShare.visitor.push(visitor_userid);
         await share.update(TheShare);
+        const createdTime = new Date(TheShare.created_at).getTime();
+        const now = Date.now();
+        const isExpired = now - createdTime > TheShare.parms.life;
+        if (isExpired) {
+            res.json({ expired: isExpired });
+            delete_a_share(TheShare.uuid);
+            return;
+        }
         const note = await notes_1.default.getNoteByUUID(TheShare.note_uuid);
         res.json({ success: true, note: note.note });
+        return;
+    }
+    else {
+        res.json({ error: true, message: 'Partage non trouvée.' });
     }
 });
 router.get('/share/data', async (req, res) => {

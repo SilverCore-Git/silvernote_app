@@ -7,6 +7,63 @@ const router = express.Router();
 
 
 
+function areArraysEqualIgnoreOrder<T>(a: T[], b: T[]): boolean {
+    if (!Array.isArray(a) || !Array.isArray(b)) return false;
+    if (a.length !== b.length) return false;
+
+    const normalize = (arr: T[]) =>
+        [...arr]
+            .map(item => typeof item === 'object'
+                ? JSON.stringify(Object.keys(item as object).sort().reduce((acc, key) => {
+                    (acc as Record<string, any>)[key] = (item as any)[key];
+                    return acc;
+                }, {} as Record<string, any>))
+                : String(item)
+            )
+            .sort();
+
+    const normA = normalize(a);
+    const normB = normalize(b);
+
+    return normA.every((val, idx) => val === normB[idx]);
+}
+
+router.post('/verify/data', async (req: Request, res: Response) => {
+
+    try {
+
+        const { notes, tags } = req.body as { notes: any[]; tags: any[] };
+        const user_id: string | undefined = req.cookies?.user_id;
+
+        if (!notes || !tags || !user_id) {
+            res.json({ error: true, message: 'Missing parameters.' });
+            return;
+        }
+
+        const db_notes = (await note_db.getNoteByUserId(user_id)).notes;
+        const db_tags = (await tag_db.getTagsByUserId(user_id)).tags;
+
+        const notesMatch = areArraysEqualIgnoreOrder(db_notes, notes);
+        const tagsMatch = areArraysEqualIgnoreOrder(db_tags, tags);
+
+        res.json({
+            ok: notesMatch, // rajoute tagsMatch dans le future
+            notes: notesMatch,
+            notes_length: db_notes.length,
+            tags: tagsMatch,
+            tags_length: db_tags.length,
+        });
+        return;
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: true, message: 'Internal server error.' });
+    }
+
+});
+
+
+
 // for notes
 router.post('/new/note', async (req: Request, res: Response) => {
     const note = req.body.note;

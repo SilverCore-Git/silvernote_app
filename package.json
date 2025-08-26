@@ -25,16 +25,19 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "lodash.isequal": "^4.5.0",
     "morgan": "^1.10.0",
     "mysql2": "^3.14.3",
     "nodemon": "^3.1.10",
     "openai": "^5.12.2",
+    "socket.io": "^4.8.1",
     "stripe": "^18.3.0",
     "typescript": "^5.8.3"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
+    "@types/lodash.isequal": "^4.5.8",
     "@types/morgan": "^1.9.10",
     "@types/node": "^22.15.30"
   },
