@@ -107,7 +107,7 @@
 
 <script setup lang="ts">
 
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
 import { Editor, EditorContent } from '@tiptap/vue-3'
 
 import StarterKit from '@tiptap/starter-kit'
@@ -118,6 +118,7 @@ import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import SlashCommand from './SlachCommand'
 import { Extension, InputRule } from '@tiptap/core'
+import { io, Socket } from 'socket.io-client';
 
 
 import { evaluate } from 'mathjs'
@@ -125,11 +126,14 @@ import { evaluate } from 'mathjs'
 import Loader from '../Loader.vue'
 import db from '../../assets/ts/database'
 import type { Note } from '@/assets/ts/type'
+import { api_url } from '@/assets/ts/backend_link'
 
 const props = defineProps<{
   id: number;
+
   editable?: boolean;
   data?: Note; 
+  uuid?: string;
 }>()
 
 const isLargeScreen = ref<boolean>(window.innerWidth >= 1024);
@@ -304,7 +308,21 @@ onMounted(async () => {
   }, 500)
 
 });
- 
+
+
+watch(() => props.data?.content, (newContent, oldContent) => {
+
+  if (!editor.value || newContent === undefined || newContent === oldContent) return;
+
+  if (editor.value.isFocused) return;
+
+  if (editor.value.getHTML() === newContent) return;
+  
+  editor.value.commands.setContent(newContent, false);
+  
+});
+
+
 // Nettoyage
 onBeforeUnmount(() => {
   editor.value?.destroy()

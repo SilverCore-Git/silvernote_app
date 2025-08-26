@@ -20,11 +20,11 @@
         />
 
         <RichMarkdownEditor 
-            v-if="note" 
-            :key="componentMarkDownKey"
+            v-if="note"
             :id="-2" 
             :data="note" 
             :editable="false" 
+            :uuid="uuid"
         />
 
     </section>
@@ -136,7 +136,6 @@ const error = ref<string>('');
 const need_passwd = ref<boolean>(false);
 const loaded = ref<boolean>(false);
 const passwd = ref<string>('');
-const componentMarkDownKey = ref(0)
 
 let socket: Socket;
 
@@ -188,7 +187,7 @@ const _fetch = async () => {
 
 const wSocket = () => {
 
-    socket = io("http://localhost:3000", { path: "/socket.io/share/" });
+    socket = io(api_url, { path: "/socket.io/share/" });
     console.log('d');
 
     socket.on('connect', () => {
@@ -197,12 +196,9 @@ const wSocket = () => {
     });
 
     socket.on('update_note', (data: { content: string; title: string }) => {
-        console.log('WS message : ', data)
-
         if (!note.value) return;
         note.value.content = data.content;
         note.value.title = data.title;
-        componentMarkDownKey.value++;
     });
 
     socket.on('disconnect', () => {
@@ -211,13 +207,6 @@ const wSocket = () => {
 
 };
 
-
-
-const launch_interval = () => {
-    setInterval(() => {
-        _fetch();
-    }, 1000);
-}
 
 </script>
 
