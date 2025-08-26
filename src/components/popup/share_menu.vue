@@ -161,7 +161,7 @@
               class="second"
               @click="share_dialogue = false"
             >
-              Annuler
+              {{ share_link == '' ? 'Annuler' : 'Fermer' }}  
             </button>
 
             <button

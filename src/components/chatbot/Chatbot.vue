@@ -165,7 +165,7 @@ const add_message = (content: string) => {
         AllMessage.value.push({ origin: 'user', text: content });
         scroll_to_bottom();
         if (!jeremy_active.value) {
-            return add_error("Jeremy n'est actuelement pas en ligne.")
+            return add_error("Jeremy n'est actuellement pas en ligne.")
         }
         loading.value = true;
         send(content)
@@ -191,7 +191,7 @@ const scroll_to_bottom = () => {
 
 const send = async (prompt: string) => {
 
-    const res = await fetch('http://localhost:3000/api/ai/send', {
+    const res = await fetch(`${api_url}/api/ai/send`, {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",

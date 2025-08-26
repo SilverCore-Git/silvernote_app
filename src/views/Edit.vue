@@ -62,7 +62,7 @@
     />
 
     <ToDoList :data="JSON.parse(note.content) || []" :id="note.id" v-if="AToDoList" />
-    <RichMarkdownEditor v-else v-bind="attrs" :class="hitbox ? 'bg-blue-600' : ''" :id="note.id" />
+    <RichMarkdownEditor v-else v-bind="attrs" :editable="true" :class="hitbox ? 'bg-blue-600' : ''" :id="note.id" />
 
   </section>
 
@@ -110,6 +110,7 @@ const note = ref<Note>({
     simply_edit: false,
     date: '',
     id: -1,
+    uuid: '',
     tags: []
 });
 
@@ -129,6 +130,7 @@ onMounted(async () => {
     console.log('Création d\'une nouvelle note')
     const Note = await db.create({ 
                                   id: -1,
+                                  uuid: '',
                                   pinned: false,
                                   simply_edit: false,
                                   title: note.value.title,

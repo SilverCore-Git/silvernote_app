@@ -144,9 +144,34 @@ onMounted(async () => {
 
   }, 1000);
 
-  await db.reset();
+  const need_reset = await fetch(`${api_url}/api/db/verify/data`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: 'include',
+    body: JSON.stringify({ 
+      notes: await db.getAll('notes'), 
+      tags: await db.getAll('tags') 
+    }),
+  }).then(res => res.json());
 
-  let ii = 0
+  if (need_reset.ok) {
+    const stopLoader = setInterval(() => {
+
+      setTimeout(() => {}, 1000)
+      loader.value = false;
+      clearInterval(stopLoader);
+
+    }, 500);
+    return;
+  } 
+
+  if (!need_reset.ok) await db.reset();
+
+  let ii: number = 0;
+  let ii2: number = 0;
+
   const inter = setInterval(async () => {
 
     if (isLoaded.value && user.value) {
@@ -173,7 +198,7 @@ onMounted(async () => {
 
   }, 1000)
 
-  let ii2 = 0
+
   const inter2 = setInterval(async () => {
 
     if (isLoaded.value && user.value) {
@@ -210,7 +235,7 @@ onMounted(async () => {
       clearInterval(stopLoader);
     }
 
-  }, 500);
+  }, 1000);
 
 });
 

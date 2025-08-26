@@ -1,7 +1,7 @@
 <template>
 
   <div class="editor-container" @click="focusEditor">
-    <editor-content v-if="editor && !loader" :editor="editor" class="prose h-full" />
+    <editor-content v-if="editor && editor !== null && !loader" :editor="editor as Editor" class="prose h-full" />
     <loader v-if="loader" class=" absolute inset-0 " :icon="false" />
   </div>
 
@@ -128,6 +128,7 @@ import type { Note } from '@/assets/ts/type'
 
 const props = defineProps<{
   id: number;
+  editable?: boolean;
   data?: Note; 
 }>()
 
@@ -141,7 +142,7 @@ onMounted(() => {
 
 
 const loader = ref<boolean>(true);
-const editor = ref<Editor | undefined>(undefined);
+const editor = ref<Editor | null>(null);
 const content = ref<string>('');
 
 
@@ -180,7 +181,9 @@ const loadContent = async () => {
       note = await db.getNote(props.id)
     }
 
-    content.value = note?.content || ''
+    if (!note) return await loadContent();
+
+    content.value = note.content || 'Erreur de chargement'
     if (note) console.log(note);
 
 
@@ -269,32 +272,37 @@ onMounted(async () => {
   await loadContent();
 
   setTimeout(() => {}, 1000);
-  
-  editor.value = new Editor({
-    extensions: [
-      StarterKit,
-      TaskList,
-      TodoInput,
-      SlashCommand,
-      Link.configure({
-        openOnClick: false,
-        autolink: true,
-        linkOnPaste: true,
-      }),
-      Underline,
-      Placeholder.configure({
-        placeholder: 'Commencez à écrire ici...',
-      }),
-      MathEvalShortcut,
-    ],
-    content: content.value,
-    onUpdate: () => {
-      saveContent();
-      checkForMath();
+    
+    editor.value = new Editor({
+      extensions: [
+        StarterKit,
+        TaskList,
+        TodoInput,
+        SlashCommand,
+        Link.configure({
+          openOnClick: false,
+          autolink: true,
+          linkOnPaste: true,
+        }),
+        Underline,
+        Placeholder.configure({
+          placeholder: 'Commencez à écrire ici...',
+        }),
+        MathEvalShortcut,
+      ],
+      content: content.value,
+      editable: props.editable,
+      onUpdate: () => {
+        saveContent();
+        checkForMath();
     },
+
   });
 
-  loader.value = false;
+  setTimeout(() => {
+    loader.value = false;
+  }, 500)
+
 });
  
 // Nettoyage
