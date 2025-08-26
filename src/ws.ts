@@ -8,8 +8,11 @@ import isEqual from 'lodash.isequal';
 const share = new JsonListManager('share.json');
 
 export const io = new Server(httpServer, {
-  cors: { origin: "http://localhost:5173" },
-  path: '/socket.io/share/'
+    cors: { 
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST"]
+    },
+    path: '/socket.io/share/'
 });
 
 io.on('connection', (socket) => {

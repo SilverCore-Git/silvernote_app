@@ -17,6 +17,7 @@ import money from './routes/money';
 
 const app = express();
 export const httpServer = createServer(app);
+import './ws'; 
 
 // Middlewares
 app.use(cors(config.corsOptions));
@@ -38,9 +39,7 @@ app.use('/money', money);
 
 // 404
 app.use((req: Request, res: Response) => {
-  if (req.url.startsWith('/share/') || req.url.startsWith('/socket.io/')) {
-    return;
-  }
+
   res.status(404).json({ route: req.path, error: 'Route non trouvée' });
 });
 

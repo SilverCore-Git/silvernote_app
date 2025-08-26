@@ -20,6 +20,7 @@ const user_1 = __importDefault(require("./routes/user"));
 const money_1 = __importDefault(require("./routes/money"));
 const app = (0, express_1.default)();
 exports.httpServer = (0, http_1.createServer)(app);
+require("./ws");
 // Middlewares
 app.use((0, cors_1.default)(config_json_1.default.corsOptions));
 app.use((0, cookie_parser_1.default)(process.env.COOKIE_SIGN_KEY));
@@ -35,9 +36,6 @@ app.use('/user', user_1.default);
 app.use('/money', money_1.default);
 // 404
 app.use((req, res) => {
-    if (req.url.startsWith('/share/') || req.url.startsWith('/socket.io/')) {
-        return;
-    }
     res.status(404).json({ route: req.path, error: 'Route non trouvée' });
 });
 // Démarrage serveur
