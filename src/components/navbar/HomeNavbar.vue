@@ -75,6 +75,8 @@
                                 </div>
 
                             </li>
+
+                            <span class="text-base flex justify-center w-full mt-1">version : {{ version }}</span>
                             
                         </ul>
 
@@ -96,6 +98,7 @@
 import { UserButton } from '@clerk/vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { version } from '../../../package.json';
 
 const router = useRouter();
 const if_open_dropdown = ref<boolean>(false);
