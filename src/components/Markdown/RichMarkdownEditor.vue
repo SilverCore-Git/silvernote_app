@@ -1,7 +1,7 @@
 <template>
 
   <div class="editor-container" @click="focusEditor">
-    <editor-content v-if="editor && editor !== null && !loader" :editor="editor as Editor" class="prose h-full" />
+    <editor-content v-if="editor && editor !== null && !loader && socket" :editor="editor as Editor" class="prose h-full" />
     <loader v-if="loader" class=" absolute inset-0 " :icon="false" />
   </div>
 
@@ -118,7 +118,6 @@ import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import SlashCommand from './SlachCommand'
 import { Extension, InputRule } from '@tiptap/core'
-import { io, Socket } from 'socket.io-client';
 
 
 import { evaluate } from 'mathjs'
@@ -126,14 +125,14 @@ import { evaluate } from 'mathjs'
 import Loader from '../Loader.vue'
 import db from '../../assets/ts/database'
 import type { Note } from '@/assets/ts/type'
-import { api_url } from '@/assets/ts/backend_link'
+import { Socket } from 'socket.io-client'
 
 const props = defineProps<{
   id: number;
-
   editable?: boolean;
   data?: Note; 
-  uuid?: string;
+  uuid: string;
+  socket: Socket;
 }>()
 
 const isLargeScreen = ref<boolean>(window.innerWidth >= 1024);
@@ -178,12 +177,7 @@ const loadContent = async () => {
 
     let note: Note | undefined;
 
-    if (props.id == -2) {
-      note = props.data;
-    }
-    else {
-      note = await db.getNote(props.id)
-    }
+    note = props.data;
 
     if (!note) return await loadContent();
 
@@ -253,7 +247,7 @@ const TodoInput = TaskItem.extend({
 // Sauvegarde du contenu dans la base
 const saveContent = () => {
   if (editor.value) {
-    db.saveContent(editor.value.getHTML(), props.id)
+    db.saveContent(editor.value.getHTML(), props.id, props.socket);
   }
 }
 
@@ -309,18 +303,24 @@ onMounted(async () => {
 
 });
 
+props.socket.on('update_note', (data: { content: string; title: string }) => {
+    if (!content.value) return;
+    content.value = data.content;
+    editor.value?.commands.setContent(content.value, false);
+});
 
-watch(() => props.data?.content, (newContent, oldContent) => {
+watch(() => editor.value?.getHTML(), (newContent, oldContent) => {
 
   if (!editor.value || newContent === undefined || newContent === oldContent) return;
 
-  if (editor.value.isFocused) return;
-
-  if (editor.value.getHTML() === newContent) return;
-  
-  editor.value.commands.setContent(newContent, false);
+  props.socket.emit('edit_note', { 
+    uuid: props.data?.uuid,
+    content: newContent,
+    title: props.data?.title
+  })
   
 });
+
 
 
 // Nettoyage

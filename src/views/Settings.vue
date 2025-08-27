@@ -55,6 +55,33 @@
             <h1 
                 class="text-2xl mb-1 font-bold"
             >
+                Paramètres divers
+            </h1>
+
+            <label
+                class="cursor-pointer w-full flex justify-between items-center"
+                :class="hitbox ? 'bg-red-600' : ''"
+            >
+
+              <span>Couleur</span>
+
+              <input type="color" v-model="color">
+              
+            </label>
+
+            <hr
+                class="mb-2 mt-4 opacity-25"
+            />
+
+        </section>
+
+        <section
+            class="flex flex-col w-full gap-4"
+        >
+
+            <h1 
+                class="text-2xl mb-1 font-bold"
+            >
                 Paramètres base de données
             </h1>
 
@@ -150,6 +177,11 @@ type Theme = 'dark' | 'light' | 'default';
 const theme = ref<Theme>(localStorage.getItem('theme') as Theme || 'default');
 const showDialog = ref<boolean>(false);
 const file_input = ref<HTMLInputElement | undefined>(undefined);
+const color = ref<string>('#F28C28');
+
+watch(() => color.value, () => {
+  document.documentElement.style.setProperty('--btn', color.value);
+})
 
 const db = new SettingsDB(settingsObj);
 const router = useRouter();

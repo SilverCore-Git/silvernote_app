@@ -77,41 +77,58 @@
 
         <div class="flex flex-col gap-5">
 
-          <div>
+          <div class="flex flex-row justify-between gap-5">
 
-            <label class="block text-base font-medium ">
-              Expire dans :
-            </label>
+            <div>
 
-            <div class="flex gap-4 mt-2">
+              <label class="block text-base font-medium ">
+                Expire dans :
+              </label>
 
-              <div class="flex items-center gap-1">
+              <div class="flex gap-4 mt-2">
 
-                <input
-                  v-model="h"
-                  type="number"
-                  max="24"
-                  class="w-14 rounded-lg border border-[var(--btn)] bg-white px-2 py-1 text-center shadow-sm
-                        focus:outline-none focus:ring-2 focus:ring-[var(--btn)] focus:border-[var(--btn)]
-                        dark:bg-zinc-900 dark:border-zinc-700 text-white"
-                />
-                <span class="">h</span>
+                <div class="flex items-center gap-1">
+
+                  <input
+                    v-model="h"
+                    type="number"
+                    max="24"
+                    class="w-14 rounded-lg border border-[var(--btn)] bg-white px-2 py-1 text-center shadow-sm
+                          focus:outline-none focus:ring-2 focus:ring-[var(--btn)] focus:border-[var(--btn)]
+                          dark:bg-zinc-900 dark:border-zinc-700 text-white"
+                  />
+                  <span class="">h</span>
+
+                </div>
+
+                <div class="flex items-center gap-1">
+
+                  <input
+                    v-model="mn"
+                    type="number"
+                    max="60"
+                    class="w-14 rounded-lg border border-[var(--btn)] px-2 py-1 text-center shadow-sm
+                          focus:outline-none focus:ring-2 focus:ring-[var(--btn)] focus:border-[var(--btn)]
+                          bg-zinc-900 text-white"
+                  />
+                  <span class="">mn</span>
+
+                </div>
 
               </div>
 
-              <div class="flex items-center gap-1">
+            </div>
 
-                <input
-                  v-model="mn"
-                  type="number"
-                  max="60"
-                  class="w-14 rounded-lg border border-[var(--btn)] px-2 py-1 text-center shadow-sm
-                        focus:outline-none focus:ring-2 focus:ring-[var(--btn)] focus:border-[var(--btn)]
-                        bg-zinc-900 text-white"
-                />
-                <span class="">mn</span>
+            
+            <div>
 
-              </div>
+              <label class="block text-base font-medium mb-2">
+                Autoriser la modification :
+              </label>
+
+              <Switch 
+                v-model="editable"
+              />
 
             </div>
 
@@ -197,6 +214,7 @@ import x_svg from '@/assets/svgs/social/x.svg?url';
 import share_svg from '@/assets/svgs/share.svg?url';
 import copy_svg from '/assets/svgs/copy.svg?url';
 import { api_url } from '@/assets/ts/backend_link';
+import Switch from '../Switch.vue';
 
 
 const props = defineProps<{
@@ -211,6 +229,7 @@ const share_link = ref<string>('');
 const mn = ref<number>(0);
 const h = ref<number>(1);
 const passwd = ref<string>('');
+const editable = ref<boolean>(false);
 
 const if_error = ref<boolean>(false);
 let error_content: string = '';
@@ -308,7 +327,14 @@ const create_share_link = async () => {
           'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify({ note_uuid: props.uuid, parms: { life: (h.value * 60 * 3600 * 100) + (mn.value * 3600 * 100), passwd: passwd.value || undefined } }),
+      body: JSON.stringify({ 
+        note_uuid: props.uuid, 
+        parms: { 
+          life: (h.value * 60 * 3600 * 100) + (mn.value * 3600 * 100), 
+          passwd: passwd.value || undefined,
+          editable: editable.value
+        } 
+      }),
     }).then(res => res.json())
 
     if (res.error) {

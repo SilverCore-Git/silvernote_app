@@ -61,8 +61,17 @@
       :class="hitbox ? 'bg-indigo-600' : ''"
     />
 
-    <ToDoList :data="JSON.parse(note.content) || []" :id="note.id" v-if="AToDoList" />
-    <RichMarkdownEditor v-else v-bind="attrs" :editable="true" :class="hitbox ? 'bg-blue-600' : ''" :id="note.id" />
+    
+    <RichMarkdownEditor 
+      v-if="socket"
+      v-bind="attrs" 
+      :editable="true" 
+      :class="hitbox ? 'bg-blue-600' : ''" 
+      :id="-2" 
+      :uuid="note.uuid"
+      :socket="socket"
+      :data="note"
+    />
 
   </section>
 
@@ -73,10 +82,8 @@
 <script lang="ts" setup>
 
 import { ref, onMounted, onUnmounted, useAttrs, watch } from 'vue';
-
 import { useRouter, useRoute } from 'vue-router';
-
-import ToDoList from '@/components/notes/ToDoList.vue';
+import { io, Socket } from 'socket.io-client';
 
 import db from '../assets/ts/database';
 import utils from '../assets/ts/utils';
@@ -95,11 +102,14 @@ import RichMarkdownEditor from '../components/Markdown/RichMarkdownEditor.vue';
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';
 import Note_settings from '@/components/notes/Note_settings.vue';
+import { api_url } from '@/assets/ts/backend_link';
 
 const if_pin_active = ref(route.query.pinned == "true");
 const if_open_dropdown = ref<boolean>(false);
 const noteTypeManager = ref<boolean>(false);
 const attrs = useAttrs();
+
+let socket: Socket;
 
 // Initialisation de la note
 const note = ref<Note>({
@@ -114,12 +124,11 @@ const note = ref<Note>({
     tags: []
 });
 
-const AToDoList = ref<boolean>(note.value.type == "todolist");
 const title = ref<HTMLInputElement | null>(null);
 
 const save_title = () => {
   if (note.value.title) {
-    db.saveTitle(note.value.title, Number(route.query.id))
+    db.saveTitle(note.value.title, Number(route.query.id), socket);
   }
 }
 
@@ -127,6 +136,7 @@ const save_title = () => {
 onMounted(async () => {
 
   if (route.query.id == 'new') {
+
     console.log('Création d\'une nouvelle note')
     const Note = await db.create({ 
                                   id: -1,
@@ -153,7 +163,9 @@ onMounted(async () => {
       title.value?.focus();
     }, 1000);
 
-};
+  };
+
+  wSocket();
 
   const fetchedNote = await db.getNote(Number(route.query.id));
 
@@ -166,7 +178,7 @@ onMounted(async () => {
 onUnmounted(async () => {
   if (note.value.title == '') {
     console.log('Sauvegarde de la note vide')
-    db.saveTitle('Note sans titre', note.value.id);
+    db.saveTitle('Note sans titre', note.value.id, socket);
   };
 });
 
@@ -186,6 +198,27 @@ const change_pin_state = (): void => {
 const update_title = () => {
   document.title = `SilverNote - ${note.value.title}`;
 }
+
+const wSocket = () => {
+
+    socket = io(api_url, { path: "/socket.io/" });
+
+    socket.on('connect', () => {
+        console.log('WebSocket connecté !');
+        socket.emit('join_share', { uuid: note.value.uuid });
+    });
+
+    socket.on('update_note', (data: { content: string; title: string }) => {
+        if (!note.value) return;
+        note.value.content = data.content;
+        note.value.title = data.title;
+    });
+
+    socket.on('disconnect', () => {
+        console.log('WebSocket déconnecté !');
+    });
+
+};
 
 watch(() => note.value.title, () => {
   update_title();

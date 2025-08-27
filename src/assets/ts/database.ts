@@ -3,6 +3,7 @@ import type { DBSchema, IDBPDatabase } from 'idb';
 import type { Note, Tag } from './type';
 import { api_url } from './backend_link';
 import utils from './utils';
+import type { Socket } from 'socket.io-client';
 
 // import back from './backend_link';
 
@@ -48,15 +49,29 @@ class Database {
         });
     }
 
-    private async push_note(note: Note) {
-        await fetch(`${api_url}/api/db/update/a/note`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify({ note }),
-        })
+    private async push_note(note: Note, socket?: Socket) {
+
+        if (socket) {
+            
+            socket.emit('edit_note', { 
+                uuid: note.uuid,
+                content: note.content,
+                title: note.title
+            })
+
+        }
+
+        else {
+            await fetch(`${api_url}/api/db/update/a/note`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ note }),
+            })
+        }
+
     }
 
     public async getAll<T extends 'notes' | 'tags'>(type: T): Promise<T extends 'notes' ? Note[] : Tag[]> {
@@ -79,22 +94,22 @@ class Database {
         }
     }
 
-    public async saveContent(content: string, id: number): Promise<void> {
+    public async saveContent(content: string, id: number, socket: Socket): Promise<void> {
         const db = await this.dbPromise;
         const note = await db.get('notes', id);
         if (note) {
             note.content = content;
-            this.push_note(note);
+            this.push_note(note, socket);
             await db.put('notes', note);
         }
     }
 
-    public async saveTitle(title: string, id: number): Promise<void> {
+    public async saveTitle(title: string, id: number, socket: Socket): Promise<void> {
         const db = await this.dbPromise;
         const note = await db.get('notes', id);
         if (note) {
             note.title = title;
-            this.push_note(note);
+            this.push_note(note, socket);
             await db.put('notes', note);
         }
     }

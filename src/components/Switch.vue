@@ -1,24 +1,18 @@
 <template>
-
-    <div @click="emit('active'); value = !value" class="switch">
-        <input :value="value" type="checkbox">
-        <div class="slider"></div>
-    </div>
-
+  <div @click="toggle" class="switch">
+    <input :checked="modelValue" type="checkbox" />
+    <div class="slider"></div>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+const props = defineProps<{ modelValue: boolean }>();
 
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: boolean): void
+}>();
 
-const props = defineProps<{
-    value?: boolean
-}>()
-
-const value = ref<boolean>(props.value || false);
-
-const emit = defineEmits([
-    'active'
-])
-
+const toggle = () => {
+  emit('update:modelValue', !props.modelValue);
+};
 </script>

@@ -15,16 +15,17 @@
             placeholder="Titre..." 
             ref="title"
             v-model="note!.title"
-            @input=""
-            :readonly="true"
+            @input="saveTitle()"
+            :readonly="editable"
         />
 
         <RichMarkdownEditor 
-            v-if="note"
+            v-if="note && socket"
             :id="-2" 
             :data="note" 
-            :editable="false" 
+            :editable="editable" 
             :uuid="uuid"
+            :socket="socket"
         />
 
     </section>
@@ -137,6 +138,7 @@ const need_passwd = ref<boolean>(false);
 const loaded = ref<boolean>(false);
 const passwd = ref<string>('');
 
+let editable: boolean;
 let socket: Socket;
 
 onMounted(() => _fetch())
@@ -146,7 +148,7 @@ const _fetch = async () => {
 
     const share = await fetch(`${api_url}/api/share/${props.uuid}?passwd=${passwd.value}`, { 
         credentials: 'include'
-     }).then(res => res.json());
+    }).then(res => res.json());
 
     if (share.error) {
         error.value = share.message;
@@ -163,9 +165,9 @@ const _fetch = async () => {
     if (share.success) {
         note.value = share.note;
         need_passwd.value = false;
+        editable = share.editable;
         loaded.value = true;
         wSocket();
-        //launch_interval()
         return;
     }
 
@@ -187,12 +189,11 @@ const _fetch = async () => {
 
 const wSocket = () => {
 
-    socket = io(api_url, { path: "/socket.io/share/" });
-    console.log('d');
+    socket = io(api_url, { path: "/socket.io/" });
 
     socket.on('connect', () => {
         console.log('WebSocket connecté !');
-        socket.emit('join_share', { uuid: props.uuid });
+        socket.emit('join_share', { uuid: note.value?.uuid });
     });
 
     socket.on('update_note', (data: { content: string; title: string }) => {
@@ -207,6 +208,13 @@ const wSocket = () => {
 
 };
 
+const saveTitle = () => {
+    socket.emit('edit_note', { 
+        uuid: note.value?.uuid,
+        content: note.value?.content,
+        title: note.value?.title
+    })
+}
 
 </script>
 
