@@ -1,136 +1,30 @@
 
 <template>
 
-    <header 
-        style="
-            font-family: 'InterTight', sans-serif; 
-            box-shadow: 0 0 15px #36363681;
-            padding-top: calc(env(safe-area-inset-top)/2);
-        " 
-        class="
-                top-0 left-0 w-screen
-                text-2xl font-bold
-                bg-[#F28C28]
-                flex items-center justify-center fixed z-50
-            "
-    >
+    <HomeNavbar>
+        <div 
+            class="reload-svg 
+                    w-7
+                    h-7
+                " 
+            :class="[
+                { rotating: isRotating }
+            ]"
+            @click="reload_list"
+        ></div>
 
-        <div class="flex flex-row justify-between items-center w-full ml-[var(--mrl)] mr-[var(--mrl)]">
-            
-            <div class="flex flex-row justify-center items-center">
+        <div 
+            class="saving-svg 
+                    w-7
+                    h-7
+                " 
+            :class="[
+                { 'jump': isJumping }
+            ]"
+            @click="saving_notes"
+        ></div>
 
-                <h1 class=" text-white flex flex-row justify-center items-center gap-2 text-[3vw] lg:text-3xl" :class="hitbox ? 'bg-red-600' : ''">
-                    <img src="/favicon.svg" class="w-[3vw] min-w-8 max-w-8" alt="logo"><span class="hidden sm:block">SilverNote</span>
-                </h1>
-
-            </div>
-
-            <div class="flex flex-row justify-center items-center gap-6 md:gap-5">
-
-                <!-- <div // metttre en auto
-                    class="reload-svg 
-                            md:w-[24px]  w-[30px]
-                            md:h-[24px]  h-[30px]
-                        " 
-                    :class="[
-                        isOnline ? 'wifi-on-svg' : 'wifi-off-svg',
-                        hitbox ? 'bg-teal-300' : ''
-                    ]"
-                    ref="online_btn"
-                    @click="toggleOnline"
-                ></div> -->
-
-                <div class="flex items-center justify-center">
-                    <UserButton />
-                </div>
-
-                <div 
-                    class="reload-svg  
-                            w-7
-                            h-7
-                        " 
-                    :class="[
-                        { rotating: isRotating },
-                        hitbox ? 'bg-teal-300' : ''
-                    ]"
-                    @click="reload_list"
-                ></div>
-
-                <div 
-                    class="saving-svg 
-                            w-7
-                            h-7
-                        " 
-                    :class="[
-                        { 'jump': isJumping },
-                        hitbox ? 'bg-teal-300' : '' 
-                    ]"
-                    @click="saving_notes"
-                ></div>
-
-                <div
-                    :class="[ hitbox ? 'bg-teal-300' : '' ]"
-                    class="ellipsis-svg
-                            w-8
-                            h-8
-                        " 
-                    @click="if_open_dropdown = !if_open_dropdown"
-                ></div>
-
-                <transition name="fade-slide">
-
-                    <div
-                        v-if="if_open_dropdown"
-                        class="dropdown absolute bg-[#F28C28] 
-                            z-50 py-3 px-5 right-0 md:right-auto
-                            flex flex-col justify-center items-center"
-                        :style=" { top: `calc(3rem + env(safe-area-inset-top))` } "
-                    >
-                        <ul class="text-xl md:text-[2vw] lg:text-xl space-y-1 pt-1 text-white">
-
-                            <li 
-                                class="flex flex-row items-center" 
-                                @click="router.push('/settings')"
-                            >
-                                <div class="gear-svg nav-svg max-w-6 max-h-6 min-w-6 min-h-6"></div>
-                                Paramètre
-                            </li>
-
-                            <li class="text-xl md:text-[2vw] lg:text-xl flex flex-row items-center" @click="openAccount">
-                                <div class="nav-svg max-w-6 max-h-6 min-w-6 min-h-6" style="filter: invert(0);">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                    </svg>
-                                </div>
-                                Compte
-                                <div class="nav-svg max-w-6 max-h-6 min-w-6 min-h-6 mr-0 ml-2" style="filter: invert(1);">
-                                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <g id="Interface / External_Link">
-                                        <path id="Vector" d="M10.0002 5H8.2002C7.08009 5 6.51962 5 6.0918 5.21799C5.71547 5.40973 5.40973 5.71547 5.21799 6.0918C5 6.51962 5 7.08009 5 8.2002V15.8002C5 16.9203 5 17.4801 5.21799 17.9079C5.40973 18.2842 5.71547 18.5905 6.0918 18.7822C6.5192 19 7.07899 19 8.19691 19H15.8031C16.921 19 17.48 19 17.9074 18.7822C18.2837 18.5905 18.5905 18.2839 18.7822 17.9076C19 17.4802 19 16.921 19 15.8031V14M20 9V4M20 4H15M20 4L13 11" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </g>
-                                    </svg>
-                                </div>
-                            </li>
-
-                            <li class="text-xl md:text-[2vw] lg:text-xl flex flex-row items-center">
-                                <div class="nav-svg max-w-6 max-h-6 min-w-6 min-h-6 legal-svg">
-
-                                </div>
-                                Légal
-                            </li>
-
-                        </ul>
-                    </div>
-                </transition>
-
-            </div>
-
-        </div>
-
-    </header>
-
+    </HomeNavbar>
     
     <div class="Search_bar flex flex-col lg:flex-row items-center w-full gap-4">
 
@@ -202,7 +96,7 @@
 
     </div>
 
-    <div @click="if_open_dropdown=false" class=" overflow-x-hidden mb-30" :class="hitbox ? 'bg-rose-600' : ''">
+    <div class=" overflow-x-hidden mb-30" :class="hitbox ? 'bg-rose-600' : ''">
 
         <Danger_card 
             v-if="tip" 
@@ -374,7 +268,7 @@
     import Note_card_loader from '../components/notes/Note_card_loader.vue';
     import Search_bar from '../components/Search_bar.vue';
     import Tags_item from '../components/tags/Tags_item.vue';
-import { UserButton } from '@clerk/vue';
+    import HomeNavbar from '@/components/navbar/HomeNavbar.vue';
     
     const router = useRouter();
 
@@ -383,10 +277,6 @@ import { UserButton } from '@clerk/vue';
         router.push(`/edit?id=new&pinned=false&simply_edit=false`);
 
     };
-
-    const openAccount = () => {
-        window.open('https://www.silvernote.fr/user/profile');
-    }
 
     const isOnline = ref<boolean>(localStorage.getItem('online') == "true");
     //const online_btn = ref<HTMLDivElement | null>(null);
@@ -401,7 +291,6 @@ import { UserButton } from '@clerk/vue';
     const all_tags = ref<Tag[] | undefined>(undefined);
 
     const isRotating = ref(false);
-    const if_open_dropdown = ref<boolean>(false);
     const if_open_create_tag = ref<boolean>(false);
     const inputRef = ref<HTMLInputElement | null>(null);
 
@@ -574,25 +463,6 @@ import { UserButton } from '@clerk/vue';
 
 <style scoped>
 
-    .nav-svg {
-        filter: invert(1);
-        width: 3vw;
-        height: 3vw;
-        cursor: pointer;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        margin-right: 10px;
-    }
-
-    header {
-        height: calc(3.5rem + env(safe-area-inset-top));
-
-        @media (min-width: 1280px) {
-            height: calc(3.6rem + env(safe-area-inset-top));
-        }
-    }
-
     .Search_bar {
 
         margin-top: calc(4.5rem + env(safe-area-inset-top));
@@ -601,23 +471,6 @@ import { UserButton } from '@clerk/vue';
             margin-top: calc(5rem + env(safe-area-inset-top));
         }
         
-    }
-    
-    .gear-svg {
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        background-image: url('../assets/svgs/gear.svg');
-    }
-
-    .ellipsis-svg {
-        cursor: pointer;
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        background-image: url('/assets/svgs/ellipsis.svg');
-        filter: invert(1);
-        transition: all 0.3s ease;
     }
 
     .saving-svg {
@@ -629,15 +482,7 @@ import { UserButton } from '@clerk/vue';
         filter: invert(1);
         transition: all 0.3s ease;
     }
-
-    .legal-svg {
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        cursor: pointer;
-        background-image: url('../assets/svgs/legal.svg');
-    }
-        
+ 
     .reload-svg {
         cursor: pointer;
         background-size: contain;
@@ -725,28 +570,13 @@ import { UserButton } from '@clerk/vue';
         animation: squashJump 0.5s ease-out;
     }
 
-    .dropdown {
-        border-bottom-left-radius: var(--br-btn);
-        border-bottom-right-radius: var(--br-btn);
-        box-shadow: 0 15px 15px #36363681;
-    }
-
-    .dropdown ul li {
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .dropdown ul li:hover {
-        color: #fff2d0;
-    }
-
     .add-note-btn {
-        background-color: #F28C28;
+        background-color: var(--btn);
         transition: all 0.3s;
     }
 
     .add-note-btn:hover {
-        transform: scale(1.02);
+        transform: scale(1.1);
     }
 
     .add-note-btn:active {

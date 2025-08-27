@@ -50,7 +50,7 @@
 
               <li 
                 class="text-xl md:text-lg flex flex-row"
-                @click.stop="share_it()"   
+                @click.stop="share = true"   
                 :class="hitbox ? 'bg-teal-600 border-1 border-black' : ''" 
               >
                 <div>
@@ -76,11 +76,6 @@
         </transition>
 
       </div>
-
-      <!-- <div
-        class="bin"
-        @click.stop=""
-      ></div> -->
 
       <div
         class="pin w-7 h-7 md:w-6 md:h-6"
@@ -119,9 +114,8 @@
 
   <share_menu
     :uuid="uuid"
-    :visible="share" 
     :title="title"
-    :content="content"
+    v-model="share"
   />
 
   <Tags_manager
@@ -190,33 +184,6 @@ const onTagsUpdate = (newTags: number[]) => {
   db.saveTags(newTags, props.id);
 };
 
-const share_it = async () => {
-
-  if (navigator.share) {
-
-      try {
-
-        await navigator.share({
-          title: props.title,
-          text: props.content,
-          url: window.location.href,
-        });
-
-        console.log('Partagé avec succès');
-
-      } catch (err) {
-
-        console.error('Erreur de partage', err);
-
-      }
-
-  }
-
-  else {
-    share.value = !share.value;
-  }
-
-}
 
 const delete_note = async (state: number): Promise<void> => {
   

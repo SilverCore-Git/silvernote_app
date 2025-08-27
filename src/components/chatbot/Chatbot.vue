@@ -65,9 +65,9 @@
             class="relative z-50 w-full bg-[var(--bg2)] rounded-2xl shadow flex flex-col justify-between h-full"
         >
 
-            <header class="h-15 bg-[#F28C28] rounded-t-2xl
+            <header class="h-15 bg-[var(--btn)] rounded-t-2xl
                             flex justify-between items-center px-5 text-white flex-row 
-                            shadow-orange-400 shadow-sm draggable z-30"
+                            shadow-[var(--btn)] draggable z-30"
             >
 
                 <div class="flex justify-center items-center flex-row">

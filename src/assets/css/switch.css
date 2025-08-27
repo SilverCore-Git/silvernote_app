@@ -39,7 +39,7 @@
 
 /* Quand activé */
 input:checked + .slider {
-  background-color: #F28C28;
+  background-color: var(--btn);
 }
 
 input:checked + .slider:before {

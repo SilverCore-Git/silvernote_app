@@ -2,24 +2,22 @@
 
   <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
 
-    <div class="left-arrow absolute left-0 cursor-pointer" @click="router.push('/')" :class="hitbox ? 'bg-red-600' : ''"></div>
+    <div class="left-arrow absolute left-0 cursor-pointer btnHover" @click="router.push('/')" :class="hitbox ? 'bg-red-600' : ''"></div>
 
     <div class="flex flex-row gap-4 absolute right-0">
 
       <div
-        class="pin"
+        class="pin cursor-pointer"
         :style="{
           backgroundImage: if_pin_active
             ? `url(${pinFull})`
             : `url(${pinEmpty})`
         }"
-        :class="hitbox ? 'bg-red-600' : ''"
         @click="change_pin_state"
       ></div>
 
       <div
-        class="ellipsis-svg w-[30px] h-[30px]"
-        :class="hitbox ? 'bg-red-600' : ''"
+        class="ellipsis-svg w-[30px] h-[30px] rotate-[90deg]"
         @click="if_open_dropdown = !if_open_dropdown"
       ></div>
 
@@ -29,20 +27,26 @@
       
       <div
         v-if="if_open_dropdown"
-        class="dropdown absolute right-0 border-2 border-[var(--btn)]
-            z-50 min-w-[200px] w-[40%] md:w-[20%] lg:w-[10%] 
-            flex flex-col justify-center items-center p-3"
-        :style=" { top: `calc(3.5rem + env(safe-area-inset-top))` } "
+        class="absolute inset-0 z-40"
+        @click="if_open_dropdown = false"
       >
-      
-      <ul class="text-xl md:text-lg ">
 
-            <li @click="noteTypeManager = true; if_open_dropdown = false"><a class="cursor-pointer">Paramettres</a></li>
-            <li><a class="cursor-pointer">Vider</a></li>
-            <li><a class="cursor-pointer">Suprimer</a></li>
+        <div 
+          class="dropdown absolute 
+                right-0 bg-[var(--bg2)]"
+          :style="{ top: `calc(3.4rem + env(safe-area-inset-top))` }"
+        >
 
-        </ul>
-      
+          <ul>
+
+            <li @click="export_menu = true">Exporter</li>
+            <li @click="share_menu = true">Partager</li>
+            <li class="text-red-600">Supprimer</li>
+
+          </ul>
+
+        </div>
+
       </div>
     
     </transition>
@@ -75,7 +79,53 @@
 
   </section>
 
-  <Note_settings :id="note.id" v-if="noteTypeManager" />
+  <share_menu
+    :uuid="note.uuid"
+    :title="note.title"
+    v-model="share_menu"
+  />
+
+  <Popup v-model:visible="export_menu">
+
+    <div class="w-full h-full flex justify-start items-start flex-col gap-2">
+
+      <h2 class="text-xl font-bold mb-4">
+        Exporter la note : <span class="font-medium">{{ note.title }}</span>
+      </h2>
+
+      <div class="flex flex-row justify-between  w-[80%] mx-4">
+
+        <label class="text-base" for="">Exporter en :</label>
+        <select 
+          v-model="selected_ext"
+          class="px-2.5 pt-1.5 pb-2 rounded-lg border border-gray-300 bg-white/90 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[var(--btn)] focus:border-[var(--btn)] transition-all duration-200"
+        >
+          <option value="pdf">pdf</option>
+          <option value="html">html</option>
+        </select>
+
+      </div>
+
+      <div class="flex flex-row w-full justify-end gap-4 mt-4">
+
+        <button
+          class="second"
+          @click="export_menu = false"
+        >
+          Annuler
+        </button>
+
+        <button
+          class="primary"
+        >
+          Confirmer
+        </button>
+
+      </div>
+
+    </div>
+
+  </Popup>
 
 </template>
 
@@ -101,12 +151,16 @@ import RichMarkdownEditor from '../components/Markdown/RichMarkdownEditor.vue';
 
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';
-import Note_settings from '@/components/notes/Note_settings.vue';
 import { api_url } from '@/assets/ts/backend_link';
+import Popup from '@/components/Popup.vue';
+import Share_menu from '@/components/popup/share_menu.vue';
 
 const if_pin_active = ref(route.query.pinned == "true");
 const if_open_dropdown = ref<boolean>(false);
-const noteTypeManager = ref<boolean>(false);
+const export_menu = ref<boolean>(false);
+const selected_ext = ref<string>('pdf');
+const share_menu = ref<boolean>(false);
+
 const attrs = useAttrs();
 
 let socket: Socket;
@@ -254,11 +308,6 @@ input {
     background-image: url('/assets/svgs/ellipsis.svg');
     filter: brightness(0) saturate(100%) invert(61%) sepia(43%) saturate(1182%) hue-rotate(343deg) brightness(99%) contrast(92%);
     transition: all 0.3s ease;
-}
-
-.dropdown {
-    border-bottom-left-radius: var(--br-btn);
-    border-bottom-right-radius: var(--br-btn);
 }
 
 </style>
