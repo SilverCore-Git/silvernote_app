@@ -7,7 +7,6 @@ const express_1 = require("express");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const db_json_manager_1 = __importDefault(require("../assets/ts/db_json_manager"));
-const crypto_1 = require("crypto");
 const notes_1 = __importDefault(require("../assets/ts/notes"));
 const router = (0, express_1.Router)();
 router.get('/get_news', async (req, res) => {
@@ -48,7 +47,7 @@ router.get('/share/:uuid', async (req, res) => {
             return;
         }
         const note = await notes_1.default.getNoteByUUID(TheShare.note_uuid);
-        res.json({ success: true, note: note.note });
+        res.json({ success: true, editable: TheShare.parms.editable, note: note.note });
         return;
     }
     else {
@@ -65,7 +64,7 @@ router.post('/share', async (req, res) => {
     const user_id = req.cookies.user_id;
     try {
         const TheShare = await share.push({
-            uuid: (0, crypto_1.randomUUID)(),
+            uuid: note_uuid,
             user_id,
             note_uuid,
             parms,

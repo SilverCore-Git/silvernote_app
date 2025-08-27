@@ -33,6 +33,7 @@ interface Share {
     parms: {
         life: number; // age en milliseconde
         passwd?: string;
+        editable: boolean;
     }
 
     created_at: string;
@@ -84,7 +85,7 @@ router.get('/share/:uuid', async (req, res) => {
 
         const note = await notes.getNoteByUUID(TheShare.note_uuid);
 
-        res.json({ success: true, note: note.note });
+        res.json({ success: true, editable: TheShare.parms.editable, note: note.note });
         return;
 
     }
@@ -112,7 +113,7 @@ router.post('/share', async (req, res) => {
 
         const TheShare: Share = await share.push({
 
-            uuid: randomUUID(),
+            uuid: note_uuid,
             user_id,
             note_uuid,
 

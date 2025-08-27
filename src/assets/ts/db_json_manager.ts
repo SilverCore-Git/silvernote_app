@@ -12,6 +12,7 @@ interface Item {
     parms: {
         life: number; // age en milliseconde
         passwd?: string;
+        editable: boolean;
     }
 
     created_at: string;
