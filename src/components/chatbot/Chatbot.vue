@@ -1,6 +1,7 @@
 <template>
 
     <div 
+        v-if="first_loaded"
         @click="open = !open" 
         :class="!open ? 'bottom-6 right-6' : '-bottom-9 -right-9'"
         class=" fixed  w-15 h-15 bg-[var(--btn)] p-2 rounded-full cursor-pointer hover"
@@ -53,9 +54,9 @@
     </div>
 
     <div
-        :class="open ? 'right-0 top-0 bottom-8 md:top-auto md:right-8' : '-bottom-200 -right-130'"
+        :class="open ? 'right-0 inset-y-0 md:bottom-8 md:top-auto md:right-8' : '-bottom-200 -right-200'"
         class="
-            fixed w-screen h-[90%]
+            fixed w-screen h-screen md:h-[90%]
             md:w-120 md:max-h-[85%] 
             flex flex-col transition-all transform duration-500 ease-in-out
         "
@@ -129,13 +130,13 @@
 
 <script lang="ts" setup>
 
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import MessageDubble from './MessageDubble.vue';
 import Loader from './Loader.vue';
 import { useUser } from '@clerk/vue';
 import db from '@/assets/ts/database';
 import { api_url } from '@/assets/ts/backend_link';
-import { loaded } from '@/assets/ts/utils';
+//import { loaded } from '@/assets/ts/utils';
 
 const { user } = useUser();
 
@@ -143,6 +144,7 @@ const max_LenghtOfMessage: number = 150;
 const open = ref<boolean>(false);
 
 const loading = ref<boolean>(false);
+const first_loaded = ref<boolean>(false);
 const AllMessage = ref<{ origin: 'ai' | 'user' | 'error', text: string }[]>([]);
 const message = ref<string>("");
 const lengthOfMessage = ref<number>(max_LenghtOfMessage);
@@ -159,6 +161,12 @@ const add_message = (content: string) => {
     if (content == '/clear') {
         loading.value = false;
         return AllMessage.value = [];
+    }
+    if (content == '/open 4545') {
+        Open();
+    }
+    if (content == '/close 4545') {
+        close();
     }
 
     if (content && content !== '') {
@@ -190,6 +198,8 @@ const scroll_to_bottom = () => {
 }
 
 const send = async (prompt: string) => {
+
+    if (AllMessage.value.length >= 10) return;
 
     const res = await fetch(`${api_url}/api/ai/send`, {
         method: 'POST',
@@ -229,7 +239,7 @@ const Open = (): void => {
 
     const int = setInterval(async () => {
 
-        if (loaded.value) {
+        //if (loaded.value) {
 
             // créer la session
             const res = await fetch(`${api_url}/api/ai/create`, {
@@ -247,6 +257,7 @@ const Open = (): void => {
             if (res.error) {
                 jeremy_active.value = false;
                 add_error(res.message);
+                first_loaded.value = true;
                 return clearInterval(int)
             }
 
@@ -255,17 +266,18 @@ const Open = (): void => {
                 session_id.value = res.session.uuid;
                 user_id.value = user.value?.id;
                 if (AllMessage.value.length == 0) add_response('Bonjour je suis Jeremy le chatbot de silvernote, je peux vous aider sur tous les sujets mais spécialement sur vos notes !')
+                first_loaded.value = true;
                 return clearInterval(int)
             }
 
-        }
+        //}
 
     }, 1000);
 
 }
 
-onUnmounted(() => close());
-onMounted(() => Open());
+//onUnmounted(() => close());
+//onMounted(() => Open());
 
 </script>
 

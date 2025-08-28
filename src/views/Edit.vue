@@ -171,7 +171,6 @@ const note = ref<Note>({
     title: '',
     content: '',
     pinned: false,
-    type: 'text',
     simply_edit: false,
     date: '',
     id: -1,
@@ -200,7 +199,6 @@ onMounted(async () => {
                                   simply_edit: false,
                                   title: note.value.title,
                                   content: note.value.content,
-                                  type: note.value.type,
                                   date: utils.date(),
                                   tags: []
                               });

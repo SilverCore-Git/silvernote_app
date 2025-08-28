@@ -74,7 +74,7 @@ let hitbox: boolean;
 onMounted(async () => { hitbox = await if_hitbox() })
 
 import PressAndHold from '../PressAndHold.vue';
-import Note_settings from './Note_settings.vue';
+import Note_settings from './Note_Settings.vue';
 import pinFull from '/assets/webp/pin_plein.webp?url';
 
 

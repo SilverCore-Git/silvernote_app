@@ -100,7 +100,7 @@
             <Tags_manager
                 v-if="note"
                 :active="manage_tags"
-                :tags="note!.tags"
+                :tags="note.tags.map(tag => Number(tag))"
                 @update:tags="onTagsUpdate"
                 @update:active="manage_tags = $event; function_reload()"
             />
@@ -134,10 +134,7 @@ import pinEmpty from '/assets/webp/pin_vide.webp?url';
 
 const props = defineProps<{
     id: number;
-    visible: {
-        type: Boolean,
-        required: true,
-    };
+    visible: boolean;
     function_reload: () => Promise<any>;
 }>();
 

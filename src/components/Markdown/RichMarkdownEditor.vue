@@ -233,6 +233,7 @@ const TodoInput = TaskItem.extend({
       new InputRule({
         find: /^\s*-\[\]\s$/,   
         handler: ({ state, range, chain }) => {
+          console.log(state);
           chain()
             .deleteRange(range) 
             .toggleTaskList()

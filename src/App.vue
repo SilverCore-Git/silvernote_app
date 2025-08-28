@@ -232,6 +232,7 @@ onMounted(async () => {
     if (isLoaded.value && ii == -1 && ii2 == -1) {
       setTimeout(() => {}, 1000)
       loader.value = false;
+      loaded.value = true;
       clearInterval(stopLoader);
     }
 

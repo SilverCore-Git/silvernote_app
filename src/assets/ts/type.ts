@@ -5,7 +5,6 @@ export interface Note {
     uuid: string;
     pinned: boolean;
     simply_edit: boolean;
-    type?: string;
     title: string;
     content: string;
     date: string;

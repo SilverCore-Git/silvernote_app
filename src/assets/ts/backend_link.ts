@@ -3,115 +3,51 @@ import db from './database';
 import { salert } from './salert';
 import type { Note, Tag } from './type';
 
-export const api_url: string = 'http://localhost:3000'; // 'https://api.silvernote.fr' || 'http://localhost:3000'
+export const api_url: string = 'https://api.silvernote.fr'; // 'https://api.silvernote.fr' || 'http://localhost:3000'
 
 
-const dev_db = {
-  notes: [
-    {
-      id: 20000001,
-      pinned: false,
-      simply_edit: false,
-      title: "Buy groceries",
-      content: "<p>Buy milk, eggs, and bread.</p>",
-      date: "20 juin 2025",
-      tags: [10000009, 10000004]
-    },
-    {
-      id: 20000002,
-      pinned: true,
-      simply_edit: false,
-      title: "Meeting with the team",
-      content: "<p>Discuss the new project timeline.</p>",
-      date: "21 juin 2025",
-      tags: [10000005, 10000008]
-    },
-    {
-      id: 20000003,
-      pinned: false,
-      simply_edit: false,
-      title: "Fix bug in the app",
-      content: "<p>Critical bug needs to be fixed before release.</p>",
-      date: "22 juin 2025",
-      tags: [10000001, 10000003]
-    },
-    {
-      id: 20000004,
-      pinned: false,
-      simply_edit: false,
-      title: "Write blog post",
-      content: "<p>Write about time management strategies.</p>",
-      date: "23 juin 2025",
-      tags: [10000007, 10000003]
-    },
-    {
-      id: 20000005,
-      pinned: false,
-      simply_edit: false,
-      title: "Doctor appointment",
-      content: "<p>Check-up appointment at 2:30 PM.</p>",
-      date: "24 juin 2025",
-      tags: [10000010, 10000006]
-    },
-    {
-      id: 20000006,
-      pinned: false,
-      simply_edit: false,
-      title: "Plan weekend trip",
-      content: "<p>Plan a trip to the beach with friends.</p>",
-      date: "25 juin 2025",
-      tags: [10000004, 10000007]
-    },
-    {
-      id: 20000007,
-      pinned: false,
-      simply_edit: false,
-      title: "Call Mom",
-      content: "<p>Check in with mom and see how she's doing.</p>",
-      date: "26 juin 2025",
-      tags: [10000004]
-    },
-    {
-      id: 20000008,
-      pinned: false,
-      simply_edit: false,
-      title: "Send email to client",
-      content: "<p>Follow up on the proposal sent last week.</p>",
-      date: "27 juin 2025",
-      tags: [10000005, 10000002]
-    },
-    {
-      id: 20000009,
-      pinned: false,
-      simply_edit: false,
-      title: "Finish project report",
-      content: "<p>Complete the final draft of the report for the project.</p>",
-      date: "28 juin 2025",
-      tags: [10000005, 10000003]
-    },
-    {
-      id: 20000010,
-      pinned: false,
-      simply_edit: false,
-      title: "Check car maintenance",
-      content: "<p>Ensure that the car's oil and tires are checked.</p>",
-      date: "29 juin 2025",
-      tags: [10000006]
-    }
-  ],
+const dev_db: { notes: Note[], tags: Tag[] } = {
   tags: [
-    { id: 10000001, name: "Urgent", active: false, color: "#FF5733" },
-    { id: 10000002, name: "To Do", active: false, color: "#33FF57" },
-    { id: 10000003, name: "Important", active: false, color: "#3357FF" },
-    { id: 10000004, name: "Personal", active: false, color: "#F0E68C" },
-    { id: 10000005, name: "Work", active: false, color: "#8A2BE2" },
-    { id: 10000006, name: "Reminder", active: false, color: "#FFD700" },
-    { id: 10000007, name: "Ideas", active: false, color: "#C71585" },
-    { id: 10000008, name: "Meeting", active: false, color: "#20B2AA" },
-    { id: 10000009, name: "Shopping", active: false, color: "#D2691E" },
-    { id: 10000010, name: "Health", active: false, color: "#008080" }
-  ]
-}
+    { id: 1, active: false, name: "Work", color: "#FFB6C1" },
+    { id: 2, active: false, name: "Personal", color: "#ADD8E6" },
+    { id: 3, active: false, name: "Ideas", color: "#90EE90" },
+    { id: 4, active: false, name: "Urgent", color: "#FFA500" },
+    { id: 5, active: false, name: "Shopping", color: "#FFD700" },
+    { id: 6, active: false, name: "Travel", color: "#87CEFA" },
+    { id: 7, active: false, name: "Fitness", color: "#98FB98" },
+    { id: 8, active: false, name: "Projects", color: "#DA70D6" },
+    { id: 9, active: false, name: "Learning", color: "#F08080" },
+    { id: 10, active: false, name: "Misc", color: "#D3D3D3" }
+  ],
+  notes: Array.from({ length: 20 }, (_, i) => {
+    const id = i + 1;
+    const uuid = crypto.randomUUID();
+    const pinned = Math.random() < 0.3; // 30% de chance d'être épinglé
+    const simply_edit = Math.random() < 0.5;
+    const title = `Note ${id}`;
+    const content = `<p>Ceci est le contenu <strong>HTML</strong> de la note ${id}. Vous pouvez y mettre <em>du texte</em> riche et des listes :</p>
+                     <ul>
+                        <li>Point 1</li>
+                        <li>Point 2</li>
+                     </ul>`;
+    const date = new Date(Date.now() - i * 86400000).toISOString(); // notes sur les 20 derniers jours
+    const tags = Array.from({ length: Math.floor(Math.random() * 3) + 1 }, () =>
+      Math.floor(Math.random() * 10) + 1
+    ); // 1 à 3 tags aléatoires
+
+    return {
+      id,
+      uuid,
+      pinned,
+      simply_edit,
+      title,
+      content,
+      date,
+      tags
+    } as Note;
+  })
+};
+
 
 
 
