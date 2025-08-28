@@ -10,6 +10,7 @@ export interface Note {
     content: string;
     date: string;
     tags: Number[];
+    selected?: boolean;
 };
 
 export interface Tag {

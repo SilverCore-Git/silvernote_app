@@ -4,7 +4,6 @@ import Home from './views/Home.vue';
 import Edit from './views/Edit.vue';
 import Settings from './views/Settings.vue';
 import Dev from './views/Dev.vue';
-import Chatbot from './components/chatbot/Chatbot.vue';
 import Share from './views/Share.vue';
 
 const routes = [
@@ -16,10 +15,10 @@ const routes = [
     meta: { title: 'SilverNote - Home' }
   },
   { 
-    path: '/edit', 
+    path: '/edit/:id', 
     name: 'Edit', 
     component: Edit,
-    props: {},
+    props: true,
     meta: { title: 'SilverNote - Edit' }
   },
   { 

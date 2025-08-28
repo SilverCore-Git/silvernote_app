@@ -5,10 +5,6 @@ import { api_url } from './backend_link';
 import utils from './utils';
 import type { Socket } from 'socket.io-client';
 
-// import back from './backend_link';
-
-// const notes: Note[] = back.db?.notes;
-// const tags: Tag[] = back.db?.tags;
 
 interface NotesDB extends DBSchema {
     notes: {

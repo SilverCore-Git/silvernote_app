@@ -9,8 +9,8 @@
         class="
                 top-0 left-0 w-screen
                 text-2xl font-bold
-                bg-[var(--btn)]
-                flex items-center justify-center fixed z-50
+                bg-[var(--btn)] z-50
+                flex items-center justify-center fixed 
             "
     >
 

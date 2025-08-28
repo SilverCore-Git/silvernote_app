@@ -269,6 +269,7 @@
     import Search_bar from '../components/Search_bar.vue';
     import Tags_item from '../components/tags/Tags_item.vue';
     import HomeNavbar from '@/components/navbar/HomeNavbar.vue';
+    import PressAndHold from '@/components/PressAndHold.vue';
     
     const router = useRouter();
 
@@ -286,6 +287,8 @@
     const tag_color = ref<string>('');
     const if_danger_card = ref<boolean>(false); 
     const Danger_card_props = ref<{ message: string, title: string, btn: boolean, href: string } | undefined>(undefined);
+    const press_and_hold = ref<boolean>(false);
+    const note_settings = ref<{ val: boolean, uuid: string }>({ val: false, uuid: '' });
 
     const list_notes = ref<Note[]>([]);
     const all_tags = ref<Tag[] | undefined>(undefined);
@@ -308,23 +311,6 @@
         window.removeEventListener('resize', updateSize);
     })
 
-    // const toggleOnline = () => {
-    //     const newVal = !isOnline.value;
-    //     if (!navigator.onLine && newVal) return;
-    //     toggle_online(newVal);
-    //     isOnline.value = newVal;
-    //     online_btn.value?.animate(
-    //         [
-    //             { transform: 'scale(1)' },
-    //             { transform: 'scale(0.9)' },
-    //             { transform: 'scale(1)' }
-    //         ],
-    //         {
-    //             duration: 150,
-    //             easing: 'ease-out'
-    //         }
-    //     )
-    // }
 
     const withdraw = async () => {
         const notes: Note[] = await db.getAll('notes');

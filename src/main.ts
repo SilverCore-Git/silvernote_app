@@ -1,7 +1,7 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router.ts'
-import { clerkPlugin } from '@clerk/vue'
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router.ts';
+import { clerkPlugin } from '@clerk/vue';
 
 import './style.css'
 
@@ -13,6 +13,6 @@ if (!PUBLISHABLE_KEY) {
 
 const app = createApp(App)
 
-app.use(router)
+app.use(router);
 app.use(clerkPlugin, { publishableKey: PUBLISHABLE_KEY });
-app.mount('#app')
+app.mount('#app');

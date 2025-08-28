@@ -139,6 +139,7 @@ import db from '../assets/ts/database';
 import utils from '../assets/ts/utils';
 import { hitbox as if_hitbox } from '../assets/ts/settings';
 
+const props = defineProps<{ id: number | 'new' }>()
 
 let hitbox: boolean;
 onMounted(async () => { hitbox = await if_hitbox() })
@@ -182,14 +183,14 @@ const title = ref<HTMLInputElement | null>(null);
 
 const save_title = () => {
   if (note.value.title) {
-    db.saveTitle(note.value.title, Number(route.query.id), socket);
+    db.saveTitle(note.value.title, Number(props.id), socket);
   }
 }
 
 // Fonction pour récupérer la note
 onMounted(async () => {
 
-  if (route.query.id == 'new') {
+  if (props.id == 'new') {
 
     console.log('Création d\'une nouvelle note')
     const Note = await db.create({ 
@@ -221,7 +222,7 @@ onMounted(async () => {
 
   wSocket();
 
-  const fetchedNote = await db.getNote(Number(route.query.id));
+  const fetchedNote = await db.getNote(Number(props.id));
 
   if (fetchedNote) {
     note.value = fetchedNote;
@@ -239,14 +240,14 @@ onUnmounted(async () => {
 // Fonction pour changer l'état du pin
 const change_pin_state = (): void => {
   if_pin_active.value = !if_pin_active.value;
-  db.togle_pinned(Number(route.query.id));
+  db.togle_pinned(Number(props.id));
   router.push({ 
     query: { 
       ...route.query,
       pinned: if_pin_active.value ? 'true' : 'false'
     }
   });
-  db.togle_pinned(Number(route.query.id));
+  db.togle_pinned(Number(props.id));
 };
 
 const update_title = () => {
