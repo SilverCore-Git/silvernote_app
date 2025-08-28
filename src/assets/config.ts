@@ -244,7 +244,7 @@ const plans: {
 };
 
 
-const we_can_buy: boolean = true;
+const we_can_buy: boolean = false;
 const we_can_download: boolean = false;
 
 export {
