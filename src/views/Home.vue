@@ -42,23 +42,40 @@
 
     </header>
 
-    <section id="function" class="py-16 md:py-24 mx-4 mb-8 w-[calc(100vw_-_2rem)]">
+    <section id="function" class="py-16 md:py-24 mb-8 px-4 w-screen ">
 
-        <div class="container mx-auto px-4 text-center max-w-3xl">
+        <div class=" px-4 text-center w-full ">
             
             <h2 class="text-4xl md:text-5xl font-bold mb-12 text-gray-900">
                 Conçu pour votre productivité.
             </h2>
 
-            <ul class="feature-grid grid md:grid-cols-2 grid-cols-1  gap-8 ">
-                <Card 
-                    v-for="(card, index) in function_list" 
-                    :key="index"
-                    :title="card.title"
-                    :content="card.content"
-                    :svg="card.svg"
-                />
-            </ul>
+            <div class="flex justify-center items-center mx-auto w-full gap-10 
+                         flex-col  md:flex-row xl:gap-0">
+
+                <ul class="flex justify-between items-center flex-col h-175 ">
+                    <Card 
+                        v-for="(card, index) in function_list.slice(0, 3)" 
+                        :key="index"
+                        :title="card.title"
+                        :content="card.content"
+                        :svg="card.svg"
+                    />
+                </ul>
+
+                <spline-viewer class="h-200 w-[40%] hidden xl:block " url="https://prod.spline.design/WvISayiZp5mUaMsS/scene.splinecode"></spline-viewer>
+
+                <ul class="flex justify-between items-center flex-col h-175 ">
+                    <Card 
+                        v-for="(card, index) in function_list.slice(-3)" 
+                        :key="index"
+                        :title="card.title"
+                        :content="card.content"
+                        :svg="card.svg"
+                    />
+                </ul>
+
+            </div>
 
         </div>
         
@@ -134,7 +151,7 @@
 
                 </div>
 
-                <div class="lg:w-1/2 mt-8 lg:mt-0 relative">
+                <div class="lg:w-1/2 mt-8 lg:mt-0 hidden lg:block">
 
                     <div class="relative w-[420px] h-[700px] overflow-hidden shadow-2xl rounded-xl ">
                         <!-- size og image : w-[482px] h-[804px] -->
@@ -320,7 +337,10 @@
                     <br>Accédez à toutes les fonctionnalités de notre version beta gratuite, et découvrez comment nous pouvons vous aider à organiser vos idées, vos tâches et vos projets.
                 </p>
 
-                <SignedIn>
+                <spline-viewer class="h-130 w-full  " url="https://prod.spline.design/kSS6nnpDc-RxdMGo/scene.splinecode"></spline-viewer>
+
+
+                <!-- <SignedIn>
                     <a href="https://app.silvernote.fr"><button class="premium text-xl px-8 py-4">
                         Ouvrir silvernote
                     </button></a>
@@ -332,7 +352,7 @@
                             Créer votre compte gratuit
                         </button>
                     </SignUpButton>
-                </SignedOut>
+                </SignedOut> -->
 
             </div>
 <!-- 
@@ -393,6 +413,7 @@
 
 import { ref } from 'vue';
 
+import '@splinetool/viewer';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 const modules = [Autoplay, Pagination, Navigation];
@@ -401,8 +422,6 @@ const modules = [Autoplay, Pagination, Navigation];
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-
-import { SignedIn, SignedOut, SignUpButton } from '@clerk/vue'
 
 import { pricing_plan_list, function_list, we_can_buy } from '../assets/config';
 import { scroll_to } from '../assets/utils';

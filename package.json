@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@clerk/vue": "^1.9.0",
+    "@splinetool/viewer": "^1.10.52",
     "canvas-confetti": "^1.9.3",
     "dotenv": "^17.0.1",
     "swiper": "^11.2.10",
