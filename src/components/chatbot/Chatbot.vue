@@ -130,7 +130,7 @@
 
 <script lang="ts" setup>
 
-import { ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import MessageDubble from './MessageDubble.vue';
 import Loader from './Loader.vue';
 import { useUser } from '@clerk/vue';
@@ -154,6 +154,7 @@ const jeremy_active = ref<boolean>(false);
 
 watch(() => message.value, () => lengthOfMessage.value = max_LenghtOfMessage - message.value.length)
 
+let access: boolean = false;
 
 const add_message = (content: string) => {
     
@@ -163,7 +164,8 @@ const add_message = (content: string) => {
         return AllMessage.value = [];
     }
     if (content == '/open 4545') {
-        Open();
+        access = true;
+        jeremy_active.value = true;
     }
     if (content == '/close 4545') {
         close();
@@ -199,7 +201,7 @@ const scroll_to_bottom = () => {
 
 const send = async (prompt: string) => {
 
-    if (AllMessage.value.length >= 10) return;
+    if (!access) return;
 
     const res = await fetch(`${api_url}/api/ai/send`, {
         method: 'POST',
@@ -262,10 +264,11 @@ const Open = (): void => {
             }
 
             if (res.success) {
-                jeremy_active.value = true;
+                //jeremy_active.value = true;
                 session_id.value = res.session.uuid;
                 user_id.value = user.value?.id;
-                if (AllMessage.value.length == 0) add_response('Bonjour je suis Jeremy le chatbot de silvernote, je peux vous aider sur tous les sujets mais spécialement sur vos notes !')
+                add_error("Jeremy n'est actuellement pas en ligne.")
+                //if (AllMessage.value.length == 0) add_response('Bonjour je suis Jeremy le chatbot de silvernote, je peux vous aider sur tous les sujets mais spécialement sur vos notes !')
                 first_loaded.value = true;
                 return clearInterval(int)
             }
@@ -276,8 +279,8 @@ const Open = (): void => {
 
 }
 
-//onUnmounted(() => close());
-//onMounted(() => Open());
+onUnmounted(() => close());
+onMounted(() => Open());
 
 </script>
 

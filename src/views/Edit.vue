@@ -67,7 +67,7 @@
 
     
     <RichMarkdownEditor 
-      v-if="socket"
+      v-if="socket && note"
       v-bind="attrs" 
       :editable="true" 
       :class="hitbox ? 'bg-blue-600' : ''" 
@@ -156,16 +156,6 @@ import { api_url } from '@/assets/ts/backend_link';
 import Popup from '@/components/Popup.vue';
 import Share_menu from '@/components/popup/share_menu.vue';
 
-const if_pin_active = ref(route.query.pinned == "true");
-const if_open_dropdown = ref<boolean>(false);
-const export_menu = ref<boolean>(false);
-const selected_ext = ref<string>('pdf');
-const share_menu = ref<boolean>(false);
-
-const attrs = useAttrs();
-
-let socket: Socket;
-
 // Initialisation de la note
 const note = ref<Note>({
     title: '',
@@ -177,6 +167,16 @@ const note = ref<Note>({
     uuid: '',
     tags: []
 });
+
+const if_pin_active = ref<boolean>(note.value.pinned);
+const if_open_dropdown = ref<boolean>(false);
+const export_menu = ref<boolean>(false);
+const selected_ext = ref<string>('pdf');
+const share_menu = ref<boolean>(false);
+
+const attrs = useAttrs();
+
+let socket: Socket;
 
 const title = ref<HTMLInputElement | null>(null);
 
@@ -192,7 +192,7 @@ onMounted(async () => {
   if (props.id == 'new') {
 
     console.log('Création d\'une nouvelle note')
-    const Note = await db.create({ 
+    const newNote = await db.create({ 
                                   id: -1,
                                   uuid: '',
                                   pinned: false,
@@ -203,28 +203,35 @@ onMounted(async () => {
                                   tags: []
                               });
 
-    console.log(Note)
-    note.value.id = Note.id || -1;
-    router.push({ 
-      query: { 
-        ...route.query,
-        id: Note.id
-      }
+    note.value.id = newNote.id;
+
+    router.replace({ 
+      params: { id: newNote.id },
+      query: { ...route.query }
     });
 
-    setTimeout(() => {
-      title.value?.focus();
-    }, 1000);
+    setTimeout(() => title.value?.focus(), 1000);
 
-  };
+  }
+
+  const noteId = Number(props.id);
+
+  if (!isNaN(noteId)) {
+
+    const fetchedNote = await db.getNote(noteId);
+
+    console.log(fetchedNote || 'err');
+
+    if (fetchedNote) {
+      note.value = fetchedNote;
+      if_pin_active.value = fetchedNote.pinned;
+    }
+    
+  } else if (props.id !== 'new') {
+    console.warn('ID de note invalide:', props.id);
+  }
 
   wSocket();
-
-  const fetchedNote = await db.getNote(Number(props.id));
-
-  if (fetchedNote) {
-    note.value = fetchedNote;
-  }
 
 });
 
@@ -235,17 +242,18 @@ onUnmounted(async () => {
   };
 });
 
-// Fonction pour changer l'état du pin
-const change_pin_state = (): void => {
+
+const change_pin_state = async (): Promise<void> => {
   if_pin_active.value = !if_pin_active.value;
-  db.togle_pinned(Number(props.id));
-  router.push({ 
+  note.value.pinned = if_pin_active.value;
+  await db.togle_pinned(note.value.id);
+
+  router.replace({ 
     query: { 
       ...route.query,
       pinned: if_pin_active.value ? 'true' : 'false'
     }
   });
-  db.togle_pinned(Number(props.id));
 };
 
 const update_title = () => {

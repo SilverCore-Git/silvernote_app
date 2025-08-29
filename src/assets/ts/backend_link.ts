@@ -2,8 +2,9 @@
 import db from './database';
 import { salert } from './salert';
 import type { Note, Tag } from './type';
+import utils from './utils';
 
-export const api_url: string = 'https://api.silvernote.fr'; // 'https://api.silvernote.fr' || 'http://localhost:3000'
+export const api_url: string = true ? 'https://api.silvernote.fr' : 'http://localhost:3000'; // 'https://api.silvernote.fr' || 'http://localhost:3000'
 
 
 const dev_db: { notes: Note[], tags: Tag[] } = {
@@ -30,7 +31,7 @@ const dev_db: { notes: Note[], tags: Tag[] } = {
                         <li>Point 1</li>
                         <li>Point 2</li>
                      </ul>`;
-    const date = new Date(Date.now() - i * 86400000).toISOString(); // notes sur les 20 derniers jours
+    const date = utils.date();
     const tags = Array.from({ length: Math.floor(Math.random() * 3) + 1 }, () =>
       Math.floor(Math.random() * 10) + 1
     ); // 1 à 3 tags aléatoires
@@ -59,10 +60,18 @@ const info_message = async (): Promise<{ message: string, title: string, btn: bo
 
 export class Session {
 
-  async create (id: string): Promise<void> {
+  async create (user: any): Promise<void> {
+    await fetch(`${api_url}/user/create`, {
+      method: 'POST',
+      body: JSON.stringify({ user: user }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include'
+    })
     await fetch(`${api_url}/user/session/create`, {
       method: 'POST',
-      body: JSON.stringify({ platform: 'web', userId: id }),
+      body: JSON.stringify({ platform: 'web', userId: user.id }),
       headers: {
         'Content-Type': 'application/json',
       },

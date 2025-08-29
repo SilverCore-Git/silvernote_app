@@ -48,7 +48,7 @@ class Database {
     private async push_note(note: Note, socket?: Socket) {
 
         if (socket) {
-            
+
             socket.emit('edit_note', { 
                 uuid: note.uuid,
                 content: note.content,
@@ -152,14 +152,17 @@ class Database {
     public async create(note: Note): Promise<{ id: number }> {
 
         const db = await this.dbPromise;
+
         note.id = Math.floor(Math.random() * (999999999999 - 1000000 + 1)) + 1000;
         note.uuid = await utils.UUID();
+        note.tags = [];
+
         await db.add('notes', note);
 
         await fetch(`${api_url}/api/db/new/note`, {
             method: 'POST',
             headers: {
-            'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             credentials: 'include',
             body: JSON.stringify({ note }),
@@ -187,7 +190,8 @@ class Database {
 
     public async getNote(id: number): Promise<Note | undefined> {
         const db = await this.dbPromise;
-        return db.get('notes', id);
+        const note = await db.get('notes', id);
+        return note;
     }
 
     public async add_notes(notes: Note[]): Promise<void> {

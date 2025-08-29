@@ -274,7 +274,7 @@
 
     const create_new_note = async (): Promise<void> => {
 
-        router.push(`/edit?id=new&pinned=false&simply_edit=false`);
+        router.push(`/edit/new?pinned=false`);
 
     };
 

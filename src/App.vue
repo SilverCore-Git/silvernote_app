@@ -121,10 +121,15 @@ init_db();
 
 const { user, isLoaded } = useUser();
 
+watch(isLoaded, (loaded) => {
+  if (loaded && !user.value?.id) {
+    router.push({ query: { form: "main" } });
+  }
+});
+
 onMounted(async () => {
   
   init_theme();
-  if (!user) router.push({ query: { form: "main" } });
   let tries = 0;
 
   const interval = setInterval(async () => {
@@ -137,7 +142,7 @@ onMounted(async () => {
       }
 
       tries++;
-      await session.create(user.value.id);
+      await session.create(user.value);
       clearInterval(interval);
 
     }
@@ -167,7 +172,7 @@ onMounted(async () => {
     return;
   } 
 
-  if (!need_reset.ok) await db.reset();
+  //if (!need_reset.ok) await db.reset();
 
   let ii: number = 0;
   let ii2: number = 0;

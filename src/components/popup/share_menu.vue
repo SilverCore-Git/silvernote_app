@@ -59,7 +59,7 @@
               type="text"
               placeholder="Mot de passe"
               class="mt-1 w-full rounded-lg px-3 py-2 shadow-sm
-                    focus:outline-none dark:bg-zinc-800
+                    focus:outline-none dark:bg-zinc-800 text-white
                     focus:border border-[var(--btn)]"
             />
 
@@ -118,7 +118,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:modelValue']);
 
-const share_link = ref('fds');
+const share_link = ref('');
 const mn = ref(0);
 const h = ref(1);
 const passwd = ref('');
@@ -149,7 +149,7 @@ const create_share_link = async () => {
     return;
   }
 
-  share_link.value = `http://localhost:5173/share/${res.share.uuid}`;
+  share_link.value = `https://app.silvernote.fr/share/${res.share.uuid}`;
 };
 
 const copy_link = () => navigator.clipboard.writeText(share_link.value);

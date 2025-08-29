@@ -119,7 +119,6 @@ import TaskItem from '@tiptap/extension-task-item'
 import SlashCommand from './SlachCommand'
 import { Extension, InputRule } from '@tiptap/core'
 
-
 import { evaluate } from 'mathjs'
 
 import Loader from '../Loader.vue'
@@ -130,7 +129,7 @@ import { Socket } from 'socket.io-client'
 const props = defineProps<{
   id: number;
   editable?: boolean;
-  data?: Note; 
+  data: Note; 
   uuid: string;
   socket: Socket;
 }>()
@@ -181,7 +180,7 @@ const loadContent = async () => {
 
     if (!note) return await loadContent();
 
-    content.value = note.content || 'Erreur de chargement'
+    content.value = note.content;// || 'Erreur de chargement'
     if (note) console.log(note);
 
 
@@ -197,7 +196,7 @@ function checkForMath() {
 
   const regex = /(\d+(?:\s*[\+\-\*\/]\s*\d+)+)\s*=(?!\d)/g
 
-  editor.value.state.doc.descendants((node, pos) => {
+  editor.value.state.doc.descendants((node: any, pos: any) => {
     if (!node.isText) return true
 
     const text = node.text ?? ''
@@ -215,7 +214,7 @@ function checkForMath() {
         const from = pos + match.index
         const to = from + fullMatch.length
 
-        editor.value?.commands.command(({ tr }) => {
+        editor.value?.commands.command(({ tr }: any) => {
           tr.insertText(evaluated, from, to)
           return true
         })
@@ -232,8 +231,8 @@ const TodoInput = TaskItem.extend({
     return [
       new InputRule({
         find: /^\s*-\[\]\s$/,   
-        handler: ({ state, range, chain }) => {
-          console.log(state);
+        handler: ({ state, range, chain }: any) => {
+          console.log('state : ', state);
           chain()
             .deleteRange(range) 
             .toggleTaskList()
@@ -248,7 +247,7 @@ const TodoInput = TaskItem.extend({
 // Sauvegarde du contenu dans la base
 const saveContent = () => {
   if (editor.value) {
-    db.saveContent(editor.value.getHTML(), props.id, props.socket);
+    db.saveContent(editor.value.getHTML(), props.data.id, props.socket);
   }
 }
 
