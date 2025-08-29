@@ -13,17 +13,6 @@
             @click="reload_list"
         ></div>
 
-        <div 
-            class="saving-svg 
-                    w-7
-                    h-7
-                " 
-            :class="[
-                { 'jump': isJumping }
-            ]"
-            @click="saving_notes"
-        ></div>
-
     </HomeNavbar>
     
     <div class="Search_bar flex flex-col lg:flex-row items-center w-full gap-4">
@@ -364,12 +353,6 @@
 
     };
 
-    const saving_notes = async (): Promise<void> => {
-        if (!isOnline.value) return;
-        triggerJump();
-        await back.save_all(await db.getAll('notes'), await db.getAll('tags'));
-    };
-
     const reload_list = async () => {        
 
         if (isRotating.value) return;
@@ -389,20 +372,6 @@
 
     };
 
-    const isJumping = ref(false);
-
-    const triggerJump = () => {
-
-        isJumping.value = false;
-
-        requestAnimationFrame(() => {
-            isJumping.value = true;
-            setTimeout(() => {
-                isJumping.value = false;
-            }, 500);
-        });
-        
-    };
 
     onMounted(async () => {
 
@@ -465,7 +434,7 @@
         filter: invert(1);
         transition: all 0.3s ease;
     }
- 
+
     .reload-svg {
         cursor: pointer;
         background-size: contain;
