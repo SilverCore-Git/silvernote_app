@@ -12,31 +12,42 @@
         style="background-image: url('/assets/img/hero_baner.jpg');"
     >
 
-        <div class="w-full h-160 rounded-xl text-center py-20 md:py-32" style="backdrop-filter: blur(8px) contrast(80%) brightness(200%);">
+        <div class="w-full h-160 rounded-xl text-center py-10 md:py-25 xl:py-10" style="backdrop-filter: blur(8px) contrast(80%) brightness(200%);">
 
-            <div class="mx-auto px-4 max-w-4xl">
+            <div class="mx-auto flex justify-center items-center flex-row">
 
-                <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6 text-gray-900">
-                    Vos notes <span class="text-[var(--btn)]">accessibles partout</span> et simplement.
-                </h1>
+                <div class="max-w-4xl">
 
-                <p class="text-xl md:text-2xl mb-10 text-gray-700">
-                    SilverNote est l'application de prise de notes simple et intuitive conçue pour vous, disponible sur mobile, PC et en tant qu'application web.
-                    <br>Projet en développement, beta gratuite disponible.
-                </p>
+                    <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6 text-gray-900">
+                        Vos notes <span class="text-[var(--btn)]">accessibles partout</span> et simplement.
+                    </h1>
 
-                <div class=" flex flex-col sm:flex-row justify-center items-center">
-                    
-                    <a href="https://app.silvernote.fr"><button class="premium m-4">Découvrir silvernote</button></a>
-                    
-                    <div class="hidden">
-                        <a href="https://app.silvernote.fr"><button class="primary m-4">Ouvrir silvernote</button></a>
-                        <button @click="scroll_to('function')" style="backdrop-filter: blur(50px);" class="second">En savoir plus</button>
+                    <p class="text-xl md:text-2xl mb-10 text-gray-700">
+                        SilverNote est l'application de prise de notes simple et intuitive conçue pour vous, disponible sur mobile, PC et en tant qu'application web.
+                        <br>Projet en développement, beta gratuite disponible.
+                    </p>
+
+                    <div class=" flex flex-col sm:flex-row justify-center items-center">
+                        
+                        <a href="https://app.silvernote.fr"><button class="premium m-4">Découvrir silvernote</button></a>
+                        
+                        <div class="hidden">
+                            <a href="https://app.silvernote.fr"><button class="primary m-4">Ouvrir silvernote</button></a>
+                            <button @click="scroll_to('function')" style="backdrop-filter: blur(50px);" class="second">En savoir plus</button>
+                        </div>
+
                     </div>
 
                 </div>
 
+                <div >
+
+                    <img src="/assets/img/phone_note.png" class="h-140 hidden xl:block" />
+
+                </div>
+
             </div>
+
 
         </div>
 
@@ -153,11 +164,11 @@
 
                 <div class="lg:w-1/2 mt-8 lg:mt-0 hidden lg:block">
 
-                    <div class="relative w-[420px] h-[700px] overflow-hidden shadow-2xl rounded-xl ">
-                        <!-- size og image : w-[482px] h-[804px] -->
+                    <div class="relative w-[355px] h-[700px] overflow-hidden ">
                         <img 
-                            src="/assets/img/jeremy_mockup.jpg" 
-                            class="absolute inset-0 w-full h-full object-cover"/>
+                            src="/assets/img/jeremy_mockup.png" 
+                            class="absolute inset-0 w-[355px] h-[700px] object-contain "   
+                        />
                     </div>
 
                 </div>
@@ -337,22 +348,26 @@
                     <br>Accédez à toutes les fonctionnalités de notre version beta gratuite, et découvrez comment nous pouvons vous aider à organiser vos idées, vos tâches et vos projets.
                 </p>
 
-                <spline-viewer class="h-130 w-full  " url="https://prod.spline.design/kSS6nnpDc-RxdMGo/scene.splinecode"></spline-viewer>
+                <spline-viewer class="h-130 w-full  hidden md:block" url="https://prod.spline.design/kSS6nnpDc-RxdMGo/scene.splinecode"></spline-viewer>
 
 
-                <!-- <SignedIn>
-                    <a href="https://app.silvernote.fr"><button class="premium text-xl px-8 py-4">
-                        Ouvrir silvernote
-                    </button></a>
-                </SignedIn>
+                <div class="block md:hidden">
 
-                <SignedOut>
-                    <SignUpButton>
-                        <button class="premium text-xl px-8 py-4">
-                            Créer votre compte gratuit
-                        </button>
-                    </SignUpButton>
-                </SignedOut> -->
+                    <SignedIn>
+                        <a href="https://app.silvernote.fr"><button class="premium text-xl px-8 py-4">
+                            Ouvrir silvernote
+                        </button></a>
+                    </SignedIn>
+
+                    <SignedOut>
+                        <SignUpButton>
+                            <button class="premium text-xl px-8 py-4">
+                                Créer votre compte gratuit
+                            </button>
+                        </SignUpButton>
+                    </SignedOut>
+
+                </div>
 
             </div>
 <!-- 
@@ -430,6 +445,7 @@ import Nav_bar from '../components/Nav_bar.vue';
 import Card from '../components/Card.vue';
 import Pricing_card from '../components/Pricing_card.vue'
 import Footer from '../components/Footer.vue';
+import { SignedIn, SignedOut } from '@clerk/vue';
 
 
 const selected_mode_for = ref<number>(1);
