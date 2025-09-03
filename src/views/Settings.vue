@@ -128,8 +128,8 @@
 
         </section>
 
-        <a class=" text-gray-500 hover:text-gray-700 cursor-pointer
-                absolute bottom-0 inset-x-0 text-center"
+        <a class=" text-gray-500 hover:text-gray-700 cursor-pointer mt-50
+                  flex justify-center items-center w-full text-center"
           @click="router.push('/dev')"
         >dev sandbox</a>
 

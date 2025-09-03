@@ -2,6 +2,7 @@
 <template>
 
     <HomeNavbar>
+
         <div 
             class="reload-svg 
                     w-7
@@ -15,15 +16,15 @@
 
     </HomeNavbar>
     
-    <div class="Search_bar flex flex-col lg:flex-row items-center w-full gap-4">
+    <div class="Search_bar flex flex-col lg:flex-row justify-center items-center w-full gap-4">
 
-        <Search_bar class="mb-4 lg:mb-0 lg:w-1/2 w-full" :desktop="isLargeScreen" pt="env(safe-area-inset-top)" />
+        <Search_bar class="w-full" :desktop="isLargeScreen" pt="env(safe-area-inset-top)" />
 
         <Swiper
             v-if="all_tags && all_tags.length" 
             :slides-per-view="'auto'"
             :space-between="8"
-            class=" w-full lg:w-1/2 pr-1.5 pl-1.5"
+            class=" w-full lg:w-500 pr-1.5 pl-1.5"
             :class="[hitbox ? 'bg-amber-400' : '', 'lg:scrollbar-thin', 'scrollbar-thumb-rounded']"
         >
 
@@ -106,71 +107,109 @@
         />
 
         <div 
-            class="overflow-y-auto mt-4 min-h-[60vh]" 
-            :class="hitbox ? 'bg-purple-600' : ''"
+            class="overflow-y-auto mt-4 min-h-[80vh] space-y-5"
         >
 
-            <ul 
-                class="grid grid-cols-1 gap-4 overflow-hidden
-                        md:grid-cols-[calc(100%/3_-_1rem)_calc(100%/3_-_1rem)_calc(100%/3_-_1rem)] 
-                        lg:grid-cols-[calc(100%/4_-_1rem)_calc(100%/4_-_1rem)_calc(100%/4_-_1rem)_calc(100%/4_-_1rem)] 
-                       "
-            >
 
-                <li 
-                    v-if="list_notes && list_notes.length"
-                    v-for="(note, index) in list_notes" 
-                    :key="index"
+            <div v-if="list_notes.filter(note => note.pinned == true).length">
+
+                <span class="font-bold text-lg">Notes épinglées</span>
+
+                <ul 
+                    class="space-y-4 mt-2
+                       columns-2 md:columns-3 lg:columns-4  "
                 >
 
-                    <Note_card
-                        @pin="withdraw"
-                        :id="note.id"
-                        :uuid="note.uuid"
-                        :pinned="note.pinned"
-                        :title="note.title" 
-                        :content="note.content" 
-                        :date="note.date"
-                        :tags="note.tags.map(tag => Number(tag))"
-                        :simply_edit="note.simply_edit"
-                        :function_reload="reload_list"
-                    />
-
-                </li>
-
-                <li v-else-if="list_notes && list_notes.length == 0" class="flex flex-col">
-
-                    <div 
-                        class="note-card bg-[var(--bg2)] p-3 border-2"
-                        style="border-radius: 15px;"
+                    <li 
+                        v-if="list_notes && list_notes.length"
+                        v-for="(note, index) in list_notes.filter(note => note.pinned == true)" 
+                        :key="index"
                     >
 
-                        <p class="font-bold text-xl w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
-                            Aucune note trouvée !
-                        </p>
+                        <Note_card
+                            @pin="withdraw"
+                            :id="note.id"
+                            :uuid="note.uuid"
+                            :pinned="note.pinned"
+                            :title="note.title" 
+                            :content="note.content" 
+                            :date="note.date"
+                            :tags="note.tags.map(tag => Number(tag))"
+                            :function_reload="reload_list"
+                        />
 
-                        <div class="bg-transparent w-full z-50 relative mt-5">
-                            <button 
-                                style="box-shadow: 0 0 15px #3636364f;" 
-                                @click="create_new_note" 
-                                class="add-note-btn cursor-pointer rounded-[var(--br-btn)] flex items-center justify-center w-full"
-                            >
-                                <div class="add-note-svg"></div>
-                            </button>
+                    </li>
+                
+                </ul>
+
+            </div>
+
+            <div>
+
+                <span class="font-bold text-lg" v-if="list_notes.filter(note => note.pinned == true).length">Autres</span>
+
+                <ul  
+                    class="space-y-4 mt-2
+                            columns-2 md:columns-3 lg:columns-4 
+                        "
+                >
+
+                    <li 
+                        v-if="list_notes && list_notes.length"
+                        v-for="(note, index) in list_notes.filter(note => note.pinned == false)" 
+                        :key="index"
+                        class="break-inside-avoid "
+                    >
+
+                        <Note_card
+                            @pin="withdraw"
+                            :id="note.id"
+                            :uuid="note.uuid"
+                            :pinned="note.pinned"
+                            :title="note.title" 
+                            :content="note.content" 
+                            :date="note.date"
+                            :tags="note.tags.map(tag => Number(tag))"
+                            :function_reload="reload_list"
+                        />
+
+                    </li>
+
+                    <li v-else-if="list_notes && list_notes.length == 0" class="flex flex-col">
+
+                        <div 
+                            class="note-card bg-[var(--bg2)] p-3 border-2"
+                            style="border-radius: 15px;"
+                        >
+
+                            <p class="font-bold text-xl w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
+                                Aucune note trouvée !
+                            </p>
+
+                            <div class="bg-transparent w-full z-50 relative mt-5">
+                                <button 
+                                    style="box-shadow: 0 0 15px #3636364f;" 
+                                    @click="create_new_note" 
+                                    class="add-note-btn cursor-pointer rounded-[var(--br-btn)] flex items-center justify-center w-full"
+                                >
+                                    <div class="add-note-svg"></div>
+                                </button>
+                            </div>
+
                         </div>
 
-                    </div>
+                    </li>
 
-                </li>
+                    <li v-else class="flex flex-col">
+                        <Note_card_loader class="mb-3" />
+                        <Note_card_loader class="mb-3" />
+                        <Note_card_loader class="mb-3" />
+                        <Note_card_loader class="mb-3" />
+                    </li>
 
-                <li v-else class="flex flex-col">
-                    <Note_card_loader class="mb-3" />
-                    <Note_card_loader class="mb-3" />
-                    <Note_card_loader class="mb-3" />
-                    <Note_card_loader class="mb-3" />
-                </li>
+                </ul>
 
-            </ul>
+            </div>
 
         </div>
 

@@ -9,11 +9,11 @@
         ? 'border-3 px-2.5 py-0.5 border-[#F28C28] cursor-pointer' 
         : 'border-1 px-3 py-1 cursor-pointer'"
       class="inline-flex items-center justify-center 
-            text-mb text-center rounded-[var(--br-btn)] 
+            text-md uppercase text-center rounded-[var(--br-btn)] 
             whitespace-nowrap select-none"
       :style="{ backgroundColor: tag_color, color: text_color }"
     >
-      <span class="text-lg md:text-base">
+      <span class="md:text-base">
         {{ name }}
       </span>
     </div>

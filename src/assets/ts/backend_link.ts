@@ -3,8 +3,9 @@ import db from './database';
 import { salert } from './salert';
 import type { Note, Tag } from './type';
 import utils from './utils';
+import { dev } from '@/../package.json';
 
-export const api_url: string = true ? 'https://api.silvernote.fr' : 'http://localhost:3000'; // 'https://api.silvernote.fr' || 'http://localhost:3000'
+export const api_url: string = dev ? 'http://localhost:3000' : 'https://api.silvernote.fr'; // 'https://api.silvernote.fr' || 'http://localhost:3000'
 
 
 const dev_db: { notes: Note[], tags: Tag[] } = {

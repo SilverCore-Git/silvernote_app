@@ -6,35 +6,39 @@
 >
 
   <div
-    class="note-card min-w-60 bg-[var(--bg2)] text-[var(--text)] p-3
-            border-2 relative cursor-pointer md:h-[28vh]"
+    class="note-card md:min-w-60 bg-[var(--bg2)] text-[var(--text)] p-3
+            border-2 relative cursor-pointer "
     :class="note_settings ? 'border-[var(--btn)]' : 'border-[var(--text)]'"
     style="border-radius: var(--br-card);"    
   > 
   
-    <p class="font-bold text-xl w-[80%] whitespace-nowrap overflow-hidden text-ellipsis" :class="hitbox ? 'bg-teal-500' : ''">{{ utils.htmlToText(title) }}</p>
-
-    <div class="absolute right-3 top-3">
-      <div
-          v-if="pinned"
-          class="pin w-7 h-7 md:w-6 md:h-6"
-          :style="{
-            backgroundImage: `url(${pinFull})`
-          }"
-      ></div>
-    </div>
+    <p 
+      class="font-bold text-[4vw] md:text-lg w-full overflow-hidden text-ellipsis uppercase">
+      {{ utils.htmlToText(title) }}
+    </p>
 
     <p 
-      class="text-[3vw] md:text-lg my-5 md:my-0 w-[65%] h-[80%] whitespace-nowrap md:whitespace-normal overflow-hidden text-ellipsis"
-      :class="hitbox ? 'bg-blue-500' : ''"
+      class="text-[3vw] md:text-lg my-2
+              max-h-50 multiline-8"
     >
       {{ utils.htmlToText(content) }}
     </p>
 
-    <div class="absolute left-1 bottom-1 max-w-[60%] overflow-scroll whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
-      <span v-for="(tag, index) in Tags" :key="index" class="ml-2 border-1 border-[var(--text)] pr-1.5 pl-1.5 rounded-[var(--br-tag)]" :style="{ backgroundColor: tag.color, color: utils.get_text_color(tag.color) }" :class="hitbox ? 'bg-teal-500' : ''">{{ tag.name }}</span>
+    <div
+      class="flex flex-wrap gap-1.5
+            overflow-hidden "
+    >
+      <span 
+        v-for="(tag, index) in Tags" 
+        :key="index" 
+        class="border border-[var(--text)] px-1.5 rounded-lg uppercase text-sm truncate"
+        :style="{ backgroundColor: tag.color, color: utils.get_text_color(tag.color) }"
+      >
+        {{ tag.name }}
+      </span>
     </div>
-    <label class="absolute right-2 bottom-1 z-10" :class="hitbox ? 'bg-teal-500' : ''">{{ date }}</label>
+
+    <!-- <label class="absolute right-2 bottom-1 z-10 text-sm font-semibold">{{ date }}</label> -->
 
   </div>
 
@@ -68,14 +72,9 @@ import ConfirmDialog from '../popup/ConfirmDialog.vue';
 import db from '../../assets/ts/database';
 import utils from '../../assets/ts/utils';
 import type { Tag } from '../../assets/ts/type';
-import { hitbox as if_hitbox } from '../../assets/ts/settings';
-
-let hitbox: boolean;
-onMounted(async () => { hitbox = await if_hitbox() })
 
 import PressAndHold from '../PressAndHold.vue';
 import Note_settings from './Note_Settings.vue';
-import pinFull from '/assets/webp/pin_plein.webp?url';
 
 
 const props = defineProps<{
@@ -84,7 +83,6 @@ const props = defineProps<{
     date: string;
     pinned: boolean;
     tags: number[];
-    simply_edit: boolean;
     id: number;
     uuid: string;
     function_reload: () => Promise<any>;
@@ -186,6 +184,20 @@ watch(theme, () => {
   background-position: center;
   margin-right: 5px;
   transform: translateY(4px);
+}
+
+.multiline-8 {
+  display: -webkit-box;
+  -webkit-line-clamp: 8;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.multiline-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .pin {

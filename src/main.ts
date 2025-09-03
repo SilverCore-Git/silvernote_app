@@ -2,10 +2,14 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router.ts';
 import { clerkPlugin } from '@clerk/vue';
+import pkg from '../package.json' assert { type: 'json' };
+
 
 import './style.css'
 
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+const PUBLISHABLE_KEY = pkg.dev
+  ? import.meta.env.VITE_CLERK_TEST_PUBLISHABLE_KEY
+  : import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
   throw new Error('Add your Clerk Publishable Key to the .env file')

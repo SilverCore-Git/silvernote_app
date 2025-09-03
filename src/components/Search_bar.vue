@@ -1,13 +1,10 @@
 <template>
 
   <div
-    :class="desktop && filteredNotes.length && searchQuery != '' 
-            ? 'note-card bg-[var(--bg2)] text-[var(--text)] fixed right-4 left-4  flex flex-col pl-4 pt-2.5 pb-2.5 border border-[var(--text)] z-30'
-            : 'note-card bg-[var(--bg2)] text-[var(--text)] relative lg:ml-0 ml-4 mr-4 w-full flex flex-col pl-4 pt-2.5 pb-2.5 border border-[var(--text)] z-30'"
-    style="box-shadow: 0 0 15px #3636364f; border-radius: var(--br-btn);"
-    :style="desktop && filteredNotes.length && searchQuery != '' 
-            ? { top: `calc(4.5rem + ${props.pt})` } 
-            : ''"
+    class="note-card bg-[var(--bg2)] text-[var(--text)] border border-[var(--text)] z-30 rounded-2xl py-1.5
+          relative lg:ml-0 ml-4 mr-4 w-full flex flex-col pl-4"
+    style="box-shadow: 0 0 15px #3636364f;"
+    
   >
 
     <div class="flex flex-row items-center">
@@ -20,21 +17,25 @@
         placeholder="Recherche..."
       >
 
-      <button v-if="searchQuery !== ''" @click="searchQuery = ''" class="cross-btn absolute end-1" :class="hitbox ? 'bg-red-600' : ''"></button>
-      <button v-if="searchQuery == ''" @click="search_input?.focus()" class="search-btn absolute end-4" :class="hitbox ? 'bg-red-600' : ''"></button>
+      <button v-if="searchQuery !== ''" @click="searchQuery = ''" class="cross-btn absolute end-1"></button>
+      <button v-if="searchQuery == ''" @click="search_input?.focus()" class="search-btn absolute end-4"></button>
 
     </div>
 
+  </div>
+
+  <div class="absolute top-0 inset-x-0 z-50 md:w-2/5">
+
     <div 
-        v-if="filteredNotes.length && searchQuery != '' && !desktop" 
-        class="space-y-2 w-[100%] relative overflow-x-auto pr-4" 
+        v-if="filteredNotes.length && searchQuery != ''" 
+        class="space-y-2 w-full overflow-x-auto p-2 absolute top-11 bg-[var(--bg2)] rounded-2xl border border-[var(--text)]" 
         :style="{ maxHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)`, minHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)` }"
     >
 
       <div 
         v-for="note in filteredNotes" 
         :key="note.id"
-        @click="router.push(`/edit?id=${note.id}&pinned=${note.pinned}`)"
+        @click="router.push(`/edit/${note.id}?pinned=${note.pinned}`)"
         class="bg-[var(--bg2)] p-2 shadow cursor-pointer border-1 border-[var(--text)]"
         style="border-radius: var(--br-card);"
       >
@@ -69,49 +70,6 @@
     <div v-if="searchQuery !== '' && !filteredNotes.length" class="text-sm mt-4">
         Aucune note trouvée.
     </div>
-
-  
-    <ul 
-        v-else-if="filteredNotes.length && searchQuery != '' && desktop" 
-        class="mt-4 space-y-2 w-full relative overflow-x-auto gap-4
-              pr-4 " 
-        :style="{ maxHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)`,  minHeight: `calc(80vh - 3.5rem - ${props.pt})` }"
-    >
-
-      <li 
-        v-for="note in filteredNotes" 
-        :key="note.id"
-        @click="router.push(`/edit?id=${note.id}&pinned=${note.pinned}`)"
-        class="bg-[var(--bg2)] p-2 shadow cursor-pointer border-1 border-[var(--text)]"
-        style="border-radius: var(--br-card);"
-      >
-        <h3 
-            class="font-semibold"
-            v-html="highlightMatch(utils.clean_html(note.title), searchQuery)"
-        ></h3>
-
-        <p 
-            class="text-sm max-h-20 overflow-hidden mb-3"
-            v-html="highlightMatch(utils.clean_html(note.content), searchQuery)"
-        ></p>
-
-        <div class="w-full flex flex-row justify-start items-center
-          overflow-scroll whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
-
-          <div 
-            v-for="(tag, index) in all_tags.filter(tag => note.tags.includes(tag.id))" 
-            :key="index" 
-            class="ml-2 border-1 border-[var(--text)] pr-1.5 pl-1.5 rounded-[var(--br-tag)]" 
-            :style="{ backgroundColor: tag.color, color: utils.get_text_color(tag.color) }" 
-            :class="hitbox ? 'bg-teal-500' : ''"
-            v-html="highlightMatch(utils.clean_html(tag.name), searchQuery)"
-          ></div>
-
-        </div>
-
-      </li>
-
-    </ul>
 
   </div>
 
@@ -189,8 +147,8 @@ onMounted(async () => {
     .search-btn {
 
         cursor: pointer;
-        width: 30px;
-        height: 30px;
+        width: 25px;
+        height: 25px;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
@@ -203,8 +161,8 @@ onMounted(async () => {
     .cross-btn {
 
         cursor: pointer;
-        width: 55px;
-        height: 55px;
+        width: 35px;
+        height: 35px;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
