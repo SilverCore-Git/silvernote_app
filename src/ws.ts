@@ -3,6 +3,7 @@ import { httpServer } from './app';
 import notes from './assets/ts/notes';
 import JsonListManager from './assets/ts/db_json_manager';
 import { Note } from './assets/ts/types';
+import config from "./config.json";
 
 
 const share = new JsonListManager('share.json');
@@ -12,12 +13,12 @@ setInterval(async () => {
     for (const note of local_note_db.values()) {
         await notes.updateNote(note);
     }
-}, 10 * 1000);
+}, 5 * 1000);
 
 
 export const io = new Server(httpServer, {
     cors: {
-        origin: "http://localhost:5173",
+        origin: config.corsOptions.origin,
         methods: ["GET", "POST"]
     },
     path: '/socket.io/'
@@ -31,16 +32,14 @@ io.on('connection', (socket) => {
     // A client join a room
     socket.on('join_share', async ({ uuid }) => {
         socket.join(uuid);
+        console.log(uuid)
     });
 
     // on edit
     socket.on('edit_note', async ({ uuid, content, title }) => {
 
-        const TheShare = await share.getByUUID(uuid);
-        if (!TheShare) return;
-
-        const noteUuid = TheShare.note_uuid;
-
+        const noteUuid = uuid;
+        
         if (!local_note_db.has(noteUuid)) {
             const result = await notes.getNoteByUUID(noteUuid);
             if (!result.note) return;

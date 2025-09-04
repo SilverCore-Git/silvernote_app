@@ -180,13 +180,18 @@ router.post('/create', async (req: Request, res: Response) => {
     name: user.fullName!
   })
 
-  const db_user = await db.add_user({
+  await db.add_user({
     userId: user.id,
     customerId: strip_user_id,
     planId: 'Silver'
   })
 
-  res.json(db.get_user(user.id));
+  res.cookie('user_id', user.id, {
+    httpOnly: true,
+    secure: false,
+  });
+
+  res.json(await db.get_user(user.id));
   
 })
 

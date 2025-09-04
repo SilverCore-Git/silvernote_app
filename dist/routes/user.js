@@ -110,12 +110,16 @@ router.post('/create', async (req, res) => {
         email: String(user.emailAddresses[0].emailAddress),
         name: user.fullName
     });
-    const db_user = await database_1.default.add_user({
+    await database_1.default.add_user({
         userId: user.id,
         customerId: strip_user_id,
         planId: 'Silver'
     });
-    res.json(database_1.default.get_user(user.id));
+    res.cookie('user_id', user.id, {
+        httpOnly: true,
+        secure: false,
+    });
+    res.json(await database_1.default.get_user(user.id));
 });
 router.post('/verify', async (req, res) => {
     const { user_id } = req.body;

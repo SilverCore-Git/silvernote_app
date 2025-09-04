@@ -8,7 +8,7 @@
     },
     "news": {
         "active": true,
-        "message": "Cet app est en cours de développement, certaines fonctionnalités peuvent ne pas être disponibles.",
+        "message": "Simplifier vous la tache avec silvernote.",
         "title": "Bienvenue sur SilverNote",
         "btn": false,
         "href": "https://www.silvernote.fr"
