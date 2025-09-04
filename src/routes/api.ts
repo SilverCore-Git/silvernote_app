@@ -3,7 +3,6 @@ import fs from 'fs';
 import type { News, Note } from '../assets/ts/types';
 import path from 'path';
 import JsonListManager from '../assets/ts/db_json_manager';
-import { randomUUID } from 'crypto';
 import notes from '../assets/ts/notes';
 
 

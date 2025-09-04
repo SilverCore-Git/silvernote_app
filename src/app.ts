@@ -5,6 +5,7 @@ import cors from 'cors';
 import path from 'path';
 import { createServer } from 'http';
 import 'dotenv/config';
+import AuthMiddleware from './routes/AuthMiddleware';
 
 import config from './config.json';
 
@@ -26,6 +27,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(AuthMiddleware);
 
 
 // Routes
