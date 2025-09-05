@@ -5,7 +5,7 @@ import cors from 'cors';
 import path from 'path';
 import { createServer } from 'http';
 import 'dotenv/config';
-import AuthMiddleware from './routes/AuthMiddleware';
+import AuthMiddleware from './middleware/AuthMiddleware';
 
 import config from './config.json';
 

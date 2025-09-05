@@ -37,6 +37,9 @@ router.post('/plan/set', async (req: Request, res: Response) => {
 // route de création de session
 router.post('/session/create', async (req: Request, res: Response) => {
 
+  res.json({});
+  return;
+
   const { platform, userId }: { platform: string, userId: string } = req.body; // platform => app type (web, electron, capacitor)
   let sessions; 
 
@@ -80,6 +83,9 @@ router.post('/session/create', async (req: Request, res: Response) => {
 // route de fermeture de session
 router.post('/session/close', async (req: Request, res: Response) => {
 
+  res.json({});
+  return;
+
   const session_id: any = req.cookies.session_id;
 
   const sessions = await db.verify_session(session_id);
@@ -101,6 +107,9 @@ router.post('/session/close', async (req: Request, res: Response) => {
 
 // route de vérification de session
 router.post('/session/verify', async (req: Request, res: Response) => {
+
+  res.json({});
+  return;
 
   const session_id = req.cookies.session_id;
 
@@ -174,17 +183,21 @@ async function createStripeCustomer(user: {
 router.post('/create', async (req: Request, res: Response) => {
 
   const user: User = req.body.user;
-  
-  const strip_user_id: string = await createStripeCustomer({
-    email: String(user.emailAddresses[0].emailAddress),
-    name: user.fullName!
-  })
 
-  await db.add_user({
-    userId: user.id,
-    customerId: strip_user_id,
-    planId: 'Silver'
-  })
+  if (!await db.exist_user(user.id)) {
+
+    const strip_user_id: string = await createStripeCustomer({
+      email: String(user.emailAddresses[0].emailAddress),
+      name: user.fullName!
+    })
+
+    await db.add_user({
+      userId: user.id,
+      customerId: strip_user_id,
+      planId: 'Silver'
+    })
+
+  };
 
   res.cookie('user_id', user.id, {
     httpOnly: true,

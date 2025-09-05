@@ -11,6 +11,7 @@ const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
 const http_1 = require("http");
 require("dotenv/config");
+const AuthMiddleware_1 = __importDefault(require("./middleware/AuthMiddleware"));
 const config_json_1 = __importDefault(require("./config.json"));
 // Import des routes
 const api_1 = __importDefault(require("./routes/api"));
@@ -28,6 +29,7 @@ app.use((0, morgan_1.default)('dev'));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
+app.use(AuthMiddleware_1.default);
 // Routes
 app.use('/api', api_1.default);
 app.use('/api/ai', api_ai_1.default);
