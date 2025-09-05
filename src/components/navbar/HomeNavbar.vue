@@ -51,12 +51,12 @@
 
                         <ul>
 
-                            <li @click="router.push('/settings')">
+                            <li @click.stop="router.push('/settings')">
                                 <div class="gear-svg nav-svg max-w-6 max-h-6 min-w-6 min-h-6"></div>
                                 Paramètre
                             </li>
 
-                            <li @click="openAccount">
+                            <li @click.stop="openAccount">
 
                                 <div class="nav-svg max-w-6 max-h-6 min-w-6 min-h-6" style="filter: invert(0);">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -76,6 +76,15 @@
 
                             </li>
 
+                            <hr />
+
+                            <li @click.stop="toggle_notes_views_mode()" class="text-lg">
+                                <div class="nav-svg max-w-6 max-h-6 min-w-6 min-h-6" :class="notes_views_mode == 'default' ? 'grid-svg' : 'grid2-svg'"></div>
+                                Organiser par {{ notes_views_mode == "default" ? 'dossiers' : 'épinglé' }} 
+                            </li>
+
+                            <hr />
+
                             <span class="text-base flex justify-center w-full mt-1">version : {{ version }}</span>
                             <span v-if="dev" class="text-base flex justify-center w-full">acces developpeur</span>
                             
@@ -84,7 +93,6 @@
                     </div>
 
                 </transition>
-
 
             </div>
 
@@ -100,6 +108,7 @@ import { UserButton } from '@clerk/vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { version, dev } from '../../../package.json';
+import { notes_views_mode, toggle_notes_views_mode } from '@/assets/ts/Notes_views';
 
 const router = useRouter();
 const if_open_dropdown = ref<boolean>(false);
@@ -146,6 +155,20 @@ header {
     background-repeat: no-repeat;
     background-position: center;
     background-image: url('../../assets/svgs/gear.svg');
+}
+
+.grid-svg {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url('../../assets/svgs/grid.svg');
+}
+
+.grid2-svg {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url('../../assets/svgs/grid2.svg');
 }
 
 

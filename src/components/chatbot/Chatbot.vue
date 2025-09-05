@@ -166,6 +166,7 @@ const add_message = (content: string) => {
     if (content == '/open 4545') {
         access = true;
         jeremy_active.value = true;
+        return;
     }
     if (content == '/close 4545') {
         close();

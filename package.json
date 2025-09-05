@@ -1,7 +1,7 @@
 {
   "name": "silvernote_front",
   "private": true,
-  "version": "0.0.1-beta",
+  "version": "0.0.2-beta",
   "dev": true,
   "type": "module",
   "scripts": {
@@ -31,6 +31,7 @@
     "dompurify": "^3.2.6",
     "fs": "^0.0.1-security",
     "idb": "^8.0.3",
+    "masonry-layout": "^4.2.2",
     "mathjs": "^14.5.0",
     "socket.io-client": "^4.8.1",
     "sweetalert2": "^11.22.2",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.7",
+    "@types/masonry-layout": "^4.2.8",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.21",

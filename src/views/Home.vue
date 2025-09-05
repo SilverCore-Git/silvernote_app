@@ -86,7 +86,7 @@
 
     </div>
 
-    <div class=" overflow-x-hidden mb-30" :class="hitbox ? 'bg-rose-600' : ''">
+    <div class=" overflow-x-hidden mb-30" >
 
         <Danger_card 
             v-if="tip" 
@@ -107,7 +107,60 @@
         />
 
         <div 
+            class="overflow-y-auto mt-4 min-h-screen space-y-5"
+            v-if="notes_views_mode == 'tag'"
+        >
+
+            <div 
+                v-for="tag in all_tags"
+            >
+
+                <div v-if="list_notes.find(note => note.tags.includes(tag.id))">
+
+                    <div 
+                        class="font-bold text-lg p-2 rounded-[var(--br-btn)]
+                        border-2 w-30 flex justify-center items-center border-[var(--text)]"
+                        :style="{ backgroundColor: tag.color, color: utils.get_text_color(tag.color) }"
+                    >
+                        {{ tag.name }}
+                    </div>
+
+                    <ul 
+                        class="space-y-4 mt-2
+                        columns-2 md:columns-3 lg:columns-4  "
+                    >
+
+                        <li 
+                            v-if="list_notes && list_notes.length"
+                            v-for="(note, index) in list_notes.filter(note => note.tags.includes(tag.id))" 
+                            :key="index"
+                        >
+
+                            <Note_card
+                                @pin="withdraw"
+                                :id="note.id"
+                                :uuid="note.uuid"
+                                :pinned="note.pinned"
+                                :title="note.title" 
+                                :content="note.content" 
+                                :date="note.date"
+                                :tags="note.tags.map(tag => Number(tag))"
+                                :function_reload="reload_list"
+                            />
+
+                        </li>
+                    
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div 
             class="overflow-y-auto mt-4 min-h-[80vh] space-y-5"
+            v-if="notes_views_mode == 'default'"
         >
 
 
@@ -149,7 +202,7 @@
                 <span class="font-bold text-lg" v-if="list_notes.filter(note => note.pinned == true).length">Autres</span>
 
                 <ul  
-                    class="space-y-4 mt-2
+                    class="space-y-4 mt-2 h-full
                             columns-2 md:columns-3 lg:columns-4 
                         "
                 >
@@ -158,7 +211,7 @@
                         v-if="list_notes && list_notes.length"
                         v-for="(note, index) in list_notes.filter(note => note.pinned == false)" 
                         :key="index"
-                        class="break-inside-avoid "
+                        class="break-avoid"
                     >
 
                         <Note_card
@@ -186,16 +239,6 @@
                                 Aucune note trouvée !
                             </p>
 
-                            <div class="bg-transparent w-full z-50 relative mt-5">
-                                <button 
-                                    style="box-shadow: 0 0 15px #3636364f;" 
-                                    @click="create_new_note" 
-                                    class="add-note-btn cursor-pointer rounded-[var(--br-btn)] flex items-center justify-center w-full"
-                                >
-                                    <div class="add-note-svg"></div>
-                                </button>
-                            </div>
-
                         </div>
 
                     </li>
@@ -216,7 +259,6 @@
     </div>
 
     <div
-        v-if="list_notes && list_notes?.length" 
         class="bg-transparent flex justify-center items-center w-full z-50 fixed left-0"
         style="bottom: env(safe-area-inset-bottom);"
     >
@@ -281,12 +323,12 @@
     import { Swiper, SwiperSlide } from 'swiper/vue';
     import 'swiper/css';
 
-    import db from '../assets/ts/database';
-    import back from '../assets/ts/backend_link';
-    import { init_notes } from '../assets/ts/utils';
-    import type { Note, Tag } from '../assets/ts/type';
-    import { hitbox as if_hitbox } from '../assets/ts/settings';
-    //import { toggle_online } from '../assets/ts/online';
+    import db from '@/assets/ts/database';
+    import back from '@/assets/ts/backend_link';
+    import utils, { init_notes } from '@/assets/ts/utils';
+    import type { Note, Tag } from '@/assets/ts/type';
+    import { hitbox as if_hitbox } from '@/assets/ts/settings';
+    import { notes_views_mode } from '@/assets/ts/Notes_views'
 
     let hitbox: boolean;
     onMounted(async () => { hitbox = await if_hitbox() });
@@ -335,7 +377,6 @@
     onUnmounted(() => {
         window.removeEventListener('resize', updateSize);
     })
-
 
     const withdraw = async () => {
         const notes: Note[] = await db.getAll('notes');
@@ -453,6 +494,13 @@
 </script>
 
 <style scoped>
+
+.break-avoid {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  -moz-column-break-inside: avoid;
+}
 
     .Search_bar {
 

@@ -7,7 +7,7 @@
 
   <div
     class="note-card md:min-w-60 bg-[var(--bg2)] text-[var(--text)] p-3
-            border-2 relative cursor-pointer "
+            border-2 relative cursor-pointer h-full min-h-40"
     :class="note_settings ? 'border-[var(--btn)]' : 'border-[var(--text)]'"
     style="border-radius: var(--br-card);"    
   > 
@@ -37,8 +37,6 @@
         {{ tag.name }}
       </span>
     </div>
-
-    <!-- <label class="absolute right-2 bottom-1 z-10 text-sm font-semibold">{{ date }}</label> -->
 
   </div>
 
