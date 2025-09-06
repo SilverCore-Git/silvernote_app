@@ -156,14 +156,12 @@ const toggleToDoList = () => editor.value?.chain().focus().toggleTaskList().run(
 const toggleUnderline = () => editor.value?.chain().focus().toggleUnderline().run();
 const toggleHeading = (level: any) => editor.value?.chain().focus().toggleHeading({ level }).run();
 
-// États des boutons (actifs ou non)
 const isBoldActive = computed(() => editor.value?.isActive('bold') || false);
 const isItalicActive = computed(() => editor.value?.isActive('italic') || false)
 const isStrikeActive = computed(() => editor.value?.isActive('strike') || false)
 const isUnderlineActive = computed(() => editor.value?.isActive('underline') || false)
 const isCodeActive = computed(() => editor.value?.isActive('code') || false)
 
-// Donne le focus à l'éditeur si non actif
 const focusEditor = () => {
   if (editor.value && !editor.value.isFocused) {
     editor.value.commands.focus()
@@ -172,6 +170,7 @@ const focusEditor = () => {
 
 // Charge le contenu de la note
 const loadContent = async () => {
+
   try {
 
     let note: Note | undefined;
@@ -180,17 +179,16 @@ const loadContent = async () => {
 
     if (!note) return await loadContent();
 
-    content.value = note.content;// || 'Erreur de chargement'
-    if (note) console.log(note);
-
+    content.value = note.content;
 
   } catch (error) {
     console.error('Erreur lors du chargement de la note:', error)
     content.value = 'Erreur de chargement.'
   }
+
 }
 
-// Évalue les expressions mathématiques
+// module de math
 function checkForMath() {
   if (!editor.value) return
 
@@ -244,14 +242,13 @@ const TodoInput = TaskItem.extend({
 })
 
 
-// Sauvegarde du contenu dans la base
 const saveContent = () => {
   if (editor.value) {
     db.saveContent(editor.value.getHTML(), props.data.id, props.socket);
   }
 }
 
-// Raccourci clavier Ctrl/Cmd+Enter pour forcer l’évaluation
+// Raccourci clavier Ctrl/Cmd+Enter pour forcer le calcule
 const MathEvalShortcut = Extension.create({
   name: 'mathEvalShortcut',
   addKeyboardShortcuts() {
@@ -264,13 +261,14 @@ const MathEvalShortcut = Extension.create({
   },
 })
 
+
 // Initialisation
 onMounted(async () => {
 
-  await loadContent();
-
-  setTimeout(() => {}, 1000);
-    
+  setTimeout(async () => {
+      
+    await loadContent();
+      
     editor.value = new Editor({
       extensions: [
         StarterKit,
@@ -293,13 +291,12 @@ onMounted(async () => {
       onUpdate: () => {
         saveContent();
         checkForMath();
-    },
+      },
+    });
 
-  });
-
-  setTimeout(() => {
     loader.value = false;
-  }, 500)
+
+  }, 1500);
 
 });
 

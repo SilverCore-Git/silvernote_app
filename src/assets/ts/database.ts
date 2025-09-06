@@ -110,6 +110,17 @@ class Database {
         }
     }
 
+    public async saveIcon(icon: string, id: number): Promise<void> {
+        const db = await this.dbPromise;
+        const note = await db.get('notes', id);
+        if (note) {
+            note.icon = icon;
+            this.push_note(note);
+            console.log('note mise a jours : ', note)
+            await db.put('notes', note);
+        }
+    }
+
     public async togle_pinned(id: number): Promise<void> {
         const db = await this.dbPromise;
         const note = await db.get('notes', id);
@@ -244,17 +255,17 @@ class Database {
 
     }
 
-    public async reset(): Promise<void> {
+    public async reset({ localANDcloud }: { localANDcloud?: boolean } = {}): Promise<void> {
 
         const notes = await this.getAll('notes');
         const tags = await this.getAll('tags');
 
         for (const tag of tags) {
-            await this.delete_tag(tag.id, true);
+            await this.delete_tag(tag.id, localANDcloud == true ? false : true);
         }
 
         for (const note of notes) {
-            await this.delete(note.id, true);
+            await this.delete(note.id, localANDcloud == true ? false : true);
         }
 
     }

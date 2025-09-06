@@ -1,3 +1,5 @@
 <template>
-    <slot class="masonry-item"></slot>
+    <div class="masonry-item">
+        <slot></slot>
+    </div>
 </template>

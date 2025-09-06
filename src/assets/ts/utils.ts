@@ -74,6 +74,23 @@ class utils {
         return data[0];
     }
 
+    public emojiToBase64 (emoji: string, size = 64, offsetY = 0.05): string {
+
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+
+        const ctx = canvas.getContext('2d')!;
+        ctx.font = `${size}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        ctx.fillText(emoji, size / 2, size / 2 + size * offsetY);
+
+        return canvas.toDataURL('image/png');
+
+    }
+
 }
 
 const init_notes = async (list_notes: Ref<Note[] | undefined>): Promise<void> => {

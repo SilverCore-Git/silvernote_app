@@ -3,6 +3,7 @@
 export interface Note {
     id: number;
     uuid: string;
+    icon?: string;
     pinned: boolean;
     simply_edit: boolean;
     title: string;

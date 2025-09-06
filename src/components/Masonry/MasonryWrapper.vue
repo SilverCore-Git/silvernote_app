@@ -1,54 +1,50 @@
 <template>
-
-    <div class="masonry-grid">
-        
-        <div class="masonry-sizer"></div>
-
-        <slot></slot>
-
-    </div>
-
+  <div class="masonry-grid">
+    <div class="masonry-sizer"></div>
+    <slot></slot>
+  </div>
 </template>
 
-
 <script lang="ts" setup>
-
-import { onMounted, onBeforeUnmount } from "vue";
+import { onMounted, onBeforeUnmount, nextTick } from "vue";
 import Masonry from "masonry-layout";
 
-let msnry: null | any = null;
+let msnry: Masonry | null = null;
 
-onMounted(() => {
+onMounted(async () => {
+  await nextTick();
 
-    msnry = new Masonry(".masonry-grid", {
-        itemSelector: ".masonry-item",
-        columnWidth: ".masonry-sizer",
-        percentPosition: true,
-        gutter: 16
-    });
+  const grid = document.querySelector<HTMLDivElement>('.masonry-grid');
+  if (!grid) return;
 
+  msnry = new Masonry(grid, {
+    itemSelector: ".masonry-item",
+    columnWidth: ".masonry-sizer",
+    percentPosition: true,
+    gutter: 16,
+    transitionDuration: "0.3s"
+  });
+
+  grid.style.height = "100%";
 });
 
 onBeforeUnmount(() => {
-    if (msnry) msnry.destroy();
+  if (msnry) {
+    msnry = null;
+  }
 });
-
-
 </script>
 
-
 <style>
-
 .masonry-grid {
-  display: flex;
-  margin-left: -16px;
-  width: auto;
+  position: relative;
+  width: 100%;
 }
 
 .masonry-sizer,
 .masonry-item {
   width: 25%;
-  padding-left: 16px;
+  padding-bottom: 16px;
 }
 
 @media (max-width: 1024px) {
@@ -68,8 +64,7 @@ onBeforeUnmount(() => {
 @media (max-width: 480px) {
   .masonry-sizer,
   .masonry-item {
-    width: 100%; /* 1 colonne */
+    width: 100%;
   }
 }
-
 </style>

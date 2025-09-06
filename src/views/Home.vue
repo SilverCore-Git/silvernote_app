@@ -139,6 +139,7 @@
                             <Note_card
                                 @pin="withdraw"
                                 :id="note.id"
+                                :icon="note.icon"
                                 :uuid="note.uuid"
                                 :pinned="note.pinned"
                                 :title="note.title" 
@@ -159,76 +160,64 @@
         </div>
 
         <div 
-            class="overflow-y-auto mt-4 min-h-[80vh] space-y-5"
+            class="overflow-hidden h-full mt-4 min-h-[80vh] space-y-5"
             v-if="notes_views_mode == 'default'"
         >
 
+            <MasonryWrapper v-if="list_notes.filter(note => note.pinned == true).length">
 
-            <div v-if="list_notes.filter(note => note.pinned == true).length">
+                <MasonryItem class="absolute inset-x-0">
+                    <span class="font-bold text-lg">Notes épinglées</span>
+                </MasonryItem>
 
-                <span class="font-bold text-lg">Notes épinglées</span>
-
-                <ul 
-                    class="space-y-4 mt-2
-                       columns-2 md:columns-3 lg:columns-4  "
+                <MasonryItem
+                    v-if="list_notes && list_notes.length"
+                    v-for="(note, index) in list_notes.filter(note => note.pinned == true)" 
+                    :key="index"
                 >
 
-                    <li 
-                        v-if="list_notes && list_notes.length"
-                        v-for="(note, index) in list_notes.filter(note => note.pinned == true)" 
-                        :key="index"
-                    >
+                    <Note_card
+                        @pin="withdraw"
+                        :id="note.id"
+                        :uuid="note.uuid"
+                        :pinned="note.pinned"
+                        :icon="note.icon"
+                        :title="note.title" 
+                        :content="note.content" 
+                        :date="note.date"
+                        :tags="note.tags.map(tag => Number(tag))"
+                        :function_reload="reload_list"
+                    />
 
-                        <Note_card
-                            @pin="withdraw"
-                            :id="note.id"
-                            :uuid="note.uuid"
-                            :pinned="note.pinned"
-                            :title="note.title" 
-                            :content="note.content" 
-                            :date="note.date"
-                            :tags="note.tags.map(tag => Number(tag))"
-                            :function_reload="reload_list"
-                        />
+                </MasonryItem>
 
-                    </li>
-                
-                </ul>
 
-            </div>
+                <MasonryItem class="absolute inset-x-0" v-if="list_notes.filter(note => note.pinned == true).length">
+                    <span class="font-bold text-lg">Autres</span>
+                </MasonryItem>
 
-            <div>
-
-                <span class="font-bold text-lg" v-if="list_notes.filter(note => note.pinned == true).length">Autres</span>
-
-                <ul  
-                    class="space-y-4 mt-2 h-full
-                            columns-2 md:columns-3 lg:columns-4 
-                        "
+                <MasonryItem 
+                    v-if="list_notes && list_notes.length"
+                    v-for="(note, index) in list_notes.filter(note => note.pinned == false)" 
+                    :key="index"
                 >
 
-                    <li 
-                        v-if="list_notes && list_notes.length"
-                        v-for="(note, index) in list_notes.filter(note => note.pinned == false)" 
-                        :key="index"
-                        class="break-avoid"
-                    >
+                    <Note_card
+                        @pin="withdraw"
+                        :id="note.id"
+                        :uuid="note.uuid"
+                        :pinned="note.pinned"
+                        :icon="note.icon"
+                        :title="note.title" 
+                        :content="note.content" 
+                        :date="note.date"
+                        :tags="note.tags.map(tag => Number(tag))"
+                        :function_reload="reload_list"
+                    />
 
-                        <Note_card
-                            @pin="withdraw"
-                            :id="note.id"
-                            :uuid="note.uuid"
-                            :pinned="note.pinned"
-                            :title="note.title" 
-                            :content="note.content" 
-                            :date="note.date"
-                            :tags="note.tags.map(tag => Number(tag))"
-                            :function_reload="reload_list"
-                        />
+                </MasonryItem>
 
-                    </li>
-
-                    <li v-else-if="list_notes && list_notes.length == 0" class="flex flex-col">
+                    <li v-if="list_notes && list_notes.length == 0" class="flex flex-col">
 
                         <div 
                             class="note-card bg-[var(--bg2)] p-3 border-2"
@@ -243,16 +232,14 @@
 
                     </li>
 
-                    <li v-else class="flex flex-col">
+                    <li v-else class="hidden  flex-col">
                         <Note_card_loader class="mb-3" />
                         <Note_card_loader class="mb-3" />
                         <Note_card_loader class="mb-3" />
                         <Note_card_loader class="mb-3" />
                     </li>
 
-                </ul>
-
-            </div>
+            </MasonryWrapper>
 
         </div>
 
@@ -339,6 +326,8 @@
     import Search_bar from '../components/Search_bar.vue';
     import Tags_item from '../components/tags/Tags_item.vue';
     import HomeNavbar from '@/components/navbar/HomeNavbar.vue';
+import MasonryWrapper from '@/components/Masonry/MasonryWrapper.vue';
+import MasonryItem from '@/components/Masonry/MasonryItem.vue';
     
     const router = useRouter();
 

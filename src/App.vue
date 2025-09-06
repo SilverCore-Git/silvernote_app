@@ -172,7 +172,7 @@ onMounted(async () => {
     return;
   } 
 
-  //if (!need_reset.ok) await db.reset();
+  if (!need_reset.ok) await db.reset();
 
   let ii: number = 0;
   let ii2: number = 0;

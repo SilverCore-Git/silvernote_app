@@ -7,13 +7,19 @@
 
   <div
     class="note-card md:min-w-60 bg-[var(--bg2)] text-[var(--text)] p-3
-            border-2 relative cursor-pointer h-full min-h-40"
+            border-2 relative cursor-pointer h-full min-h-40 select-none"
     :class="note_settings ? 'border-[var(--btn)]' : 'border-[var(--text)]'"
     style="border-radius: var(--br-card);"    
   > 
   
     <p 
-      class="font-bold text-[4vw] md:text-lg w-full overflow-hidden text-ellipsis uppercase">
+      class="font-bold text-[4vw] md:text-lg w-full overflow-hidden text-ellipsis uppercase
+      flex justify-start items-center flex-row gap-2">
+      <img
+        v-if="icon" 
+        class="w-[26px] h-[26px] cursor-pointer" 
+        :src="icon" 
+      />
       {{ utils.htmlToText(title) }}
     </p>
 
@@ -78,6 +84,7 @@ import Note_settings from './Note_Settings.vue';
 const props = defineProps<{
     title: string;
     content: string;
+    icon?: string;
     date: string;
     pinned: boolean;
     tags: number[];

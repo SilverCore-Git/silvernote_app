@@ -56,6 +56,7 @@
                 <li class="flex flex-col">
                     <button @click="download_db" class="second">télécharger la db</button>
                 </li>
+
             </ul>
 
             <h1
@@ -138,7 +139,7 @@
     const tags_nb = ref<number>(0);
 
     const load_template_db = async () => {
-        await db.reset();
+        await db.reset({ localANDcloud: true });
         await db.add_notes(back.dev_db.notes);
         await db.add_tags(back.dev_db.tags);
         alert('c fini')
@@ -167,6 +168,5 @@
     watch(() => danger.value.value, () => { setTimeout(() => { danger.value.value = false }, 5500) })
     watch(() => success.value.value, () => { setTimeout(() => { success.value.value = false }, 5500) })
     watch(() => warning.value.value, () => { setTimeout(() => { warning.value.value = false }, 5500) })
-
 
 </script>
