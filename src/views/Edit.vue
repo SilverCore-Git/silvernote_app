@@ -96,7 +96,6 @@
       ref="title"
       v-model="note.title"
       @input="save_title"
-      :class="hitbox ? 'bg-indigo-600' : ''"
     />
 
     
@@ -326,17 +325,16 @@ onMounted(async () => {
         if (fetchedNote) {
           note.value = fetchedNote;
           if_pin_active.value = fetchedNote.pinned;
+          wSocket();
         }
 
-      }, 1500)
+      }, 0)
       
     } else if (props.id !== 'new') {
       console.warn('ID de note invalide:', props.id);
     } else {
       console.error('Erreur de chargement de la note.')
     }
-
-    wSocket();
 
     setTimeout(() => {
   

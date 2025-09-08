@@ -6,7 +6,7 @@
       <router-view />
     </div>
   
-    <div v-if="loader" class="absolute inset-0 bg-[var(--bg)] z-50">
+    <div v-if="loader" class="fixed inset-0 bg-[var(--bg)] z-50">
       <div class="flex justify-center items-center w-screen h-screen">
         <Loader :icon="false" />
       </div>
@@ -22,11 +22,11 @@
         <router-view />
       </div>
   
-      <div class="z-50 relative">
-        <Chatbot />
+      <div v-if="open_chatbot" class="z-50 relative">
+        <Chatbot :visible="open_chatbot" />
       </div>
   
-      <div v-if="loader" class="absolute inset-0 bg-[var(--bg)] z-50">
+      <div v-if="loader" class="fixed inset-0 bg-[var(--bg)] z-50">
         <div class="flex justify-center items-center w-screen h-screen">
           <Loader :icon="false" />
         </div>
@@ -89,14 +89,15 @@ import { SignedIn, SignedOut, SignIn, SignUp, useUser } from "@clerk/vue";
 import { loaded } from "./assets/ts/utils";
 
 const isElectron = !!(window as any)?.process?.versions?.electron;
-const loader = ref(true);
+const loader = ref<boolean>(true);
+const open_chatbot = ref<boolean | undefined>(undefined);
 const session = new Session();
 const route = useRoute();
 const router = useRouter();
 
-const signin_form = ref(route.query.form === "signin");
-const signup_form = ref(route.query.form === "signup");
-const main_form = ref(route.query.form === "main");
+const signin_form = ref<boolean>(route.query.form === "signin");
+const signup_form = ref<boolean>(route.query.form === "signup");
+const main_form = ref<boolean>(route.query.form === "main");
 
 watch(() => route.query.form, (form) => {
   signin_form.value = form === "signin";
@@ -130,6 +131,7 @@ watch(isLoaded, (loaded) => {
 onMounted(async () => {
   
   init_theme();
+
   let tries = 0;
 
   const interval = setInterval(async () => {
@@ -201,7 +203,7 @@ onMounted(async () => {
 
     }
 
-  }, 1000)
+  }, 2000)
 
 
   const inter2 = setInterval(async () => {
@@ -228,9 +230,10 @@ onMounted(async () => {
 
     }
 
-  }, 1000)
+  }, 2000)
 
-
+  const chatbot = route.query?.chatbot || '0';
+  open_chatbot.value = chatbot === '1';
 
   const stopLoader = setInterval(() => {
 

@@ -228,7 +228,7 @@ const TodoInput = TaskItem.extend({
   addInputRules() {
     return [
       new InputRule({
-        find: /^\s*-\[\]\s$/,   
+        find: /\[\s*\]\s*/, 
         handler: ({ state, range, chain }: any) => {
           console.log('state : ', state);
           chain()
@@ -296,7 +296,7 @@ onMounted(async () => {
 
     loader.value = false;
 
-  }, 1500);
+  }, 0);
 
 });
 

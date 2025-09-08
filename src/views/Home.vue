@@ -455,11 +455,11 @@ import MasonryItem from '@/components/Masonry/MasonryItem.vue';
             await init_notes(list_notes);
         }, isOnline.value ? 600 : 0);
 
-    });
+        setTimeout(async () => {
+            await reload_list();
+        }, 1000)
 
-    setTimeout(async () => {
-        await reload_list();
-    }, 0)
+    });
 
     watch(all_tags, async (newVal, oldVal) => {
 

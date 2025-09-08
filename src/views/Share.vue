@@ -16,7 +16,7 @@
             ref="title"
             v-model="note!.title"
             @input="saveTitle()"
-            :readonly="editable"
+            :readonly="!editable"
         />
 
         <RichMarkdownEditor 

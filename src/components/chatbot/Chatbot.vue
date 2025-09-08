@@ -94,8 +94,6 @@
                         />
                     </li>
 
-                    <Loader v-if="loading" class="absolute bottom-2 left-0" />
-
                 </ul>
 
             </section>
@@ -130,18 +128,23 @@
 
 <script lang="ts" setup>
 
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import MessageDubble from './MessageDubble.vue';
-import Loader from './Loader.vue';
 import { useUser } from '@clerk/vue';
 import db from '@/assets/ts/database';
 import { api_url } from '@/assets/ts/backend_link';
-//import { loaded } from '@/assets/ts/utils';
+import { io, Socket } from 'socket.io-client';
+
+const props = defineProps<{
+    visible?: boolean;
+}>()
 
 const { user } = useUser();
+const route = useRoute();
 
 const max_LenghtOfMessage: number = 150;
-const open = ref<boolean>(false);
+const open = ref<boolean>(props?.visible || false);
 
 const loading = ref<boolean>(false);
 const first_loaded = ref<boolean>(false);
@@ -152,9 +155,10 @@ const session_id = ref<string>('');
 const user_id = ref<string | undefined>('');
 const jeremy_active = ref<boolean>(false);
 
-watch(() => message.value, () => lengthOfMessage.value = max_LenghtOfMessage - message.value.length)
+let socket_is_connect: boolean = false;
+let socket: Socket;
 
-let access: boolean = false;
+watch(() => message.value, () => lengthOfMessage.value = max_LenghtOfMessage - message.value.length)
 
 const add_message = (content: string) => {
     
@@ -163,8 +167,10 @@ const add_message = (content: string) => {
         loading.value = false;
         return AllMessage.value = [];
     }
+    if (content == '/test') {
+        content = 'Fait un long message de test avec tout type de markdown.'
+    }
     if (content == '/open 4545') {
-        access = true;
         jeremy_active.value = true;
         return;
     }
@@ -183,12 +189,6 @@ const add_message = (content: string) => {
     }
 }
 
-const add_response = (content: string) => {
-    loading.value = false;
-    AllMessage.value.push({ origin: 'ai', text: content });
-    scroll_to_bottom();
-}
-
 const add_error = (content: string) => {
     loading.value = false;
     AllMessage.value.push({ origin: 'error', text: `error: ${content}` });
@@ -202,23 +202,100 @@ const scroll_to_bottom = () => {
 
 const send = async (prompt: string) => {
 
-    if (!access) return;
+    loading.value = true;
 
-    const res = await fetch(`${api_url}/api/ai/send`, {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ uuid: session_id.value, message: prompt })
-    }).then(res => res.json())
+    const newMessage: { origin: 'ai' | 'user' | 'error', text: string } = reactive({ origin: "ai", text: "" });
+    AllMessage.value.push(newMessage);
+    scroll_to_bottom();
 
-    if (res.error) {
-        return add_error(res.message);
+    try {
+
+        const note = await db.getNote(Number(route.params.id));
+
+        const response = await fetch(`${api_url}/api/ai/send`, {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ uuid: session_id.value, message: prompt, note: note?.uuid })
+        });
+
+        const reader = response.body?.getReader();
+        const decoder = new TextDecoder();
+
+        if (!reader) {
+            add_error("Pas de flux reçu");
+            return;
+        }
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split("\n").filter(line => line.startsWith("data:"));
+
+            for (let line of lines) {
+
+                line = line.replace("data: ", "");
+                if (line === "[DONE]") continue;
+                if (line === ' ') continue
+                line = line
+                newMessage.text += line;
+                scroll_to_bottom();
+
+                newMessage.text = newMessage.text.replace(/#34/g, "\n")
+                                                .replace("#34", "\n");
+
+                if (newMessage.text.startsWith('[EDIT]')) {
+
+                    const message = newMessage.text;
+                    const regex = /\[EDIT\]\s+UUID:\s*([^\s]+)\s+CONTENT:\s*(.+)/;
+                    const match = message.match(regex);
+
+                    if (match) {
+
+                        const uuid = match[1];
+                        const content = match[2];
+
+                        if (!socket_is_connect) wsConnect(uuid);
+                        wsSend(uuid, content)
+
+                    }
+
+                }
+
+            }
+        }
+
+        loading.value = false;
+
+    } catch (err: any) {
+        add_error(err.message || "Erreur inconnue");
     }
 
-    if (res.success) {
-        add_response(res.output)
-    }
+};
+
+const wsConnect = (uuid: string) => {
+
+    socket = io(api_url, { path: "/socket.io/" });
+
+    socket.on('connect', () => {
+        console.log('WebSocket connecté !');
+        socket_is_connect = true;
+        socket.emit('join_share', { uuid: uuid });
+    });
+
+    socket.on('disconnect', () => {
+        console.log('WebSocket déconnecté !');
+    });
+
+}
+
+const wsSend = (uuid: string, content: string) => {
+
+    socket.emit('edit_note', { 
+        uuid: uuid,
+        content: content
+    })
 
 }
 
@@ -251,9 +328,7 @@ const Open = (): void => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ 
-                    user: user.value,
-                    notes: await db.getAll('notes'),
-                    tags: await db.getAll('tags')
+                    user: user.value
                 })
             }).then(res => res.json())
 
@@ -265,10 +340,10 @@ const Open = (): void => {
             }
 
             if (res.success) {
-                //jeremy_active.value = true;
+                jeremy_active.value = true;
                 session_id.value = res.session.uuid;
                 user_id.value = user.value?.id;
-                add_error("Jeremy n'est actuellement pas en ligne.")
+                //add_error("Jeremy n'est actuellement pas en ligne.")
                 //if (AllMessage.value.length == 0) add_response('Bonjour je suis Jeremy le chatbot de silvernote, je peux vous aider sur tous les sujets mais spécialement sur vos notes !')
                 first_loaded.value = true;
                 return clearInterval(int)
