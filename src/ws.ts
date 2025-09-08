@@ -47,10 +47,10 @@ io.on('connection', (socket) => {
         }
 
         const note = local_note_db.get(noteUuid)!;
-        note.content = content;
-        note.title = title;
+        if (content) note.content = content;
+        if (title) note.title = title;
 
-        socket.to(uuid).emit('update_note', { content, title });
+        socket.to(uuid).emit('update_note', { content: note.content, title: note.title });
 
         socket.emit('note_saved', { success: true });
 

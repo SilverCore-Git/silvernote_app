@@ -44,10 +44,10 @@ router.post('/verify/data', async (req: Request, res: Response) => {
         const db_tags = (await tag_db.getTagsByUserId(user_id)).tags;
 
         const notesMatch = areArraysEqualIgnoreOrder(db_notes, notes);
-        const tagsMatch = areArraysEqualIgnoreOrder(db_tags, tags);
+        const tagsMatch = areArraysEqualIgnoreOrder(db_tags, tags); // pk ça renvoi false ??
 
         res.json({
-            ok: notesMatch, // rajoute tagsMatch dans le future
+            ok: notesMatch && tagsMatch,
             notes: notesMatch,
             notes_length: db_notes.length,
             tags: tagsMatch,

@@ -3,6 +3,8 @@ import { Router, Request, Response } from 'express';
 import OpenAI from "openai";
 import { prompt_system } from '../assets/config/jeremy_ai.json';
 import db from '../assets/ts/database';
+import notes_db from '../assets/ts/notes';
+import tags_db from '../assets/ts/tags';
 const AIclient = new OpenAI({ apiKey: process.env.OPENAI_SECRET_KEY });
 
 const router = Router();
@@ -13,9 +15,12 @@ let chats: Chat[]  = [];
 
 router.post('/create', async (req: Request, res: Response) => {
 
-    const { user, notes, tags } = req.body;
+    const { user } = req.body;
 
     try {
+
+        const notes = await notes_db.getNoteByUserId(user.id);
+        const tags = await tags_db.getTagsByUserId(user.id);
 
         if (!await db.exist_user(user.id)) {
             res.status(400).json({ 
@@ -45,7 +50,7 @@ router.post('/create', async (req: Request, res: Response) => {
         chats.push(session)
 
         res.json({ success: true, session })
-
+        
     }
     catch (err) {
         res.status(500).json({ error: true, message: err })
@@ -75,47 +80,73 @@ router.post('/close', async (req: Request, res: Response) => {
 
 });
 
-
 router.post('/send', async (req: Request, res: Response) => {
 
-    const { uuid, message } = req.body;
+    const { uuid, message, note } = req.body;
 
     try {
 
         const chat = chats.find(chat => chat.uuid == uuid);
 
-        if (!chat) { 
-            res.json({ error: true, message: 'idk // chat is not defined' })
+        if (!chat) {
+            res.json({ error: true, message: 'Chat non trouvé' });
+            return;
         }
 
+        let prompt: string = '';
+
+        if (!note) {
+            const notes = await notes_db.getNoteByUserId(chat.userID);
+            const tags = await tags_db.getTagsByUserId(chat.userID);
+            prompt = `Tag de l\'utilisateur : ${JSON.stringify(tags)}\n Notes de l\'utilisateur : ${JSON.stringify(notes)}\n Message de l'utilisateur : ${message}`;
+        }
         else {
+            const notes = await notes_db.getNoteByUUID(note);
+            prompt = `Note ouverte : ${JSON.stringify(notes)}\n Message de l'utilisateur : ${message}`;
+        }
+ 
+        chat.messages.push({
+            role: 'user',
+            content: prompt
+        });
 
-            chat!.messages.push({
-                role: 'user',
-                content: message
-            })
+        const stream = await AIclient.chat.completions.create({
+            model: "gpt-5-mini",
+            messages: chat.messages,
+            stream: true
+        });
 
-            const response = await AIclient.chat.completions.create({
-                model: "gpt-5-mini",
-                messages: chat!.messages
-            });
+        res.setHeader("Content-Type", "text/event-stream");
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("Connection", "keep-alive");
+        res.flushHeaders();
+        res.socket?.setNoDelay(true);
 
-            chat!.messages.push({
-                role: 'assistant',
-                content: response.choices[0].message.content || ''
-            })
+        let assistantMessage = "";
 
-            res.json({ success: true, output: response.choices[0].message.content, allout: response.choices, chat: chat?.messages })
-
+        for await (const chunk of stream) {
+        const token = chunk.choices[0]?.delta?.content || "";
+            if (token) {
+                assistantMessage += token;
+                res.write(`data: ${token}\n\n`);
+            }
         }
 
-    }
+        chat.messages.push({
+            role: 'assistant',
+            content: assistantMessage
+        });
 
-    catch (err) {
-        res.status(500).json({ error: true, message: err })
+        res.write("data: [DONE]\n\n");
+
+        res.end();
+
+    } catch (err) {
+        res.status(500).json({ error: true, message: err });
     }
 
 });
+
 
 
 

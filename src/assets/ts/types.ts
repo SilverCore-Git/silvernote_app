@@ -28,6 +28,7 @@ export interface Layout {
 export interface Note {
     uuid?: string;
     user_id: string;
+    icon?: string;
     title: string;
     content: string;
     tags?: string[];
