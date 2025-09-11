@@ -1,6 +1,5 @@
 <template>
   <div class="masonry-grid">
-    <div class="masonry-sizer"></div>
     <slot></slot>
   </div>
 </template>
@@ -12,20 +11,22 @@ import Masonry from "masonry-layout";
 let msnry: Masonry | null = null;
 
 onMounted(async () => {
+
   await nextTick();
 
   const grid = document.querySelector<HTMLDivElement>('.masonry-grid');
   if (!grid) return;
 
+  grid.style.height = "100%";
+
   msnry = new Masonry(grid, {
     itemSelector: ".masonry-item",
-    columnWidth: ".masonry-sizer",
+    columnWidth: ".masonry-item-style",
     percentPosition: true,
     gutter: 16,
-    transitionDuration: "0.3s"
+    transitionDuration: "0.2s"
   });
 
-  grid.style.height = "100%";
 });
 
 onBeforeUnmount(() => {
@@ -33,6 +34,7 @@ onBeforeUnmount(() => {
     msnry = null;
   }
 });
+
 </script>
 
 <style>
@@ -41,30 +43,28 @@ onBeforeUnmount(() => {
   width: 100%;
 }
 
-.masonry-sizer,
-.masonry-item {
+.masonry-item-style {
   width: 25%;
-  padding-bottom: 16px;
+  margin-bottom: 16px;
 }
 
-@media (max-width: 1024px) {
+.masonry-hr-style {
+  margin-bottom: 16px;
+}
+
+
+@media (max-width: 1080px) {
   .masonry-sizer,
-  .masonry-item {
-    width: 33.333%;
+  .masonry-item-style {
+    width: 33.333%; /* 3 colonnes */
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 700px) {
   .masonry-sizer,
-  .masonry-item {
-    width: 50%;
+  .masonry-item-style {
+    width: 50%; /* 2 colonnes */
   }
 }
 
-@media (max-width: 480px) {
-  .masonry-sizer,
-  .masonry-item {
-    width: 100%;
-  }
-}
 </style>

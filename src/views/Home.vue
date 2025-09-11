@@ -164,11 +164,11 @@
             v-if="notes_views_mode == 'default'"
         >
 
-            <MasonryWrapper v-if="list_notes.filter(note => note.pinned == true).length">
+            <MasonryWrapper v-if="list_notes.filter(note => note.pinned == true).length" class="w-full">
 
-                <MasonryItem class="absolute inset-x-0">
+                <MasonryHr class="absolute inset-x-0">
                     <span class="font-bold text-lg">Notes épinglées</span>
-                </MasonryItem>
+                </MasonryHr>
 
                 <MasonryItem
                     v-if="list_notes && list_notes.length"
@@ -192,9 +192,9 @@
                 </MasonryItem>
 
 
-                <MasonryItem class="absolute inset-x-0" v-if="list_notes.filter(note => note.pinned == true).length">
+                <MasonryHr class="absolute inset-x-0" v-if="list_notes.filter(note => note.pinned == true).length">
                     <span class="font-bold text-lg">Autres</span>
-                </MasonryItem>
+                </MasonryHr>
 
                 <MasonryItem 
                     v-if="list_notes && list_notes.length"
@@ -328,6 +328,7 @@
     import HomeNavbar from '@/components/navbar/HomeNavbar.vue';
 import MasonryWrapper from '@/components/Masonry/MasonryWrapper.vue';
 import MasonryItem from '@/components/Masonry/MasonryItem.vue';
+import MasonryHr from '@/components/Masonry/MasonryHr.vue';
     
     const router = useRouter();
 
@@ -430,7 +431,7 @@ import MasonryItem from '@/components/Masonry/MasonryItem.vue';
 
         setTimeout(async () => {
             list_notes.value = [];
-            all_tags.value = []
+            all_tags.value = [];
             await init_notes(list_notes);
             all_tags.value = await db.getAll('tags');
             console.log('Rechargement des notes...')
@@ -453,11 +454,11 @@ import MasonryItem from '@/components/Masonry/MasonryItem.vue';
         setTimeout(async () => {
             all_tags.value = await db.getAll('tags');
             await init_notes(list_notes);
-        }, isOnline.value ? 600 : 0);
+        }, 500);
 
         setTimeout(async () => {
             await reload_list();
-        }, 1000)
+        }, 3000)
 
     });
 

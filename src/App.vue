@@ -2,7 +2,7 @@
 
   <div v-if="isElectron">
   
-    <div class="mr-[var(--mrl)] ml-[var(--mrl)] relative">
+    <div v-if="!loader" class="mr-[var(--mrl)] ml-[var(--mrl)] relative">
       <router-view />
     </div>
   

@@ -1,5 +1,5 @@
 <template>
-    <div class="masonry-item masonry-item-style">
+    <div class="masonry-item masonry-hr-style">
         <slot></slot>
     </div>
 </template>
