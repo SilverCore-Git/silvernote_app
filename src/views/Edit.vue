@@ -100,7 +100,7 @@
 
     
     <RichMarkdownEditor 
-      v-if="socket && note && loaded"
+      v-if="socket && loaded"
       v-bind="attrs" 
       :editable="true"
       :id="-2" 

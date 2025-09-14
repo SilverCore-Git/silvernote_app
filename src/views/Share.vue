@@ -9,6 +9,20 @@
         class="flex flex-col justify-center items-center h-full mb:mr-[10%] mb:ml-[10%] mt-12 overflow-x-hidden "
     >
 
+        <div class="w-full flex justify-start ml-[10%]">
+
+        <button ref="emojiBtn">
+
+            <img
+                v-if="note.icon" 
+                class="w-[64px] h-[64px] cursor-pointer" 
+                :src="note.icon" 
+            />
+
+        </button>
+        
+        </div>
+
         <input 
             class="text-3xl mb-3 font-bold" 
             type="text" 

@@ -24,7 +24,7 @@
             v-if="all_tags && all_tags.length" 
             :slides-per-view="'auto'"
             :space-between="8"
-            class=" w-full lg:w-500 pr-1.5 pl-1.5"
+            class=" w-full lg:w-500 pr-1.5 pl-1.5 rounded-xl"
             :class="[hitbox ? 'bg-amber-400' : '', 'lg:scrollbar-thin', 'scrollbar-thumb-rounded']"
         >
 
@@ -159,14 +159,17 @@
 
         </div>
 
-        <div 
+        <ul 
             class="overflow-hidden h-full mt-4 min-h-[80vh] space-y-5"
             v-if="notes_views_mode == 'default'"
         >
 
-            <MasonryWrapper v-if="list_notes.filter(note => note.pinned == true).length" class="w-full">
+            <MasonryWrapper v-if="list_notes && list_notes.length" class="w-full">
 
-                <MasonryHr class="absolute inset-x-0">
+                <MasonryHr 
+                    class="absolute inset-x-0" 
+                    v-if="list_notes.filter(note => note.pinned == true).length"
+                >
                     <span class="font-bold text-lg">Notes épinglées</span>
                 </MasonryHr>
 
@@ -192,7 +195,10 @@
                 </MasonryItem>
 
 
-                <MasonryHr class="absolute inset-x-0" v-if="list_notes.filter(note => note.pinned == true).length">
+                <MasonryHr 
+                    class="absolute inset-x-0" 
+                    v-if="list_notes.filter(note => note.pinned == true).length"
+                >
                     <span class="font-bold text-lg">Autres</span>
                 </MasonryHr>
 
@@ -217,31 +223,52 @@
 
                 </MasonryItem>
 
-                    <li v-if="list_notes && list_notes.length == 0" class="flex flex-col">
-
-                        <div 
-                            class="note-card bg-[var(--bg2)] p-3 border-2"
-                            style="border-radius: 15px;"
-                        >
-
-                            <p class="font-bold text-xl w-[80%] whitespace-nowrap overflow-hidden text-ellipsis">
-                                Aucune note trouvée !
-                            </p>
-
-                        </div>
-
-                    </li>
-
-                    <li v-else class="hidden  flex-col">
-                        <Note_card_loader class="mb-3" />
-                        <Note_card_loader class="mb-3" />
-                        <Note_card_loader class="mb-3" />
-                        <Note_card_loader class="mb-3" />
-                    </li>
-
             </MasonryWrapper>
 
-        </div>
+            <li v-else-if="list_notes.length < 1" class="flex flex-col">
+
+                <div 
+                    class="w-full h-full py-20 flex justify-center items-center flex-col gap-2"
+                >
+
+                    <div class="w-30 h-30">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17 17L21 21M21 17L17 21M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H13M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19M19 9V14" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+
+                    <p class="font-bold text-xl">
+                        Aucune note trouvée !
+                    </p>
+
+                    <div 
+                        v-if="all_tags?.filter(tag => tag.active == true).length"
+                        class="font-bold text-xl flex flex-col max-w-55 mt-6"
+                    >
+
+                        <span class="mb-2">Filtre activé :</span>
+
+                        <ul class="flex flex-wrap gap-2">
+                            <span 
+                                v-for="tag in all_tags?.filter(tag => tag.active == true)"
+                                class="border border-[var(--text)] px-1.5 rounded-lg uppercase text-sm truncate"
+                                :style="{ backgroundColor: tag.color, color: utils.get_text_color(tag.color) }"
+                            >
+                                {{ tag.name }}
+                            </span>
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </li>
+
+            <li v-else class=" flex-col">
+                <Loader :icon="false" />
+            </li>
+
+        </ul>
 
     </div>
 
@@ -322,13 +349,13 @@
 
     import Danger_card from '../components/Danger_card.vue';
     import Note_card from '../components/notes/Note_card.vue';
-    import Note_card_loader from '../components/notes/Note_card_loader.vue';
     import Search_bar from '../components/Search_bar.vue';
     import Tags_item from '../components/tags/Tags_item.vue';
     import HomeNavbar from '@/components/navbar/HomeNavbar.vue';
-import MasonryWrapper from '@/components/Masonry/MasonryWrapper.vue';
-import MasonryItem from '@/components/Masonry/MasonryItem.vue';
-import MasonryHr from '@/components/Masonry/MasonryHr.vue';
+    import MasonryWrapper from '@/components/Masonry/MasonryWrapper.vue';
+    import MasonryItem from '@/components/Masonry/MasonryItem.vue';
+    import MasonryHr from '@/components/Masonry/MasonryHr.vue';
+    import Loader from '@/components/Loader.vue';
     
     const router = useRouter();
 

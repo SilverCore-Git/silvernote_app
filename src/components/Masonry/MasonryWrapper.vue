@@ -12,20 +12,24 @@ let msnry: Masonry | null = null;
 
 onMounted(async () => {
 
-  await nextTick();
+  setTimeout(async () => { 
+    
+    await nextTick(); 
 
-  const grid = document.querySelector<HTMLDivElement>('.masonry-grid');
-  if (!grid) return;
+    const grid = document.querySelector<HTMLDivElement>('.masonry-grid');
+    if (!grid) return;
 
-  grid.style.height = "100%";
+    grid.style.height = "100%";
 
-  msnry = new Masonry(grid, {
-    itemSelector: ".masonry-item",
-    columnWidth: ".masonry-item-style",
-    percentPosition: true,
-    gutter: 16,
-    transitionDuration: "0.2s"
-  });
+    msnry = new Masonry(grid, {
+      itemSelector: ".masonry-item",
+      columnWidth: ".masonry-item-style",
+      percentPosition: true,
+      gutter: 16,
+      transitionDuration: "0.2s"
+    });
+
+  }, 500);
 
 });
 
