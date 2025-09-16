@@ -45,6 +45,7 @@
                                 w-7
                                 h-7
                             "
+                        @click="delete_note(1)"
                     ></div>
 
                     <div
@@ -112,6 +113,13 @@
                 v-model="share"
             />
 
+            <ConfirmDialog 
+                :visible="dialogue.visible"
+                :message="dialogue.message"
+                @confirm="delete_note(2)"
+                @cancel="dialogue.visible = false"
+            />
+
         </div>
 
     </Teleport>
@@ -131,6 +139,7 @@ import Tags_manager from '../tags/tags_manager.vue';
 
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';
+import ConfirmDialog from '../popup/ConfirmDialog.vue';
 
 const props = defineProps<{
     id: number;
@@ -142,7 +151,6 @@ const emit = defineEmits(['update:visible']);
 
 const emitClose = () => {
   emit('update:visible', false);
-  props.function_reload();
 };
 
 const share = ref<boolean>(false);
@@ -150,7 +158,29 @@ const manage_tags = ref<boolean>(false);
 const if_open_dropdown = ref<boolean>(false);
 const note = ref<Note | undefined>(undefined);
 const if_pin_active = ref<boolean>(false);
+const dialogue = ref<{
+    visible: boolean,
+    message: string
+}>({
+    visible: false,
+    message: ''
+})
 
+
+const delete_note = async (state: number): Promise<void> => {
+    if (state == 1) {
+        dialogue.value.message = `Êtes vous sur de vouloir supprimer la note : ${note.value?.title}`;
+        dialogue.value.visible = true;
+    }
+    else if (state == 2) {
+        dialogue.value.visible = false;
+        await db.delete(props.id);
+
+        emit('update:visible', false);
+        props.function_reload()
+    }
+    return;
+}
 
 const change_pin_state = async () => {
     if_pin_active.value = !if_pin_active.value;
@@ -159,6 +189,7 @@ const change_pin_state = async () => {
 
 const onTagsUpdate = (newTags: number[]) => {
   db.saveTags(newTags, props.id);
+  props.function_reload();
 };
 
 onMounted(async () => {

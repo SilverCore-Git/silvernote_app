@@ -72,8 +72,8 @@
             >
 
                 <div class="flex justify-center items-center flex-row">
-                    <span class="font-bold mr-2 text-xl">Jeremy</span>
-                    <div class="round" :class="jeremy_active ? 'green' : 'red'"></div>
+                    <span class="font-bold mr-2 text-xl">SilverAI</span>
+                    <div class="round" :class="silverai_active ? 'green' : 'red'"></div>
                 </div>
 
                 <div class="svg cross w-10 h-10 cursor-pointer" @click="open = false"></div>
@@ -135,6 +135,7 @@ import { useUser } from '@clerk/vue';
 import db from '@/assets/ts/database';
 import { api_url } from '@/assets/ts/backend_link';
 import { io, Socket } from 'socket.io-client';
+import type { Note } from '@/assets/ts/type';
 
 const props = defineProps<{
     visible?: boolean;
@@ -146,6 +147,7 @@ const route = useRoute();
 const max_LenghtOfMessage: number = 150;
 const open = ref<boolean>(props?.visible || false);
 
+const pk_ai_api: string = import.meta.env.VITE_SECRET_AI_API_KEY;
 const loading = ref<boolean>(false);
 const first_loaded = ref<boolean>(false);
 const AllMessage = ref<{ origin: 'ai' | 'user' | 'error', text: string }[]>([]);
@@ -153,7 +155,7 @@ const message = ref<string>("");
 const lengthOfMessage = ref<number>(max_LenghtOfMessage);
 const session_id = ref<string>('');
 const user_id = ref<string | undefined>('');
-const jeremy_active = ref<boolean>(false);
+const silverai_active = ref<boolean>(false);
 
 let socket_is_connect: boolean = false;
 let socket: Socket;
@@ -171,7 +173,7 @@ const add_message = (content: string) => {
         content = 'Fait un long message de test avec tout type de markdown.'
     }
     if (content == '/open 4545') {
-        jeremy_active.value = true;
+        silverai_active.value = true;
         return;
     }
     if (content == '/close 4545') {
@@ -181,7 +183,7 @@ const add_message = (content: string) => {
     if (content && content !== '') {
         AllMessage.value.push({ origin: 'user', text: content });
         scroll_to_bottom();
-        if (!jeremy_active.value) {
+        if (!silverai_active.value) {
             return add_error("Jeremy n'est actuellement pas en ligne.")
         }
         loading.value = true;
@@ -200,7 +202,7 @@ const scroll_to_bottom = () => {
     if (container) container.scrollTop = container.scrollHeight;
 }
 
-const send = async (prompt: string) => {
+const send = async (prompt: string): Promise<void> => {
 
     loading.value = true;
 
@@ -210,15 +212,39 @@ const send = async (prompt: string) => {
 
     try {
 
-        const note = await db.getNote(Number(route.params.id));
+        let note: Note | undefined = undefined;
 
+        if (route.query.id) {
+            note = await db.getNote(Number(route.params.id));
+        }
+        
         const response = await fetch(`${api_url}/api/ai/send`, {
             method: 'POST',
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ uuid: session_id.value, message: prompt, note: note?.uuid })
+            headers: { 
+                "Content-Type": "application/json",
+                "authorization": pk_ai_api
+            },
+            body: JSON.stringify({ 
+                uuid: session_id.value, 
+                message: prompt, 
+                note: note?.uuid
+            })
         });
 
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType?.includes("text/event-stream")) {
+            throw new Error("Invalid response format - expected event stream");
+        }
+
         const reader = response.body?.getReader();
+        if (!reader) {
+            throw new Error("No readable stream available");
+        }
+
         const decoder = new TextDecoder();
 
         if (!reader) {
@@ -230,39 +256,45 @@ const send = async (prompt: string) => {
             const { done, value } = await reader.read();
             if (done) break;
 
-            const chunk = decoder.decode(value, { stream: true });
-            const lines = chunk.split("\n").filter(line => line.startsWith("data:"));
+            try {
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split("\n").filter(line => line.startsWith("data:"));
 
-            for (let line of lines) {
+                for (let line of lines) {
 
-                line = line.replace("data: ", "");
-                if (line === "[DONE]") continue;
-                if (line === ' ') continue
-                line = line
-                newMessage.text += line;
-                scroll_to_bottom();
+                    line = line.replace("data: ", "");
+                    if (line === "[DONE]") continue;
+                    if (line === ' ') continue
+                    line = line
+                    newMessage.text += line;
+                    scroll_to_bottom();
 
-                newMessage.text = newMessage.text.replace(/#34/g, "\n")
-                                                .replace("#34", "\n");
+                    newMessage.text = newMessage.text.replace(/#34/g, "\n")
+                                                    .replace("#34", "\n");
 
-                if (newMessage.text.startsWith('[EDIT]')) {
+                    if (newMessage.text.startsWith('[EDIT]')) {
 
-                    const message = newMessage.text;
-                    const regex = /\[EDIT\]\s+UUID:\s*([^\s]+)\s+CONTENT:\s*(.+)/;
-                    const match = message.match(regex);
+                        const message = newMessage.text;
+                        const regex = /\[EDIT\]\s+UUID:\s*([^\s]+)\s+CONTENT:\s*(.+)/;
+                        const match = message.match(regex);
 
-                    if (match) {
+                        if (match) {
 
-                        const uuid = match[1];
-                        const content = match[2];
+                            const uuid = match[1];
+                            const content = match[2];
 
-                        if (!socket_is_connect) wsConnect(uuid);
-                        wsSend(uuid, content)
+                            if (!socket_is_connect) wsConnect(uuid);
+                            wsSend(uuid, content)
+
+                        }
 
                     }
 
                 }
-
+            } catch (err: any) {
+                loading.value = false;
+                add_error(err.message || "Erreur inconnue");
+                AllMessage.value = AllMessage.value.filter(msg => msg !== newMessage);
             }
         }
 
@@ -304,8 +336,9 @@ const close = async () => {
     // fermer la session
     const res = await fetch(`${api_url}/api/ai/close`, {
         method: 'POST',
-        headers: {
+        headers: { 
             "Content-Type": "application/json",
+            "authorization": pk_ai_api
         },
         body: JSON.stringify({ userID: user_id.value, uuid: session_id.value })
     }).then(res => res.json())
@@ -324,8 +357,9 @@ const Open = (): void => {
             // créer la session
             const res = await fetch(`${api_url}/api/ai/create`, {
                 method: 'POST',
-                headers: {
+                headers: { 
                     "Content-Type": "application/json",
+                    "authorization": pk_ai_api
                 },
                 body: JSON.stringify({ 
                     user: user.value
@@ -333,18 +367,16 @@ const Open = (): void => {
             }).then(res => res.json())
 
             if (res.error) {
-                jeremy_active.value = false;
+                silverai_active.value = false;
                 add_error(res.message);
                 first_loaded.value = true;
                 return clearInterval(int)
             }
 
             if (res.success) {
-                jeremy_active.value = true;
+                //silverai_active.value = true; // décomenter pour activé par default j
                 session_id.value = res.session.uuid;
                 user_id.value = user.value?.id;
-                //add_error("Jeremy n'est actuellement pas en ligne.")
-                //if (AllMessage.value.length == 0) add_response('Bonjour je suis Jeremy le chatbot de silvernote, je peux vous aider sur tous les sujets mais spécialement sur vos notes !')
                 first_loaded.value = true;
                 return clearInterval(int)
             }

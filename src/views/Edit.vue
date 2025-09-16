@@ -107,6 +107,7 @@
       :uuid="note.uuid"
       :socket="socket"
       :data="note"
+      class="mb-20"
     />
 
   </section>
