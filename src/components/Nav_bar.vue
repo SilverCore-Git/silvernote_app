@@ -10,7 +10,7 @@
         <ul class="hidden md:flex items-center space-x-6">
             <li @click="router.push('/')"><a>Maison</a></li>
             <li @click="router.push('/'); scroll_to('function')"><a>Fonctionalités</a></li>
-            <li @click="router.push('/'); scroll_to('jeremy')"><a>Jeremy</a></li>
+            <li @click="router.push('/'); scroll_to('jeremy')"><a>SilverAI</a></li>
             <li @click="router.push('/'); scroll_to('price_plan')" v-if="we_can_buy"><a>Tarifs et abonements</a></li>
             <li @click="router.push('/download')" v-if="we_can_download"><a>Télécharger</a></li>
         </ul>

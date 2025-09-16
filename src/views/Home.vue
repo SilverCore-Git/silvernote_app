@@ -94,7 +94,7 @@
 
     <Multi_platform />
 
-    <Jeremy />
+    <SilverAI />
 
     <section v-if="we_can_buy" id="price_plan" class="py-16 md:py-24 rounded-xl mx-4 mb-8 flex flex-col justify-center items-center relative">
 
@@ -361,7 +361,7 @@ import Card from '../components/Card.vue';
 import Pricing_card from '../components/Pricing_card.vue'
 import Footer from '../components/Footer.vue';
 import { SignedIn, SignedOut } from '@clerk/vue';
-import Jeremy from '../components/section/Jeremy.vue';
+import SilverAI from '../components/section/SilverAI.vue';
 import Multi_platform from '../components/section/Multi_platform.vue';
 
 
