@@ -91,6 +91,7 @@ const props = defineProps<{
     id: number;
     uuid: string;
     function_reload: () => Promise<any>;
+    click?: () => void;
 }>()
 
 const emit = defineEmits(['pin']);
@@ -107,6 +108,7 @@ const Tags = ref<Tag[]>([]);
 
 const open_note = (id: number, pinned: boolean) => {
     if (press_and_hold.value) return;
+    if (props.click) return props.click();
     router.push(`/edit/${id}?pinned=${pinned}`);
 }
 

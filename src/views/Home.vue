@@ -195,6 +195,37 @@
                 </MasonryItem>
 
 
+
+                <MasonryHr 
+                    class="absolute inset-x-0" 
+                    v-if="shared_notes.length >= 1"
+                >
+                    <span class="font-bold text-lg">Notes partagé</span>
+                </MasonryHr>
+
+                <MasonryItem 
+                    v-if="shared_notes && shared_notes.length >= 1"
+                    v-for="(note, index) in shared_notes" 
+                    :key="index"
+                >
+
+                    <Note_card
+                        @pin="withdraw"
+                        :id="note.id"
+                        :uuid="note.uuid"
+                        :pinned="note.pinned"
+                        :icon="note.icon"
+                        :title="note.title" 
+                        :content="note.content" 
+                        :date="note.date"
+                        :tags="note.tags.map(tag => Number(tag))"
+                        :function_reload="reload_list"
+                        :click="() => router.push(`/share/${note.uuid}`)"
+                    />
+
+                </MasonryItem>
+
+
                 <MasonryHr 
                     class="absolute inset-x-0" 
                     v-if="list_notes.filter(note => note.pinned == true).length"
@@ -222,6 +253,7 @@
                     />
 
                 </MasonryItem>
+
 
             </MasonryWrapper>
 
@@ -263,6 +295,8 @@
                 </div>
 
             </li>
+
+
 
             <li v-else class=" flex-col">
                 <Loader :icon="false" />
@@ -338,7 +372,7 @@
     import 'swiper/css';
 
     import db from '@/assets/ts/database';
-    import back from '@/assets/ts/backend_link';
+    import back, { api_url } from '@/assets/ts/backend_link';
     import utils, { init_notes } from '@/assets/ts/utils';
     import type { Note, Tag } from '@/assets/ts/type';
     import { hitbox as if_hitbox } from '@/assets/ts/settings';
@@ -375,6 +409,7 @@
     const Danger_card_props = ref<{ message: string, title: string, btn: boolean, href: string } | undefined>(undefined);
 
     const list_notes = ref<Note[]>([]);
+    const shared_notes = ref<Note[]>([]);
     const all_tags = ref<Tag[] | undefined>(undefined);
 
     const isRotating = ref(false);
@@ -460,6 +495,7 @@
             list_notes.value = [];
             all_tags.value = [];
             await init_notes(list_notes);
+            await get_shared_notes();
             all_tags.value = await db.getAll('tags');
             console.log('Rechargement des notes...')
             setTimeout(() => {
@@ -468,6 +504,27 @@
         }, 300);
 
     };
+
+    const get_shared_notes = async (): Promise<void> => {
+
+        const res = await fetch(`${api_url}/api/share/for/me`, {
+            credentials: 'include',
+        }).then(res => res.json());
+
+        if (res.error) {
+            console.error('Error on get shared notes fetch : ', res.message);
+            return;
+        }
+
+        if (res.length < 1) {
+            shared_notes.value = [];
+            return;
+        }
+
+        shared_notes.value = res.notes;
+        return;
+
+    }
 
 
     onMounted(async () => {
@@ -481,11 +538,12 @@
         setTimeout(async () => {
             all_tags.value = await db.getAll('tags');
             await init_notes(list_notes);
+            await get_shared_notes();
         }, 500);
 
         setTimeout(async () => {
             await reload_list();
-        }, 3000)
+        }, 1500)
 
     });
 

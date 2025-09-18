@@ -1,8 +1,23 @@
 <template>
 
-    <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
+  <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
 
-    </header>
+    <div 
+        class="left-arrow absolute left-0 cursor-pointer btnHover" 
+        @click="router.push('/')"
+    ></div>
+
+    <div 
+        class="absolute right-0 cursor-pointer btnHover" 
+    >
+        <img
+            v-if="share"
+            class="w-10 h-10"
+            :src="getUserPP(share.user_id)"
+        >
+    </div>
+
+  </header>
 
     <section 
         v-if="loaded && note"  
@@ -151,35 +166,53 @@ const error = ref<string>('');
 const need_passwd = ref<boolean>(false);
 const loaded = ref<boolean>(false);
 const passwd = ref<string>('');
+const share = ref<any>(null);
 
 let editable: boolean;
 let socket: Socket;
 
-onMounted(() => _fetch())
+const getUserPP = (user_id: string): string => {
+
+    let res: any;
+    (async () => {
+        res = fetch(`${api_url}/api/user/icon/by/id/${user_id}`).then(res => res.json());
+    })
+    return res?.imageUrl;
+
+} 
+
+const saveTitle = () => {
+    socket.emit('edit_note', { 
+        uuid: note.value?.uuid,
+        content: note.value?.content,
+        title: note.value?.title
+    })
+}
 
 
 const _fetch = async () => {
 
-    const share = await fetch(`${api_url}/api/share/${props.uuid}?passwd=${passwd.value}`, { 
+    const _share = await fetch(`${api_url}/api/share/${props.uuid}?passwd=${passwd.value}`, { 
         credentials: 'include'
     }).then(res => res.json());
 
-    if (share.error) {
-        error.value = share.message;
+    if (_share.error) {
+        error.value = _share.message;
         loaded.value = true;
         return;
     }
 
-    if (share.expired) {
+    if (_share.expired) {
         error.value = 'Ce partage à expiré.';
         loaded.value = true;
         return;
     }
 
-    if (share.success) {
-        note.value = share.note;
+    if (_share.success) {
+        note.value = _share.note;
         need_passwd.value = false;
-        editable = share.editable;
+        editable = _share.editable;
+        share.value = _share
         loaded.value = true;
         wSocket();
         return;
@@ -222,13 +255,9 @@ const wSocket = () => {
 
 };
 
-const saveTitle = () => {
-    socket.emit('edit_note', { 
-        uuid: note.value?.uuid,
-        content: note.value?.content,
-        title: note.value?.title
-    })
-}
+
+
+onMounted(() => _fetch())
 
 </script>
 
