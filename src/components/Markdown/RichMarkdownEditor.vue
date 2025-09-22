@@ -256,7 +256,9 @@ const initEditor = async () => {
 
   editor.value = new Editor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        history: false
+      }),
       TaskList,
       TodoInput,
       SlashCommand,

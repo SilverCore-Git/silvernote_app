@@ -3,9 +3,9 @@ import * as Y from "yjs";
 import * as awarenessProtocol from "y-protocols/awareness";
 
 export class SocketIOProvider {
-  socket;
-  room;
-  doc;
+  socket: Socket;
+  room: string;
+  doc: Y.Doc;
   awareness;
 
   constructor(serverUrl: string, room: string, doc: Y.Doc) {
@@ -14,39 +14,87 @@ export class SocketIOProvider {
     this.awareness = new awarenessProtocol.Awareness(doc);
 
     this.socket = io(serverUrl, {
-      transports: ["websocket"],
+      path: "/socket.io/",
+      transports: ["polling", "websocket"],
       autoConnect: true,
       forceNew: true,
       upgrade: false,
       reconnection: true,
+      timeout: 20000
     });
 
+    this.socket.connect();
+
     this.socket.on("connect", () => {
+      console.log("Connected to collaboration server");
       this.socket.emit("join-room", { room });
     });
 
-    this.socket.on("sync", (update) => {
-      Y.applyUpdate(this.doc, update, this.socket);
-    });
-
-    this.doc.on("update", (update: unknown, origin: unknown) => {
-      if (origin !== this.socket) {
-        this.socket.emit("y-update", update);
+    // Handle initial sync
+    this.socket.on("sync", (update: ArrayBuffer) => {
+      try {
+        const uint8Array = new Uint8Array(update);
+        Y.applyUpdate(this.doc, uint8Array);
+      } catch (error) {
+        console.error("Error applying sync update:", error);
       }
     });
 
-    this.socket.on("y-update", (update) => {
-      Y.applyUpdate(this.doc, update, this.socket);
+    // Handle updates
+    this.socket.on("y-update", (update: ArrayBuffer) => {
+      try {
+        const uint8Array = new Uint8Array(update);
+        Y.applyUpdate(this.doc, uint8Array);
+      } catch (error) {
+        console.error("Error applying y-update:", error);
+      }
     });
 
+    // Send updates
+    this.doc.on("update", (update: Uint8Array) => {
+      if (this.socket.connected) {
+        try {
+          // Send the Uint8Array directly
+          this.socket.emit("y-update", Array.from(update));
+        } catch (error) {
+          console.error("Error sending update:", error);
+        }
+      }
+    });
+
+    // Handle awareness updates
     this.awareness.on("update", ({ added, updated, removed }: any) => {
-      const changed = added.concat(updated).concat(removed);
-      const update = awarenessProtocol.encodeAwarenessUpdate(this.awareness, changed);
-      this.socket.emit("awareness-update", update);
+      if (this.socket.connected) {
+        try {
+          const changedClients = added.concat(updated).concat(removed);
+          const awarenessUpdate = awarenessProtocol.encodeAwarenessUpdate(
+            this.awareness,
+            changedClients
+          );
+          // Send the Uint8Array directly
+          this.socket.emit("awareness-update", Array.from(awarenessUpdate));
+        } catch (error) {
+          console.error("Error sending awareness update:", error);
+        }
+      }
     });
 
-    this.socket.on("awareness-update", (update) => {
-      awarenessProtocol.applyAwarenessUpdate(this.awareness, update, this.socket);
+    this.socket.on("awareness-update", (update: ArrayBuffer) => {
+      try {
+        const uint8Array = new Uint8Array(update);
+        awarenessProtocol.applyAwarenessUpdate(this.awareness, uint8Array, this.socket);
+      } catch (error) {
+        console.error("Error applying awareness update:", error);
+      }
+    });
+
+    // Error handling
+    this.socket.on("connect_error", (error: Error) => {
+      console.error("Connection error:", error);
+    });
+
+    this.socket.on("error", (error: Error) => {
+      console.error("Socket error:", error);
     });
   }
 
