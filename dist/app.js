@@ -19,6 +19,7 @@ const api_db_1 = __importDefault(require("./routes/api.db"));
 const api_ai_1 = __importDefault(require("./routes/api.ai"));
 const user_1 = __importDefault(require("./routes/user"));
 const money_1 = __importDefault(require("./routes/money"));
+const admin_1 = __importDefault(require("./routes/admin"));
 const app = (0, express_1.default)();
 exports.httpServer = (0, http_1.createServer)(app);
 require("./ws");
@@ -35,6 +36,7 @@ app.use('/api', api_1.default);
 app.use('/api/ai', api_ai_1.default);
 app.use('/api/db', api_db_1.default);
 app.use('/user', user_1.default);
+app.use('/admin', admin_1.default);
 app.use('/money', money_1.default);
 // 404
 app.use((req, res) => {

@@ -39,6 +39,7 @@ export default function  AuthMiddleware (req: Request, res: Response, next: Next
 
         if (user_id == decoded_jwt.user_id) return next();
 
+        res.clearCookie('API_JWT');
         console.warn('[AuthMiddleware]> Req mal authantifier, token invalid : \n', JSON.stringify({ agent: req.get("User-Agent"), user_id, decoded_jwt }, null, 2));
         res.json({ error: true, message: "Invalid token" });
         return;

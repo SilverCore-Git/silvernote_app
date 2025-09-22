@@ -3,7 +3,7 @@
     "corsOptions": {
         "origin": ["https://www.silvernote.fr", "https://app.silvernote.fr", "http://localhost:5173"],
         "methods": ["GET", "POST"],
-        "allowedHeaders": ["Content-Type", "Authorization"],
+        "allowedHeaders": ["Content-Type", "authorization"],
         "credentials": true
     },
     "news": {

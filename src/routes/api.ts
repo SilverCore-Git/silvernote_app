@@ -4,6 +4,7 @@ import type { News, Note } from '../assets/ts/types';
 import path from 'path';
 import JsonListManager from '../assets/ts/db_json_manager';
 import notes from '../assets/ts/notes';
+import { clerkClient, requireAuth } from "@clerk/express";
 
 
 const router = Router();
@@ -77,6 +78,7 @@ router.get('/share/:uuid', async (req, res) => {
         const isExpired: boolean = now - createdTime > TheShare.parms.life;
 
         if (isExpired) {
+            share.delete(uuid);
             res.json({ expired: isExpired });
             delete_a_share(TheShare.uuid);
             return;
@@ -84,7 +86,13 @@ router.get('/share/:uuid', async (req, res) => {
 
         const note = await notes.getNoteByUUID(TheShare.note_uuid);
 
-        res.json({ success: true, editable: TheShare.parms.editable, note: note.note });
+        res.json({ 
+            success: true, 
+            editable: TheShare.parms.editable, 
+            note: note.note, 
+            user_id: TheShare.user_id,
+            visitor: TheShare.visitor
+        });
         return;
 
     }
@@ -109,6 +117,10 @@ router.post('/share', async (req, res) => {
     const user_id = req.cookies.user_id;
 
     try {
+
+        if (await share.getByUUID(note_uuid)) {
+            await share.delete(note_uuid);
+        }
 
         const TheShare: Share = await share.push({
 
@@ -168,6 +180,61 @@ router.post('/share/banned', async (req, res) => {
 
 })
 
+router.get('/share/for/me', async (req, res) => {
+
+    const { user_id } = req.cookies;
+
+    try {
+
+        const share_db: Share[] = await share.getAll();
+
+        const share_for_me: Share[] = share_db.filter(share => share.visitor.includes(user_id));
+
+        if (share_for_me.length) {
+
+            let shared_notes: Note[] = [];
+
+            for (const share of share_for_me) {
+
+                const note: Note | undefined = (await notes.getNoteByUUID(share.note_uuid)).note;
+
+                if (!note) continue;
+                shared_notes.push(note);
+
+            }
+
+            res.json({ length: shared_notes.length, notes: shared_notes });
+
+        }
+        else {
+            res.json({ length: 0, notes: null });
+            return;
+        }
+
+    }
+    catch (err) {
+        res.json({ error: true, message: err });
+        return;
+    }
+
+})
+
+
+router.get('/user/by/id/:userid', async (req, res) => {
+
+    const userid: string = req.params.userid;
+    const client_userId = req.cookies.user_id;
+
+    const user = await clerkClient.users.getUser(userid);
+
+    res.json({ 
+        isMe: client_userId == userid,
+        user_id: userid,
+        username: user.username,
+        imageUrl: user.imageUrl 
+    });
+
+})
 
 
 export default router;

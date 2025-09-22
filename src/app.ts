@@ -15,6 +15,7 @@ import api_db from './routes/api.db';
 import api_ai from './routes/api.ai';
 import user from './routes/user';
 import money from './routes/money';
+import admin from './routes/admin';
 
 const app = express();
 export const httpServer = createServer(app);
@@ -35,6 +36,7 @@ app.use('/api', api);
 app.use('/api/ai', api_ai);
 app.use('/api/db', api_db);
 app.use('/user', user);
+app.use('/admin', admin);
 app.use('/money', money);
 
 

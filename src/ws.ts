@@ -1,63 +1,71 @@
-import { Server } from 'socket.io';
-import { httpServer } from './app';
-import notes from './assets/ts/notes';
-import JsonListManager from './assets/ts/db_json_manager';
-import { Note } from './assets/ts/types';
-import config from "./config.json";
+import { Server } from "socket.io";
+import { httpServer } from "./app";
+import * as Y from "yjs";
+import * as awarenessProtocol from "y-protocols/awareness";
+import config from './config.json';
 
+const io = new Server(httpServer, {
+  cors: { origin: config.corsOptions.origin, methods: ["GET", "POST"] },
+});
 
-const share = new JsonListManager('share.json');
-const local_note_db = new Map<string, Note>();
+const docs = new Map<string, { ydoc: Y.Doc; awareness: awarenessProtocol.Awareness }>();
 
-setInterval(async () => {
-    for (const note of local_note_db.values()) {
-        await notes.updateNote(note);
+io.on("connection", (socket) => {
+  console.log("New client connected:", socket.id);
+
+  socket.on("join-room", ({ room }: { room: string }) => {
+    let docData = docs.get(room);
+
+    if (!docData) {
+      const ydoc = new Y.Doc();
+      const awareness = new awarenessProtocol.Awareness(ydoc);
+      docs.set(room, { ydoc, awareness });
+      docData = { ydoc, awareness };
     }
-}, 5 * 1000);
 
+    const { ydoc, awareness } = docData;
+    socket.join(room);
 
-export const io = new Server(httpServer, {
-    cors: {
-        origin: config.corsOptions.origin,
-        methods: ["GET", "POST"]
-    },
-    path: '/socket.io/'
+    // send full document to new client
+    socket.emit("sync", Y.encodeStateAsUpdate(ydoc));
+
+    // Handle Yjs updates from client
+    socket.on("y-update", (update: Uint8Array) => {
+      Y.applyUpdate(ydoc, update, socket);
+      socket.to(room).emit("y-update", update);
+    });
+
+    // Broadcast updates from server to clients
+    const onYDocUpdate = (update: Uint8Array, origin: unknown) => {
+      if (origin !== socket) {
+        socket.to(room).emit("y-update", update);
+      }
+    };
+    ydoc.on("update", onYDocUpdate);
+
+    // Awareness from client
+    socket.on("awareness-update", (update: Uint8Array) => {
+      awarenessProtocol.applyAwarenessUpdate(awareness, update, socket);
+      socket.to(room).emit("awareness-update", update);
+    });
+
+    // Broadcast awareness changes from server
+    const onAwarenessUpdate = ({ added, updated, removed }: any, origin: unknown) => {
+      if (origin !== socket) {
+        const changed = added.concat(updated).concat(removed);
+        const update = awarenessProtocol.encodeAwarenessUpdate(awareness, changed);
+        socket.to(room).emit("awareness-update", update);
+      }
+    };
+    awareness.on("update", onAwarenessUpdate);
+
+    // Clean up on disconnect
+    socket.on("disconnect", () => {
+      ydoc.off("update", onYDocUpdate);
+      awareness.off("update", onAwarenessUpdate);
+      console.log("Client disconnected:", socket.id);
+    });
+  });
 });
 
-
-io.on('connection', (socket) => {
-
-    console.log('Client connecté');
-
-    // A client join a room
-    socket.on('join_share', async ({ uuid }) => {
-        socket.join(uuid);
-        console.log(uuid)
-    });
-
-    // on edit
-    socket.on('edit_note', async ({ uuid, content, title }) => {
-
-        const noteUuid = uuid;
-        
-        if (!local_note_db.has(noteUuid)) {
-            const result = await notes.getNoteByUUID(noteUuid);
-            if (!result.note) return;
-            local_note_db.set(noteUuid, result.note);
-        }
-
-        const note = local_note_db.get(noteUuid)!;
-        if (content) note.content = content;
-        if (title) note.title = title;
-
-        socket.to(uuid).emit('update_note', { content: note.content, title: note.title });
-
-        socket.emit('note_saved', { success: true });
-
-    });
-
-    socket.on('disconnect', () => {
-        console.log('Client déconnecté');
-    });
-
-});
+console.log("Socket.IO server running…");

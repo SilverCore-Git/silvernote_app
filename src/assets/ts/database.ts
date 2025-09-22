@@ -194,6 +194,12 @@ class Database {
 
     }
 
+    public async get_all_users (): Promise<User[]> {;
+
+        return await this.get('user');
+
+    }
+
     public async set_user_plan (
         userId: string, 
         planId: UUID,

@@ -1,5 +1,5 @@
 import { UUID, randomUUID } from 'crypto';
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import OpenAI from "openai";
 import { prompt_system } from '../assets/config/jeremy_ai.json';
 import db from '../assets/ts/database';
@@ -13,7 +13,23 @@ type Chat = { uuid: UUID, userID: string, data: { notes: any, tags: any }, messa
 let chats: Chat[]  = [];
 
 
-router.post('/create', async (req: Request, res: Response) => {
+function verify_auth (req: Request, res: Response, next: NextFunction) {
+
+    const sk = process.env.SECRET_AI_API_KEY;
+    const apiKey = req.headers["authorization"];
+
+    if (apiKey && sk && apiKey == sk) {
+        next();
+        return;
+    }
+
+    res.json({ error: true, message: 'Need api key' })
+    return;
+
+}
+
+
+router.post('/create', verify_auth, async (req: Request, res: Response) => {
 
     const { user } = req.body;
 
@@ -60,7 +76,7 @@ router.post('/create', async (req: Request, res: Response) => {
 });
 
 
-router.post('/close', async (req: Request, res: Response) => {
+router.post('/close', verify_auth, async (req: Request, res: Response) => {
 
     const { uuid, userID } = req.body;
 
@@ -80,9 +96,10 @@ router.post('/close', async (req: Request, res: Response) => {
 
 });
 
-router.post('/send', async (req: Request, res: Response) => {
+router.post('/send', verify_auth, async (req: Request, res: Response) => {
 
-    const { uuid, message, note } = req.body;
+    const { uuid, message } = req.body;
+    const note = req.body?.note || undefined;
 
     try {
 

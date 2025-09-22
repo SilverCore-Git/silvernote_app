@@ -17,6 +17,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.13.23",
     "@clerk/express": "^1.7.13",
     "@types/express": "^5.0.3",
     "cookie-parser": "^1.4.7",
@@ -32,7 +33,9 @@
     "openai": "^5.12.2",
     "socket.io": "^4.8.1",
     "stripe": "^18.3.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "y-protocols": "^1.0.6",
+    "yjs": "^13.6.27"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.9",
