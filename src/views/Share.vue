@@ -8,14 +8,121 @@
     ></div>
 
     <div 
-        class="absolute right-0 cursor-pointer btnHover" 
+        class="
+            absolute right-0
+            flex flex-row justify-center items-center
+            space-x-5
+        " 
     >
-        <img
-            v-if="share"
-            class="w-10 h-10"
-            :src="getUserPP(share.user_id)"
+
+        <div
+            class="flex -space-x-3"
         >
+
+            <img
+                v-if="users.length > 0"
+                v-for="user in users"
+                class="w-8 h-8  rounded-full border-1 border-gray-200"
+                :src="user.imageUrl"
+            />
+
+        </div>
+
+        <a 
+            class="
+                cursor-pointer hover:bg-gray-200 hover:text-[var(--text)]
+                py-1 px-3 rounded-xl transition-all duration-200
+                border-2 border-gray-200
+            "
+            :class="share_menu ? 'bg-gray-200 ' : ''"
+            @click="share_menu = !share_menu"
+        >Partage</a>
+
     </div>
+
+
+
+    <transition name="fade-slide">
+            
+        <div
+            v-if="share_menu && users"
+            class="absolute inset-0 z-50 w-full h-screen"
+            @click="share_menu = false"
+        >
+
+            <div 
+                class="dropdown absolute 
+                        right-0 bg-[var(--bg2)]"
+                :style="{ top: `calc(3.4rem + env(safe-area-inset-top))` }"
+            >
+
+                <ul>
+
+                    <li
+                        v-for="user in users"
+                        class="
+                            flex justify-between items-center flex-row
+                            space-x-8
+                        "
+                        @click.stop
+                    >
+
+                        <div
+                            class="
+                                flex justify-center items-center flex-row
+                                space-x-3
+                            "
+                        >
+
+                            <img 
+                                class="w-8 h-8 rounded-full"
+                                :class="user.isMe 
+                                            ? 'border-2 border-[var(--btn)]'
+                                            : ''
+                                "
+                                :src="user.imageUrl" 
+                            />
+
+                            <span>{{ user.username }}</span>
+                            <span 
+                                v-if="user.isMe"
+                                class="text-xs -translate-x-3.5 -translate-y-2"
+                            >(Vous)</span>
+
+                        </div>
+
+                        <div>
+                            
+                            <span>
+                                {{ 
+                                    user.type == 'visitor' 
+                                        ? 'Invité' 
+                                        : 'Auteur'
+                                }}
+                            </span>
+
+                        </div>
+
+                    </li>
+
+                    <li 
+                        class="flex items-center justify-center"
+                        @click.stop="send_share()"
+                    >
+                        <button 
+                            class="second nohover w-full"
+                        >
+                            Ajouter un.e invité.e
+                        </button>
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
+        
+    </transition>
 
   </header>
 
@@ -142,6 +249,11 @@
 
     <Loader v-if="!loaded" :icon="false" />
 
+    <Success
+        v-if="_success?.active"
+        :value="_success.value"
+    />
+
 </template>
 
 <script lang="ts" setup>
@@ -149,10 +261,21 @@
 import { api_url } from '@/assets/ts/backend_link';
 import type { Note } from '@/assets/ts/type';
 import Loader from '@/components/Loader.vue';
+import { useUser } from '@clerk/vue';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { io, Socket } from 'socket.io-client';
+import Success from '@/components/alert/Success.vue';
+
+
+interface User { 
+    type: 'owner' | 'visitor';
+    user_id: string;
+    imageUrl: string;
+    username: string;
+    isMe: boolean;
+}
 
 
 const props = defineProps<{
@@ -160,27 +283,30 @@ const props = defineProps<{
 }>()
 
 const router = useRouter();
+const { user } = useUser();
 
 const note = ref<Note | undefined>(undefined);
 const error = ref<string>('');
 const need_passwd = ref<boolean>(false);
 const loaded = ref<boolean>(false);
 const passwd = ref<string>('');
-const share = ref<any>(null);
+const users = ref<User[]>([]);
+const share_menu = ref<boolean>(false);
+const _success = ref<{ active: boolean, value: string }>({ active: false, value: '' });
 
 let editable: boolean;
 let socket: Socket;
 
-const getUserPP = (user_id: string): string => {
 
-    let res: any;
-    (async () => {
-        res = fetch(`${api_url}/api/user/icon/by/id/${user_id}`).then(res => res.json());
-    })
-    return res?.imageUrl;
+const getUserByUUID = async (user_id: string, type: 'owner' | 'visitor'): Promise<User> => {
+    
+    const data = await fetch(`${api_url}/api/user/by/id/${user_id}`, {
+        credentials: 'include'
+    }).then(res => res.json());
+    return { ...data, type };
 
-} 
-
+}
+ 
 const saveTitle = () => {
     socket.emit('edit_note', { 
         uuid: note.value?.uuid,
@@ -189,6 +315,33 @@ const saveTitle = () => {
     })
 }
 
+const send_share = async (): Promise<void> => {
+
+    const send_text: string = "Je te partage ma note :\n" + window.location.href;
+
+    if (navigator.share) {
+
+        try {
+            await navigator.share({
+                title: "Je te partage ma note !",
+                text: send_text,
+                url: window.location.href,
+            });
+        } catch (err) {
+            console.error("Erreur de partage :", err);
+        }
+
+    } else {
+        navigator.clipboard.writeText(window.location.href);
+        _success.value.value = 'Lien de partage copier !';
+        _success.value.active = true;
+
+        setTimeout(() => {
+            _success.value.active = false;
+        }, 6000)
+    }
+
+}
 
 const _fetch = async () => {
 
@@ -209,22 +362,30 @@ const _fetch = async () => {
     }
 
     if (_share.success) {
+
         note.value = _share.note;
         need_passwd.value = false;
         editable = _share.editable;
-        share.value = _share
+
+        users.value.push(await getUserByUUID(_share.user_id, 'owner'));
+        for (const userId of _share.visitor) {
+            if (userId == _share.user_id) continue;
+            users.value.push(await getUserByUUID(userId, 'visitor'));
+        }
+
         loaded.value = true;
         wSocket();
         return;
+
     }
 
-    if (share.need == 'passwd') {
+    if (_share.need == 'passwd') {
         need_passwd.value = true;
         loaded.value = true;
         return;
     }
 
-    if (share.banned) {
+    if (_share.banned) {
         error.value = 'Vous êtes bannis de ce partage.';
         loaded.value = true;
         return;
@@ -240,7 +401,10 @@ const wSocket = () => {
 
     socket.on('connect', () => {
         console.log('WebSocket connecté !');
-        socket.emit('join_share', { uuid: note.value?.uuid });
+        socket.emit('join_share', { 
+            uuid: note.value?.uuid,
+            userId: user.value?.id
+        });
     });
 
     socket.on('update_note', (data: { content: string; title: string }) => {
@@ -249,11 +413,18 @@ const wSocket = () => {
         note.value.title = data.title;
     });
 
+    socket.on('new_user', async (data: { userId: string }) => {
+        if (users.value.includes(await getUserByUUID(data.userId, 'visitor'))) return;
+        if (users.value.includes(await getUserByUUID(data.userId, 'owner'))) return;
+        users.value.push(await getUserByUUID(data.userId, 'visitor'));
+    })
+
     socket.on('disconnect', () => {
         console.log('WebSocket déconnecté !');
     });
 
 };
+
 
 
 

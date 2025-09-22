@@ -95,6 +95,11 @@ button:hover.primary {
   color: white;
 }
 
+button:hover.second.nohover {
+  background-color: transparent;
+  color: initial;
+}
+
 button:hover.second {
   background-color: var(--btn);
   color: white;

@@ -164,7 +164,7 @@
             v-if="notes_views_mode == 'default'"
         >
 
-            <MasonryWrapper v-if="list_notes && list_notes.length" class="w-full">
+            <MasonryWrapper v-if="list_notes && shared_notes" class="w-full">
 
                 <MasonryHr 
                     class="absolute inset-x-0" 
@@ -200,7 +200,7 @@
                     class="absolute inset-x-0" 
                     v-if="shared_notes.length >= 1"
                 >
-                    <span class="font-bold text-lg">Notes partagé</span>
+                    <span class="font-bold text-lg">Notes partagées</span>
                 </MasonryHr>
 
                 <MasonryItem 
@@ -543,7 +543,7 @@
 
         setTimeout(async () => {
             await reload_list();
-        }, 1500)
+        }, 100)
 
     });
 
