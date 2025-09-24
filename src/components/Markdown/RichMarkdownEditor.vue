@@ -109,7 +109,6 @@ import Loader from '../Loader.vue'
 import type { Note } from '@/assets/ts/type'
 import { api_url } from '@/assets/ts/backend_link'
 import { getDominantColor } from '@/assets/ts/GetColorByImage'
-import { io } from 'socket.io-client'
 
 const props = defineProps<{
   id: number
@@ -244,7 +243,9 @@ const getColorByImage = async (): Promise<string> => {
 // Initialize the Tiptap editor
 const initEditor = async () => {
 
-  const ydoc = new Y.Doc({ guid: props.data.uuid })
+  if (editor.value) return;
+
+  const ydoc = new Y.Doc();
 
   const provider = new SocketIOProvider(
     "http://localhost:3000",
@@ -269,7 +270,8 @@ const initEditor = async () => {
       }),
       MathEvalShortcut,
       Collaboration.configure({ 
-        document: ydoc 
+        document: ydoc,
+        //field: "note"
       }),
       CollaborationCaret.configure({
         provider,
@@ -280,7 +282,7 @@ const initEditor = async () => {
         }
       })
     ],
-    content: props.data.content,
+    content: "test",
     editable: props.editable,
     onUpdate: () => {
       saveContent()

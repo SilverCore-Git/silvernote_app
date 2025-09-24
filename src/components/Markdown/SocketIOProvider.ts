@@ -3,13 +3,11 @@ import * as Y from "yjs";
 import * as awarenessProtocol from "y-protocols/awareness";
 
 export class SocketIOProvider {
-  socket: Socket;
-  room: string;
-  doc: Y.Doc;
-  awareness;
+  private socket: Socket;
+  private doc: Y.Doc;
+  private awareness;
 
   constructor(serverUrl: string, room: string, doc: Y.Doc) {
-    this.room = room;
     this.doc = doc;
     this.awareness = new awarenessProtocol.Awareness(doc);
 
@@ -31,7 +29,7 @@ export class SocketIOProvider {
     });
 
     // Handle initial sync
-    this.socket.on("sync", (update: ArrayBuffer) => {
+    this.socket.on("sync", (update: Uint8Array) => {
       try {
         const uint8Array = new Uint8Array(update);
         Y.applyUpdate(this.doc, uint8Array);
@@ -55,7 +53,7 @@ export class SocketIOProvider {
       if (this.socket.connected) {
         try {
           // Send the Uint8Array directly
-          this.socket.emit("y-update", Array.from(update));
+          this.socket.emit("y-update", update);
         } catch (error) {
           console.error("Error sending update:", error);
         }
@@ -72,7 +70,7 @@ export class SocketIOProvider {
             changedClients
           );
           // Send the Uint8Array directly
-          this.socket.emit("awareness-update", Array.from(awarenessUpdate));
+          this.socket.emit("awareness-update", awarenessUpdate);
         } catch (error) {
           console.error("Error sending awareness update:", error);
         }
