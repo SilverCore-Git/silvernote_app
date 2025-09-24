@@ -18,11 +18,12 @@ const docs = new Map<string, {
   awareness: awarenessProtocol.Awareness 
 }>();
 
+
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
   // Handle room joining
-  socket.on("join-room", async ({ room }) => {
+  socket.on("join-room", async ({ room, content }) => {
     if (!room) return;
 
     // Join the room
@@ -35,8 +36,11 @@ io.on("connection", (socket) => {
       const awareness = new awarenessProtocol.Awareness(ydoc);
       
       const note: Note | undefined = (await notes.getNoteByUUID(room)).note;
-      const ytext = ydoc.getText('content');
-      ytext.insert(0, note?.content ?? 'test');
+      const ytext = ydoc.getText("note");
+
+      if (note?.content) {
+        ytext.insert(0, note.content); // ajoute ton string
+      }
       
       docs.set(room, { ydoc, awareness });
       docData = { ydoc, awareness };
@@ -46,7 +50,7 @@ io.on("connection", (socket) => {
 
     // Send initial document state
     const initialUpdate = Y.encodeStateAsUpdate(ydoc);
-    socket.emit("sync", initialUpdate);
+    socket.emit("sync", new Uint8Array(initialUpdate));
 
     // Handle document updates
     socket.on("y-update", (update: Uint8Array) => {
