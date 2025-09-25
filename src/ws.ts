@@ -21,7 +21,6 @@ const get_note = async (uuid: string): Promise<Note | undefined> => {
 }
 
 
-
 const io = new Server(httpServer, {
   cors: { origin: config.corsOptions.origin, methods: ["GET", "POST"] },
   path: "/socket.io/",
@@ -39,9 +38,10 @@ io.on("connection", (socket) => {
 
   console.log("Client connected :", socket.id);
 
-  socket.on("join-room", async ({ room }) => {
+  socket.on("join-room", async ({ room, userId }) => {
 
     if (!room) return;
+    let title: string;
 
     socket.join(room);
     
@@ -51,14 +51,9 @@ io.on("connection", (socket) => {
 
       const ydoc = new Y.Doc();
       const awareness = new awarenessProtocol.Awareness(ydoc);
+
+      title = (await get_note(room))?.title || "";
       
-      const note: Note | undefined = await get_note(room);
-      const ytext = ydoc.getText("note");
-
-      if (note?.content) {
-        ytext.insert(0, note.content);
-      }
-
       docs.set(room, { ydoc, awareness });
       docData = { ydoc, awareness };
 
@@ -68,10 +63,10 @@ io.on("connection", (socket) => {
 
     const initialUpdate = Y.encodeStateAsUpdate(ydoc);
     socket.emit("sync", new Uint8Array(initialUpdate));
+    socket.emit('new_user', userId);
 
 
-
-    socket.on("y-update", (update: Uint8Array) => {
+    socket.on("y-update", async (update: Uint8Array) => {
 
       try {
 
@@ -86,6 +81,18 @@ io.on("connection", (socket) => {
 
     });
 
+    socket.on('title-update', async (update: string) => {
+
+      try {
+
+        socket.to(room).emit("title-update", update);
+        title = update;
+
+      } catch (error) {
+        console.error("Error applying update:", error);
+      }
+
+    })
 
     socket.on("awareness-update", (update: Uint8Array) => {
 

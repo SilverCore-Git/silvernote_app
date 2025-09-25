@@ -188,7 +188,7 @@ router.get('/share/for/me', async (req, res) => {
 
         const share_db: Share[] = await share.getAll();
 
-        const share_for_me: Share[] = share_db.filter(share => share.visitor.includes(user_id));
+        const share_for_me: Share[] = share_db.filter(share => share.visitor.includes(user_id) || share.user_id == user_id);
 
         if (share_for_me.length) {
 

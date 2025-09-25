@@ -113,7 +113,7 @@ router.get('/share/for/me', async (req, res) => {
     const { user_id } = req.cookies;
     try {
         const share_db = await share.getAll();
-        const share_for_me = share_db.filter(share => share.visitor.includes(user_id));
+        const share_for_me = share_db.filter(share => share.visitor.includes(user_id) || share.user_id == user_id);
         if (share_for_me.length) {
             let shared_notes = [];
             for (const share of share_for_me) {
