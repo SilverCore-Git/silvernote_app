@@ -6,92 +6,142 @@ import config from './config.json';
 import notes from "./assets/ts/notes";
 import { Note } from "./assets/ts/types";
 
+
+
+const save_note = async (note: Note): Promise<void> => {
+  await notes.updateNote({
+    ...note,
+    updated_at: new Date().getDate()
+  });
+}
+
+const get_note = async (uuid: string): Promise<Note | undefined> => {
+  const res = await notes.getNoteByUUID(uuid);
+  if (res.note) return res.note;
+}
+
+
+
 const io = new Server(httpServer, {
   cors: { origin: config.corsOptions.origin, methods: ["GET", "POST"] },
   path: "/socket.io/",
   transports: ["websocket", "polling"]
 });
 
-// Store documents and their awareness states
 const docs = new Map<string, { 
   ydoc: Y.Doc, 
   awareness: awarenessProtocol.Awareness 
 }>();
 
 
-io.on("connection", (socket) => {
-  console.log("Client connected:", socket.id);
 
-  // Handle room joining
-  socket.on("join-room", async ({ room, content }) => {
+io.on("connection", (socket) => {
+
+  console.log("Client connected :", socket.id);
+
+  socket.on("join-room", async ({ room }) => {
+
     if (!room) return;
 
-    // Join the room
     socket.join(room);
     
-    // Get or create document for this room
     let docData = docs.get(room);
+
     if (!docData) {
+
       const ydoc = new Y.Doc();
       const awareness = new awarenessProtocol.Awareness(ydoc);
       
-      const note: Note | undefined = (await notes.getNoteByUUID(room)).note;
+      const note: Note | undefined = await get_note(room);
       const ytext = ydoc.getText("note");
 
       if (note?.content) {
-        ytext.insert(0, note.content); // ajoute ton string
+        ytext.insert(0, note.content);
       }
-      
+
       docs.set(room, { ydoc, awareness });
       docData = { ydoc, awareness };
+
     }
 
     const { ydoc, awareness } = docData;
 
-    // Send initial document state
     const initialUpdate = Y.encodeStateAsUpdate(ydoc);
     socket.emit("sync", new Uint8Array(initialUpdate));
 
-    // Handle document updates
+
+
     socket.on("y-update", (update: Uint8Array) => {
+
       try {
+
         const uint8Array = new Uint8Array(update);
         Y.applyUpdate(ydoc, uint8Array);
-        // Broadcast to all clients in room except sender
+
         socket.to(room).emit("y-update", uint8Array);
+
       } catch (error) {
         console.error("Error applying update:", error);
       }
+
     });
 
-    // Handle awareness updates
+
     socket.on("awareness-update", (update: Uint8Array) => {
+
       try {
+
         const uint8Array = new Uint8Array(update);
         awarenessProtocol.applyAwarenessUpdate(awareness, uint8Array, socket);
-        // Broadcast awareness update to all clients in room except sender
+        
         socket.to(room).emit("awareness-update", uint8Array);
+
       } catch (error) {
         console.error("Error applying awareness update:", error);
       }
+
     });
 
-    // Handle disconnection
-    socket.on("disconnect", () => {
-      // Remove awareness state for disconnected client
+
+    socket.on("disconnect", async () => {
+
+      const roomId = Array.from(socket.rooms)[1];
+      if (!roomId) return;
+
+      const docData = docs.get(roomId);
+      if (!docData) return;
+
+      const { ydoc } = docData;
+      const content = ydoc.getText("note").toString();
+
+      const note: Note | undefined = await get_note(roomId);
+      if (note) {
+        await save_note({
+          ...note,
+          content: content
+        });
+      }
+      
       awareness.setLocalState(null);
       
-      // If no clients left in the room, cleanup
-      const room = Array.from(socket.rooms)[1]; // First room is always socket ID
+      
       if (room && io.sockets.adapter.rooms.get(room)?.size === 0) {
         docs.delete(room);
       }
       
       console.log("Client disconnected:", socket.id);
+
     });
+
+
   });
+
+
 });
 
+
+
 console.log("Socket.IO server running...");
+
 
 export { io };
