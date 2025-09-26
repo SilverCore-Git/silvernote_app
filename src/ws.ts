@@ -42,6 +42,7 @@ io.on("connection", (socket) => {
 
     if (!room) return;
     let title: string;
+    let icon: string;
 
     socket.join(room);
     
@@ -53,6 +54,7 @@ io.on("connection", (socket) => {
       const awareness = new awarenessProtocol.Awareness(ydoc);
 
       title = (await get_note(room))?.title || "";
+      icon = (await get_note(room))?.icon || "";
       
       docs.set(room, { ydoc, awareness });
       docData = { ydoc, awareness };
@@ -87,6 +89,19 @@ io.on("connection", (socket) => {
 
         socket.to(room).emit("title-update", update);
         title = update;
+
+      } catch (error) {
+        console.error("Error applying update:", error);
+      }
+
+    })
+
+    socket.on('icon-update', async (update: string) => {
+
+      try {
+
+        socket.to(room).emit("icon-update", update);
+        icon = update;
 
       } catch (error) {
         console.error("Error applying update:", error);
