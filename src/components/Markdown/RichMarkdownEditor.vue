@@ -174,7 +174,7 @@ function checkForMath() {
     return true
   })
   if (transaction.docChanged) {
-    editor.value.view.dispatch(transaction)
+    editor.value.view.dispatch(transaction as any)
   }
 }
 
@@ -194,10 +194,10 @@ const TodoInput = TaskItem.extend({
   }
 })
 
-// Save content to database
+
 const saveContent = () => {
   if (editor.value) {
-    //db.saveContent(editor.value.getHTML(), props.data.id, props.socket)
+    db.saveContent(editor.value.getHTML(), props.data.id)
   }
 }
 
@@ -248,7 +248,7 @@ const initEditor = async () => {
   const ydoc = new Y.Doc();
 
   const provider = new SocketIOProvider(
-    "http://localhost:3000",
+    api_url,
     props.data.uuid,
     user.value?.id || "",
     ydoc

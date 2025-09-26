@@ -45,18 +45,18 @@
 
                     <div
                         v-if="if_open_dropdown"
-                        class="dropdown color absolute bg-[var(--btn)] text-white z-50 right-0 md:right-auto"
-                        :style="{ top: `calc(3rem + env(safe-area-inset-top))` }"
+                        class="dropdown absolute bg-[var(--btn)] top-14
+                            text-white z-50 right-0 2xl:right-auto"
                     >
 
-                        <ul>
+                        <ul class="min-w-60 w-full">
 
-                            <li @click.stop="router.push('/settings')">
+                            <li @click.stop="router.push('/settings')" class="text-lg">
                                 <div class="gear-svg nav-svg max-w-6 max-h-6 min-w-6 min-h-6"></div>
                                 Paramètre
                             </li>
 
-                            <li @click.stop="openAccount">
+                            <li @click.stop="openAccount" class="text-lg">
 
                                 <div class="nav-svg max-w-6 max-h-6 min-w-6 min-h-6" style="filter: invert(0);">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -85,9 +85,20 @@
 
                             <hr />
 
-                            <span class="text-base flex justify-center w-full mt-1">version : {{ version }}</span>
-                            <span v-if="dev" class="text-base flex justify-center w-full">acces developpeur</span>
-                            
+                            <div 
+                                class="mt-1 flex flex-col text-center w-full"
+                            >
+
+                                <p class="text-base">
+                                    version : {{ version }}
+                                </p>
+
+                                <p v-if="dev" class="text-base">
+                                    acces developpeur
+                                </p>
+
+                            </div>
+
                         </ul>
 
                     </div>

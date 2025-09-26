@@ -1,7 +1,7 @@
 
 <template>
 
-    <HomeNavbar>
+    <Navbar>
 
         <div 
             class="reload-svg 
@@ -14,40 +14,44 @@
             @click="reload_list"
         ></div>
 
-    </HomeNavbar>
+    </Navbar>
     
-    <div class="Search_bar flex flex-col lg:flex-row justify-center items-center w-full gap-4">
+    <div class="Search_bar flex flex-col lg:flex-row 
+    justify-center items-center w-full gap-4">
 
-        <Search_bar class="w-full" :desktop="isLargeScreen" pt="env(safe-area-inset-top)" />
+        <Search_bar class="w-1/3" :desktop="isLargeScreen" pt="" />
 
-        <Swiper
-            v-if="all_tags && all_tags.length" 
-            :slides-per-view="'auto'"
-            :space-between="8"
-            class=" w-full lg:w-500 pr-1.5 pl-1.5 rounded-xl"
-            :class="[hitbox ? 'bg-amber-400' : '', 'lg:scrollbar-thin', 'scrollbar-thumb-rounded']"
+        <div 
+            class="w-full lg:w-2/3 flex items-center justify-center gap-4"
         >
-
-            <SwiperSlide 
-                v-for="(tag, index) in all_tags"
-                :key="index"
-                class="!w-auto"
+        
+            <Swiper
+                :slides-per-view="'auto'"
+                :space-between="8"
+                class="w-full lg:w-500 pr-1.5 pl-1.5 rounded-xl"
+                v-if="all_tags && all_tags.length" 
             >
 
-                <Tags_item 
-                    @click.stop="add_tag_filter(tag.id)" 
-                    @reload="reload_list"
-                    :id="tag.id" :name="tag.name" 
-                    :tag="tag.name" 
-                    :active="tag.active"
-                    :color="tag.color"
-                />
+                <SwiperSlide 
+                    v-for="(tag, index) in all_tags"
+                    :key="index"
+                    class="!w-auto"
+                >
 
-            </SwiperSlide>
-            
-            <SwiperSlide 
-                class="!w-auto"
-            >
+                    <Tags_item 
+                        @click.stop="add_tag_filter(tag.id)" 
+                        @reload="reload_list"
+                        :id="tag.id" :name="tag.name" 
+                        :tag="tag.name" 
+                        :active="tag.active"
+                        :color="tag.color"
+                    />
+
+                </SwiperSlide>
+                    
+            </Swiper>
+
+            <div>
 
                 <Tags_item 
                     @click="if_open_create_tag = true" 
@@ -59,30 +63,9 @@
                     class="w-20"
                 />
 
-            </SwiperSlide>
+            </div>
 
-        </Swiper>
-    
-        <ul 
-            v-else-if="all_tags" 
-            class="flex flex-row justify-center items-center gap-1.5 pr-1.5 pl-1.5 max-w-[100%] whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none"
-        >
-            <li 
-                class=" w-[20%] min-w-[70px]"
-            >
-
-                <Tags_item 
-                    @click="if_open_create_tag = true; inputRef?.focus()"
-                    :id="null"
-                    name="+"
-                    :tag="''"
-                    :active="false"
-                    color="#fff5e8"
-                    class="w-20"
-                />
-
-            </li>
-        </ul>
+        </div>
 
     </div>
 
@@ -115,7 +98,7 @@
                 v-for="tag in all_tags"
             >
 
-                <div v-if="list_notes.find(note => note.tags.includes(tag.id))">
+                <div v-if="list_notes && list_notes.find(note => note.tags.includes(tag.id))">
 
                     <div 
                         class="font-bold text-lg p-2 rounded-[var(--br-btn)]
@@ -198,7 +181,7 @@
 
                 <MasonryHr 
                     class="absolute inset-x-0" 
-                    v-if="shared_notes.length > 0"
+                    v-if="shared_notes && shared_notes.length > 0"
                 >
                     <span class="font-bold text-lg">Notes partagées</span>
                 </MasonryHr>
@@ -228,7 +211,7 @@
 
                 <MasonryHr 
                     class="absolute inset-x-0" 
-                    v-if="list_notes.filter(note => note.pinned == true).length"
+                    v-if="list_notes.filter(note => note.pinned == true).length || shared_notes.length"
                 >
                     <span class="font-bold text-lg">Autres</span>
                 </MasonryHr>
@@ -257,7 +240,7 @@
 
             </MasonryWrapper>
 
-            <li v-else-if="list_notes.length < 1" class="flex flex-col">
+            <li v-if="list_notes && list_notes.length < 1" class="flex flex-col">
 
                 <div 
                     class="w-full h-full py-20 flex justify-center items-center flex-col gap-2"
@@ -292,13 +275,24 @@
 
                     </div>
 
+                    <div
+                        v-else
+                    >
+
+                        <button 
+                            @click="create_new_note"
+                            class="primary scale uppercase"
+                        >
+                            créer une note
+                        </button>
+
+                    </div>
+
                 </div>
 
             </li>
 
-
-
-            <li v-else class=" flex-col">
+            <li v-if="list_notes == undefined" class=" flex-col">
                 <Loader :icon="false" />
             </li>
 
@@ -306,24 +300,18 @@
 
     </div>
 
-    <div
-        class="bg-transparent flex justify-center items-center w-full z-50 fixed left-0"
-        style="bottom: env(safe-area-inset-bottom);"
-    >
-        <button 
-            style="box-shadow: 0 0 15px #3636364f; " 
-            @click="create_new_note" 
-            class="add-note-btn cursor-pointer rounded-full
-                    flex items-center justify-center mb-8 p-2
-                  "
-        ><div class="add-note-svg"></div></button>
-    </div>
+    <New_note_btn 
+        @click="create_new_note"
+    />
 
-    <div @click="if_open_create_tag = false" v-if="if_open_create_tag">
+    <div v-if="if_open_create_tag">
 
-        <div  class="fixed inset-0 bg-black/50 z-100"></div>
+        <div  
+            class="fixed inset-0 bg-black/50 z-100"
+            @click="if_open_create_tag = false"
+        ></div>
 
-            <section class="flex flex-col gap-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-110">
+        <section class="flex flex-col gap-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-110">
 
             <div class="p-1 text-center w-full border-2 bg-[var(--bg2)]/80 border-[#F28C28] rounded-[var(--br-btn)] shadow-lg">
                 <input
@@ -375,21 +363,18 @@
     import back, { api_url } from '@/assets/ts/backend_link';
     import utils, { init_notes } from '@/assets/ts/utils';
     import type { Note, Tag } from '@/assets/ts/type';
-    import { hitbox as if_hitbox } from '@/assets/ts/settings';
     import { notes_views_mode } from '@/assets/ts/Notes_views'
 
-    let hitbox: boolean;
-    onMounted(async () => { hitbox = await if_hitbox() });
-
-    import Danger_card from '../components/Danger_card.vue';
-    import Note_card from '../components/notes/Note_card.vue';
-    import Search_bar from '../components/Search_bar.vue';
-    import Tags_item from '../components/tags/Tags_item.vue';
-    import HomeNavbar from '@/components/navbar/HomeNavbar.vue';
+    import Danger_card from '@/components/Danger_card.vue';
+    import Note_card from '@/components/notes/Note_card.vue';
+    import Search_bar from './Search_bar.vue';
+    import Tags_item from '@/components/tags/Tags_item.vue';
+    import Navbar from './NavBar.vue';
     import MasonryWrapper from '@/components/Masonry/MasonryWrapper.vue';
     import MasonryItem from '@/components/Masonry/MasonryItem.vue';
     import MasonryHr from '@/components/Masonry/MasonryHr.vue';
     import Loader from '@/components/Loader.vue';
+    import New_note_btn from '@/views/Home/New_note_btn.vue';
     
     const router = useRouter();
 
@@ -408,7 +393,7 @@
     const if_danger_card = ref<boolean>(false); 
     const Danger_card_props = ref<{ message: string, title: string, btn: boolean, href: string } | undefined>(undefined);
 
-    const list_notes = ref<Note[]>([]);
+    const list_notes = ref<Note[] | undefined>(undefined);
     const shared_notes = ref<Note[]>([]);
     const all_tags = ref<Tag[] | undefined>(undefined);
 
@@ -592,7 +577,7 @@
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
-        background-image: url('../assets/svgs/saving_disc.svg');
+        background-image: url('../../assets/svgs/saving_disc.svg');
         filter: invert(1);
         transition: all 0.3s ease;
     }
@@ -602,7 +587,7 @@
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
-        background-image: url('../assets/svgs/reload.svg');
+        background-image: url('../../assets/svgs/reload.svg');
         filter: invert(1);
     }
 
@@ -682,32 +667,6 @@
 
     .jump {
         animation: squashJump 0.5s ease-out;
-    }
-
-    .add-note-btn {
-        background-color: var(--btn);
-        transition: all 0.3s;
-    }
-
-    .add-note-btn:hover {
-        transform: scale(1.1);
-    }
-
-    .add-note-btn:active {
-        transform: scale(0.98);
-    }
-
-    .add-note-svg {
-
-        -webkit-mask-image: url('../assets/svgs/plus.svg');
-        mask-image: url('../assets/svgs/plus.svg');
-        -webkit-mask-repeat: no-repeat;
-        mask-repeat: no-repeat;
-        -webkit-mask-size: contain;
-        mask-size: contain;
-        background-color: #FFF8F0;
-        width: 55px;
-        height: 55px;
     }
 
 </style>

@@ -47,7 +47,7 @@ button.primary {
   background-color: var(--btn);
   color: white;
   cursor: pointer;
-  transition: border-color 0.25s, background-color 0.25s;
+  transition: all 0.25s;
 }
 
 button.second {
@@ -60,7 +60,7 @@ button.second {
   background-color: transparent;
   color: var(--text);
   cursor: pointer;
-  transition: border-color 0.25s, background-color 0.25s;
+  transition: all 0.25s;
 }
 
 button.primary.danger {
@@ -73,7 +73,7 @@ button.primary.danger {
   background-color: rgb(255, 72, 0);
   color: white;
   cursor: pointer;
-  transition: border-color 0.25s, background-color 0.25s;
+  transition: all 0.25s;
 }
 
 button.second.danger {
@@ -86,7 +86,7 @@ button.second.danger {
   background-color: transparent;
   color: var(--text);
   cursor: pointer;
-  transition: border-color 0.25s, background-color 0.25s;
+  transition: all 0.25s;
 }
 
 button:hover.primary {
@@ -109,6 +109,10 @@ button:hover.danger {
   background-color: rgb(255, 72, 0);
   border-color: rgb(255, 72, 0);
   color: white;
+}
+
+button:hover.scale {
+  transform: scale(1.1);
 }
 
 button:focus,

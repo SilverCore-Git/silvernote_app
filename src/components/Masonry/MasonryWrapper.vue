@@ -29,7 +29,7 @@ onMounted(async () => {
       transitionDuration: "0.2s"
     });
 
-  }, 1000);
+  }, 1500);
 
 });
 

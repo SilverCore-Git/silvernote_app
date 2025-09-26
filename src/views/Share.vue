@@ -133,15 +133,23 @@
 
         <div class="w-full flex justify-start ml-[10%]">
 
-        <button ref="emojiBtn">
+            <button ref="emojiBtn">
 
-            <img
-                v-if="note.icon" 
-                class="w-[64px] h-[64px] cursor-pointer" 
-                :src="note.icon" 
-            />
+                <img
+                    v-if="note.icon" 
+                    class="w-[64px] h-[64px] cursor-pointer" 
+                    :src="note.icon" 
+                />
 
-        </button>
+                <a 
+                    v-else
+                    class="cursor-pointer text-gray-600 px-2 py-1 rounded-2xl 
+                    hover:bg-gray-300 hover:text-gray-800 transition-all duration-300"
+                >
+                    Ajouter une icon
+                </a>
+
+            </button>
         
         </div>
 
@@ -266,8 +274,9 @@ import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
 import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { io, Socket } from 'socket.io-client';
+import { EmojiButton } from '@joeattardi/emoji-button';
 import Success from '@/components/alert/Success.vue';
-import TaskItem from '@tiptap/extension-task-item';
+import utils from '@/assets/ts/utils';
 
 
 const props = defineProps<{
@@ -283,6 +292,7 @@ const error = ref<string>('');
 const need_passwd = ref<boolean>(false);
 const loaded = ref<boolean>(false);
 const passwd = ref<string>('');
+const emojiBtn = ref<HTMLButtonElement | null>(null);
 const users = ref<User[]>([]);
 const share_menu = ref<boolean>(false);
 const _success = ref<{ active: boolean, value: string }>({ active: false, value: '' });
@@ -401,6 +411,28 @@ const _fetch = async () => {
 }
 
 
+const init = () => {
+
+    if (!emojiBtn.value) return console.error('Emoji pîcker not load.');
+
+    const picker = new EmojiButton({
+      position: 'bottom-start',
+      autoHide: true,
+      showPreview: true
+    });
+
+    picker.on('emoji', (emoji: { emoji: string, name: string }) => {
+        if (!editable || !note.value?.icon) return;
+        note.value.icon = utils.emojiToBase64(emoji.emoji);
+    });
+
+    emojiBtn.value.addEventListener('click', () => {
+        if (!editable) return;
+        picker.togglePicker(emojiBtn.value!);
+    });
+
+}
+
 
 const wSocket = () => {
 
@@ -459,7 +491,9 @@ const wSocket = () => {
 
 
 
-onMounted(() => _fetch())
+onMounted(() => {
+    _fetch().then(() => init());
+})
 
 </script>
 

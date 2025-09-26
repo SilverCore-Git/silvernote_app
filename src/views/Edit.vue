@@ -129,12 +129,11 @@
 
     
     <RichMarkdownEditor 
-      v-if="socket && loaded"
+      v-show="loaded && note.content"
       v-bind="attrs" 
       :editable="true"
       :id="-2" 
       :uuid="note.uuid"
-      :socket="socket"
       :data="note"
       class="mb-20"
     />

@@ -2,7 +2,7 @@
 
   <div
     class="note-card bg-[var(--bg2)] text-[var(--text)] border border-[var(--text)] z-30 rounded-2xl py-1.5
-          relative lg:ml-0 ml-4 mr-4 w-full flex flex-col pl-4"
+          relative lg:mx-0 mx-4 w-full flex flex-col pl-4"
     style="box-shadow: 0 0 15px #3636364f;"
     
   >
@@ -20,6 +20,13 @@
       <button v-if="searchQuery !== ''" @click="searchQuery = ''" class="cross-btn absolute end-1"></button>
       <button v-if="searchQuery == ''" @click="search_input?.focus()" class="search-btn absolute end-4"></button>
 
+    </div>
+
+    <div 
+      v-if="searchQuery !== '' && !filteredNotes.length" 
+      class="text-sm "
+    >
+        Aucune note trouvée.
     </div>
 
   </div>
@@ -67,10 +74,6 @@
 
     </div>
 
-    <div v-if="searchQuery !== '' && !filteredNotes.length" class="text-sm mt-4">
-        Aucune note trouvée.
-    </div>
-
   </div>
 
 </template>
@@ -82,10 +85,10 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import db from '../assets/ts/database';
-import type { Note, Tag } from '../assets/ts/type';
-import { hitbox as if_hitbox } from '../assets/ts/settings';
-import utils from '../assets/ts/utils';
+import db from '@/assets/ts/database';
+import type { Note, Tag } from '@/assets/ts/type';
+import { hitbox as if_hitbox } from '@/assets/ts/settings';
+import utils from '@/assets/ts/utils';
 
 let hitbox: boolean;
 onMounted(async () => { hitbox = await if_hitbox() })
@@ -152,7 +155,7 @@ onMounted(async () => {
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
-        background-image: url('../assets/svgs/magnifying-glass.svg');
+        background-image: url('../../assets/svgs/magnifying-glass.svg');
         filter: brightness(0) saturate(100%) invert(55%) sepia(65%) saturate(538%) hue-rotate(343deg) brightness(98%) contrast(98%);
         transition: all 0.3s ease;
 
@@ -166,7 +169,7 @@ onMounted(async () => {
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
-        background-image: url('../assets/svgs/cross.svg');
+        background-image: url('../../assets/svgs/cross.svg');
         filter: brightness(0) saturate(100%) invert(55%) sepia(65%) saturate(538%) hue-rotate(343deg) brightness(98%) contrast(98%);
         transition: all 0.3s ease;
 
