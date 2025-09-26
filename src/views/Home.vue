@@ -198,13 +198,13 @@
 
                 <MasonryHr 
                     class="absolute inset-x-0" 
-                    v-if="shared_notes.length >= 1"
+                    v-if="shared_notes.length > 0"
                 >
                     <span class="font-bold text-lg">Notes partagées</span>
                 </MasonryHr>
 
                 <MasonryItem 
-                    v-if="shared_notes && shared_notes.length >= 1"
+                    v-if="shared_notes && shared_notes.length > 0"
                     v-for="(note, index) in shared_notes" 
                     :key="index"
                 >

@@ -7,7 +7,7 @@ export class SocketIOProvider {
   private doc: Y.Doc;
   private awareness;
 
-  constructor(serverUrl: string, room: string, doc: Y.Doc) {
+  constructor(serverUrl: string, room: string, userId: string, doc: Y.Doc) {
     this.doc = doc;
     this.awareness = new awarenessProtocol.Awareness(doc);
 
@@ -25,7 +25,7 @@ export class SocketIOProvider {
 
     this.socket.on("connect", () => {
       console.log("Connected to collaboration server");
-      this.socket.emit("join-room", { room });
+      this.socket.emit("join-room", { room, userId });
     });
 
     // Handle initial sync
@@ -52,7 +52,6 @@ export class SocketIOProvider {
     this.doc.on("update", (update: Uint8Array) => {
       if (this.socket.connected) {
         try {
-          // Send the Uint8Array directly
           this.socket.emit("y-update", update);
         } catch (error) {
           console.error("Error sending update:", error);

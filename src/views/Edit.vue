@@ -7,6 +7,35 @@
     <div class="flex flex-row gap-4 absolute right-0">
 
       <div
+        v-if="users.length > 0"
+        class="flex justify-center items-center flex-row gap-4"
+      >
+
+        <div
+          class="flex -space-x-3"
+        >
+
+          <img
+              v-if="users.length > 0"
+              v-for="user in users"
+              class="w-8 h-8  rounded-full border-1 border-gray-200"
+              :src="user.imageUrl"
+          />
+
+        </div>
+
+        <a 
+            class="
+                cursor-pointer hover:bg-gray-200 hover:text-[var(--text)]
+                py-1 px-3 rounded-xl transition-all duration-200
+                border-2 border-gray-200
+            "
+            @click="router.push(`/share/${note.uuid}`)"
+        >Partage</a>
+
+      </div>
+
+      <div
         class="pin cursor-pointer"
         :style="{
           backgroundImage: if_pin_active
@@ -176,10 +205,11 @@ import { ref, onMounted, useAttrs, watch, onBeforeUnmount } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { io, Socket } from 'socket.io-client';
 import { EmojiButton } from '@joeattardi/emoji-button';
+import { useUser } from '@clerk/vue';
 
 import db from '@/assets/ts/database';
 import utils from '@/assets/ts/utils';
-import type { Note } from '@/assets/ts/type';
+import type { Note, User } from '@/assets/ts/type';
 
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';
@@ -189,6 +219,7 @@ import Share_menu from '@/components/popup/share_menu.vue';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
 
 const props = defineProps<{ id: number | 'new' }>()
+const { user } = useUser();
 
 let hitbox: boolean;
 
@@ -213,6 +244,7 @@ const showDialog = ref<boolean>(false);
 const emojiBtn = ref<HTMLButtonElement | null>(null);
 const title = ref<HTMLInputElement | null>(null);
 const loaded = ref<boolean>(false);
+const users = ref<User[]>([]);
 
 const attrs = useAttrs();
 const router = useRouter();
@@ -220,6 +252,16 @@ const route = useRoute();
 
 let socket: Socket;
 
+
+
+const getUserByUUID = async (user_id: string, type: 'owner' | 'visitor'): Promise<User> => {
+    
+    const data = await fetch(`${api_url}/api/user/by/id/${user_id}`, {
+        credentials: 'include'
+    }).then(res => res.json());
+    return { ...data, type };
+
+}
 
 const delete_note = async (state: number): Promise<void> => {
   
@@ -236,7 +278,7 @@ const delete_note = async (state: number): Promise<void> => {
 
 const save_title = () => {
   if (note.value.title) {
-    db.saveTitle(note.value.title, Number(props.id), socket);
+    db.saveTitle(note.value.title, Number(props.id));
   }
 }
 
@@ -261,24 +303,59 @@ const update_title = () => {
   document.title = `SilverNote - ${note.value.title}`;
 }
 
+
 const wSocket = () => {
 
     socket = io(api_url, { path: "/socket.io/" });
 
     socket.on('connect', () => {
         console.log('WebSocket connecté !');
-        socket.emit('join_share', { uuid: note.value.uuid });
+        socket.emit("join-room", { 
+          room: note.value?.uuid, 
+          userId: user.value?.id
+        });
     });
 
-    socket.on('update_note', (data: { content: string; title: string }) => {
-        if (!note.value) return;
-        note.value.content = data.content;
-        note.value.title = data.title;
-    });
+    socket.on('new_user', async (userId: string) => {
+
+        const user_visitor = await getUserByUUID(userId, 'visitor');
+        const user_owner = await getUserByUUID(userId, 'owner');
+
+        if (!user_owner || !user_visitor) return;
+        if (users.value.includes(user_visitor)) return;
+        if (users.value.includes(user_owner)) return;
+
+        users.value.push(user_visitor);
+
+    })
+
+    socket.on('title-update', async (update: string) => {
+        note.value!.title = update;
+    })
+
+    socket.on('icon-update', async (update: string) => {
+        note.value!.icon = update;
+    })
 
     socket.on('disconnect', () => {
         console.log('WebSocket déconnecté !');
     });
+
+    let onupdate: boolean = false;
+    watch(() => note.value?.title, () => {
+      if (onupdate) return;
+      onupdate = true;
+
+      setTimeout(() => {
+        socket.emit('title-update', note.value?.title);
+        onupdate = false;
+      }, 500);
+
+    })
+
+    watch(() => note.value?.icon, () => {
+      socket.emit('icon-update', note.value?.icon);
+    })
 
 };
 
@@ -329,6 +406,17 @@ onMounted(async () => {
           wSocket();
         }
 
+        const _share = await fetch(`${api_url}/api/share/${fetchedNote?.uuid}?passwd=`)
+          .then(res => res.json())
+
+        if (_share.success) {
+          users.value.push(await getUserByUUID(_share.user_id, 'owner'));
+          for (const userId of _share.visitor) {
+              if (userId == _share.user_id) continue;
+              users.value.push(await getUserByUUID(userId, 'visitor'));
+          }
+        }
+
       }, 0)
       
     } else if (props.id !== 'new') {
@@ -371,7 +459,7 @@ onMounted(async () => {
 onBeforeUnmount(async () => {
   if (note.value.title == '') {
     console.log('Sauvegarde de la note vide')
-    db.saveTitle('Note sans titre', note.value.id, socket);
+    db.saveTitle('Note sans titre', note.value.id);
   };
 });
 

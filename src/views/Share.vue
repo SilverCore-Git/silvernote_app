@@ -259,23 +259,15 @@
 <script lang="ts" setup>
 
 import { api_url } from '@/assets/ts/backend_link';
-import type { Note } from '@/assets/ts/type';
+import type { Note, User } from '@/assets/ts/type';
 import Loader from '@/components/Loader.vue';
 import { useUser } from '@clerk/vue';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { io, Socket } from 'socket.io-client';
 import Success from '@/components/alert/Success.vue';
-
-
-interface User { 
-    type: 'owner' | 'visitor';
-    user_id: string;
-    imageUrl: string;
-    username: string;
-    isMe: boolean;
-}
+import TaskItem from '@tiptap/extension-task-item';
 
 
 const props = defineProps<{
@@ -284,6 +276,7 @@ const props = defineProps<{
 
 const router = useRouter();
 const { user } = useUser();
+
 
 const note = ref<Note | undefined>(undefined);
 const error = ref<string>('');
@@ -298,11 +291,14 @@ let editable: boolean;
 let socket: Socket;
 
 
-const getUserByUUID = async (user_id: string, type: 'owner' | 'visitor'): Promise<User> => {
-    
+const getUserByUUID = async (user_id: string, type: 'owner' | 'visitor'): Promise<User | undefined> => {
+
+    if (!user_id || !type) return;
+
     const data = await fetch(`${api_url}/api/user/by/id/${user_id}`, {
         credentials: 'include'
     }).then(res => res.json());
+
     return { ...data, type };
 
 }
@@ -367,10 +363,21 @@ const _fetch = async () => {
         need_passwd.value = false;
         editable = _share.editable;
 
-        users.value.push(await getUserByUUID(_share.user_id, 'owner'));
-        for (const userId of _share.visitor) {
-            if (userId == _share.user_id) continue;
-            users.value.push(await getUserByUUID(userId, 'visitor'));
+        const owner_user: User | undefined = await getUserByUUID(_share.user_id, 'owner');
+        if (owner_user) users.value.push(owner_user);
+
+        if (_share.visitor.length > 0) {
+
+            for (const userId of _share.visitor) {
+
+                if (userId == _share.user_id) continue;
+
+                const user: User | undefined = await getUserByUUID(userId, 'visitor');
+                if (!user) continue;
+                users.value.push(user);
+
+            }
+
         }
 
         loaded.value = true;
@@ -401,30 +408,54 @@ const wSocket = () => {
 
     socket.on('connect', () => {
         console.log('WebSocket connecté !');
-        socket.emit('join_share', { 
-            uuid: note.value?.uuid,
-            userId: user.value?.id
+        socket.emit("join-room", { 
+          room: note.value?.uuid, 
+          userId: user.value?.id
         });
     });
 
-    socket.on('update_note', (data: { content: string; title: string }) => {
-        if (!note.value) return;
-        note.value.content = data.content;
-        note.value.title = data.title;
-    });
+    socket.on('new_user', async (userId: string) => {
 
-    socket.on('new_user', async (data: { userId: string }) => {
-        if (users.value.includes(await getUserByUUID(data.userId, 'visitor'))) return;
-        if (users.value.includes(await getUserByUUID(data.userId, 'owner'))) return;
-        users.value.push(await getUserByUUID(data.userId, 'visitor'));
+        const user_visitor = await getUserByUUID(userId, 'visitor');
+        const user_owner = await getUserByUUID(userId, 'owner');
+
+        if (!user_owner || !user_visitor) return;
+        if (users.value.includes(user_visitor)) return;
+        if (users.value.includes(user_owner)) return;
+
+        users.value.push(user_visitor);
+
+    })
+
+    socket.on('title-update', async (update: string) => {
+        note.value!.title = update;
+    })
+
+    socket.on('icon-update', async (update: string) => {
+        note.value!.icon = update;
     })
 
     socket.on('disconnect', () => {
         console.log('WebSocket déconnecté !');
     });
 
-};
+    let onupdate: boolean = false;
+    watch(() => note.value?.title, () => {
+      if (onupdate) return;
+      onupdate = true;
 
+      setTimeout(() => {
+        socket.emit('title-update', note.value?.title);
+        onupdate = false;
+      }, 500);
+
+    })
+
+    watch(() => note.value?.icon, () => {
+      socket.emit('icon-update', note.value?.icon);
+    })
+
+};
 
 
 

@@ -90,22 +90,21 @@ class Database {
         }
     }
 
-    public async saveContent(content: string, id: number, socket: Socket): Promise<void> {
+    public async saveContent(content: string, id: number): Promise<void> {
         const db = await this.dbPromise;
         const note = await db.get('notes', id);
+
         if (note) {
             note.content = content;
-            this.push_note(note, socket);
             await db.put('notes', note);
         }
     }
 
-    public async saveTitle(title: string, id: number, socket: Socket): Promise<void> {
+    public async saveTitle(title: string, id: number): Promise<void> {
         const db = await this.dbPromise;
         const note = await db.get('notes', id);
         if (note) {
             note.title = title;
-            this.push_note(note, socket);
             await db.put('notes', note);
         }
     }

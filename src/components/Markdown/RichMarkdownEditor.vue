@@ -89,26 +89,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
-import { Editor, EditorContent } from '@tiptap/vue-3'
-import StarterKit from '@tiptap/starter-kit'
-import Underline from '@tiptap/extension-underline'
-import Placeholder from '@tiptap/extension-placeholder'
-import Link from '@tiptap/extension-link'
-import TaskList from '@tiptap/extension-task-list'
-import TaskItem from '@tiptap/extension-task-item'
-import SlashCommand from './SlachCommand.js'
-import { Extension, InputRule } from '@tiptap/core'
-import { Collaboration } from '@tiptap/extension-collaboration'
-import CollaborationCaret from '@tiptap/extension-collaboration-caret'
-import * as Y from 'yjs'
-import { SocketIOProvider } from './SocketIOProvider.js'
-import { useUser } from '@clerk/vue'
-import { evaluate } from 'mathjs'
-import Loader from '../Loader.vue'
-import type { Note } from '@/assets/ts/type'
-import { api_url } from '@/assets/ts/backend_link'
-import { getDominantColor } from '@/assets/ts/GetColorByImage'
+
+import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue';
+import { Editor, EditorContent } from '@tiptap/vue-3';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import Placeholder from '@tiptap/extension-placeholder';
+import Link from '@tiptap/extension-link';
+import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
+import SlashCommand from './SlachCommand.js';
+import { Extension, InputRule } from '@tiptap/core';
+import { Collaboration } from '@tiptap/extension-collaboration';
+import CollaborationCaret from '@tiptap/extension-collaboration-caret';
+import * as Y from 'yjs';
+import { SocketIOProvider } from './SocketIOProvider.js';
+import { useUser } from '@clerk/vue';
+import { evaluate } from 'mathjs';
+import Loader from '../Loader.vue';
+import type { Note } from '@/assets/ts/type';
+import { api_url } from '@/assets/ts/backend_link';
+import { getDominantColor } from '@/assets/ts/GetColorByImage';
+import db from '@/assets/ts/database.js';
+
 
 const props = defineProps<{
   id: number
@@ -211,18 +214,15 @@ const MathEvalShortcut = Extension.create({
   }
 })
 
-// Watch for content changes to emit `edit_note` event
-// watch(
-//   () => editor.value?.getHTML(),
-//   (newContent, oldContent) => {
-//     if (!editor.value || newContent === undefined || newContent === oldContent) return
-//     props.socket.emit('edit_note', {
-//       uuid: props.data?.uuid,
-//       content: newContent,
-//       title: props.data?.title
-//     })
-//   }
-// )
+
+watch(
+  () => editor.value?.getHTML(),
+  async (newContent, oldContent) => {
+    if (!editor.value || newContent === undefined || newContent === oldContent) return;
+    await db.saveContent(newContent, props.data.id);
+    console.log("save : ", newContent)
+  }
+)
 
 // Get dominant color from user image
 const getColorByImage = async (): Promise<string> => {
@@ -250,6 +250,7 @@ const initEditor = async () => {
   const provider = new SocketIOProvider(
     "http://localhost:3000",
     props.data.uuid,
+    user.value?.id || "",
     ydoc
   )
 
@@ -270,8 +271,7 @@ const initEditor = async () => {
       }),
       MathEvalShortcut,
       Collaboration.configure({ 
-        document: ydoc,
-        //field: "note"
+        document: ydoc
       }),
       CollaborationCaret.configure({
         provider,
@@ -282,7 +282,6 @@ const initEditor = async () => {
         }
       })
     ],
-    content: "test",
     editable: props.editable,
     onUpdate: () => {
       saveContent()
@@ -292,10 +291,12 @@ const initEditor = async () => {
 
   loader.value = false;
 
+  editor.value?.commands.setContent(props.data.content);
+
   onBeforeUnmount(() => {
-    editor.value?.destroy()
-    provider.destroy()
-    window.removeEventListener('resize', updateSize)
+    editor.value?.destroy();
+    provider.destroy();
+    window.removeEventListener('resize', updateSize);
   })
 
 }

@@ -1,4 +1,10 @@
-
+export interface User { 
+    type: 'owner' | 'visitor';
+    user_id: string;
+    imageUrl: string;
+    username: string;
+    isMe: boolean;
+}
 
 export interface Note {
     id: number;
