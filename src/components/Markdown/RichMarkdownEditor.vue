@@ -1,12 +1,21 @@
 <template>
-  <div class="editor-container" @click="focusEditor">
+
+  <div  
+    class="editor-container" 
+    @click="focusEditor"
+  >
     <editor-content
       v-if="editor"
       :editor="editor as Editor"
-      class="prose h-full"
+      class="prose h-full mb-40"
     />
     <Loader v-if="loader" class="absolute inset-0" :icon="false" />
   </div>
+
+  <span>
+    caractere : {{ editor?.storage.characterCount.characters() }}
+    mots : {{ editor?.storage.characterCount.words() }}
+  </span>
 
   <div
     v-if="!isLargeScreen"
@@ -86,27 +95,40 @@
       </div>
     </div>
   </div>
+
 </template>
 
 <script setup lang="ts">
 
 import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
+
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
 import Link from '@tiptap/extension-link';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
-import SlashCommand from './SlachCommand.js';
+import Image from '@tiptap/extension-image';
+import { TableKit } from '@tiptap/extension-table';
+import { CharacterCount, UndoRedo } from '@tiptap/extensions';
+import DragHandle from '@tiptap/extension-drag-handle';
+import Youtube from '@tiptap/extension-youtube'
 import { Extension, InputRule } from '@tiptap/core';
-import { Collaboration } from '@tiptap/extension-collaboration';
-import CollaborationCaret from '@tiptap/extension-collaboration-caret';
+import SlashCommand from '@/components/Markdown/SlachCommand.js';
+import FileHandler from '@tiptap/extension-file-handler';
+import FileHandler_configure from './FileHandler_configure.js';
+
+import './css/DragHandler.scss';
+
 import * as Y from 'yjs';
 import { SocketIOProvider } from './SocketIOProvider.js';
+import { Collaboration } from '@tiptap/extension-collaboration';
+import CollaborationCaret from '@tiptap/extension-collaboration-caret';
+
 import { useUser } from '@clerk/vue';
 import { evaluate } from 'mathjs';
-import Loader from '../Loader.vue';
+import Loader from '@/components/Loader.vue';
 import type { Note } from '@/assets/ts/type';
 import { api_url } from '@/assets/ts/backend_link';
 import { getDominantColor } from '@/assets/ts/GetColorByImage';
@@ -266,10 +288,29 @@ const initEditor = async () => {
       SlashCommand,
       Link.configure({ openOnClick: false, autolink: true, linkOnPaste: true }),
       Underline,
+      Image.configure({
+        inline: false,
+        allowBase64: true
+      }),
+      Youtube.configure({
+        HTMLAttributes: {
+          class: 'ytb-viewer'
+        }
+      }),
+      UndoRedo,
+      CharacterCount,
+      TableKit,
       Placeholder.configure({ 
         placeholder: 'Commencez à écrire ici...' 
       }),
       MathEvalShortcut,
+      DragHandle.configure({
+        computePositionConfig: {
+          placement: 'left',
+          strategy: 'fixed',
+        },
+      }),
+      FileHandler.configure(FileHandler_configure),
       Collaboration.configure({ 
         document: ydoc
       }),
@@ -315,9 +356,10 @@ onMounted(() => {
 
 <style>
 
-@import '../../assets/css/basic.css';
-@import '../../assets/css/ToDoList.css';
-@import '../../assets/css/tiptap_carets.css';
+@import './css/basic.css';
+@import './css/Table.css';
+@import './css/ToDoList.css';
+@import './css/tiptap_carets.css';
 
 .editor-container {
   width: 90%;

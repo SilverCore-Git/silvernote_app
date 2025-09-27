@@ -1,0 +1,37 @@
+/* Style général du tableau */
+.ProseMirror table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-family: system-ui, sans-serif;
+}
+
+/* Style des cellules */
+.ProseMirror th,
+.ProseMirror td {
+  border: 1px solid #ccc;
+  padding: 0.5em 1em;
+  text-align: left;
+}
+
+/* En-tête */
+.ProseMirror th {
+  background-color: #f3f4f6; /* gris clair */
+  font-weight: 600;
+}
+
+/* Lignes alternées */
+.ProseMirror tr:nth-child(even) td {
+  background-color: #f9fafb; /* gris très clair */
+}
+
+/* Style sur hover */
+.ProseMirror tr:hover td {
+  background-color: #e5e7eb; /* gris clair légèrement plus foncé */
+}
+
+/* Pour des tableaux responsives */
+.ProseMirror table {
+  display: block;
+  overflow-x: auto;
+}

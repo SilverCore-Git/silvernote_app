@@ -243,6 +243,7 @@ const showDialog = ref<boolean>(false);
 const emojiBtn = ref<HTMLButtonElement | null>(null);
 const title = ref<HTMLInputElement | null>(null);
 const loaded = ref<boolean>(false);
+const shared = ref<boolean>(false);
 const users = ref<User[]>([]);
 
 const attrs = useAttrs();
@@ -316,6 +317,8 @@ const wSocket = () => {
     });
 
     socket.on('new_user', async (userId: string) => {
+
+        if (!shared.value) return;
 
         const user_visitor = await getUserByUUID(userId, 'visitor');
         const user_owner = await getUserByUUID(userId, 'owner');
@@ -409,6 +412,7 @@ onMounted(async () => {
           .then(res => res.json())
 
         if (_share.success) {
+          shared.value = true;
           users.value.push(await getUserByUUID(_share.user_id, 'owner'));
           for (const userId of _share.visitor) {
               if (userId == _share.user_id) continue;

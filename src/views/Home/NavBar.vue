@@ -1,5 +1,13 @@
 <template>
 
+    <!-- click for hidde dropdown -->
+    <div 
+        class="absolute inset-0 w-[200%] h-[200%] z-50
+        -translate-x-100 -translate-y-20"
+        @click="if_open_dropdown = false"
+        v-if="if_open_dropdown"
+    ></div>
+
     <header 
         style="
             font-family: 'InterTight', sans-serif; 
@@ -41,6 +49,7 @@
                     @click="if_open_dropdown = !if_open_dropdown"
                 ></div>
 
+                
                 <transition name="fade-slide">
 
                     <div
