@@ -12,6 +12,7 @@ const path_1 = __importDefault(require("path"));
 const http_1 = require("http");
 require("dotenv/config");
 const AuthMiddleware_1 = __importDefault(require("./middleware/AuthMiddleware"));
+const package_json_1 = __importDefault(require("./package.json"));
 const config_json_1 = __importDefault(require("./config.json"));
 // Import des routes
 const api_1 = __importDefault(require("./routes/api"));
@@ -38,6 +39,9 @@ app.use('/api/db', api_db_1.default);
 app.use('/user', user_1.default);
 app.use('/admin', admin_1.default);
 app.use('/money', money_1.default);
+app.get('/version', (req, res) => {
+    res.json({ v: package_json_1.default.version });
+});
 // 404
 app.use((req, res) => {
     res.status(404).json({ route: req.path, error: 'Route non trouvée' });

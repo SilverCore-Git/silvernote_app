@@ -7,6 +7,7 @@ import { createServer } from 'http';
 import 'dotenv/config';
 import AuthMiddleware from './middleware/AuthMiddleware';
 
+import pkg from './package.json';
 import config from './config.json';
 
 // Import des routes
@@ -39,6 +40,11 @@ app.use('/user', user);
 app.use('/admin', admin);
 app.use('/money', money);
 
+
+
+app.get('/version', (req, res) => {
+  res.json({ v: pkg.version })
+})
 
 
 // 404
