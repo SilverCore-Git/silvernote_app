@@ -1,0 +1,168 @@
+<template>
+
+    <div 
+        class="editor-area"
+        
+    >
+
+        <slot />
+        
+        <div 
+            class="context-menu dropdown h-10
+            flex flex-row bg-[var(--bg2)] overflow-auto"
+            :class="showMenu ? '' : 'opacity-0'"
+            :style="{ top: `${posY}px`, left: `${posX}px` }"
+            
+        >
+
+            <ul 
+                v-for="(list, cat) in actions" 
+                :key="cat"
+                class="pr-2 border-r-1 flex flex-row"
+            >
+
+                <li
+                    v-for="action in list"
+                    :key="action.id"
+                    @click="exec(action.action)"
+                >
+
+                    <select
+                        v-if="action.selected"
+                        @change="onSelectAction($event, action.actions)"
+                    >
+
+                      <option 
+                          v-for="act in action.actions" 
+                          @select="exec(act.action)"
+                          :key="act.id" 
+                          :value="act.id"
+                      >
+                          {{ act.name }}
+                      </option>
+
+                    </select>
+
+                    <span 
+                      v-else
+                      v-html="action.name"
+                    >
+                    </span>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</template>
+
+<script setup lang="ts">
+
+import { Editor } from '@tiptap/vue-3';
+import { nextTick, ref, watch } from 'vue'
+
+import type { Categories, Action } from '@/components/Markdown/ToolsMenu/ToolsMenuTypes';
+import config from '@/components/Markdown/ToolsMenu/ToolsMenuConfig.json';
+const _config: any = config; // i can't assign categories type
+
+const props = defineProps<{
+    editor?: Editor;
+}>();
+
+
+const actions = ref<Categories>(_config);
+const showMenu = ref<boolean> (false)
+const posX = ref<number>(0)
+const posY = ref<number>(0)
+
+
+
+const openSelectionMenu = () => {
+  const editor = props.editor;
+  if (!editor) return;
+
+  const { from, to } = editor.state.selection;
+  if (from === to) {
+    showMenu.value = false;
+    return;
+  }
+
+  const middle = Math.floor((from + to) / 2);
+  const coords = editor.view.coordsAtPos(middle);
+
+  posX.value = coords.left + window.scrollX;
+  posY.value = coords.top + window.scrollY - 40;
+
+  setTimeout(() => {
+    showMenu.value = true;
+  }, 500)
+
+}
+
+const closeMenu = () => {
+  showMenu.value = false
+}
+
+const exec = (action: string) => {
+
+  const fn = new Function("editor", `return (${action})()`);
+  fn(props.editor);
+
+}
+
+const onSelectAction = (event: Event, actionsList: Action[]) => {
+  const select = event.target as HTMLSelectElement;
+  const act = actionsList.find(a => a.id == Number(select.value));
+  if (act) exec(act.action);
+};
+
+
+watch(
+  () => props.editor?.state.selection,
+  async () => {
+    await nextTick()
+    openSelectionMenu()
+  }
+)
+
+</script>
+
+<style scoped>
+
+.context-menu {
+  position: fixed;
+  max-height: 20em;
+  z-index: 1000;
+  border: 1px solid var(--btn);
+  transition: all 0.3s;
+}
+
+.category-section {
+  margin-bottom: 12px;
+}
+
+.category-section h3 {
+  font-size: 14px;
+  margin: 0 0 8px 0;
+}
+
+.category-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.category-section li {
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.category-section li:hover {
+  background: #f5f5f5;
+}
+
+</style>

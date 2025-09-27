@@ -1,0 +1,79 @@
+{
+
+  "ai": [
+    {
+      "id": 1,
+      "name": "Résumé",
+      "action": "()=> editor.chain().focus().insertContent('Résumé IA...').run()"
+    },
+    {
+      "id": 2,
+      "name": "Demander a l'IA",
+      "action": "()=> editor.chain().focus().insertContent('Résumé IA...').run()"
+    }
+  ],
+
+  "collaboration": [
+
+    {
+      "id": 4,
+      "name": "Commenter",
+      "action": "()=> console.log('Partager lien')"
+    }
+
+  ],
+
+  "text": [
+
+    {
+      "id": 6,
+      "name": "<strong>B</strong",
+      "action": "()=> editor.chain().focus().toggleBold().run()"
+    },
+    {
+      "id": 7,
+      "name": "<i>I</i>",
+      "action": "()=> editor.chain().focus().toggleItalic().run()"
+    },
+    {
+      "id": 8,
+      "name": "<u>U</u>",
+      "action": "()=> editor.chain().focus().toggleUnderline().run()"
+    },
+
+    {
+      "selected": true,
+      "id": 9,
+      "actions": [
+        {
+          "id": 91,
+          "name": "Titre 1",
+          "action": "()=> editor.chain().focus().toggleHeading({ level: 1 }).run()"
+        },
+        {
+          "id": 92,
+          "name": "Titre 2",
+          "action": "()=> editor.chain().focus().toggleHeading({ level: 2 }).run()"
+        },
+        {
+          "id": 93,
+          "name": "Titre 3",
+          "action": "()=> editor.chain().focus().toggleHeading({ level: 3 }).run()"
+        },
+        {
+          "id": 13455432543,
+          "name": "Paragraphe",
+          "action": "()=> editor.chain().focus().setParagraph().run()"
+        }
+      ]
+    }
+
+  ],
+  "plus": [
+    {
+      "id": 10,
+      "name": "image",
+      "action": "()=> { const url = prompt('URL de l’image ?'); if (url) editor.chain().focus().setImage({ src: url }).run() }"
+    }
+  ]
+}

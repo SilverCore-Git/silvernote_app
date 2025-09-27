@@ -3,15 +3,15 @@
 <ToolsMenu
     v-if="editor && !loader"
     :editor="editor as Editor"
-    class="editor-container" 
+    class="editor-container overflow-hidden" 
     @click="focusEditor"
 >
 
-  <div>
+  <div class="overflow-hidden">
     <editor-content
       v-if="editor"
       :editor="editor as Editor"
-      class="prose h-full mb-40"
+      class="prose h-full mb-40 overflow-hidden"
     />
     <Loader v-if="loader" class="absolute inset-0" :icon="false" />
   </div>
@@ -106,7 +106,7 @@
 
 <script setup lang="ts">
 
-import { ref, onMounted, onBeforeUnmount, computed, watch, type Ref } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 
 import StarterKit from '@tiptap/starter-kit';
@@ -139,7 +139,7 @@ import type { Note } from '@/assets/ts/type';
 import { api_url } from '@/assets/ts/backend_link';
 import { getDominantColor } from '@/assets/ts/GetColorByImage';
 import db from '@/assets/ts/database.js';
-import ToolsMenu from './ToolsMenu.vue';
+import ToolsMenu from '@/components/Markdown/ToolsMenu/ToolsMenu.vue';
 
 
 const props = defineProps<{
