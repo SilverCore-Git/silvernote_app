@@ -1,9 +1,13 @@
 <template>
 
-  <div  
+<ToolsMenu
+    v-if="editor && !loader"
+    :editor="editor as Editor"
     class="editor-container" 
     @click="focusEditor"
-  >
+>
+
+  <div>
     <editor-content
       v-if="editor"
       :editor="editor as Editor"
@@ -96,11 +100,13 @@
     </div>
   </div>
 
+</ToolsMenu>
+
 </template>
 
 <script setup lang="ts">
 
-import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed, watch, type Ref } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 
 import StarterKit from '@tiptap/starter-kit';
@@ -133,6 +139,7 @@ import type { Note } from '@/assets/ts/type';
 import { api_url } from '@/assets/ts/backend_link';
 import { getDominantColor } from '@/assets/ts/GetColorByImage';
 import db from '@/assets/ts/database.js';
+import ToolsMenu from './ToolsMenu.vue';
 
 
 const props = defineProps<{
