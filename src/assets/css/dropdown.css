@@ -1,0 +1,32 @@
+.dropdown {
+  border-radius: var(--br-btn, 10px);
+  box-shadow: 0 8px 15px rgba(54, 54, 54, 0.288);
+  backdrop-filter: blur(10px);
+  min-width: 200px;
+  padding: 0.5rem;
+}
+
+.dropdown ul {
+  gap: 0px;
+} 
+
+.dropdown ul li {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.dropdown ul hr {
+    opacity: 50%;
+}
+
+.dropdown ul li:hover {
+  background-color: rgba(131, 131, 131, 0.15);
+}
+
+.dropdown.color ul li:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}

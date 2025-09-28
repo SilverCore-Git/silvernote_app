@@ -73,7 +73,7 @@
     {
       "id": 10,
       "name": "image",
-      "action": "()=> { const url = prompt('URL de l’image ?'); if (url) editor.chain().focus().setImage({ src: url }).run() }"
+      "action": "getImageFile"
     }
   ]
 }

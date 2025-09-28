@@ -141,6 +141,8 @@ import { getDominantColor } from '@/assets/ts/GetColorByImage';
 import db from '@/assets/ts/database.js';
 import ToolsMenu from '@/components/Markdown/ToolsMenu/ToolsMenu.vue';
 
+import { editor } from './Editor.js';
+
 
 const props = defineProps<{
   id: number
@@ -151,7 +153,6 @@ const props = defineProps<{
 
 const isLargeScreen = ref<boolean>(window.innerWidth >= 1024)
 const loader = ref<boolean>(true)
-const editor = ref<Editor | null>(null)
 const { user } = useUser()
 
 // Corrected `computed` properties for a more robust check
@@ -336,6 +337,7 @@ const initEditor = async () => {
       checkForMath()
     }
   })
+
 
   loader.value = false;
 

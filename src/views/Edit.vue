@@ -72,6 +72,31 @@
             <li @click="share_menu = true">Partager</li>
             <li class="text-red-600" @click="delete_note(1)">Supprimer</li>
 
+            <hr />
+
+            <li
+              class="flex flex-col"
+            >
+
+              <div
+                class="flex flex-col text-[12px]
+                       justify-start items-start"
+              >
+
+                <span>
+                  Nombres de mots : 
+                  {{ isLoaded ? stats?.getWordCount() : '...' }}
+                </span>
+
+                <span>
+                  Nombres de caractere : 
+                  {{ isLoaded ? stats?.getCharacterCount() : '...' }}
+                </span>
+
+              </div>
+
+            </li>
+
           </ul>
 
         </div>
@@ -94,7 +119,12 @@
 
   </section>
 
-  <section v-if="loaded" class="flex flex-col justify-center items-center h-full mt-12 overflow-x-hidden">
+  <section 
+    v-if="loaded" 
+    @click="if_open_dropdown = false"
+    class="flex flex-col justify-center items-center h-full 
+          mt-12 overflow-x-hidden"
+  >
 
     <div class="w-full flex justify-start ml-[10%]">
 
@@ -209,6 +239,7 @@ import { useUser } from '@clerk/vue';
 import db from '@/assets/ts/database';
 import utils from '@/assets/ts/utils';
 import type { Note, User } from '@/assets/ts/type';
+import { stats, isLoaded } from '@/components/Markdown/Stats';
 
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';

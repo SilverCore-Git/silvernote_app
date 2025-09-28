@@ -8,6 +8,7 @@
         <slot />
         
         <div 
+            v-if="showMenu"
             class="context-menu dropdown h-10
             flex flex-row bg-[var(--bg2)] overflow-auto"
             :class="showMenu ? '' : 'opacity-0'"
@@ -18,7 +19,8 @@
             <ul 
                 v-for="(list, cat) in actions" 
                 :key="cat"
-                class="pr-2 border-r-1 flex flex-row"
+                class=" flex flex-row"
+                :class="cat == 'plus' ? '' : 'pr-1 border-r-1'"
             >
 
                 <li
@@ -108,6 +110,8 @@ const closeMenu = () => {
 
 const exec = (action: string) => {
 
+  if (action.startsWith('getImageFile')) return insertImageFromFile(props.editor as Editor);
+
   const fn = new Function("editor", `return (${action})()`);
   fn(props.editor);
 
@@ -118,6 +122,29 @@ const onSelectAction = (event: Event, actionsList: Action[]) => {
   const act = actionsList.find(a => a.id == Number(select.value));
   if (act) exec(act.action);
 };
+
+
+const insertImageFromFile = (editor: Editor) => {
+  
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+
+  input.onchange = () => {
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const url = reader.result as string;
+      editor.chain().focus().setImage({ src: url }).run();
+    };
+    reader.readAsDataURL(file);
+  };
+
+  input.click();
+};
+
 
 
 watch(
