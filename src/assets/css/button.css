@@ -1,0 +1,120 @@
+
+
+button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+
+
+button.primary {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.4em 1rem;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--btn);
+  color: white;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+button.second {
+  border-radius: 8px;
+  border: 2px solid var(--btn);
+  padding: 0.4em 1em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+button.primary.danger {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.4em 1rem;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: rgb(255, 72, 0);
+  color: white;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+button.second.danger {
+  border-radius: 8px;
+  border: 2px solid rgb(255, 72, 0);
+  padding: 0.4em 1em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+button:hover.primary {
+  border-color: #d5731c;
+  background-color: #e67d13;
+  color: white;
+}
+
+button:hover.second.nohover {
+  background-color: transparent;
+  color: initial;
+}
+
+button:hover.second {
+  background-color: var(--btn);
+  color: white;
+}
+
+button:hover.danger {
+  background-color: rgb(255, 72, 0);
+  border-color: rgb(255, 72, 0);
+  color: white;
+}
+
+button:hover.scale {
+  transform: scale(1.1);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+
+button.loader,
+button.loader:hover {
+    color: transparent;
+    background-color: transparent;
+    border-color: #d5731c;
+}
+
+button.loader:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 20px;
+    height: 20px;
+    border: 4px solid #ccc;
+    border-top: 4px solid var(--btn);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: auto;
+    box-shadow: 0 0 2px var(--btn);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

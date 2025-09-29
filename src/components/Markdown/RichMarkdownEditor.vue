@@ -16,13 +16,8 @@
     <Loader v-if="loader" class="absolute inset-0" :icon="false" />
   </div>
 
-  <span>
-    caractere : {{ editor?.storage.characterCount.characters() }}
-    mots : {{ editor?.storage.characterCount.words() }}
-  </span>
-
   <div
-    v-if="!isLargeScreen"
+    v-if="false || !isLargeScreen"
     class="fixed bottom-0 inset-x-0 md:inset-x-[20%] lg:inset-x-[25%] z-50 pb-[env(safe-area-inset-bottom)] overflow-hidden"
   >
     <div
@@ -121,9 +116,10 @@ import { CharacterCount, UndoRedo } from '@tiptap/extensions';
 import DragHandle from '@tiptap/extension-drag-handle';
 import Youtube from '@tiptap/extension-youtube'
 import { Extension, InputRule } from '@tiptap/core';
-import SlashCommand from '@/components/Markdown/SlachCommand.js';
+import SlashCommand from '@/components/Markdown/tiptap-extansions/SlachCommand.js';
 import FileHandler from '@tiptap/extension-file-handler';
-import FileHandler_configure from './FileHandler_configure.js';
+import FileHandler_configure from './tiptap-extansions/FileHandler_configure.js';
+import { Markdown } from 'tiptap-markdown';
 
 import './css/DragHandler.scss';
 
@@ -308,6 +304,9 @@ const initEditor = async () => {
       UndoRedo,
       CharacterCount,
       TableKit,
+      Markdown.configure({
+        html: true
+      }),
       Placeholder.configure({ 
         placeholder: 'Commencez à écrire ici...' 
       }),

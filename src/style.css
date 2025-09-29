@@ -5,6 +5,7 @@
 @import './assets/css/switch.css';
 @import './assets/css/theme.css';
 @import './assets/css/dropdown.css';
+@import './assets/css/button.css';
 
 
 p, span {
@@ -38,88 +39,7 @@ h1, h2, h3, h4, h5, h6 {
   filter: brightness(0) saturate(100%) invert(55%) sepia(65%) saturate(538%) hue-rotate(343deg) brightness(98%) contrast(98%);
 }
 
-button.primary {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.4em 1rem;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: var(--btn);
-  color: white;
-  cursor: pointer;
-  transition: all 0.25s;
-}
 
-button.second {
-  border-radius: 8px;
-  border: 2px solid var(--btn);
-  padding: 0.4em 1em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: transparent;
-  color: var(--text);
-  cursor: pointer;
-  transition: all 0.25s;
-}
-
-button.primary.danger {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.4em 1rem;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: rgb(255, 72, 0);
-  color: white;
-  cursor: pointer;
-  transition: all 0.25s;
-}
-
-button.second.danger {
-  border-radius: 8px;
-  border: 2px solid rgb(255, 72, 0);
-  padding: 0.4em 1em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: transparent;
-  color: var(--text);
-  cursor: pointer;
-  transition: all 0.25s;
-}
-
-button:hover.primary {
-  border-color: #d5731c;
-  background-color: #e67d13;
-  color: white;
-}
-
-button:hover.second.nohover {
-  background-color: transparent;
-  color: initial;
-}
-
-button:hover.second {
-  background-color: var(--btn);
-  color: white;
-}
-
-button:hover.danger {
-  background-color: rgb(255, 72, 0);
-  border-color: rgb(255, 72, 0);
-  color: white;
-}
-
-button:hover.scale {
-  transform: scale(1.1);
-}
-
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
 
 
 .fade-slide-enter-active,

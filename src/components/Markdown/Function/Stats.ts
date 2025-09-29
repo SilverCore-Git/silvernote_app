@@ -1,5 +1,5 @@
 import type { Editor } from "@tiptap/vue-3";
-import { editor, isLoaded } from "./Editor";
+import { editor, isLoaded } from "../Editor";
 
 
 class Stats {

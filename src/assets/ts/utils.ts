@@ -1,5 +1,7 @@
 import { ref, type Ref } from 'vue';
 
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import DOMPurify from 'dompurify';
 import type { Note } from './type';
 import db from './database';
@@ -89,6 +91,24 @@ class utils {
 
         return canvas.toDataURL('image/png');
 
+    }
+
+    public downloadHtmlFile(html: string, filename = "document.html") {
+        const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    public exportMarkdownToPDF(text: string, title: string) {
+        const doc = new jsPDF();
+        doc.text(text, 10, 10);
+        doc.save(title);
     }
 
 }

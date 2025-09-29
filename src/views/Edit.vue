@@ -68,6 +68,11 @@
 
           <ul>
 
+            <li v-if="editor" @click="()=> editor?.chain().focus().undo().run()">Annuler</li>
+            <li v-if="editor" @click="()=> editor?.chain().focus().redo().run()">Rétablir</li>
+
+            <hr />
+
             <li @click="export_menu = true">Exporter</li>
             <li @click="share_menu = true">Partager</li>
             <li class="text-red-600" @click="delete_note(1)">Supprimer</li>
@@ -216,6 +221,8 @@
 
         <button
           class="primary"
+          :class="export_loading ? 'loader' : ''"
+          @click="export_note(selected_ext)"
         >
           Confirmer
         </button>
@@ -239,7 +246,8 @@ import { useUser } from '@clerk/vue';
 import db from '@/assets/ts/database';
 import utils from '@/assets/ts/utils';
 import type { Note, User } from '@/assets/ts/type';
-import { stats, isLoaded } from '@/components/Markdown/Stats';
+import { stats, isLoaded } from '@/components/Markdown/Function/Stats';
+import { editor } from '@/components/Markdown/Editor';
 
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';
@@ -247,6 +255,7 @@ import { api_url } from '@/assets/ts/backend_link';
 import Popup from '@/components/Popup.vue';
 import Share_menu from '@/components/popup/share_menu.vue';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
+import { download } from '@/components/Markdown/Function/Export';
 
 const props = defineProps<{ id: number | 'new' }>()
 const { user } = useUser();
@@ -268,6 +277,7 @@ const note = ref<Note>({
 const if_pin_active = ref<boolean>(note.value.pinned);
 const if_open_dropdown = ref<boolean>(false);
 const export_menu = ref<boolean>(false);
+const export_loading = ref<boolean>(false);
 const selected_ext = ref<string>('pdf');
 const share_menu = ref<boolean>(false);
 const showDialog = ref<boolean>(false);
@@ -284,6 +294,16 @@ const route = useRoute();
 let socket: Socket;
 
 
+const export_note = async (ext: string): Promise<void> => {
+  export_loading.value = true;
+  await download({
+    format: ext as 'html' | 'pdf',
+    title: note.value.title
+  }).then(() => {
+    export_loading.value = false;
+    export_menu.value = false;
+  })
+}
 
 const getUserByUUID = async (user_id: string, type: 'owner' | 'visitor'): Promise<User> => {
     
