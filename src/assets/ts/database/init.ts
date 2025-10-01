@@ -19,9 +19,34 @@ class InitDB {
     private user: Ref<UserResource | null | undefined>;
 
     constructor () {
+        
         this.notes = Notes;
         this.tags = Tags;
         this.user = useUser().user;
+
+        this.main();
+
+    }
+
+    private async main (): Promise<void> 
+    {
+
+        if (await this.verify_cloud_db()) 
+        {
+
+            await this.init_local_notes();
+            await this.init_local_tags();
+
+        }
+
+        else
+        {
+
+            await this.init_cloud_notes();
+            await this.init_cloud_tags();
+
+        }
+
     }
 
 
@@ -29,7 +54,7 @@ class InitDB {
     private async init_local_notes (): Promise<void> 
     {
     
-        Notes.value = await db.getAll('notes');
+        this.notes.value = await db.getAll('notes');
 
         const monthMap: Record<string, number> = {
             janvier: 0,
@@ -52,7 +77,7 @@ class InitDB {
             return new Date(Number(year), month, Number(day));
         }
 
-        Notes.value.sort((a: Note, b: Note) => {
+        this.notes.value.sort((a: Note, b: Note) => {
             if (a.pinned === b.pinned) {
             const dateA = parseFrenchDate(a.date);
             const dateB = parseFrenchDate(b.date);
@@ -65,7 +90,7 @@ class InitDB {
 
     private async init_local_tags (): Promise<void> 
     {
-        Tags.value = await db.getAll('tags');
+        this.tags.value = await db.getAll('tags');
     }
 
 
@@ -75,20 +100,37 @@ class InitDB {
                         .then(res => res.json());
         if (data) {
             for (const note of data.notes) {
-                await db.save(note);
+                await db.add_notes(note);
             }
         }
-
     }
 
     private async init_cloud_tags (): Promise<void> 
     {
-
-
+        const data = await fetch(`${api_url}/api/db/get/user/tags?user_id=${this.user.value?.id}`)
+                        .then(res => res.json());
+        if (data) {
+            for (const tag of data.tags) {
+                await db.add_tags(tag);
+            }
+        }
     }
 
     
-    private verify_cloud_db() {}
+    private async verify_cloud_db (): Promise<boolean> 
+    {
+        return await fetch(`${api_url}/api/db/verify/data`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: 'include',
+            body: JSON.stringify({ 
+            notes: await db.getAll('notes'), 
+            tags: await db.getAll('tags') 
+            }),
+        }).then(res => res.json());
+    }
 
 
 
