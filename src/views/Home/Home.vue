@@ -359,10 +359,10 @@
     import { Swiper, SwiperSlide } from 'swiper/vue';
     import 'swiper/css';
 
-    import db from '@/assets/ts/database';
+    import db from '@/assets/ts/database/database';
     import back, { api_url } from '@/assets/ts/backend_link';
-    import utils, { init_notes } from '@/assets/ts/utils';
-    import type { Note, Tag } from '@/assets/ts/type';
+    import utils from '@/assets/ts/utils';
+    import type { Note } from '@/assets/ts/type';
     import { notes_views_mode } from '@/assets/ts/Notes_views'
 
     import Danger_card from '@/components/Danger_card.vue';
@@ -375,14 +375,12 @@
     import MasonryHr from '@/components/Masonry/MasonryHr.vue';
     import Loader from '@/components/Loader.vue';
     import New_note_btn from '@/views/Home/New_note_btn.vue';
+    import { Notes as list_notes, init_notes } from '@/assets/ts/database/Notes';
+    import all_tags from '@/assets/ts/database/Tags';
     
     const router = useRouter();
 
-    const create_new_note = async (): Promise<void> => {
-
-        router.push(`/edit/new?pinned=false`);
-
-    };
+    const create_new_note = () => router.push(`/edit/new?pinned=false`);
 
     const isOnline = ref<boolean>(localStorage.getItem('online') == "true");
     //const online_btn = ref<HTMLDivElement | null>(null);
@@ -393,9 +391,7 @@
     const if_danger_card = ref<boolean>(false); 
     const Danger_card_props = ref<{ message: string, title: string, btn: boolean, href: string } | undefined>(undefined);
 
-    const list_notes = ref<Note[] | undefined>(undefined);
     const shared_notes = ref<Note[]>([]);
-    const all_tags = ref<Tag[] | undefined>(undefined);
 
     const isRotating = ref(false);
     const if_open_create_tag = ref<boolean>(false);

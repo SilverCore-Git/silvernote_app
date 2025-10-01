@@ -1,5 +1,5 @@
 
-import db from './database';
+import db from './database/database';
 import { salert } from './salert';
 import type { Note, Tag } from './type';
 import utils from './utils';

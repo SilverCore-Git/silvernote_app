@@ -92,7 +92,7 @@ import { ref, onMounted, watch, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Loader from "./components/Loader.vue";
 import Chatbot from "./components/chatbot/Chatbot.vue";
-import db from "./assets/ts/database";
+import db from "./assets/ts/database/database";
 import back, { api_url, Session } from "./assets/ts/backend_link";
 import { init_theme } from "./assets/ts/theme";
 import { SignedIn, SignedOut, SignIn, SignUp, useUser } from "@clerk/vue";
