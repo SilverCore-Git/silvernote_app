@@ -1,5 +1,4 @@
 
-import db from './database/database';
 import { salert } from './salert';
 import type { Note, Tag } from './type';
 import utils from './utils';
@@ -122,43 +121,8 @@ const save_all = async (notes: Note[], tags: Tag[]): Promise<any> => {
 
 }
 
-const get_all = async (): Promise<{ notes: Note[], tags: Tag[], hash: any } | undefined> => {
-return undefined
-  //await fetch(`${auth_url}/verify`).then(res => res.json()) ||
-  const user =  { sub: 'auth0|609e8b2e3b3f9c0071f7abcd' };
-
-  const res = await fetch(`${api_url}/get_db`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ user }),
-  }).then(res => res.json());
-  return res;
-
-}
-
-const save_db = async (): Promise<any> => {
-return
-//await fetch(`${auth_url}/verify`).then(res => res.json()) ||
-  const user =  { sub: 'auth0|609e8b2e3b3f9c0071f7abcd' };
-  const Notes: Note[] = await db.getAll('notes');
-  const Tags: Tag[] = await db.getAll('tags');
-
-  const res = await fetch(`${api_url}/save_db`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ Notes, Tags, user }),
-  }).then(res => res.json());
-  return res;
-
-}
 export default {
     dev_db,
     info_message,
-    save_all,
-    get_all,
-    save_db
+    save_all
 }
