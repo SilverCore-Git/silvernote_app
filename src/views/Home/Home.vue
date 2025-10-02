@@ -16,8 +16,10 @@
 
     </Navbar>
     
-    <div class="Search_bar flex flex-col lg:flex-row 
-    justify-center items-center w-full gap-4">
+    <div 
+        class="Search_bar flex flex-col lg:flex-row 
+                justify-center items-center w-full gap-4"
+    >
 
         <Search_bar class="w-1/3" :desktop="isLargeScreen" pt="" />
 
@@ -360,9 +362,9 @@
     import 'swiper/css';
 
     import db from '@/assets/ts/database/database';
-    import back, { api_url } from '@/assets/ts/backend_link';
+    import back from '@/assets/ts/backend_link';
     import utils from '@/assets/ts/utils';
-    import type { Note } from '@/assets/ts/type';
+    import type { Note, Tag } from '@/assets/ts/type';
     import { notes_views_mode } from '@/assets/ts/Notes_views'
     import InitDB from '@/assets/ts/database/init';
 
@@ -376,8 +378,7 @@
     import MasonryHr from '@/components/Masonry/MasonryHr.vue';
     import Loader from '@/components/Loader.vue';
     import New_note_btn from '@/views/Home/New_note_btn.vue';
-    import { Notes as list_notes } from '@/assets/ts/database/Notes';
-    import all_tags from '@/assets/ts/database/Tags';
+    import { Notes as list_notes, Tags as all_tags } from '@/assets/ts/database/Var';
     
     const router = useRouter();
 
@@ -476,10 +477,10 @@
         setTimeout(async () => {
             list_notes.value = [];
             all_tags.value = [];
-            await  InitDB.init_local_notes();
-            await get_shared_notes();
-            all_tags.value = await db.getAll('tags');
-            console.log('Rechargement des notes...')
+            await InitDB.init_local_tags();
+            await InitDB.init_local_notes();
+            await InitDB.init_shared_notes();
+            console.log('Rechargement des db...')
             setTimeout(() => {
                 isRotating.value = false;
             }, 200);
@@ -487,40 +488,19 @@
 
     };
 
-    const get_shared_notes = async (): Promise<void> => {
-
-        const res = await fetch(`${api_url}/api/share/for/me`, {
-            credentials: 'include',
-        }).then(res => res.json());
-
-        if (res.error) {
-            console.error('Error on get shared notes fetch : ', res.message);
-            return;
-        }
-
-        if (res.length < 1) {
-            shared_notes.value = [];
-            return;
-        }
-
-        shared_notes.value = res.notes;
-        return;
-
-    }
-
 
     onMounted(async () => {
 
         if_danger_card.value = isOnline.value ? await back.info_message() ? true : false : false; 
         Danger_card_props.value = isOnline.value ? await back.info_message() : undefined;
 
-        all_tags.value = undefined;
+        all_tags.value = [];
         list_notes.value = [];
 
         setTimeout(async () => {
-            all_tags.value = await db.getAll('tags');
-            await init_notes(list_notes);
-            await get_shared_notes();
+            await InitDB.init_local_tags();
+            await InitDB.init_local_notes();
+            await InitDB.init_shared_notes();
         }, 500);
 
         setTimeout(async () => {
@@ -529,9 +509,9 @@
 
     });
 
-    watch(all_tags, async (newVal, oldVal) => {
+    watch(all_tags, async (newVal: Tag[], oldVal: Tag[]) => {
 
-        const hasActiveChanged = newVal?.some((newTag, index) => {
+        const hasActiveChanged = newVal?.some((newTag: Tag, index) => {
             const oldTag = oldVal ? oldVal[index] : undefined;
             return oldTag && newTag.active !== oldTag.active;
         });

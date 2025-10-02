@@ -92,8 +92,7 @@ import { ref, onMounted, watch, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Loader from "./components/Loader.vue";
 import Chatbot from "./components/chatbot/Chatbot.vue";
-import db from "./assets/ts/database/database";
-import back, { api_url, Session } from "./assets/ts/backend_link";
+import { Session } from "./assets/ts/backend_link";
 import { init_theme } from "./assets/ts/theme";
 import { SignedIn, SignedOut, SignIn, SignUp, useUser } from "@clerk/vue";
 import { loaded } from "./assets/ts/utils";
@@ -111,27 +110,11 @@ const signup_form = ref<boolean>(route.query.form === "signup");
 const main_form = ref<boolean>(route.query.form === "main");
 const is_offline = ref<boolean>(false);
 
-
 watch(() => route.query.form, (form) => {
   signin_form.value = form === "signin";
   signup_form.value = form === "signup";
   main_form.value = form === "main";
 });
-
-const wasOnline = localStorage.getItem("online") === "true";
-localStorage.setItem("online", String(navigator.onLine));
-
-const init_db = async () => {
-  if (wasOnline) {
-    const data = await back.get_all();
-    if (data) {
-      await db.reset();
-      await db.add_notes(data.notes);
-      await db.add_tags(data.tags);
-    }
-  }
-};
-init_db();
 
 const reload = () => {
   window.location.reload();
@@ -176,7 +159,6 @@ onMounted(async () => {
   const stopLoader = setInterval(() => {
 
     if (isLoaded.value) {
-      setTimeout(() => {}, 1000)
       loader.value = false;
       loaded.value = true;
       clearInterval(stopLoader);

@@ -5,8 +5,7 @@ import type { UserResource } from "@clerk/types";
 
 import type { Ref } from "vue";
 import type { Note } from "../type";
-import { Notes } from "./Notes";
-import Tags from "./Tags";
+import { Notes, Tags, SharedNotes } from "./Var";
 import { api_url } from '../backend_link';
 
 
@@ -88,7 +87,7 @@ class InitDB {
         
     }
 
-    private async init_local_tags (): Promise<void> 
+    public async init_local_tags (): Promise<void> 
     {
         Tags.value = [];
         Tags.value = await db.getAll('tags');
@@ -117,9 +116,24 @@ class InitDB {
         }
     }
 
-    private async init_shared_notes (): Promise<void> 
+    public async init_shared_notes (): Promise<void> 
     {
-        
+        const res = await fetch(`${api_url}/api/share/for/me`, {
+            credentials: 'include',
+        }).then(res => res.json());
+
+        if (res.error) {
+            console.error('Error on get shared notes fetch : ', res.message);
+            return;
+        }
+
+        if (res.length < 1) {
+            SharedNotes.value = [];
+            return;
+        }
+
+        SharedNotes.value = res.notes;
+        return;
     }
 
     
