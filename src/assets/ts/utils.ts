@@ -1,10 +1,6 @@
-import { ref, type Ref } from 'vue';
-
-import html2canvas from "html2canvas";
+import { ref } from 'vue';
 import jsPDF from "jspdf";
 import DOMPurify from 'dompurify';
-import type { Note } from './type';
-import db from './database';
 
 
 class utils {

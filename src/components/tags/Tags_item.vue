@@ -75,11 +75,9 @@
 
 import { ref, onMounted } from 'vue';
 
-import utils from '../../assets/ts/utils';
-import db from '../../assets/ts/database';
-import { isOnline } from '../../assets/ts/online';
-import back from '../../assets/ts/backend_link';
-import type { Tag } from '../../assets/ts/type'
+import utils from '@/assets/ts/utils';
+import db from '@/assets/ts/database/database';
+import type { Tag } from '@/assets/ts/type'
 import ConfirmDialog from '../popup/ConfirmDialog.vue';
 
 const props = defineProps<{
@@ -110,7 +108,6 @@ const del = async (state: 1 | 2): Promise<void> => {
     const tags: Tag[] = await db.getAll('tags');
     const tag: Tag | undefined = tags.find(tag => tag.name == props.name);
     if (tag) await db.delete_tag(tag.id);
-    if (isOnline) await back.save_db();
     emit('reload');
   }
 }

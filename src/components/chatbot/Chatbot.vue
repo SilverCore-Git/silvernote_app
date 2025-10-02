@@ -132,7 +132,7 @@ import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import MessageDubble from './MessageDubble.vue';
 import { useUser } from '@clerk/vue';
-import db from '@/assets/ts/database';
+import db from '@/assets/ts/database/database';
 import { api_url } from '@/assets/ts/backend_link';
 import { io, Socket } from 'socket.io-client';
 import type { Note } from '@/assets/ts/type';

@@ -159,7 +159,7 @@ import { version } from '../../package.json';
 import { SettingsDB, settings as settingsObj  } from '@/assets/ts/settings';
 import type { Settings } from '@/assets/ts/type';
 import { hitbox as if_hitbox } from '@/assets/ts/settings';
-import indexed_db from '@/assets/ts/database';
+import indexed_db from '@/assets/ts/database/database';
 import utils from '@/assets/ts/utils';
 // import Switch from '@/components/Switch.vue';
 import { setThemePreference } from '@/assets/ts/theme';

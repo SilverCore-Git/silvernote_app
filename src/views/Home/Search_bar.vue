@@ -85,7 +85,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import db from '@/assets/ts/database';
+import db from '@/assets/ts/database/database';
 import type { Note, Tag } from '@/assets/ts/type';
 import { hitbox as if_hitbox } from '@/assets/ts/settings';
 import utils from '@/assets/ts/utils';

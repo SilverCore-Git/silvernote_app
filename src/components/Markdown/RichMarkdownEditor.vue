@@ -134,7 +134,7 @@ import Loader from '@/components/Loader.vue';
 import type { Note } from '@/assets/ts/type';
 import { api_url } from '@/assets/ts/backend_link';
 import { getDominantColor } from '@/assets/ts/GetColorByImage';
-import db from '@/assets/ts/database.js';
+import db from '@/assets/ts/database/database';
 import ToolsMenu from '@/components/Markdown/ToolsMenu/ToolsMenu.vue';
 
 import { editor } from './Editor.js';

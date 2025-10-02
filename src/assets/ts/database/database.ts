@@ -1,8 +1,8 @@
 import { openDB } from 'idb';
 import type { DBSchema, IDBPDatabase } from 'idb';
-import type { Note, Tag } from './type';
-import { api_url } from './backend_link';
-import utils from './utils';
+import type { Note, Tag } from '../type';
+import { api_url } from '../backend_link';
+import utils from '../utils';
 import type { Socket } from 'socket.io-client';
 
 

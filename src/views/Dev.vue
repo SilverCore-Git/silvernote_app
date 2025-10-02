@@ -110,10 +110,10 @@
     const { user } = useUser();
     import { version } from '../../package.json';
 
-    import back from '../assets/ts/backend_link';
-    import db from '../assets/ts/database';
+    import back from '@/assets/ts/backend_link';
+    import db from '@/assets/ts/database/database';
 
-    import { hitbox as if_hitbox} from '../assets/ts/settings';
+    import { hitbox as if_hitbox} from '@/assets/ts/settings';
     import Warning from '@/components/alert/Warning.vue';
     import Danger from '@/components/alert/Danger.vue';
     import Success from '@/components/alert/Success.vue';

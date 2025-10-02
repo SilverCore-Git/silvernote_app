@@ -71,7 +71,7 @@
 
 import { onMounted, ref, watch, defineEmits, defineProps } from 'vue';
 
-import db from '@/assets/ts/database';
+import db from '@/assets/ts/database/database';
 import type { Tag } from '@/assets/ts/type';
 
 const props = defineProps<{

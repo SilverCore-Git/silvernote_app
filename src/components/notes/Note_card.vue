@@ -73,9 +73,9 @@ import { useRouter } from 'vue-router';
 
 import ConfirmDialog from '../popup/ConfirmDialog.vue';
 
-import db from '../../assets/ts/database';
-import utils from '../../assets/ts/utils';
-import type { Tag } from '../../assets/ts/type';
+import db from '@/assets/ts/database/database';
+import utils from '@/assets/ts/utils';
+import type { Tag } from '@/assets/ts/type';
 
 import PressAndHold from '../PressAndHold.vue';
 import Note_settings from './Note_Settings.vue';

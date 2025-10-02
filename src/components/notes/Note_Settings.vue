@@ -131,7 +131,7 @@
 
 import { version } from '@/../package.json';
 import { onMounted, ref } from 'vue';
-import db from '@/assets/ts/database';
+import db from '@/assets/ts/database/database';
 
 import type { Note } from '@/assets/ts/type';
 import Share_menu from '../popup/share_menu.vue';

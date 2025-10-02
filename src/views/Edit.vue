@@ -243,7 +243,7 @@ import { io, Socket } from 'socket.io-client';
 import { EmojiButton } from '@joeattardi/emoji-button';
 import { useUser } from '@clerk/vue';
 
-import db from '@/assets/ts/database';
+import db from '@/assets/ts/database/database';
 import utils from '@/assets/ts/utils';
 import type { Note, User } from '@/assets/ts/type';
 import { stats, isLoaded } from '@/components/Markdown/Function/Stats';
