@@ -4,7 +4,7 @@ import { useUser } from '@clerk/vue';
 import type { UserResource } from "@clerk/types";
 
 import type { Ref } from "vue";
-import type { Note, Tag } from "../type";
+import type { Note } from "../type";
 import { Notes } from "./Notes";
 import Tags from "./Tags";
 import { api_url } from '../backend_link';
@@ -13,15 +13,10 @@ import { api_url } from '../backend_link';
 class InitDB {
 
 
-
-    private tags: Ref<Tag[]>;
-    private notes: Ref<Note[]>;
     private user: Ref<UserResource | null | undefined>;
 
     constructor () {
-        
-        this.notes = Notes;
-        this.tags = Tags;
+    
         this.user = useUser().user;
 
     }
@@ -31,39 +26,35 @@ class InitDB {
 
         try {
 
-            if (await this.verify_cloud_db()) 
+            if (!await this.verify_cloud_db()) 
             {
+                
+                db.reset().then(async () => {
 
-                await this.init_local_notes();
-                await this.init_local_tags();
+                    await this.init_cloud_notes();
+                    await this.init_cloud_tags();
+
+                });
 
             }
 
-            else
-            {
-
-                await this.init_cloud_notes();
-                await this.init_cloud_tags();
-
-            }
+            await this.init_local_notes();
+            await this.init_local_tags();
 
         }
         catch (err) {
             console.error('Une erreur est survenue lors de l\'init de la db :', err);
-        }
-        finally {
-            Notes.value = this.notes.value;
-            Tags.value = this.tags.value;
         }
 
     }
 
 
     
-    private async init_local_notes (): Promise<void> 
+    public async init_local_notes (): Promise<void> 
     {
     
-        this.notes.value = await db.getAll('notes');
+        Notes.value = [];
+        Notes.value = await db.getAll('notes');
 
         const monthMap: Record<string, number> = {
             janvier: 0,
@@ -86,7 +77,7 @@ class InitDB {
             return new Date(Number(year), month, Number(day));
         }
 
-        this.notes.value.sort((a: Note, b: Note) => {
+        Notes.value.sort((a: Note, b: Note) => {
             if (a.pinned === b.pinned) {
             const dateA = parseFrenchDate(a.date);
             const dateB = parseFrenchDate(b.date);
@@ -99,7 +90,8 @@ class InitDB {
 
     private async init_local_tags (): Promise<void> 
     {
-        this.tags.value = await db.getAll('tags');
+        Tags.value = [];
+        Tags.value = await db.getAll('tags');
     }
 
 
@@ -125,10 +117,15 @@ class InitDB {
         }
     }
 
+    private async init_shared_notes (): Promise<void> 
+    {
+        
+    }
+
     
     private async verify_cloud_db (): Promise<boolean> 
     {
-        return await fetch(`${api_url}/api/db/verify/data`, {
+        const res = await fetch(`${api_url}/api/db/verify/data`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -139,6 +136,7 @@ class InitDB {
             tags: await db.getAll('tags') 
             }),
         }).then(res => res.json());
+        return res.ok;
     }
 
 
@@ -146,4 +144,4 @@ class InitDB {
 }
 
 
-export default InitDB;
+export default new InitDB();

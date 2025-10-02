@@ -364,6 +364,7 @@
     import utils from '@/assets/ts/utils';
     import type { Note } from '@/assets/ts/type';
     import { notes_views_mode } from '@/assets/ts/Notes_views'
+    import InitDB from '@/assets/ts/database/init';
 
     import Danger_card from '@/components/Danger_card.vue';
     import Note_card from '@/components/notes/Note_card.vue';
@@ -375,7 +376,7 @@
     import MasonryHr from '@/components/Masonry/MasonryHr.vue';
     import Loader from '@/components/Loader.vue';
     import New_note_btn from '@/views/Home/New_note_btn.vue';
-    import { Notes as list_notes, init_notes } from '@/assets/ts/database/Notes';
+    import { Notes as list_notes } from '@/assets/ts/database/Notes';
     import all_tags from '@/assets/ts/database/Tags';
     
     const router = useRouter();
@@ -475,7 +476,7 @@
         setTimeout(async () => {
             list_notes.value = [];
             all_tags.value = [];
-            await init_notes(list_notes);
+            await  InitDB.init_local_notes();
             await get_shared_notes();
             all_tags.value = await db.getAll('tags');
             console.log('Rechargement des notes...')

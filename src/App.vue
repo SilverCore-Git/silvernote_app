@@ -97,6 +97,7 @@ import back, { api_url, Session } from "./assets/ts/backend_link";
 import { init_theme } from "./assets/ts/theme";
 import { SignedIn, SignedOut, SignIn, SignUp, useUser } from "@clerk/vue";
 import { loaded } from "./assets/ts/utils";
+import InitDB from "./assets/ts/database/init";
 
 const loader = ref<boolean>(true);
 const open_chatbot = ref<boolean | undefined>(undefined);
@@ -166,99 +167,15 @@ onMounted(async () => {
 
   }, 1000);
 
-  const need_reset = await fetch(`${api_url}/api/db/verify/data`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: 'include',
-    body: JSON.stringify({ 
-      notes: await db.getAll('notes'), 
-      tags: await db.getAll('tags') 
-    }),
-  }).then(res => res.json());
-
-  if (need_reset.ok) {
-    const stopLoader = setInterval(() => {
-
-      setTimeout(() => {}, 1000)
-      loader.value = false;
-      clearInterval(stopLoader);
-
-    }, 500);
-    return;
-  } 
-
-  if (!need_reset.ok) await db.reset();
-
-  let ii: number = 0;
-  let ii2: number = 0;
-
-  const inter = setInterval(async () => {
-
-    if (isLoaded.value && user.value) {
-
-      const data = await fetch(`${api_url}/api/db/get/user/notes?user_id=${user.value.id}`).then(res => res.json());
-      
-      if (data) {
-
-        for (const note of data.notes) {
-
-          db.save(note);
-
-        }
-
-        ii = -1;
-        return clearInterval(inter);
-
-      }
-
-      ii++
-      if (ii >= 4) {
-        is_offline.value = true;
-        return clearInterval(inter);
-      }
-
-    }
-
-  }, 2000)
-
-
-  const inter2 = setInterval(async () => {
-
-    if (isLoaded.value && user.value) {
-
-      const data = await fetch(`${api_url}/api/db/get/user/tags?user_id=${user.value.id}`).then(res => res.json());
-      
-      if (data) {
-
-        for (const tag of data.tags) {
-
-          db.create_tag(tag, true);
-
-        }
-
-        ii2 = -1;
-        return clearInterval(inter2);
-
-      }
-
-      ii2++;
-      if (ii2 >= 4) {
-        is_offline.value = true;
-        return clearInterval(inter2);
-      }
-
-    }
-
-  }, 2000)
+  const _InitDB = InitDB;
+  await _InitDB.main();
 
   const chatbot = route.query?.chatbot || '0';
   open_chatbot.value = chatbot === '1';
 
   const stopLoader = setInterval(() => {
 
-    if (isLoaded.value && ii == -1 && ii2 == -1) {
+    if (isLoaded.value) {
       setTimeout(() => {}, 1000)
       loader.value = false;
       loaded.value = true;
