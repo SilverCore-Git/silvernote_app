@@ -24,27 +24,36 @@ class InitDB {
         this.tags = Tags;
         this.user = useUser().user;
 
-        this.main();
-
     }
 
-    private async main (): Promise<void> 
+    public async main (): Promise<void> 
     {
 
-        if (await this.verify_cloud_db()) 
-        {
+        try {
 
-            await this.init_local_notes();
-            await this.init_local_tags();
+            if (await this.verify_cloud_db()) 
+            {
+
+                await this.init_local_notes();
+                await this.init_local_tags();
+
+            }
+
+            else
+            {
+
+                await this.init_cloud_notes();
+                await this.init_cloud_tags();
+
+            }
 
         }
-
-        else
-        {
-
-            await this.init_cloud_notes();
-            await this.init_cloud_tags();
-
+        catch (err) {
+            console.error('Une erreur est survenue lors de l\'init de la db :', err);
+        }
+        finally {
+            Notes.value = this.notes.value;
+            Tags.value = this.tags.value;
         }
 
     }
