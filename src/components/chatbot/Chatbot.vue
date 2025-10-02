@@ -6,6 +6,7 @@
         :class="!open ? 'bottom-6 right-6' : '-bottom-9 -right-9'"
         class=" fixed  w-15 h-15 bg-[var(--btn)] p-2 rounded-full cursor-pointer hover"
     >
+
         <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
             style="filter: invert(1);"
             viewBox="0 0 621.000000 623.000000"
@@ -51,14 +52,24 @@
                 -14 37 -4 0 -20 -39 -34 -87z"/>
             </g>
         </svg>
+
     </div>
 
     <div
-        :class="open ? 'right-0 inset-y-0 md:bottom-8 md:top-auto md:right-8' : '-bottom-200 -right-200'"
+        :class="[
+                pos == 'fixed'
+                    ? 'fixed w-screen h-screen md:h-[90%] md:w-120 md:max-h-[85%] flex flex-col transition-all transform duration-500 ease-in-out'
+                    : ''
+                open 
+                    ? pos == 'fixed' 
+                        ? 'right-0 inset-y-0 md:bottom-8 md:top-auto md:right-8' 
+                        : ''
+                    : pos == 'fixed' 
+                        ? '-bottom-200 -right-200'
+                        : ''
+                ]"
         class="
-            fixed w-screen h-screen md:h-[90%]
-            md:w-120 md:max-h-[85%] 
-            flex flex-col transition-all transform duration-500 ease-in-out
+            
         "
     >
     
@@ -76,7 +87,18 @@
                     <div class="round" :class="silverai_active ? 'green' : 'red'"></div>
                 </div>
 
-                <div class="svg cross w-10 h-10 cursor-pointer" @click="open = false"></div>
+                <div
+                    class="flex justify-center items-center"
+                >
+
+                    <div 
+                        class="svg ellipsis w-10 h-10 cursor-pointer" 
+                        @click="pos = pos == 'fixed' ? 'relative' : 'fixed'"
+                    ></div>
+
+                    <div class="svg cross w-10 h-10 cursor-pointer" @click="open = false"></div>
+
+                </div>
 
             </header>
 
@@ -156,6 +178,7 @@ const lengthOfMessage = ref<number>(max_LenghtOfMessage);
 const session_id = ref<string>('');
 const user_id = ref<string | undefined>('');
 const silverai_active = ref<boolean>(false);
+const pos = ref<'fixed' | 'relative'>('fixed');
 
 let socket_is_connect: boolean = false;
 let socket: Socket;
@@ -408,6 +431,11 @@ onMounted(() => Open());
 
 .send:hover {
     filter: contrast(50%);
+}
+
+.ellipsis {
+    background-image: url('/assets/svgs/ellipsis.svg');
+    filter: invert(1);
 }
 
 .cross {
