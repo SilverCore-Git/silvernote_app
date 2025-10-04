@@ -136,29 +136,31 @@ onMounted(async () => {
 
     if (isLoaded.value && user.value) {
 
-      if (tries >= 5) {
-        is_offline.value = true;
-        clearInterval(interval);
-        return;
-      }
-
-      tries++;
       await session.create(user.value);
+
+      InitDB.init(user);
+      await InitDB.main();
+
       clearInterval(interval);
 
     }
 
-  }, 1000);
+    if (tries >= 5) {
+      is_offline.value = true;
+      clearInterval(interval);
+      return;
+    }
 
-  const _InitDB = InitDB;
-  await _InitDB.main();
+    tries++
+
+  }, 1000);
 
   const chatbot = route.query?.chatbot || '0';
   open_chatbot.value = chatbot === '1';
 
   const stopLoader = setInterval(() => {
 
-    if (isLoaded.value) {
+    if (isLoaded.value && InitDB.isLoaded()) {
       loader.value = false;
       loaded.value = true;
       clearInterval(stopLoader);

@@ -159,7 +159,7 @@ class Database {
         await db.delete('tags', id);
     }
 
-    public async create(note: Note): Promise<{ id: number }> {
+    public async create(note: Note, cloud_post: boolean): Promise<{ id: number }> {
 
         const db = await this.dbPromise;
 
@@ -169,23 +169,25 @@ class Database {
 
         await db.add('notes', note);
 
-        await fetch(`${api_url}/api/db/new/note`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify({ note }),
-        })
+        if (cloud_post) {
+            await fetch(`${api_url}/api/db/new/note`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ note }),
+            })
+        }
 
         return { id: note.id };
 
     }
 
-    public async create_tag(tag: Tag, t?: boolean): Promise<void> {
+    public async create_tag(tag: Tag, cloud_post?: boolean): Promise<void> {
         const db = await this.dbPromise;
         tag.id = Math.floor(Math.random() * (999999999999 - 1000000 + 1)) + 1000;
-        if (!t) {
+        if (cloud_post) {
             await fetch(`${api_url}/api/db/new/tag`, {
                 method: 'POST',
                 headers: {
@@ -204,24 +206,24 @@ class Database {
         return note;
     }
 
-    public async add_notes(notes: Note[]): Promise<void> {
+    public async add_notes(notes: Note[], cloud_post: boolean): Promise<void> {
 
         if (notes.length) {
 
             for (const note of notes) {
-                await this.create(note);
+                await this.create(note, cloud_post);
             }
 
         }
 
     }
 
-    public async add_tags(tags: Tag[]): Promise<void> {
+    public async add_tags(tags: Tag[], cloud_post: boolean): Promise<void> {
 
         if (tags.length) {
 
             for (const tag of tags) {
-                await this.create_tag(tag);
+                await this.create_tag(tag, cloud_post);
             }
 
         }

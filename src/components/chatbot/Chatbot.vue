@@ -59,7 +59,7 @@
         :class="[
                     pos == 'fixed'
                         ? 'fixed w-screen h-screen md:h-[90%] md:w-120 md:max-h-[85%] flex flex-col transition-all transform duration-500 ease-in-out'
-                        : 'relative h-full w-1/5 flex flex-col transition-all transform duration-500 ease-in-out',
+                        : 'relative h-screen w-1/4 flex flex-col transition-all transform duration-500 ease-in-out',
                     open 
                         ? pos == 'fixed' 
                             ? 'right-0 inset-y-0 md:bottom-8 md:top-auto md:right-8' 

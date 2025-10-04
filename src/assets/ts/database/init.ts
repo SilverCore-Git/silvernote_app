@@ -1,7 +1,5 @@
 
 import db from '@/assets/ts/database/database';
-import { useUser } from '@clerk/vue';
-import type { UserResource } from "@clerk/types";
 
 import type { Ref } from "vue";
 import type { Note } from "../type";
@@ -12,12 +10,18 @@ import { api_url } from '../backend_link';
 class InitDB {
 
 
-    private user: Ref<UserResource | null | undefined>;
+    private user: Ref<any> | undefined;
+    private loaded: boolean;
 
     constructor () {
-    
-        this.user = useUser().user;
 
+        this.user = undefined;
+        this.loaded = false;
+
+    }
+
+    public init (user: Ref<any>): void {
+        this.user = user;
     }
 
     public async main (): Promise<void> 
@@ -30,15 +34,18 @@ class InitDB {
                 
                 db.reset().then(async () => {
 
-                    await this.init_cloud_notes();
                     await this.init_cloud_tags();
+                    await this.init_cloud_notes();
 
                 });
 
             }
 
+            await this.init_shared_notes();
             await this.init_local_notes();
             await this.init_local_tags();
+
+            this.loaded = true;
 
         }
         catch (err) {
@@ -96,23 +103,19 @@ class InitDB {
 
     private async init_cloud_notes (): Promise<void> 
     {
-        const data = await fetch(`${api_url}/api/db/get/user/notes?user_id=${this.user.value?.id}`)
+        const data = await fetch(`${api_url}/api/db/get/user/notes?user_id=${this.user?.value?.id}`)
                         .then(res => res.json());
         if (data) {
-            for (const note of data.notes) {
-                await db.add_notes(note);
-            }
+            await db.add_notes(data.notes, false);
         }
     }
 
     private async init_cloud_tags (): Promise<void> 
     {
-        const data = await fetch(`${api_url}/api/db/get/user/tags?user_id=${this.user.value?.id}`)
+        const data = await fetch(`${api_url}/api/db/get/user/tags?user_id=${this.user?.value?.id}`)
                         .then(res => res.json());
         if (data) {
-            for (const tag of data.tags) {
-                await db.add_tags(tag);
-            }
+            await db.add_tags(data.tags, false);
         }
     }
 
@@ -146,15 +149,17 @@ class InitDB {
             },
             credentials: 'include',
             body: JSON.stringify({ 
-            notes: await db.getAll('notes'), 
-            tags: await db.getAll('tags') 
+                notes: await db.getAll('notes') || [], 
+                tags: await db.getAll('tags') || []
             }),
         }).then(res => res.json());
         return res.ok;
     }
 
-
-
+    public isLoaded (): boolean {
+        return this.loaded;
+    }
+ 
 }
 
 

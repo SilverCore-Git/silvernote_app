@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 import jsPDF from "jspdf";
 import DOMPurify from 'dompurify';
+import { api_url } from './backend_link';
 
 
 class utils {
@@ -67,9 +68,9 @@ class utils {
     }
 
     public async UUID(): Promise<string> {
-        const res = await fetch('https://www.uuidtools.com/api/generate/v4');
-        const data: string[] = await res.json();
-        return data[0];
+        const res = await fetch(`${api_url}/api/uuid`);
+        const data: { id:string } = await res.json();
+        return data.id;
     }
 
     public emojiToBase64 (emoji: string, size = 64, offsetY = 0.05): string {

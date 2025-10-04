@@ -427,10 +427,9 @@ onMounted(async () => {
                                     pinned: false,
                                     simply_edit: false,
                                     title: note.value.title,
-                                    content: note.value.content,
                                     date: utils.date(),
                                     tags: []
-                                });
+                                }, true);
 
       note.value.id = newNote.id;
 

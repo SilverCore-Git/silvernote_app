@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@clerk/clerk-js": "^5.93.0",
-    "@clerk/vue": "^1.8.12",
+    "@clerk/vue": "^1.14.1",
     "@cropper/element": "^2.0.1",
     "@cropper/element-image": "^2.0.1",
     "@joeattardi/emoji-button": "^4.6.4",
