@@ -112,7 +112,10 @@
 
   </header>
 
-  <section v-if="!loaded && !note.title" class="flex flex-col justify-start items-center h-full mt-12 overflow-x-hidden">
+  <section 
+    v-if="!loaded && !note.title" 
+    class="flex flex-col justify-start items-center h-full mt-12 overflow-x-hidden"
+  >
 
     <div 
       class="text-3xl mb-3 font-bold animate-pulse bg-gray-300 h-10 w-full rounded-2xl" 
@@ -127,11 +130,11 @@
   <section 
     v-if="loaded" 
     @click="if_open_dropdown = false"
-    class="flex flex-col justify-center items-center h-full 
-          mt-12 overflow-x-hidden"
+    class="flex flex-col justify-start items-center h-full 
+          mt-12 overflow-x-hidden overflow-y-scroll"
   >
 
-    <div class="w-full flex justify-start ml-[10%]">
+    <div class="w-full flex justify-start ml-[10%] ">
 
       <button ref="emojiBtn">
 

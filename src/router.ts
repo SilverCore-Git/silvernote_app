@@ -38,7 +38,7 @@ const routes = [
 
   { 
     path: '/share/:uuid', 
-    name: 'share', 
+    name: 'Share', 
     component: Share,
     props: true,
     meta: { title: 'SilverNote - Partage' }

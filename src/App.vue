@@ -3,15 +3,25 @@
   <div>
   
     <SignedIn>
-  
-      <div v-if="!loader && !is_offline" class="mr-[var(--mrl)] ml-[var(--mrl)] relative">
-        <router-view />
+
+      <div class=" w-full h-full" :class="[ 'Edit', 'Share' ].includes(route.name) ? 'flex' : ''">
+        
+        <div 
+          v-if="!loader && !is_offline"
+          class="flex-1 relative overflow-hidden"
+          :class="[ 'Edit', 'Share' ].includes(route.name) ? 'mx-4' : 'mr-[var(--mrl)] ml-[var(--mrl)] '"
+        >
+          <router-view />
+        </div>
+
+        <div v-if="true"
+            class=" z-50 relative">
+          <Chatbot :visible="open_chatbot" />
+        </div>
+
       </div>
-  
-      <div v-if="true" class="z-50 relative">
-        <Chatbot :visible="open_chatbot" />
-      </div>
-  
+
+
       <div v-if="loader" class="fixed inset-0 bg-[var(--bg)] z-50">
         <div class="flex justify-center items-center w-screen h-screen">
           <Loader :icon="false" />

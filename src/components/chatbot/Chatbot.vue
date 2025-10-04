@@ -55,94 +55,106 @@
 
     </div>
 
-    <div
-        :class="[
-                    pos == 'fixed'
-                        ? 'fixed w-screen h-screen md:h-[90%] md:w-120 md:max-h-[85%] flex flex-col transition-all transform duration-500 ease-in-out'
-                        : 'relative h-screen w-1/4 flex flex-col transition-all transform duration-500 ease-in-out',
-                    open 
-                        ? pos == 'fixed' 
-                            ? 'right-0 inset-y-0 md:bottom-8 md:top-auto md:right-8' 
-                            : ''
-                        : pos == 'fixed' 
-                            ? '-bottom-200 -right-200'
-                            : ''
-                ]"
+    <Transition
+        enter-active-class="transition-transform duration-500 ease-in-out"
+        leave-active-class="transition-transform duration-500 ease-in-out"
+        enter-from-class="translate-x-200"
+        enter-to-class="translate-x-0"
+        leave-from-class="translate-x-0"
+        leave-to-class="translate-x-200"
     >
-    
-        <div 
-            class="relative z-50 w-full bg-[var(--bg2)] rounded-2xl shadow flex flex-col justify-between h-full"
+
+        <div
+            v-if="open"
+            :class="[
+                pos === 'fixed'
+                    ? 'fixed w-screen h-screen md:h-[90%] md:w-120 md:max-h-[85%] flex flex-col'
+                    : 'relative h-screen flex flex-col w-[400px] resize-container group',
+                pos === 'fixed'
+                    ? open
+                        ? 'right-0 inset-y-0 md:bottom-8 md:top-auto md:right-8'
+                        : ''
+                    : ''
+
+            ]"
         >
-
-            <header class="h-15 bg-[var(--btn)] rounded-t-2xl
-                            flex justify-between items-center px-5 text-white flex-row 
-                            shadow-[var(--btn)] draggable z-30"
+        
+            <div 
+                class="relative z-50 w-full bg-[var(--bg2)] rounded-2xl 
+                shadow flex flex-col justify-between h-full resize-handle"
             >
 
-                <div class="flex justify-center items-center flex-row">
-                    <span class="font-bold mr-2 text-xl">SilverAI</span>
-                    <div class="round" :class="silverai_active ? 'green' : 'red'"></div>
-                </div>
-
-                <div
-                    class="flex justify-center items-center"
+                <header class="h-15 bg-[var(--btn)] rounded-t-2xl
+                                flex justify-between items-center px-5 text-white flex-row 
+                                shadow-[var(--btn)] draggable z-30"
                 >
 
-                    <div 
-                        class="svg ellipsis w-10 h-10 cursor-pointer" 
-                        @click="pos = pos == 'fixed' ? 'relative' : 'fixed'"
-                    ></div>
+                    <div class="flex justify-center items-center flex-row">
+                        <span class="font-bold mr-2 text-xl">SilverAI</span>
+                        <div class="round" :class="silverai_active ? 'green' : 'red'"></div>
+                    </div>
 
-                    <div class="svg cross w-10 h-10 cursor-pointer" @click="open = false"></div>
-
-                </div>
-
-            </header>
-
-            <section class="overflow-y-auto h-150 flex flex-col flex-grow z-20 px-3 py-2">
-
-                <ul class="space-y-2 w-full flex flex-col justify-end">
-                    <li
-                        v-for="(message, index) in AllMessage"
-                        :class="message.origin == 'ai' ? 'mr-0' : message.origin == 'error' ? 'mr-[47%]' : 'ml-[47%]'"
-                        :id="`message-${index}`"
+                    <div
+                        class="flex justify-center items-center"
                     >
-                        <MessageDubble
-                            :origin="message.origin"
-                            :text="message.text"
-                        />
-                    </li>
 
-                </ul>
+                        <div 
+                            class="svg ellipsis w-10 h-10 cursor-pointer" 
+                            @click="pos = pos == 'fixed' ? 'relative' : 'fixed'"
+                        ></div>
 
-            </section>
+                        <div class="svg cross w-10 h-10 cursor-pointer" @click="open = false"></div>
+
+                    </div>
+
+                </header>
+
+                <section class="overflow-y-auto h-150 flex flex-col flex-grow z-20 px-3 py-2">
+
+                    <ul class="space-y-2 w-full flex flex-col justify-end">
+                        <li
+                            v-for="(message, index) in AllMessage"
+                            :class="message.origin == 'ai' ? 'mr-0' : message.origin == 'error' ? 'mr-[47%]' : 'ml-[47%]'"
+                            :id="`message-${index}`"
+                        >
+                            <MessageDubble
+                                :origin="message.origin"
+                                :text="message.text"
+                            />
+                        </li>
+
+                    </ul>
+
+                </section>
 
 
-            <footer 
-                class="h-15 rounded-b-2xl flex justify-between items-center flex-row"
-            >
-
-                <input 
-                    type="text" 
-                    name="message" 
-                    id="message"
-                    :maxlength="max_LenghtOfMessage"
-                    placeholder="Envoyer un message"
-                    v-model="message"
-                    class=" outline-0 h-full w-[70%] pl-5"
-                    @keyup.enter="add_message(message); message = ''; "
+                <footer 
+                    class="h-15 rounded-b-2xl flex justify-between items-center flex-row"
                 >
 
-                <span :class="lengthOfMessage < 11 ? 'text-red-500' : ''">{{ lengthOfMessage }}</span>
+                    <input 
+                        type="text" 
+                        name="message" 
+                        id="message"
+                        :maxlength="max_LenghtOfMessage"
+                        placeholder="Envoyer un message"
+                        v-model="message"
+                        class=" outline-0 h-full w-[70%] pl-5"
+                        @keyup.enter="add_message(message); message = ''; "
+                    >
 
-                <div @click="add_message(message); message = ''" class="svg send w-10 h-10 mr-5 cursor-pointer"></div>
+                    <span :class="lengthOfMessage < 11 ? 'text-red-500' : ''">{{ lengthOfMessage }}</span>
 
-            </footer>
+                    <div @click="add_message(message); message = ''" class="svg send w-10 h-10 mr-5 cursor-pointer"></div>
+
+                </footer>
+
+            </div>
 
         </div>
 
-    </div>
-
+    </Transition>
+    
 </template>
 
 <script lang="ts" setup>
@@ -221,6 +233,56 @@ const scroll_to_bottom = () => {
     const container = document.querySelector<HTMLElement>('section');
     if (container) container.scrollTop = container.scrollHeight;
 }
+
+const initResize = () => {
+    const handle = document.querySelector<HTMLElement>('.resize-handle');
+    const container = document.querySelector<HTMLElement>('.group');
+    
+    if (!handle || !container) return;
+
+    let startWidth = 0;
+    let startX = 0;
+    let isResizing = false;
+
+    const startResize = (e: MouseEvent) => {
+        if (pos.value === 'fixed') return;
+
+        // Vérifier si le clic est dans la zone de redimensionnement (8px de la bordure gauche)
+        const handleRect = handle.getBoundingClientRect();
+        const isInResizeZone = e.clientX >= handleRect.left - 8 && e.clientX <= handleRect.left + 8;
+        
+        if (!isInResizeZone) return;
+        
+        isResizing = true;
+        startWidth = container.offsetWidth;
+        startX = e.clientX;
+        document.body.style.cursor = 'ew-resize';
+        document.body.style.userSelect = 'none';
+        
+        document.addEventListener('mousemove', resize);
+        document.addEventListener('mouseup', stopResize);
+        e.preventDefault();
+    };
+
+    const resize = (e: MouseEvent) => {
+        if (!isResizing) return;
+        const diff = e.clientX - startX;
+        const newWidth = Math.max(300, Math.min(800, startWidth - diff));
+        container.style.width = `${newWidth}px`;
+    };
+
+    const stopResize = () => {
+        isResizing = false;
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', resize);
+        document.removeEventListener('mouseup', stopResize);
+    };
+
+    handle.addEventListener('mousedown', startResize);
+}
+
+
 
 const send = async (prompt: string): Promise<void> => {
 
@@ -408,7 +470,26 @@ const Open = (): void => {
 }
 
 onUnmounted(() => close());
-onMounted(() => Open());
+onMounted(() => {
+    Open();
+});
+
+watch(() => pos.value, (newVal) => {
+    if (newVal === 'relative') {
+        setTimeout(() => {
+            console.log('Initializing resize...');
+            initResize();
+        }, 100);
+    }
+});
+watch(() => open.value, () => {
+    if (pos.value === 'relative') {
+        setTimeout(() => {
+            console.log('Initializing resize...');
+            initResize();
+        }, 100);
+    }
+})
 
 </script>
 
@@ -478,5 +559,34 @@ footer:has(input:focus) {
 .hover:hover {
     transform: scale(1.1);
 } 
+
+.group:has(.resize-handle) {
+    position: relative;
+}
+
+.group .resize-handle {
+    position: relative !important;
+}
+
+.group .resize-handle::before {
+    content: "";
+    position: absolute;
+    left: -8px;
+    top: 0;
+    width: 16px;
+    height: 100%;
+    cursor: default;
+    z-index: 100;
+}
+
+.group .resize-handle:hover::before {
+    cursor: ew-resize;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.group .resize-handle:hover::before {
+    background-color: var(--btn);
+    opacity: 0.2;
+}
 
 </style>

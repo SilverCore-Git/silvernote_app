@@ -18,7 +18,7 @@
     
     <div 
         class="Search_bar flex flex-col lg:flex-row 
-                justify-center items-center w-full gap-4"
+                justify-center items-center  gap-4 w-full"
     >
 
         <Search_bar class="w-1/3" :desktop="isLargeScreen" pt="" />
@@ -145,7 +145,7 @@
         </div>
 
         <ul 
-            class="overflow-hidden h-full mt-4 min-h-[80vh] space-y-5"
+            class="overflow-y-hidden h-full mt-4 min-h-[80vh] space-y-5"
             v-if="notes_views_mode == 'default'"
         >
 
