@@ -204,8 +204,7 @@ class Database {
 
     public async getNote(id: number): Promise<Note | undefined> {
         const db = await this.dbPromise;
-        const note = await db.get('notes', id);
-        return note;
+        return await db.get('notes', id);
     }
 
     public async add_notes(notes: Note[], cloud_post: boolean): Promise<void> {
@@ -217,7 +216,7 @@ class Database {
                 await this.create({
                     note,
                     cloud_post,
-                    idInTheProps: false
+                    idInTheProps: true
                 });
             }
 

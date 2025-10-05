@@ -1,7 +1,7 @@
 
 import db from '@/assets/ts/database/database';
 
-import type { Ref } from "vue";
+import { nextTick, type Ref } from "vue";
 import type { Note } from "../type";
 import { Notes, Tags, SharedNotes } from "./Var";
 import { api_url } from '../backend_link';
@@ -45,6 +45,7 @@ class InitDB {
             await this.init_local_notes();
             await this.init_local_tags();
 
+            await nextTick();
             this.loaded = true;
 
         }

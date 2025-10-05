@@ -219,18 +219,24 @@ const TodoInput = TaskItem.extend({
 
 
 const saveNote = async () => {
+
   const newContent = editor.value?.getHTML();
-  const note = await db.getNote(props.id);
-  if (!newContent || !note) return;
+  const note = await db.getNote(props.data.id);
 
-  const newNote: Note = { ...note, content: newContent };
+  if (newContent && note) 
+  {
 
-  await db.saveContent(newContent, props.data.id);
-  await fetch(`${api_url}/api/db/update/a/note`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ note: newNote })
-  });
+    const newNote: Note = { ...note, content: newContent };
+    await db.saveContent(newContent, props.data.id);
+    await fetch(`${api_url}/api/db/update/a/note`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ note: newNote })
+    });
+
+  }
+
 };
 
 const startAutoSave = () => {
@@ -280,7 +286,7 @@ const initEditor = async () => {
       })
     ],
     editable: props.editable,
-    onUpdate: () => { saveNote(); checkForMath(); }
+    onUpdate: () => { checkForMath(); }
   });
 
   await nextTick();
