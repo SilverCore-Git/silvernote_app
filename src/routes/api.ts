@@ -4,7 +4,7 @@ import type { News, Note } from '../assets/ts/types';
 import path from 'path';
 import JsonListManager from '../assets/ts/db_json_manager';
 import notes from '../assets/ts/notes';
-import { clerkClient, requireAuth } from "@clerk/express";
+import { clerkClient } from "@clerk/express";
 
 
 const router = Router();
@@ -17,6 +17,10 @@ router.get('/get_news', async (req: Request, res: Response) => {
 
     res.json( (await news).active ? news : false );
 
+})
+
+router.get('/uuid', (req, res) => {
+    res.json({ id: crypto.randomUUID() })
 })
 
 

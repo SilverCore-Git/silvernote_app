@@ -15,6 +15,9 @@ router.get('/get_news', async (req, res) => {
     const news = JSON.parse(data).news;
     res.json((await news).active ? news : false);
 });
+router.get('/uuid', (req, res) => {
+    res.json({ id: crypto.randomUUID() });
+});
 // partage de notes
 const share = new db_json_manager_1.default('share.json');
 const delete_a_share = (uuid) => {

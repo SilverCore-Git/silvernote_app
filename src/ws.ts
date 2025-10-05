@@ -29,7 +29,10 @@ const io = new Server(httpServer, {
 
 const docs = new Map<string, { 
   ydoc: Y.Doc, 
-  awareness: awarenessProtocol.Awareness 
+  awareness: awarenessProtocol.Awareness,
+  saveInterval?: NodeJS.Timeout,
+  title: string,
+  icon: string
 }>();
 
 
@@ -39,74 +42,103 @@ io.on("connection", (socket) => {
   console.log("Client connected :", socket.id);
 
   socket.on("join-room", async ({ room, userId }) => {
-
     if (!room) return;
-    let title: string;
-    let icon: string;
-
     socket.join(room);
     
     let docData = docs.get(room);
 
     if (!docData) {
-
       const ydoc = new Y.Doc();
+      new Y.Text();
+      const ytext = ydoc.getText('note');
+
       const awareness = new awarenessProtocol.Awareness(ydoc);
-
-      title = (await get_note(room))?.title || "";
-      icon = (await get_note(room))?.icon || "";
+      const note = await get_note(room);
       
-      docs.set(room, { ydoc, awareness });
-      docData = { ydoc, awareness };
+      const title = note?.title || "";
+      const icon = note?.icon || "";
+      
+      if (note?.content) {
+        // S'assurer que le document est vide avant d'insérer
+        if (ytext.length > 0) {
+          ytext.delete(0, ytext.length);
+        }
+        ytext.insert(0, note.content);
+        // Force une mise à jour initiale
+        Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(ydoc));
+      }
 
+      const saveNote = async () => {
+        const currentDoc = docs.get(room);
+        const currentNote = await get_note(room);
+        if (currentNote && currentDoc) {
+            const content = currentDoc.ydoc.getText("note").toString();
+            console.log('save : ', content, '\n', ytext.toString())
+            await save_note({
+              ...currentNote,
+              content,
+              title: currentDoc.title,
+              icon: currentDoc.icon
+            });
+        }
+      }
+      
+      await saveNote();
+      const saveInterval = setInterval(async () => {
+        await saveNote();
+      }, 10000);
+
+      docs.set(room, { ydoc, awareness, saveInterval, title, icon });
+      docData = { ydoc, awareness, saveInterval, title, icon };
     }
 
     const { ydoc, awareness } = docData;
 
-    const initialUpdate = Y.encodeStateAsUpdate(ydoc);
-    socket.emit("sync", new Uint8Array(initialUpdate));
+    // Envoi de l'état complet
+    const initialState = Y.encodeStateAsUpdate(ydoc);
+    socket.emit("sync", initialState);
     socket.emit('new_user', userId);
 
-
     socket.on("y-update", async (update: Uint8Array) => {
-
       try {
 
         const uint8Array = new Uint8Array(update);
         Y.applyUpdate(ydoc, uint8Array);
-
         socket.to(room).emit("y-update", uint8Array);
-
+        
       } catch (error) {
         console.error("Error applying update:", error);
       }
-
     });
 
     socket.on('title-update', async (update: string) => {
-
       try {
+        const currentDoc = docs.get(room);
+        if (currentDoc) {
+          currentDoc.title = update;
+          socket.to(room).emit("title-update", update);
 
-        socket.to(room).emit("title-update", update);
-        title = update;
-
+          const currentNote = await get_note(room);
+          await save_note({
+              ...currentNote!,
+              title: update
+          });
+        }
       } catch (error) {
         console.error("Error applying update:", error);
       }
-
-    })
+    });
 
     socket.on('icon-update', async (update: string) => {
-
       try {
-
-        socket.to(room).emit("icon-update", update);
-        icon = update;
-
+        const currentDoc = docs.get(room);
+        if (currentDoc) {
+          currentDoc.icon = update;
+          socket.to(room).emit("icon-update", update);
+        }
       } catch (error) {
         console.error("Error applying update:", error);
       }
-
     })
 
     socket.on("awareness-update", (update: Uint8Array) => {
@@ -124,7 +156,6 @@ io.on("connection", (socket) => {
 
     });
 
-
     socket.on("disconnect", async () => {
 
       const roomId = Array.from(socket.rooms)[1];
@@ -133,21 +164,26 @@ io.on("connection", (socket) => {
       const docData = docs.get(roomId);
       if (!docData) return;
 
-      const { ydoc } = docData;
+      const { ydoc, saveInterval } = docData;
       const content = ydoc.getText("note").toString();
 
       const note: Note | undefined = await get_note(roomId);
       if (note) {
         await save_note({
           ...note,
-          content: content
+          content,
+          title: docData.title,
+          icon: docData.icon
         });
       }
       
       awareness.setLocalState(null);
       
-      
       if (room && io.sockets.adapter.rooms.get(room)?.size === 0) {
+        // Clear the save interval when the last user leaves
+        if (saveInterval) {
+          clearInterval(saveInterval);
+        }
         docs.delete(room);
       }
       

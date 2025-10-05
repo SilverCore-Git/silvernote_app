@@ -113,9 +113,7 @@ router.post('/send', verify_auth, async (req: Request, res: Response) => {
         let prompt: string = '';
 
         if (!note) {
-            const notes = await notes_db.getNoteByUserId(chat.userID);
-            const tags = await tags_db.getTagsByUserId(chat.userID);
-            prompt = `Tag de l\'utilisateur : ${JSON.stringify(tags)}\n Notes de l\'utilisateur : ${JSON.stringify(notes)}\n Message de l'utilisateur : ${message}`;
+            prompt = `Message de l'utilisateur : ${message}`;
         }
         else {
             const notes = await notes_db.getNoteByUUID(note);
