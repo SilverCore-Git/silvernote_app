@@ -161,7 +161,6 @@
       placeholder="Titre..." 
       ref="title"
       v-model="note.title"
-      @input="save_title"
     />
 
     
@@ -547,12 +546,21 @@ onMounted(async () => {
 onBeforeUnmount(async () => {
   if (note.value.title == '') {
     console.log('Sauvegarde de la note vide')
+    socket.emit('title-update', 'Note sans titre');
     db.saveTitle('Note sans titre', note.value.id);
-  };
+  }
+  else
+  {
+    socket.emit('title-update', note.value?.title);
+  }
 });
 
+
 watch(() => note.value.title, () => {
+
   update_title();
+  save_title();
+
 })
 
 </script>
