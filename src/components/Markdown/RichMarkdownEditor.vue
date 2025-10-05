@@ -8,7 +8,7 @@
 >
 
   <div class="overflow-hidden">
-    <editor-content
+    <EditorContent
       v-if="editor"
       :editor="editor as Editor"
       class="prose h-full mb-40 overflow-hidden"
@@ -101,9 +101,9 @@
 
 <script setup lang="ts">
 
-import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue';
-import { Editor, EditorContent } from '@tiptap/vue-3';
+import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue';
 
+import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -114,14 +114,12 @@ import Image from '@tiptap/extension-image';
 import { TableKit } from '@tiptap/extension-table';
 import { CharacterCount, UndoRedo } from '@tiptap/extensions';
 import DragHandle from '@tiptap/extension-drag-handle';
-import Youtube from '@tiptap/extension-youtube'
+import Youtube from '@tiptap/extension-youtube';
 import { Extension, InputRule } from '@tiptap/core';
 import SlashCommand from '@/components/Markdown/tiptap-extansions/SlachCommand.js';
 import FileHandler from '@tiptap/extension-file-handler';
 import FileHandler_configure from './tiptap-extansions/FileHandler_configure.js';
 import { Markdown } from 'tiptap-markdown';
-
-import './css/DragHandler.scss';
 
 import * as Y from 'yjs';
 import { SocketIOProvider } from './SocketIOProvider.js';
@@ -138,9 +136,7 @@ import db from '@/assets/ts/database/database';
 import ToolsMenu from '@/components/Markdown/ToolsMenu/ToolsMenu.vue';
 
 import { createEditorState } from './Editor';
-
-const { editor  } = createEditorState();
-
+const { editor } = createEditorState();
 
 const props = defineProps<{
   id: number
@@ -149,73 +145,72 @@ const props = defineProps<{
   uuid: string
 }>()
 
-const isLargeScreen = ref<boolean>(window.innerWidth >= 1024)
-const loader = ref<boolean>(true)
-const { user } = useUser()
+const isLargeScreen = ref<boolean>(window.innerWidth >= 1024);
+const loader = ref<boolean>(true);
+const { user } = useUser();
 
-// Corrected `computed` properties for a more robust check
-const isBoldActive = computed(() => editor.value?.isActive('bold') ?? false)
-const isItalicActive = computed(() => editor.value?.isActive('italic') ?? false)
-const isStrikeActive = computed(() => editor.value?.isActive('strike') ?? false)
-const isUnderlineActive = computed(() => editor.value?.isActive('underline') ?? false)
-const isCodeActive = computed(() => editor.value?.isActive('code') ?? false)
-const isTaskListActive = computed(() => editor.value?.isActive('taskList') ?? false)
+let provider: SocketIOProvider | null = null;
+let autosaveInterval: ReturnType<typeof setInterval> | null = null;
 
-// Methods for editor commands
-const focusEditor = () => {
-  if (editor.value && !editor.value.isFocused) {
-    editor.value.commands.focus()
-  }
-}
-const toggleBold = () => editor.value?.chain().focus().toggleBold().run()
-const toggleItalic = () => editor.value?.chain().focus().toggleItalic().run()
-const toggleStrike = () => editor.value?.chain().focus().toggleStrike().run()
-const toggleCode = () => editor.value?.chain().focus().toggleCode().run()
-const toggleToDoList = () => editor.value?.chain().focus().toggleTaskList().run()
-const toggleUnderline = () => editor.value?.chain().focus().toggleUnderline().run()
-const toggleHeading = (level: any) => editor.value?.chain().focus().toggleHeading({ level }).run()
+const isBoldActive = computed(() => editor.value?.isActive('bold') ?? false);
+const isItalicActive = computed(() => editor.value?.isActive('italic') ?? false);
+const isStrikeActive = computed(() => editor.value?.isActive('strike') ?? false);
+const isUnderlineActive = computed(() => editor.value?.isActive('underline') ?? false);
+const isCodeActive = computed(() => editor.value?.isActive('code') ?? false);
+const isTaskListActive = computed(() => editor.value?.isActive('taskList') ?? false);
 
-// Math module
+const focusEditor = () => editor.value?.commands.focus();
+const toggleBold = () => editor.value?.chain().focus().toggleBold().run();
+const toggleItalic = () => editor.value?.chain().focus().toggleItalic().run();
+const toggleStrike = () => editor.value?.chain().focus().toggleStrike().run();
+const toggleCode = () => editor.value?.chain().focus().toggleCode().run();
+const toggleToDoList = () => editor.value?.chain().focus().toggleTaskList().run();
+const toggleUnderline = () => editor.value?.chain().focus().toggleUnderline().run();
+const toggleHeading = (level: number) => editor.value?.chain().focus().toggleHeading({ level } as any).run();
+
+
 function checkForMath() {
-  if (!editor.value) return
-  const regex = /(\d+(?:\s*[\+\-\*\/]\s*\d+)+)\s*=(?!\d)/g
-  const state = editor.value.state
-  let transaction = state.tr
+  if (!editor.value) return;
+  const regex = /(\d+(?:\s*[\+\-\*\/]\s*\d+)+)\s*=(?!\d)/g;
+  const state = editor.value.state;
+  let tr = state.tr;
+
   state.doc.descendants((node, pos) => {
-    if (!node.isText) return true
-    const text = node.text ?? ''
-    let match
+    if (!node.isText) return true;
+    const text = node.text ?? '';
+    let match;
     while ((match = regex.exec(text)) !== null) {
-      const rawExpr = match[1].trim()
-      const fullMatch = match[0]
+      const rawExpr = match[1].trim();
+      const fullMatch = match[0];
       try {
-        const result = evaluate(rawExpr)
-        const evaluated = `${rawExpr}=${result}`
-        if (text.includes(evaluated)) continue
-        const from = pos + match.index
-        const to = from + fullMatch.length
-        transaction = transaction.insertText(evaluated, from, to)
+        const result = evaluate(rawExpr);
+        const evaluated = `${rawExpr}=${result}`;
+        if (text.includes(evaluated)) continue;
+        const from = pos + match.index;
+        const to = from + fullMatch.length;
+        tr = tr.insertText(evaluated, from, to);
       } catch (e) {
-        console.warn(`Failed to evaluate "${rawExpr}"`, e)
+        console.warn(`Failed to evaluate "${rawExpr}"`, e);
       }
     }
-    return true
-  })
-  if (transaction.docChanged) {
-    editor.value.view.dispatch(transaction as any)
+    return true;
+  });
+
+  if (tr.docChanged) {
+    editor.value.view.dispatch(tr as any);
   }
 }
 
-// TaskList Input Rule
+
 const TodoInput = TaskItem.extend({
   addInputRules() {
     return [
       new InputRule({
         find: /^\s*(\[[\sXx]\])\s*$/,
         handler: ({ state, range }) => {
-          const { tr } = state
-          tr.deleteRange(range.from, range.to)
-          editor.value?.chain().toggleTaskList().run()
+          const { tr } = state;
+          tr.deleteRange(range.from, range.to);
+          editor.value?.chain().toggleTaskList().run();
         }
       })
     ]
@@ -223,175 +218,105 @@ const TodoInput = TaskItem.extend({
 })
 
 
-const saveContent = () => {
-  if (editor.value) {
-    db.saveContent(editor.value.getHTML(), props.data.id)
-  }
-}
+const saveNote = async () => {
+  const newContent = editor.value?.getHTML();
+  const note = await db.getNote(props.id);
+  if (!newContent || !note) return;
 
-// Keyboard shortcut for math evaluation
-const MathEvalShortcut = Extension.create({
-  name: 'mathEvalShortcut',
-  addKeyboardShortcuts() {
-    return {
-      'Mod-Enter': () => {
-        checkForMath()
-        return true
-      }
-    }
-  }
-})
+  const newNote: Note = { ...note, content: newContent };
+
+  await db.saveContent(newContent, props.data.id);
+  await fetch(`${api_url}/api/db/update/a/note`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ note: newNote })
+  });
+};
+
+const startAutoSave = () => {
+  autosaveInterval = setInterval(saveNote, 10000);
+};
 
 
-
-// Get dominant color from user image
-const getColorByImage = async (): Promise<string> => {
-  if (!user.value?.id) return '#000000'
-  try {
-    const res = await fetch(`${api_url}/api/user/by/id/${user.value.id}`, {
-      credentials: 'include'
-    })
-    const data = await res.json()
-    if (!data.imageUrl) return '#000000'
-    return getDominantColor(data.imageUrl)
-  } catch (error) {
-    console.error('Error fetching user image:', error)
-    return '#000000'
-  }
-}
-
-// Initialize the Tiptap editor
 const initEditor = async () => {
-
   if (editor.value) return;
 
   const ydoc = new Y.Doc();
+  provider = new SocketIOProvider(api_url, props.data.uuid, user.value?.id || "", ydoc);
 
-  const provider = new SocketIOProvider(
-    api_url,
-    props.data.uuid,
-    user.value?.id || "",
-    ydoc
-  )
-
-  const color = await getColorByImage()
+  const color = await getColorByImage();
 
   editor.value = new Editor({
     extensions: [
-      StarterKit.configure({
-        history: false
-      }),
+      StarterKit.configure({ history: false }),
       TaskList,
       TodoInput,
       SlashCommand,
       Link.configure({ openOnClick: false, autolink: true, linkOnPaste: true }),
       Underline,
-      Image.configure({
-        inline: false,
-        allowBase64: true
-      }),
-      Youtube.configure({
-        HTMLAttributes: {
-          class: 'ytb-viewer'
-        }
-      }),
+      Image.configure({ inline: false, allowBase64: true }),
+      Youtube.configure({ HTMLAttributes: { class: 'ytb-viewer' } }),
       UndoRedo,
       CharacterCount,
       TableKit,
-      Markdown.configure({
-        html: true
-      }),
-      Placeholder.configure({ 
-        placeholder: 'Commencez à écrire ici...' 
-      }),
-      MathEvalShortcut,
-      DragHandle.configure({
-        computePositionConfig: {
-          placement: 'left',
-          strategy: 'fixed',
-        },
-      }),
+      Markdown.configure({ html: true }),
+      Placeholder.configure({ placeholder: 'Commencez à écrire ici...' }),
+      DragHandle.configure({ computePositionConfig: { placement: 'left', strategy: 'fixed' } }),
       FileHandler.configure(FileHandler_configure),
-      Collaboration.configure({ 
-        document: ydoc
-      }),
+      Collaboration.configure({ document: ydoc }),
       CollaborationCaret.configure({
         provider,
         user: { 
-          name: user.value?.username || 'Invité', 
+          name: user.value?.username || 'Invité',
           color,
           avatar: user.value?.imageUrl
+        }
+      }),
+      Extension.create({
+        name: 'mathEvalShortcut',
+        addKeyboardShortcuts() {
+          return { 'Mod-Enter': () => { checkForMath(); return true } }
         }
       })
     ],
     editable: props.editable,
-    onUpdate: () => {
-      saveContent()
-      checkForMath()
-    }
-  })
+    onUpdate: () => { saveNote(); checkForMath(); }
+  });
 
-
+  await nextTick();
   loader.value = false;
+  editor.value.commands.setContent(props.data.content);
+};
 
-  editor.value?.commands.setContent(props.data.content);
 
-  onBeforeUnmount(() => {
-    editor.value?.destroy();
-    provider.destroy();
-    window.removeEventListener('resize', updateSize);
-  })
-
-}
-
-const updateSize = () => {
-  isLargeScreen.value = window.innerWidth >= 1024
-}
-
-const autoSaveNote = (): void => {
-
-  const interval = setInterval(async () => {
-    await saveNote();
-  }, 10000);
-
-  onBeforeUnmount(async () => {
-    clearInterval(interval)
-    await saveNote();
-  })
-
-  async function saveNote() 
-  {
-
-    const newContent = editor.value?.getHTML();
-    const note = await db.getNote(props.id);
-
-    if (newContent && note) {
-
-      const newNote: Note = {
-        ...note,
-        content: newContent
-      }
-
-      await db.saveContent(newContent, props.data.id);
-      await fetch(`${api_url}/api/db/update/a/note`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ note: newNote })
-      })
-
-    }
-
+const getColorByImage = async (): Promise<string> => {
+  if (!user.value?.id) return '#000000';
+  try {
+    const res = await fetch(`${api_url}/api/user/by/id/${user.value.id}`, { credentials: 'include' });
+    const data = await res.json();
+    return data.imageUrl ? getDominantColor(data.imageUrl) : '#000000';
+  } catch (error) {
+    console.error('Error fetching user image:', error);
+    return '#000000';
   }
+};
 
-}
+const updateSize = () => { isLargeScreen.value = window.innerWidth >= 1024; };
+
 
 onMounted(() => {
   window.addEventListener('resize', updateSize);
   initEditor();
-  autoSaveNote();
-})
+  startAutoSave();
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateSize);
+  if (editor.value) editor.value.destroy();
+  if (provider) provider.destroy();
+  if (autosaveInterval) clearInterval(autosaveInterval);
+  saveNote();
+});
 
 </script>
 

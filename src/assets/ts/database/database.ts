@@ -115,7 +115,6 @@ class Database {
         if (note) {
             note.icon = icon;
             this.push_note(note);
-            console.log('note mise a jours : ', note)
             await db.put('notes', note);
         }
     }

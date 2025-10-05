@@ -12,13 +12,12 @@ export class SocketIOProvider {
     this.awareness = new awarenessProtocol.Awareness(doc);
 
     this.socket = io(serverUrl, {
-      path: "/socket.io/",
-      transports: ["polling", "websocket"],
+      path: "/socket.io/share",
+      transports: ["websocket", "polling"],
       autoConnect: true,
       forceNew: true,
       upgrade: false,
       reconnection: true,
-      timeout: 20000
     });
 
     this.socket.connect();

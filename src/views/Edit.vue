@@ -166,7 +166,7 @@
 
     
     <RichMarkdownEditor 
-      v-show="loaded && note.content"
+      v-if="loaded"
       v-bind="attrs" 
       :editable="true"
       :id="-2" 
@@ -361,7 +361,7 @@ const update_title = () => {
 
 const wSocket = () => {
 
-    socket = io(api_url, { path: "/socket.io/" });
+    socket = io(api_url, { path: "/socket.io/share" });
 
     socket.on('connect', () => {
         console.log('WebSocket connecté !');
@@ -412,7 +412,6 @@ const wSocket = () => {
     })
 
     watch(() => note.value?.icon, () => {
-      console.log('icon update : ', note.value?.icon)
       socket.emit('icon-update', note.value?.icon);
     })
 
