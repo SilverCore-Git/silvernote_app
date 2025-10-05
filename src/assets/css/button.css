@@ -114,7 +114,3 @@ button.loader:after {
     margin: auto;
     box-shadow: 0 0 2px var(--btn);
 }
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}

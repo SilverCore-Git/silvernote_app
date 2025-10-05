@@ -40,6 +40,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+a {
+  cursor: pointer;
+  border-radius: 5px;
+  padding-right: .3em;
+  padding-left: .3em;
+  transition: all .2s;
+}
+
+a:hover {
+  background-color: gray;
+}
 
 
 .fade-slide-enter-active,
@@ -58,5 +69,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
-
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}

@@ -1,14 +1,17 @@
 import { Editor } from "@tiptap/vue-3";
-import { ref, watch } from "vue";
+import { ref, type Ref } from "vue";
 
-const isLoaded = ref<boolean>(false);
-const editor = ref<Editor | undefined>(undefined);
+interface EditorState {
+  editor: Ref<Editor | undefined>;
+  isLoaded: Ref<boolean>;
+}
 
-watch(() => editor.value, () => {
-    if (editor !== undefined) isLoaded.value = true;
-})
+export function createEditorState(): EditorState {
+  const editor = ref<Editor | undefined>(undefined);
+  const isLoaded = ref<boolean>(false);
 
-export {
-    isLoaded,
-    editor
+  return {
+    editor,
+    isLoaded
+  };
 }

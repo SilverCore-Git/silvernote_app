@@ -9,11 +9,24 @@
 
     <div v-if="origin == 'ai'"  class="flex justify-center items-center gap-2">
 
-        <img 
-            v-if="text.length < 1"
-            src="../../assets/img/jeremy.png" 
-            class="w-10 h-10 float"
-        />
+
+    <div 
+      v-if="text.length < 1"
+      class="relative w-12 h-12 flex items-center justify-center"
+    >
+      
+      <div 
+        class="absolute w-12 h-12 border-4 border-gray-300 
+        border-t-[var(--btn)] rounded-full animate-spin"
+      ></div>
+
+      <img
+        src="../../assets/img/silverai.png"
+        class="w-8 h-8 object-cover rounded-full"
+      />
+      
+    </div>
+
 
         <div
             class="border-1 border-[var(--btn)] w-full py-2.5 pl-3 pr-2 rounded-t-2xl rounded-r-2xl"
@@ -56,18 +69,6 @@ defineProps<{
 </script>
 
 <style scoped>
-
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
-}
 
 .float {
   animation: float 3s ease-in-out infinite;

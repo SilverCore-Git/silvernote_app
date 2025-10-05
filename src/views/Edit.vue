@@ -2,7 +2,7 @@
 
   <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
 
-    <div class="left-arrow absolute left-0 cursor-pointer btnHover" @click="router.push('/')" :class="hitbox ? 'bg-red-600' : ''"></div>
+    <a><div class="left-arrow absolute left-0 cursor-pointer btnHover" @click="router.push('/')" :class="hitbox ? 'bg-red-600' : ''"></div></a>
 
     <div class="flex flex-row gap-4 absolute right-0">
 
@@ -146,8 +146,7 @@
 
         <a 
           v-else
-          class="cursor-pointer text-gray-600 px-2 py-1 rounded-2xl 
-          hover:bg-gray-300 hover:text-gray-800 transition-all duration-300"
+          class=""
         >
           Ajouter une icon
         </a>
@@ -250,7 +249,9 @@ import db from '@/assets/ts/database/database';
 import utils from '@/assets/ts/utils';
 import type { Note, User } from '@/assets/ts/type';
 import { stats, isLoaded } from '@/components/Markdown/Function/Stats';
-import { editor } from '@/components/Markdown/Editor';
+import { createEditorState } from '@/components/Markdown/Editor';
+
+const { editor } = createEditorState();
 
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';
@@ -403,6 +404,7 @@ const wSocket = () => {
       onupdate = true;
 
       setTimeout(() => {
+        console.log('title update : ', note.value?.title)
         socket.emit('title-update', note.value?.title);
         onupdate = false;
       }, 500);
@@ -410,6 +412,7 @@ const wSocket = () => {
     })
 
     watch(() => note.value?.icon, () => {
+      console.log('icon update : ', note.value?.icon)
       socket.emit('icon-update', note.value?.icon);
     })
 
@@ -424,15 +427,19 @@ onMounted(async () => {
     if (props.id == 'new') {
 
       console.log('Création d\'une nouvelle note')
-      const newNote = await db.create({ 
+      const newNote = await db.create({
+                                  note: { 
                                     id: -1,
                                     uuid: '',
                                     pinned: false,
                                     simply_edit: false,
                                     title: note.value.title,
+                                    content: note.value.content,
                                     date: utils.date(),
                                     tags: []
-                                }, true);
+                                }, 
+                                cloud_post: true
+      });
 
       note.value.id = newNote.id;
 
@@ -513,6 +520,8 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(async () => {
+  console.log("unmunted")
+  socket.emit('disconnect');
   if (note.value.title == '') {
     console.log('Sauvegarde de la note vide')
     db.saveTitle('Note sans titre', note.value.id);

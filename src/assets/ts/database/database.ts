@@ -159,28 +159,31 @@ class Database {
         await db.delete('tags', id);
     }
 
-    public async create(note: Note, cloud_post: boolean): Promise<{ id: number }> {
+    public async create(arg: { note: Note, cloud_post?: boolean, idInTheProps?: boolean }): Promise<{ id: number }> {
 
         const db = await this.dbPromise;
 
-        note.id = Math.floor(Math.random() * (999999999999 - 1000000 + 1)) + 1000;
-        note.uuid = await utils.UUID();
-        note.tags = [];
+        if (!arg.idInTheProps) {
+            arg.note.id = Math.floor(Math.random() * (999999999999 - 1000000 + 1)) + 1000;
+            arg.note.uuid = await utils.UUID();
+        }
 
-        await db.add('notes', note);
+        arg.note.tags = [];
 
-        if (cloud_post) {
+        await db.add('notes', arg.note);
+
+        if (arg.cloud_post) {
             await fetch(`${api_url}/api/db/new/note`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 credentials: 'include',
-                body: JSON.stringify({ note }),
+                body: JSON.stringify({ note: arg.note }),
             })
         }
 
-        return { id: note.id };
+        return { id: arg.note.id };
 
     }
 
@@ -211,7 +214,12 @@ class Database {
         if (notes.length) {
 
             for (const note of notes) {
-                await this.create(note, cloud_post);
+                if (!note.title && !note.content) continue;
+                await this.create({
+                    note,
+                    cloud_post,
+                    idInTheProps: false
+                });
             }
 
         }

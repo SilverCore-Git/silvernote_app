@@ -137,7 +137,9 @@ import { getDominantColor } from '@/assets/ts/GetColorByImage';
 import db from '@/assets/ts/database/database';
 import ToolsMenu from '@/components/Markdown/ToolsMenu/ToolsMenu.vue';
 
-import { editor } from './Editor.js';
+import { createEditorState } from './Editor';
+
+const { editor  } = createEditorState();
 
 
 const props = defineProps<{

@@ -9,7 +9,7 @@
         <div 
           v-if="!loader && !is_offline"
           class="flex-1 relative overflow-hidden"
-          :class="[ 'Edit', 'Share' ].includes(route.name) ? 'mx-4' : 'mr-[var(--mrl)] ml-[var(--mrl)] '"
+          :class="[ 'Edit', 'Share' ].includes(route.name) && route.query.chatbot == 'relative' ? 'mx-4' : 'mr-[var(--mrl)] ml-[var(--mrl)] '"
         >
           <router-view />
         </div>
