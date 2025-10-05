@@ -477,7 +477,7 @@ const Open = (): void => {
 
     }, 1000)
 
-    if (route.query.chatbot) {
+    if (route.query.chatbot === 'relative' || route.query.chatbot === 'fixed') {
         open.value = true;
         pos.value = route.query.chatbot as 'relative' | 'fixed';
     }
@@ -488,6 +488,7 @@ onUnmounted(() => close());
 onMounted(() => {
     Open();
 });
+
 
 watch(() => pos.value, (newVal) => {
     if (newVal === 'relative') {
@@ -528,13 +529,9 @@ watch(() => open.value, () => {
     });
 })
 watch(() => route.name, () => {
-    if (![ 'Edit', 'Share' ].includes(route.name)) 
+    if (![ 'Edit', 'Share' ].includes(route.name))
     {
         pos.value = 'fixed';
-    }
-    else 
-    {
-        pos.value = "relative";
     }
 })
 

@@ -145,7 +145,7 @@
         </div>
 
         <ul 
-            class="overflow-y-hidden h-full mt-4 min-h-[80vh] space-y-5"
+            class="overflow-y-hidden h-full mt-4 min-h-[80vh] "
             v-if="notes_views_mode == 'default'"
         >
 
@@ -303,7 +303,7 @@
     </div>
 
     <New_note_btn 
-        @click="create_new_note"
+        @btn_click="create_new_note"
     />
 
     <div v-if="if_open_create_tag">

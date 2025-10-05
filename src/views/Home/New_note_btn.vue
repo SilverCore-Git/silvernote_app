@@ -9,6 +9,7 @@
         "   
     >
         <button 
+            @click="emit('btn_click')"
             style="box-shadow: 0 0 15px #3636364f; "
             class="add-note-btn cursor-pointer rounded-full
                     flex items-center justify-center mb-8 p-2
@@ -24,6 +25,10 @@
 defineProps<{
     pos?: string;
 }>();
+
+const emit = defineEmits<{
+  (e: 'btn_click'): void
+}>()
 
 </script>
 

@@ -176,6 +176,7 @@ watch(theme, () => {
 
 .note-card:hover {
   box-shadow: 0 0 10px color-mix(in srgb, var(--btn) 50%, transparent);
+  transform: scale(1.05);
 }
 
 .folder-svg {

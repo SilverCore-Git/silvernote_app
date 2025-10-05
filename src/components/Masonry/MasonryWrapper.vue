@@ -25,7 +25,7 @@ onMounted(async () => {
       itemSelector: ".masonry-item",
       columnWidth: ".masonry-item-style",
       percentPosition: true,
-      gutter: 16,
+      gutter: 0,
       transitionDuration: "0.2s"
     });
 
@@ -49,7 +49,6 @@ onBeforeUnmount(() => {
 
 .masonry-item-style {
   width: 25%;
-  margin-bottom: 16px;
 }
 
 .masonry-hr-style {

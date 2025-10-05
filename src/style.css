@@ -49,7 +49,7 @@ a {
 }
 
 a:hover {
-  background-color: gray;
+  background-color: rgba(199, 199, 199, 0.788);
 }
 
 
