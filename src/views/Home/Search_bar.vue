@@ -3,22 +3,22 @@
   <div
     class="note-card bg-[var(--bg2)] text-[var(--text)] border border-[var(--text)] z-30 rounded-2xl py-1.5
           relative lg:mx-0 mx-4 w-full flex flex-col pl-4"
-    style="box-shadow: 0 0 15px #3636364f;"
+    style="box-shadow: 0 0 5px #3636364f;"
     
   >
 
-    <div class="flex flex-row items-center">
+    <div class="flex flex-row ">
 
       <input 
         ref="search_input"
         v-model="searchQuery"
         type="text"
-        class="w-[85%] border-none outline-none" 
+        class="w-[88%] border-none outline-none" 
         placeholder="Recherche..."
       >
 
-      <button v-if="searchQuery !== ''" @click="searchQuery = ''" class="cross-btn absolute end-1"></button>
-      <button v-if="searchQuery == ''" @click="search_input?.focus()" class="search-btn absolute end-4"></button>
+      <button v-if="searchQuery !== ''" @click="searchQuery = ''" class="cross-btn absolute end-0"></button>
+      <button v-if="searchQuery == ''" @click="search_input?.focus()" class="search-btn absolute end-0"></button>
 
     </div>
 
