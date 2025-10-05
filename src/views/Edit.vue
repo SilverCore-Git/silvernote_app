@@ -239,7 +239,7 @@
 
 <script lang="ts" setup>
 
-import { ref, onMounted, useAttrs, watch, onBeforeUnmount } from 'vue';
+import { ref, onMounted, useAttrs, watch, onBeforeUnmount, nextTick } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { io, Socket } from 'socket.io-client';
 import { EmojiButton } from '@joeattardi/emoji-button';
@@ -419,105 +419,131 @@ const wSocket = () => {
 };
 
 
+const create_new_note = async () => {
+
+    console.log("Création d'une nouvelle note");
+
+    const newNote = await db.create({
+      note: {
+        id: -1,
+        uuid: '',
+        pinned: false,
+        simply_edit: false,
+        title: note.value.title,
+        content: note.value.content,
+        date: utils.date(),
+        tags: []
+      },
+      cloud_post: true
+    });
+
+    note.value.id = newNote.id;
+
+    await router.replace({
+      params: { id: newNote.id },
+      query: { ...route.query }
+    });
+
+    await nextTick();
+    title.value?.focus();
+
+}
+
+const get_existing_note = async () => {
+
+    const noteId = Number(props.id || route.params.id);
+
+    if (!isNaN(noteId) && noteId > 0) {
+      const fetchedNote = await db.getNote(noteId);
+
+      if (!fetchedNote) {
+        console.warn("Note introuvable:", noteId);
+      } else {
+        note.value = fetchedNote;
+        if_pin_active.value = fetchedNote.pinned;
+
+        // Init websocket
+        wSocket();
+
+        // Vérifie le partage
+        try {
+          const _share = await fetch(`${api_url}/api/share/${fetchedNote.uuid}?passwd=`)
+            .then(res => res.json());
+
+          if (_share.success) {
+            shared.value = true;
+
+            // Ajoute owner
+            users.value.push(await getUserByUUID(_share.user_id, 'owner'));
+
+            // Ajoute les visiteurs
+            for (const userId of _share.visitor) {
+              if (userId !== _share.user_id) {
+                users.value.push(await getUserByUUID(userId, 'visitor'));
+              }
+            }
+          }
+        } catch (err) {
+          console.error("Erreur lors de la récupération du partage :", err);
+        }
+      }
+    } else if (props.id !== 'new') {
+      console.warn("ID de note invalide :", props.id);
+    } else {
+      console.error("Erreur de chargement de la note.");
+    }
+
+}
+
+const init_emoji_picker = () => {
+
+    if (!emojiBtn.value) {
+      return console.error("Emoji picker non chargé.");
+    }
+
+    const picker = new EmojiButton({
+      position: 'bottom-start',
+      autoHide: true,
+      showPreview: true
+    });
+
+    picker.on('emoji', (emoji: { emoji: string; name: string }) => {
+      note.value.icon = utils.emojiToBase64(emoji.emoji);
+      save_icon(note.value.icon);
+    });
+
+    emojiBtn.value.addEventListener('click', () => {
+      picker.togglePicker(emojiBtn.value!);
+    });
+
+}
+
+
 // Start
 onMounted(async () => {
 
-  setTimeout(async () => {
+  try {
 
-    if (props.id == 'new') {
-
-      console.log('Création d\'une nouvelle note')
-      const newNote = await db.create({
-                                  note: { 
-                                    id: -1,
-                                    uuid: '',
-                                    pinned: false,
-                                    simply_edit: false,
-                                    title: note.value.title,
-                                    content: note.value.content,
-                                    date: utils.date(),
-                                    tags: []
-                                }, 
-                                cloud_post: true
-      });
-
-      note.value.id = newNote.id;
-
-      router.replace({ 
-        params: { id: newNote.id },
-        query: { ...route.query }
-      });
-
-      setTimeout(() => title.value?.focus(), 1000);
-
+    // création d'une nouvelle note
+    if (props.id === 'new') {
+      await create_new_note();
     }
 
-    const noteId = Number(props.id || route.params.id); 
+    // récupération d'une note existante
+    await get_existing_note();
 
-    if (!isNaN(noteId) && noteId) {
+    loaded.value = true;
 
-      setTimeout(async () => {
+    await nextTick();
 
-        const fetchedNote = await db.getNote(noteId);
+    init_emoji_picker();
 
-        console.log(fetchedNote || 'err');
-
-        if (fetchedNote) {
-          note.value = fetchedNote;
-          if_pin_active.value = fetchedNote.pinned;
-          wSocket();
-        }
-
-        const _share = await fetch(`${api_url}/api/share/${fetchedNote?.uuid}?passwd=`)
-          .then(res => res.json())
-
-        if (_share.success) {
-          shared.value = true;
-          users.value.push(await getUserByUUID(_share.user_id, 'owner'));
-          for (const userId of _share.visitor) {
-              if (userId == _share.user_id) continue;
-              users.value.push(await getUserByUUID(userId, 'visitor'));
-          }
-        }
-
-      }, 0)
-      
-    } else if (props.id !== 'new') {
-      console.warn('ID de note invalide:', props.id);
-    } else {
-      console.error('Erreur de chargement de la note.')
-    }
-
-    setTimeout(() => {
-  
-      loaded.value = true;
-
-      setTimeout(() => {
-
-        if (!emojiBtn.value) return console.error('Emoji pîcker not load.');
-
-        const picker = new EmojiButton({
-          position: 'bottom-start',
-          autoHide: true,
-          showPreview: true
-        });
-
-        picker.on('emoji', (emoji: { emoji: string, name: string }) => {
-          note.value.icon = utils.emojiToBase64(emoji.emoji);
-          save_icon(note.value.icon);
-        });
-
-        emojiBtn.value.addEventListener('click', () => {
-          picker.togglePicker(emojiBtn.value!);
-        });
-
-      }, 500)
-
-    }, 500)
-
-  }, 1000)
+  } catch (err) {
+    console.error("Erreur lors de l'initialisation :", err);
+  }
 
 });
+
 
 onBeforeUnmount(async () => {
   if (note.value.title == '') {
