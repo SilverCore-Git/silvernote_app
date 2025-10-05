@@ -243,14 +243,6 @@ const MathEvalShortcut = Extension.create({
 })
 
 
-watch(
-  () => editor.value?.getHTML(),
-  async (newContent, oldContent) => {
-    if (!editor.value || newContent === undefined || newContent === oldContent) return;
-    await db.saveContent(newContent, props.data.id);
-    console.log("save : ", newContent)
-  }
-)
 
 // Get dominant color from user image
 const getColorByImage = async (): Promise<string> => {
@@ -356,9 +348,49 @@ const updateSize = () => {
   isLargeScreen.value = window.innerWidth >= 1024
 }
 
+const autoSaveNote = (): void => {
+
+  const interval = setInterval(async () => {
+    await saveNote();
+  }, 10000);
+
+  onBeforeUnmount(async () => {
+    clearInterval(interval)
+    await saveNote();
+  })
+
+  async function saveNote() 
+  {
+
+    const newContent = editor.value?.getHTML();
+    const note = await db.getNote(props.id);
+
+    if (newContent && note) {
+
+      const newNote: Note = {
+        ...note,
+        content: newContent
+      }
+
+      await db.saveContent(newContent, props.data.id);
+      await fetch(`${api_url}/api/db/update/a/note`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ note: newNote })
+      })
+
+    }
+
+  }
+
+}
+
 onMounted(() => {
-  window.addEventListener('resize', updateSize)
-  initEditor()
+  window.addEventListener('resize', updateSize);
+  initEditor();
+  autoSaveNote();
 })
 
 </script>

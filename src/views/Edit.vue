@@ -520,8 +520,6 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(async () => {
-  console.log("unmunted")
-  socket.emit('disconnect');
   if (note.value.title == '') {
     console.log('Sauvegarde de la note vide')
     db.saveTitle('Note sans titre', note.value.id);
