@@ -146,7 +146,7 @@
 
         <a 
           v-else
-          class=""
+          class="px-1"
         >
           Ajouter une icon
         </a>
@@ -256,7 +256,7 @@ const { editor } = createEditorState();
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';
 import { api_url } from '@/assets/ts/backend_link';
-import Popup from '@/components/Popup.vue';
+import Popup from '@/components/popup/Popup.vue';
 import Share_menu from '@/components/popup/share_menu.vue';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
 import { download } from '@/components/Markdown/Function/Export';

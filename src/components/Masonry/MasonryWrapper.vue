@@ -24,8 +24,7 @@ onMounted(async () => {
     msnry = new Masonry(grid, {
       itemSelector: ".masonry-item",
       columnWidth: ".masonry-item-style",
-      percentPosition: true,
-      gutter: 0,
+      percentPosition: true,      
       transitionDuration: "0.2s"
     });
 

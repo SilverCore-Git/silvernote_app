@@ -43,9 +43,13 @@ h1, h2, h3, h4, h5, h6 {
 a {
   cursor: pointer;
   border-radius: 5px;
-  padding-right: .3em;
-  padding-left: .3em;
+  padding-right: 1px;
+  padding-left: 1px;
   transition: all .2s;
+}
+
+a.px-1 {
+  @apply px-1
 }
 
 a:hover {

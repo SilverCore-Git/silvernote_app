@@ -106,7 +106,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import Popup from '../Popup.vue';
+import Popup from './Popup.vue';
 import Switch from '../Switch.vue';
 import { api_url } from '@/assets/ts/backend_link';
 
