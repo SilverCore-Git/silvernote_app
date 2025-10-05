@@ -140,8 +140,8 @@
 
     const load_template_db = async () => {
         await db.reset({ localANDcloud: true });
-        await db.add_notes(back.dev_db.notes);
-        await db.add_tags(back.dev_db.tags);
+        await db.add_notes(back.dev_db.notes, true);
+        await db.add_tags(back.dev_db.tags, true);
         alert('c fini')
     }
 

@@ -149,10 +149,10 @@
             v-if="notes_views_mode == 'default'"
         >
 
-            <MasonryWrapper v-if="list_notes && shared_notes" class="w-full">
+            <MasonryWrapper v-if="view_notes && list_notes && shared_notes" class="w-full">
 
                 <MasonryHr 
-                    class="absolute inset-x-0" 
+                    class="mt-4 absolute inset-x-0" 
                     v-if="list_notes.filter(note => note.pinned == true).length"
                 >
                     <span class="font-bold text-lg">Notes épinglées</span>
@@ -182,7 +182,7 @@
 
 
                 <MasonryHr 
-                    class="absolute inset-x-0" 
+                    class="mt-4 absolute inset-x-0" 
                     v-if="shared_notes && shared_notes.length > 0"
                 >
                     <span class="font-bold text-lg">Notes partagées</span>
@@ -212,7 +212,7 @@
 
 
                 <MasonryHr 
-                    class="absolute inset-x-0" 
+                    class="mt-4 absolute inset-x-0" 
                     v-if="list_notes.filter(note => note.pinned == true).length || shared_notes.length"
                 >
                     <span class="font-bold text-lg">Autres</span>
@@ -378,7 +378,11 @@
     import MasonryHr from '@/components/Masonry/MasonryHr.vue';
     import Loader from '@/components/Loader.vue';
     import New_note_btn from '@/views/Home/New_note_btn.vue';
-    import { Notes as list_notes, Tags as all_tags } from '@/assets/ts/database/Var';
+    import { 
+        Notes as list_notes, 
+        Tags as all_tags, 
+        SharedNotes as shared_notes 
+    } from '@/assets/ts/database/Var';
     
     const router = useRouter();
 
@@ -390,10 +394,9 @@
     const tip: boolean = false;
     const tag_name = ref<string>('');
     const tag_color = ref<string>('');
+    const view_notes = ref<boolean>(false);
     const if_danger_card = ref<boolean>(false); 
     const Danger_card_props = ref<{ message: string, title: string, btn: boolean, href: string } | undefined>(undefined);
-
-    const shared_notes = ref<Note[]>([]);
 
     const isRotating = ref(false);
     const if_open_create_tag = ref<boolean>(false);
@@ -473,17 +476,26 @@
         if (isRotating.value) return;
 
         isRotating.value = true;
+        view_notes.value = false;
 
         setTimeout(async () => {
+
             list_notes.value = [];
             all_tags.value = [];
+            shared_notes.value = [];
+
             await InitDB.init_local_tags();
             await InitDB.init_local_notes();
             await InitDB.init_shared_notes();
+
             console.log('Rechargement des db...')
+
+            view_notes.value = true;
+
             setTimeout(() => {
                 isRotating.value = false;
             }, 200);
+
         }, 300);
 
     };
@@ -494,18 +506,7 @@
         if_danger_card.value = isOnline.value ? await back.info_message() ? true : false : false; 
         Danger_card_props.value = isOnline.value ? await back.info_message() : undefined;
 
-        all_tags.value = [];
-        list_notes.value = [];
-
-        setTimeout(async () => {
-            await InitDB.init_local_tags();
-            await InitDB.init_local_notes();
-            await InitDB.init_shared_notes();
-        }, 500);
-
-        setTimeout(async () => {
-            await reload_list();
-        }, 100)
+        await reload_list();
 
     });
 

@@ -52,6 +52,14 @@ a.px-1 {
   @apply px-1
 }
 
+a.px-2 {
+  @apply px-2.5
+}
+
+a.rounded{
+  @apply rounded-xl
+}
+
 a:hover {
   background-color: rgba(199, 199, 199, 0.788);
 }

@@ -1,137 +1,134 @@
 <template>
 
-  <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
+    <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
 
-    <div 
-        class="left-arrow absolute left-0 cursor-pointer btnHover" 
-        @click="router.push('/')"
-    ></div>
+        <div 
+            class="left-arrow absolute left-0 cursor-pointer btnHover" 
+            @click="router.push('/')"
+        ></div>
 
-    <div 
-        class="
-            absolute right-0
-            flex flex-row justify-center items-center
-            space-x-5
-        " 
-    >
-
-        <div
-            class="flex -space-x-3"
-        >
-
-            <img
-                v-if="users.length > 0"
-                v-for="user in users"
-                class="w-8 h-8  rounded-full border-1 border-gray-200"
-                :src="user.imageUrl"
-            />
-
-        </div>
-
-        <a 
+        <div 
             class="
-                cursor-pointer hover:bg-gray-200 hover:text-[var(--text)]
-                py-1 px-3 rounded-xl transition-all duration-200
-                border-2 border-gray-200
-            "
-            :class="share_menu ? 'bg-gray-200 ' : ''"
-            @click="share_menu = !share_menu"
-        >Partage</a>
-
-    </div>
-
-
-
-    <transition name="fade-slide">
-            
-        <div
-            v-if="share_menu && users"
-            class="absolute inset-0 z-50 w-full h-screen"
-            @click="share_menu = false"
+                absolute right-0
+                flex flex-row justify-center items-center
+                space-x-5
+            " 
         >
 
-            <div 
-                class="dropdown absolute 
-                        right-0 bg-[var(--bg2)]"
-                :style="{ top: `calc(3.4rem + env(safe-area-inset-top))` }"
+            <div
+                class="flex -space-x-3"
             >
 
-                <ul>
-
-                    <li
-                        v-for="user in users"
-                        class="
-                            flex justify-between items-center flex-row
-                            space-x-8
-                        "
-                        @click.stop
-                    >
-
-                        <div
-                            class="
-                                flex justify-center items-center flex-row
-                                space-x-3
-                            "
-                        >
-
-                            <img 
-                                class="w-8 h-8 rounded-full"
-                                :class="user.isMe 
-                                            ? 'border-2 border-[var(--btn)]'
-                                            : ''
-                                "
-                                :src="user.imageUrl" 
-                            />
-
-                            <span>{{ user.username }}</span>
-                            <span 
-                                v-if="user.isMe"
-                                class="text-xs -translate-x-3.5 -translate-y-2"
-                            >(Vous)</span>
-
-                        </div>
-
-                        <div>
-                            
-                            <span>
-                                {{ 
-                                    user.type == 'visitor' 
-                                        ? 'Invité' 
-                                        : 'Auteur'
-                                }}
-                            </span>
-
-                        </div>
-
-                    </li>
-
-                    <li 
-                        class="flex items-center justify-center"
-                        @click.stop="send_share()"
-                    >
-                        <button 
-                            class="second nohover w-full"
-                        >
-                            Ajouter un.e invité.e
-                        </button>
-                    </li>
-
-                </ul>
+                <img
+                    v-if="users.length > 0"
+                    v-for="user in users"
+                    class="w-8 h-8  rounded-full border-1 border-gray-200"
+                    :src="user.imageUrl"
+                />
 
             </div>
 
-        </div>
-        
-    </transition>
+            <a 
+                class="px-2 rounded"
+                :class="share_menu ? 'bg-gray-200 ' : ''"
+                @click="share_menu = !share_menu"
+            >Partage</a>
 
-  </header>
+        </div>
+
+
+
+        <transition name="fade-slide">
+                
+            <div
+                v-if="share_menu && users"
+                class="absolute inset-0 z-50 w-full h-screen"
+                @click="share_menu = false"
+            >
+
+                <div 
+                    class="dropdown absolute 
+                            right-0 bg-[var(--bg2)]"
+                    :style="{ top: `calc(3.4rem + env(safe-area-inset-top))` }"
+                >
+
+                    <ul>
+
+                        <li
+                            v-for="user in users"
+                            class="
+                                flex justify-between items-center flex-row
+                                space-x-8
+                            "
+                            @click.stop
+                        >
+
+                            <div
+                                class="
+                                    flex justify-center items-center flex-row
+                                    space-x-3
+                                "
+                            >
+
+                                <img 
+                                    class="w-8 h-8 rounded-full"
+                                    :class="user.isMe 
+                                                ? 'border-2 border-[var(--btn)]'
+                                                : ''
+                                    "
+                                    :src="user.imageUrl" 
+                                />
+
+                                <span>{{ user.username }}</span>
+                                <span 
+                                    v-if="user.isMe"
+                                    class="text-xs -translate-x-3.5 -translate-y-2"
+                                >(Vous)</span>
+
+                            </div>
+
+                            <div>
+                                
+                                <span>
+                                    {{ 
+                                        user.type == 'visitor' 
+                                            ? 'Invité' 
+                                            : 'Auteur'
+                                    }}
+                                </span>
+
+                            </div>
+
+                        </li>
+
+                        <li 
+                            class="flex items-center justify-center"
+                            @click.stop="send_share()"
+                        >
+                            <button 
+                                class="second nohover w-full"
+                            >
+                                Ajouter un.e invité.e
+                            </button>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+            
+        </transition>
+
+    </header>
 
     <section 
-        v-if="loaded && note"  
-        class="flex flex-col justify-center items-center h-full mb:mr-[10%] mb:ml-[10%] mt-12 overflow-x-hidden "
+        v-if="loaded && note" 
+        class="flex flex-col justify-start items-center h-full 
+            mt-12 overflow-x-hidden overflow-y-scroll"
     >
 
-        <div class="w-full flex justify-start ml-[10%]">
+        <div class="w-full flex justify-start ml-[10%] ">
 
             <button ref="emojiBtn">
 
@@ -143,8 +140,7 @@
 
                 <a 
                     v-else
-                    class="cursor-pointer text-gray-600 px-2 py-1 rounded-2xl 
-                    hover:bg-gray-300 hover:text-gray-800 transition-all duration-300"
+                    class="px-1"
                 >
                     Ajouter une icon
                 </a>
