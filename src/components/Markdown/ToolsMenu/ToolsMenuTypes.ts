@@ -1,13 +1,13 @@
-interface SimpleAction {
+export interface SimpleAction {
     id: number;
     name: string;
-    action: Function;
+    action: string; // Function
 }
 
 interface SelectedAction {
     selected: true;
     id: number;
-    actions: Action[];
+    actions: SimpleAction[];
 }
 
 export type Action = SimpleAction | SelectedAction;

@@ -248,9 +248,8 @@ import db from '@/assets/ts/database/database';
 import utils from '@/assets/ts/utils';
 import type { Note, User } from '@/assets/ts/type';
 import { stats, isLoaded } from '@/components/Markdown/Function/Stats';
-import { createEditorState } from '@/components/Markdown/Editor';
+import { editor } from '@/components/Markdown/Editor';
 
-const { editor } = createEditorState();
 
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';

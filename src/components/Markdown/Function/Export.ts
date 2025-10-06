@@ -1,7 +1,5 @@
 import utils from "@/assets/ts/utils";
-import { createEditorState } from '../Editor';
-
-const { editor } = createEditorState();
+import { editor } from '../Editor';
 
 
 export const download = async ({

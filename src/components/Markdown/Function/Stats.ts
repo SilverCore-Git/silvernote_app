@@ -1,7 +1,5 @@
 import type { Editor } from "@tiptap/vue-3";
-import { createEditorState } from '../Editor';
-
-const { editor, isLoaded } = createEditorState();
+import { editor, isLoaded } from '../Editor';
 
 
 class Stats {

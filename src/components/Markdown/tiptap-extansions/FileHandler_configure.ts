@@ -1,7 +1,7 @@
 export default {
     allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
 
-    onDrop: (currentEditor: any, files: any, pos: any) => {
+    onDrop: (currentEditor: any, files: File[], pos: any) => {
       files.forEach(file => {
         const fileReader = new FileReader()
 
@@ -21,7 +21,7 @@ export default {
       })
     },
 
-    onPaste: (currentEditor: any, files: any) => {
+    onPaste: (currentEditor: any, files: File[]) => {
         files.forEach(file => {
           const fileReader = new FileReader()
 

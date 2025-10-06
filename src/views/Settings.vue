@@ -294,11 +294,11 @@ const get_db_file = async (event: Event): Promise<void> => {
             console.log('Starting eating data...');
 
             try {
-              await indexed_db.add_notes(data.notes);
+              await indexed_db.add_notes(data.notes, true);
             } catch(err) { throw new Error('Erreur lors de la sync des notes.') }
 
             try {
-              await indexed_db.add_tags(data.tags);
+              await indexed_db.add_tags(data.tags, true);
             } catch(err) { throw new Error('Erreur lors de la sync des tags.') }
 
           }

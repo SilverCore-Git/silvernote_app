@@ -1,72 +1,68 @@
 <template>
 
-    <div 
-        class="editor-area"
-        
+  <div>
+
+    <slot />
+
+    <div
+      v-if="showMenu"
+      class="context-menu dropdown h-10 flex flex-row bg-[var(--bg2)] overflow-auto"
+      :style="{ top: `${posY}px`, left: `${posX}px` }"
     >
 
-        <slot />
-        
-        <div 
-            v-if="showMenu"
-            class="context-menu dropdown h-10
-            flex flex-row bg-[var(--bg2)] overflow-auto"
-            :class="showMenu ? '' : 'opacity-0'"
-            :style="{ top: `${posY}px`, left: `${posX}px` }"
-            
+      <ul
+        v-for="(list, cat) in actions"
+        :key="cat"
+        class="flex flex-row"
+        :class="cat == 'plus' ? '' : 'pr-1 border-r-1'"
+      >
+
+        <li
+          v-for="action in list"
+          :key="action.id"
         >
+        
+          <div
+            v-if="'action' in action"
+            @click="exec(action.action)"
+            v-html="action.name"
+            class=""
+          ></div>
 
-            <ul 
-                v-for="(list, cat) in actions" 
-                :key="cat"
-                class=" flex flex-row"
-                :class="cat == 'plus' ? '' : 'pr-1 border-r-1'"
+          
+          <select
+            v-else-if="'actions' in action"
+            @change="onSelectAction($event, action.actions)"
+            class="ml-1 rounded"
+          >
+
+            <option
+              v-for="act in action.actions"
+              :key="act.id"
+              :value="act.id"
             >
+              {{ act.name }}
+            </option>
 
-                <li
-                    v-for="action in list"
-                    :key="action.id"
-                    @click="exec(action.action)"
-                >
+          </select>
 
-                    <select
-                        v-if="action.selected"
-                        @change="onSelectAction($event, action.actions)"
-                    >
+        </li>
 
-                      <option 
-                          v-for="act in action.actions" 
-                          @select="exec(act.action)"
-                          :key="act.id" 
-                          :value="act.id"
-                      >
-                          {{ act.name }}
-                      </option>
-
-                    </select>
-
-                    <span 
-                      v-else
-                      v-html="action.name"
-                    >
-                    </span>
-
-                </li>
-
-            </ul>
-
-        </div>
+      </ul>
 
     </div>
 
+  </div>
+
 </template>
+
 
 <script setup lang="ts">
 
 import { Editor } from '@tiptap/vue-3';
 import { nextTick, ref, watch } from 'vue'
 
-import type { Categories, Action } from '@/components/Markdown/ToolsMenu/ToolsMenuTypes';
+import type { Categories, SimpleAction } from '@/components/Markdown/ToolsMenu/ToolsMenuTypes';
 import config from '@/components/Markdown/ToolsMenu/ToolsMenuConfig.json';
 const _config: any = config; // i can't assign categories type
 
@@ -104,9 +100,9 @@ const openSelectionMenu = () => {
 
 }
 
-const closeMenu = () => {
-  showMenu.value = false
-}
+// const closeMenu = () => {
+//   showMenu.value = false
+// }
 
 const exec = (action: string) => {
 
@@ -117,9 +113,9 @@ const exec = (action: string) => {
 
 }
 
-const onSelectAction = (event: Event, actionsList: Action[]) => {
+const onSelectAction = (event: Event, actionsList: SimpleAction[]) => {
   const select = event.target as HTMLSelectElement;
-  const act = actionsList.find(a => a.id == Number(select.value));
+  const act: SimpleAction | undefined = actionsList.find(a => a.id == Number(select.value));
   if (act) exec(act.action);
 };
 
@@ -188,8 +184,5 @@ watch(
   border-radius: 4px;
 }
 
-.category-section li:hover {
-  background: #f5f5f5;
-}
 
 </style>

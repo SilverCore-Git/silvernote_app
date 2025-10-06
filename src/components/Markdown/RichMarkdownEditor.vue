@@ -135,8 +135,7 @@ import { getDominantColor } from '@/assets/ts/GetColorByImage';
 import db from '@/assets/ts/database/database';
 import ToolsMenu from '@/components/Markdown/ToolsMenu/ToolsMenu.vue';
 
-import { createEditorState } from './Editor';
-const { editor } = createEditorState();
+import { editor } from './Editor';
 
 const props = defineProps<{
   id: number
@@ -291,7 +290,7 @@ const initEditor = async () => {
 
   await nextTick();
   loader.value = false;
-  editor.value.commands.setContent(props.data.content);
+  editor.value?.commands.setContent(props.data.content);
 };
 
 
