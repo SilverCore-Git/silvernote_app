@@ -23,7 +23,7 @@ const get_note = async (uuid: string): Promise<Note | undefined> => {
 
 const io = new Server(httpServer, {
   cors: { origin: config.corsOptions.origin, methods: ["GET", "POST"] },
-  path: "/socket.io/",
+  path: "/socket.io/share",
   transports: ["websocket", "polling"]
 });
 
@@ -72,11 +72,8 @@ io.on("connection", (socket) => {
         const currentDoc = docs.get(room);
         const currentNote = await get_note(room);
         if (currentNote && currentDoc) {
-            const content = currentDoc.ydoc.getText("note").toString();
-            console.log('save : ', content, '\n', ytext.toString())
             await save_note({
               ...currentNote,
-              content,
               title: currentDoc.title,
               icon: currentDoc.icon
             });
