@@ -137,14 +137,40 @@ router.post('/send', verify_auth, async (req: Request, res: Response) => {
         res.flushHeaders();
         res.socket?.setNoDelay(true);
 
-        let assistantMessage = "";
+        let assistantMessage: string = "";
+        let buffer: string = '';
 
         for await (const chunk of stream) {
-        const token = chunk.choices[0]?.delta?.content || "";
-            if (token) {
-                assistantMessage += token;
+
+            const token = chunk.choices[0]?.delta?.content || "";
+            if (!token) continue;
+
+            assistantMessage += token;
+            buffer += token;
+
+            const itsJSON = buffer.trim().startsWith('{');
+
+            if (itsJSON) {
+
+                try {
+
+                    const jsonAction = JSON.parse(buffer);
+                    
+                    res.write(`data: ${JSON.stringify(jsonAction.response)}\n\n`);
+                    
+                    if (jsonAction.action) {
+                        
+                        console.log('action MCP : ', jsonAction.action)
+                        
+                    }
+                    
+                    buffer = "";
+                } catch (e) {}
+
+            } else {
                 res.write(`data: ${token}\n\n`);
             }
+
         }
 
         chat.messages.push({
