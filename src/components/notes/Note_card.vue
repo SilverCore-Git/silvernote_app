@@ -9,6 +9,7 @@
     class="note-card md:min-w-60 bg-[var(--bg2)] text-[var(--text)] p-3
             border-2 relative cursor-pointer h-full min-h-40 select-none"
     :class="note_settings ? 'border-[var(--btn)]' : 'border-[var(--text)]'"
+    :style="{ transform: note_settings ? 'scale(1.05)' : '' }"
     style="border-radius: var(--br-card);"    
   > 
   
@@ -48,11 +49,13 @@
 
 </PressAndHold>
 
-    <Note_settings
-      :id="id"
-      v-model:visible="note_settings"
-      :function_reload="function_reload"
-    />
+  <Note_settings
+    :id="id"
+    :top="note_settings_top"
+    :left="note_settings_left"
+    v-model:visible="note_settings"
+    :function_reload="function_reload"
+  />
 
   <ConfirmDialog
     :visible="showDialog"
@@ -98,6 +101,8 @@ const emit = defineEmits(['pin']);
 const router = useRouter();
 
 const note_settings = ref<boolean>(false);
+const note_settings_top = ref<number>(0);
+const note_settings_left = ref<number>(0);
 const showDialog = ref<boolean>(false);
 const if_pin_active = ref<boolean>(props.pinned)
 const press_and_hold = ref<boolean>(false);
@@ -139,6 +144,15 @@ watch(() => props.pinned, (newVal) => {
 const select_note = () => {
 
     press_and_hold.value = true;
+
+    document.addEventListener('contextmenu', (e) => {
+
+      e.preventDefault();
+
+      note_settings_left.value = e.clientX;
+      note_settings_top.value = e.clientY;
+
+    })
         
     note_settings.value = !note_settings.value;
 
