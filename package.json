@@ -36,6 +36,7 @@
     "prosemirror-model": "^1.25.3",
     "prosemirror-schema-basic": "^1.2.4",
     "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "stripe": "^18.3.0",
     "typescript": "^5.8.3",
     "xmldom": "^0.6.0",

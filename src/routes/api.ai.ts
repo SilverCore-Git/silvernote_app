@@ -4,10 +4,16 @@ import OpenAI from "openai";
 import { prompt_system } from '../assets/config/jeremy_ai.json';
 import db from '../assets/ts/database';
 import notes_db from '../assets/ts/notes';
+import * as Y from 'yjs';
+import { io } from 'socket.io-client';
 import tags_db from '../assets/ts/tags';
 const AIclient = new OpenAI({ apiKey: process.env.OPENAI_SECRET_KEY });
 
 const router = Router();
+const socket = io('http://localhost:3000', { path: "/socket.io/share" });
+socket.on('connect', () => {
+  console.log('Connected to ws');
+});
 
 type Chat = { uuid: UUID, userID: string, data: { notes: any, tags: any }, messages: { role: "system" | "user" | "assistant", content: string  }[] }
 let chats: Chat[]  = [];
@@ -27,6 +33,23 @@ function verify_auth (req: Request, res: Response, next: NextFunction) {
     return;
 
 }
+
+function write_on_note({ uuid, content }: { uuid: string; content: string }) {
+
+    const ydoc = new Y.Doc();
+    const ytext = ydoc.getText('note');
+
+    socket.emit('join-room', { room: uuid })
+
+    ytext.delete(0, ytext.length)
+    ytext.insert(0, content)
+
+    const update = Y.encodeStateAsUpdate(ydoc)
+
+    socket.emit('y-update', update)
+
+}
+
 
 
 router.post('/create', verify_auth, async (req: Request, res: Response) => {
@@ -155,12 +178,14 @@ router.post('/send', verify_auth, async (req: Request, res: Response) => {
                 try {
 
                     const jsonAction = JSON.parse(buffer);
+                    res.write(`data: ${JSON.stringify(jsonAction.response).replace('"', '')}\n\n`);
                     
-                    res.write(`data: ${JSON.stringify(jsonAction.response)}\n\n`);
-                    
-                    if (jsonAction.action) {
-                        
-                        console.log('action MCP : ', jsonAction.action)
+                    if (jsonAction.action == "edit.note.content") {
+                        console.log('editing note : ', jsonAction.uuid)
+                        write_on_note({
+                            uuid: jsonAction.uuid,
+                            content: jsonAction.content
+                        });
                         
                     }
                     

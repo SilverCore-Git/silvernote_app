@@ -5,7 +5,7 @@ import path from 'path';
 import JsonListManager from '../assets/ts/db_json_manager';
 import notes from '../assets/ts/notes';
 import { clerkClient } from "@clerk/express";
-
+import { randomUUID } from 'crypto';
 
 const router = Router();
 
@@ -20,7 +20,7 @@ router.get('/get_news', async (req: Request, res: Response) => {
 })
 
 router.get('/uuid', (req, res) => {
-    res.json({ id: crypto.randomUUID() })
+    res.json({ id: randomUUID() })
 })
 
 

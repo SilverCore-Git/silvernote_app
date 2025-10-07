@@ -41,7 +41,7 @@ io.on("connection", (socket) => {
 
   console.log("Client connected :", socket.id);
 
-  socket.on("join-room", async ({ room, userId }) => {
+  socket.on("join-room", async ({ room, userId }: { room: string, userId?: string }) => {
     if (!room) return;
     socket.join(room);
     
@@ -94,7 +94,9 @@ io.on("connection", (socket) => {
     // Envoi de l'état complet
     const initialState = Y.encodeStateAsUpdate(ydoc);
     socket.emit("sync", initialState);
-    socket.emit('new_user', userId);
+    if (userId) {
+      socket.emit('new_user', userId);
+    }
 
     socket.on("y-update", async (update: Uint8Array) => {
       try {
@@ -107,6 +109,7 @@ io.on("connection", (socket) => {
         console.error("Error applying update:", error);
       }
     });
+
 
     socket.on('title-update', async (update: string) => {
       try {

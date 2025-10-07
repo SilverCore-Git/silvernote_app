@@ -9,6 +9,7 @@ const path_1 = __importDefault(require("path"));
 const db_json_manager_1 = __importDefault(require("../assets/ts/db_json_manager"));
 const notes_1 = __importDefault(require("../assets/ts/notes"));
 const express_2 = require("@clerk/express");
+const crypto_1 = require("crypto");
 const router = (0, express_1.Router)();
 router.get('/get_news', async (req, res) => {
     const data = await fs_1.default.promises.readFile(path_1.default.join(__dirname, '../config.json'), 'utf-8');
@@ -16,7 +17,7 @@ router.get('/get_news', async (req, res) => {
     res.json((await news).active ? news : false);
 });
 router.get('/uuid', (req, res) => {
-    res.json({ id: crypto.randomUUID() });
+    res.json({ id: (0, crypto_1.randomUUID)() });
 });
 // partage de notes
 const share = new db_json_manager_1.default('share.json');
