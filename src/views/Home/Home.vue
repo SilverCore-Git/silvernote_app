@@ -5,8 +5,8 @@
 
         <div 
             class="reload-svg 
-                    w-7
-                    h-7
+                    w-6
+                    h-6
                 " 
             :class="[
                 { rotating: isRotating }

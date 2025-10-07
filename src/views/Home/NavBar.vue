@@ -2,8 +2,7 @@
 
     <!-- click for hidde dropdown -->
     <div 
-        class="absolute inset-0 w-[200%] h-[200%] z-50
-        -translate-x-100 -translate-y-20"
+        class="fixed inset-0 z-50"
         @click="if_open_dropdown = false"
         v-if="if_open_dropdown"
     ></div>
@@ -12,11 +11,10 @@
         style="
             font-family: 'InterTight', sans-serif; 
             box-shadow: 0 0 15px #36363681;
-            padding-top: calc(env(safe-area-inset-top)/2);
         " 
         class="
                 top-0 left-0 w-screen
-                text-2xl font-bold
+                text-2xl font-bold max-h-12
                 bg-[var(--btn)] z-50
                 flex items-center justify-center fixed 
             "
@@ -26,8 +24,8 @@
             
             <div class="flex flex-row justify-center items-center">
 
-                <h1 class=" text-white flex flex-row justify-center items-center gap-2 text-[3vw] lg:text-3xl">
-                    <img src="/favicon.svg" class="w-[3vw] min-w-8 max-w-8" alt="logo"><span class="hidden sm:block">SilverNote</span>
+                <h1 class=" text-white flex flex-row justify-center items-center gap-2 text-xl">
+                    <img src="/favicon.svg" class="w-6" alt="logo"><span class="hidden sm:block">SilverNote</span>
                 </h1>
 
             </div>
@@ -35,16 +33,25 @@
             <div class="flex flex-row justify-center items-center gap-6 md:gap-5">
 
 
-                <div class="flex items-center justify-center">
-                    <UserButton />
+                <div class="flex items-center justify-center ">
+                    <UserButton 
+                        :appearance="{
+                            elements: {
+                                userButtonAvatarBox: {
+                                    width: '24px',
+                                    height: '24px'
+                                }
+                            }
+                        }" 
+                        />
                 </div>
 
                 <slot></slot>
 
                 <div
                     class="ellipsis-svg
-                            w-8
-                            h-8
+                            w-7
+                            h-7
                         " 
                     @click="if_open_dropdown = !if_open_dropdown"
                 ></div>

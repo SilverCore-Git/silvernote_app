@@ -130,11 +130,11 @@
   <section 
     v-if="loaded" 
     @click="if_open_dropdown = false"
-    class="flex flex-col justify-start items-center h-full 
-          mt-12 overflow-x-hidden overflow-y-scroll"
+    class="flex flex-col justify-start items-center h-full mx-auto
+          mt-12 overflow-x-hidden overflow-y-scroll max-w-4xl"
   >
 
-    <div class="w-full flex justify-start ml-[10%] ">
+    <div class="w-full flex justify-start ml-[10%] mb-4 ">
 
       <button ref="emojiBtn">
 
@@ -156,7 +156,7 @@
     </div>
 
     <input 
-      class="text-3xl mb-3 font-bold" 
+      class="text-3xl font-bold" 
       type="text" 
       placeholder="Titre..." 
       ref="title"
@@ -258,6 +258,7 @@ import Popup from '@/components/popup/Popup.vue';
 import Share_menu from '@/components/popup/share_menu.vue';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
 import { download } from '@/components/Markdown/Function/Export';
+import { wienDisplacementDependencies } from 'mathjs';
 
 const props = defineProps<{ id: number | 'new' }>()
 const { user } = useUser();
