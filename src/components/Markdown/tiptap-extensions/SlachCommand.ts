@@ -21,6 +21,7 @@ const SlashCommand = Extension.create<ExclaimOptions>({
                 'Titre 3',
                 'Titre 4',
                 'Paragraphe',
+                'Menu déroulant',
                 'Liste à puces',
                 'Liste numérotée',
                 'Liste de tâches',
@@ -52,6 +53,8 @@ const SlashCommand = Extension.create<ExclaimOptions>({
                         'Titre 3': () => editor.chain().focus().deleteRange(range).setNode('heading', { level: 3 }).run(),
                         'Titre 4': () => editor.chain().focus().deleteRange(range).setNode('heading', { level: 4 }).run(),
                         'Paragraphe': () => editor.chain().focus().deleteRange(range).setNode('paragraph').run(),
+
+                        'Menu déroulant': () => editor.chain().focus().deleteRange(range).toggleBulletList().run(),
 
                         // Listes
                         'Liste à puces': () => editor.chain().focus().deleteRange(range).toggleBulletList().run(),

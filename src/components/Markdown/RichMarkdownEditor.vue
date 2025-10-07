@@ -116,9 +116,11 @@ import { CharacterCount, UndoRedo } from '@tiptap/extensions';
 import DragHandle from '@tiptap/extension-drag-handle';
 import Youtube from '@tiptap/extension-youtube';
 import { Extension, InputRule } from '@tiptap/core';
-import SlashCommand from '@/components/Markdown/tiptap-extansions/SlachCommand.js';
+import SlashCommand from '@/components/Markdown/tiptap-extensions/SlachCommand.js';
+import { IndentExtension } from './tiptap-extensions/IndentExtension.js';
 import FileHandler from '@tiptap/extension-file-handler';
-import FileHandler_configure from './tiptap-extansions/FileHandler_configure.js';
+import { CollapsibleExtension } from './tiptap-extensions/CollapsibleExtension.js';
+import FileHandler_configure from './tiptap-extensions/FileHandler_configure.js';
 import { Markdown } from 'tiptap-markdown';
 
 import * as Y from 'yjs';
@@ -135,7 +137,7 @@ import { getDominantColor } from '@/assets/ts/GetColorByImage';
 import db from '@/assets/ts/database/database';
 import ToolsMenu from '@/components/Markdown/ToolsMenu/ToolsMenu.vue';
 
-import { editor } from './Editor';
+import { editor, isLoaded } from './Editor';
 
 const props = defineProps<{
   id: number
@@ -253,10 +255,14 @@ const initEditor = async () => {
 
   editor.value = new Editor({
     extensions: [
-      StarterKit.configure({ history: false }),
+      StarterKit.configure({ 
+        history: false,
+        blockquote: false
+      }),
       TaskList,
       TodoInput,
       SlashCommand,
+      //CollapsibleExtension,
       Link.configure({ openOnClick: false, autolink: true, linkOnPaste: true }),
       Underline,
       Image.configure({ inline: false, allowBase64: true }),
@@ -264,6 +270,7 @@ const initEditor = async () => {
       UndoRedo,
       CharacterCount,
       TableKit,
+      IndentExtension,
       Markdown.configure({ html: true }),
       Placeholder.configure({ placeholder: 'Commencez à écrire ici...' }),
       DragHandle.configure({ computePositionConfig: { placement: 'left', strategy: 'fixed' } }),
@@ -289,8 +296,11 @@ const initEditor = async () => {
   });
 
   await nextTick();
+
+  isLoaded.value = true;
   loader.value = false;
   editor.value?.commands.setContent(props.data.content);
+
 };
 
 
