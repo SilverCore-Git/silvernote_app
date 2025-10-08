@@ -11,7 +11,7 @@
     <EditorContent
       v-if="editor"
       :editor="editor as Editor"
-      class="prose h-full mb-40 overflow-hidden"
+      class="prose h-full mb-40 overflow-hidden "
     />
     <Loader v-if="loader" class="absolute inset-0" :icon="false" />
   </div>
@@ -97,6 +97,10 @@
 
 </ToolsMenu>
 
+<SearchBar
+  v-model:visible="_searchBar"
+/>
+
 </template>
 
 <script setup lang="ts">
@@ -120,6 +124,7 @@ import SlashCommand from '@/components/Markdown/tiptap-extensions/SlachCommand.j
 import { IndentExtension } from './tiptap-extensions/IndentExtension.js';
 import FileHandler from '@tiptap/extension-file-handler';
 import { CollapsibleExtension } from './tiptap-extensions/CollapsibleExtension.js';
+import { _searchBar, SearchBar, SearchAndReplace } from './tiptap-extensions/searchAndReplace';
 import FileHandler_configure from './tiptap-extensions/FileHandler_configure.js';
 import { Markdown } from 'tiptap-markdown';
 
@@ -263,6 +268,7 @@ const initEditor = async () => {
       TodoInput,
       SlashCommand,
       //CollapsibleExtension,
+      SearchAndReplace,
       Link.configure({ openOnClick: false, autolink: true, linkOnPaste: true }),
       Underline,
       Image.configure({ inline: false, allowBase64: true }),
@@ -367,6 +373,9 @@ onBeforeUnmount(() => {
   pointer-events: none;
 }
 
+.search-result {
+  background-color: orange;
+}
 
 .copy-svg {
   width: 28px;

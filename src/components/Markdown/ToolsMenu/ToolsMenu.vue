@@ -1,12 +1,16 @@
 <template>
 
+<PressAndHold
+  @long-press="openSelectionMenu(false)"
+>
+
   <div>
 
     <slot />
 
     <div
       v-if="showMenu"
-      class="context-menu dropdown h-10 flex flex-row bg-[var(--bg2)] overflow-auto"
+      class="context-menu dropdown h-10 flex flex-row bg-[var(--bg2)] overflow-auto -translate-x-60"
       :style="{ top: `${posY}px`, left: `${posX}px` }"
     >
 
@@ -54,6 +58,8 @@
 
   </div>
 
+</PressAndHold>
+
 </template>
 
 
@@ -64,6 +70,7 @@ import { nextTick, ref, watch } from 'vue'
 
 import type { Categories, SimpleAction } from '@/components/Markdown/ToolsMenu/ToolsMenuTypes';
 import config from '@/components/Markdown/ToolsMenu/ToolsMenuConfig.json';
+import PressAndHold from '@/components/PressAndHold.vue';
 const _config: any = config; // i can't assign categories type
 
 const props = defineProps<{
@@ -78,21 +85,36 @@ const posY = ref<number>(0)
 
 
 
-const openSelectionMenu = () => {
-  const editor = props.editor;
-  if (!editor) return;
+const openSelectionMenu = (withEditorSelect: boolean) => {
 
-  const { from, to } = editor.state.selection;
-  if (from === to) {
-    showMenu.value = false;
-    return;
+  if (withEditorSelect) {
+
+    const editor = props.editor;
+    if (!editor) return;
+
+    const { from, to } = editor.state.selection;
+    if (from === to) {
+      showMenu.value = false;
+      return;
+    }
+
+    const middle = Math.floor((from + to) / 2);
+    const coords = editor.view.coordsAtPos(middle);
+
+    posX.value = coords.left + window.scrollX;
+    posY.value = coords.top + window.scrollY - 40;
+
   }
+  else {
+    document.addEventListener('contextmenu', (e) => {
 
-  const middle = Math.floor((from + to) / 2);
-  const coords = editor.view.coordsAtPos(middle);
+      e.preventDefault();
 
-  posX.value = coords.left + window.scrollX;
-  posY.value = coords.top + window.scrollY - 40;
+      posX.value = e.clientX;
+      posY.value = e.clientY;
+
+    })
+  }
 
   setTimeout(() => {
     showMenu.value = true;
@@ -147,7 +169,7 @@ watch(
   () => props.editor?.state.selection,
   async () => {
     await nextTick()
-    openSelectionMenu()
+    openSelectionMenu(true)
   }
 )
 
@@ -156,8 +178,8 @@ watch(
 <style scoped>
 
 .context-menu {
-  position: fixed;
-  max-height: 20em;
+  position: absolute;
+  min-width: 38em;
   z-index: 1000;
   border: 1px solid var(--btn);
   transition: all 0.3s;

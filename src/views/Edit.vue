@@ -70,6 +70,7 @@
 
             <li v-if="editor" @click="()=> editor?.chain().focus().undo().run()">Annuler</li>
             <li v-if="editor" @click="()=> editor?.chain().focus().redo().run()">Rétablir</li>
+            <li v-if="editor" @click="showSearchBar">Rechercher</li>
 
             <hr />
 
@@ -131,7 +132,7 @@
     v-if="loaded" 
     @click="if_open_dropdown = false"
     class="flex flex-col justify-start items-center h-full mx-auto
-          mt-12 overflow-x-hidden overflow-y-scroll max-w-4xl"
+          mt-12 overflow-x-hidden overflow-y-scroll max-w-4xl relative"
   >
 
     <div class="w-full flex justify-start ml-[10%] mb-4 ">
@@ -259,6 +260,7 @@ import Share_menu from '@/components/popup/share_menu.vue';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
 import { download } from '@/components/Markdown/Function/Export';
 import { wienDisplacementDependencies } from 'mathjs';
+import { showSearchBar } from '@/components/Markdown/tiptap-extensions/searchAndReplace';
 
 const props = defineProps<{ id: number | 'new' }>()
 const { user } = useUser();
