@@ -92,4 +92,54 @@ onUnmounted(() => window.removeEventListener("keydown", handleKey))
 .fade-leave-to {
   opacity: 0;
 }
+
+
+.ProseMirror {
+  padding: 1rem 1rem 1rem 0;
+
+  * {
+    margin-top: 0.75em;
+  }
+
+  > * {
+    margin-left: 3rem;
+  }
+
+  .ProseMirror-widget * {
+    margin-top: auto;
+  }
+
+  ul,
+  ol {
+    padding: 0 1rem;
+  }
+}
+
+.ProseMirror-noderangeselection {
+  *::selection {
+    background: transparent;
+  }
+
+  * {
+    caret-color: transparent;
+  }
+}
+
+.ProseMirror-selectednode,
+.ProseMirror-selectednoderange {
+  position: relative;
+
+  &::before {
+    position: absolute;
+    pointer-events: none;
+    z-index: -1;
+    content: '';
+    top: -0.25rem;
+    left: -0.25rem;
+    right: -0.25rem;
+    bottom: -0.25rem;
+    background-color: #70cff850;
+    border-radius: 0.2rem;
+  }
+}
 </style>

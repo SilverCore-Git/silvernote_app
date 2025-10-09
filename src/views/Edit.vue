@@ -1,6 +1,6 @@
 <template>
 
-  <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
+  <header class="flex flex-row fixed inset-x-0 mx-[var(--mrl)]" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
 
     <a><div class="left-arrow absolute left-0 cursor-pointer btnHover" @click="router.push('/')" :class="hitbox ? 'bg-red-600' : ''"></div></a>
 
@@ -172,7 +172,6 @@
       :id="-2" 
       :uuid="note.uuid"
       :data="note"
-      class="mb-20"
     />
 
   </section>
@@ -259,7 +258,6 @@ import Popup from '@/components/popup/Popup.vue';
 import Share_menu from '@/components/popup/share_menu.vue';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
 import { download } from '@/components/Markdown/Function/Export';
-import { wienDisplacementDependencies } from 'mathjs';
 import { showSearchBar } from '@/components/Markdown/tiptap-extensions/searchAndReplace';
 
 const props = defineProps<{ id: number | 'new' }>()
@@ -596,5 +594,6 @@ input {
     filter: brightness(0) saturate(100%) invert(61%) sepia(43%) saturate(1182%) hue-rotate(343deg) brightness(99%) contrast(92%);
     transition: all 0.3s ease;
 }
+
 
 </style>

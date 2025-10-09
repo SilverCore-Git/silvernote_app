@@ -11,7 +11,7 @@
     <EditorContent
       v-if="editor"
       :editor="editor as Editor"
-      class="prose h-full mb-40 overflow-hidden "
+      class="prose w-full h-full mb-40 overflow-hidden"
     />
     <Loader v-if="loader" class="absolute inset-0" :icon="false" />
   </div>
@@ -117,13 +117,13 @@ import TaskItem from '@tiptap/extension-task-item';
 import Image from '@tiptap/extension-image';
 import { TableKit } from '@tiptap/extension-table';
 import { CharacterCount, UndoRedo } from '@tiptap/extensions';
-import DragHandle from '@tiptap/extension-drag-handle';
 import Youtube from '@tiptap/extension-youtube';
 import { Extension, InputRule } from '@tiptap/core';
 import SlashCommand from '@/components/Markdown/tiptap-extensions/SlachCommand.js';
 import { IndentExtension } from './tiptap-extensions/IndentExtension.js';
 import FileHandler from '@tiptap/extension-file-handler';
 import { CollapsibleExtension } from './tiptap-extensions/CollapsibleExtension.js';
+import DragHandle from './tiptap-extensions/dragHandle';
 import { _searchBar, SearchBar, SearchAndReplace } from './tiptap-extensions/searchAndReplace';
 import FileHandler_configure from './tiptap-extensions/FileHandler_configure.js';
 import { Markdown } from 'tiptap-markdown';
@@ -279,7 +279,6 @@ const initEditor = async () => {
       IndentExtension,
       Markdown.configure({ html: true }),
       Placeholder.configure({ placeholder: 'Commencez à écrire ici...' }),
-      DragHandle.configure({ computePositionConfig: { placement: 'left', strategy: 'fixed' } }),
       FileHandler.configure(FileHandler_configure),
       Collaboration.configure({ document: ydoc }),
       CollaborationCaret.configure({
@@ -296,7 +295,7 @@ const initEditor = async () => {
           return { 'Mod-Enter': () => { checkForMath(); return true } }
         }
       })
-    ],
+    ].concat(DragHandle),
     editable: props.editable,
     onUpdate: () => { checkForMath(); }
   });
@@ -348,6 +347,7 @@ onBeforeUnmount(() => {
 @import './css/Table.css';
 @import './css/ToDoList.css';
 @import './css/tiptap_carets.css';
+@import './tiptap-extensions/dragHandle/drag-icon.css';
 
 .editor-container {
   width: 90%;
@@ -396,6 +396,5 @@ onBeforeUnmount(() => {
   cursor: pointer;
   background-image: url('../assets/svgs/color.svg');
 }
-
 
 </style>

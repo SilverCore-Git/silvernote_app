@@ -1,0 +1,40 @@
+.drag-icon {
+        
+    transform: translateY(5px);
+    padding-right: 0.5em;
+    height: 100%;
+    display: inline-block; 
+
+    &::after {
+
+        content: '⠿';
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 1rem;
+        height: 1.25rem;
+        padding: 5px;
+
+        font-weight: 700;
+        font-size: 1.2em;
+
+        cursor: grab;
+        border-radius: 0.25rem;
+        transition: all 0.2s;
+
+
+    }
+
+    &:hover::after {
+        background-color: rgb(187, 187, 187);
+    }
+
+}
+
+
+.is-grabbed {
+  background-color: #771515;
+  transition: background-color 0.2s;
+}
+
