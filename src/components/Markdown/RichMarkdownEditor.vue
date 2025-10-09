@@ -1,105 +1,24 @@
 <template>
 
-<ToolsMenu
-    v-if="editor && !loader"
-    :editor="editor as Editor"
-    class="editor-container overflow-hidden" 
-    @click="focusEditor"
->
-
-  <div class="overflow-hidden">
-    <EditorContent
-      v-if="editor"
-      :editor="editor as Editor"
-      class="prose w-full h-full mb-40 overflow-hidden"
-    />
-    <Loader v-if="loader" class="absolute inset-0" :icon="false" />
-  </div>
-
-  <div
-    v-if="false || !isLargeScreen"
-    class="fixed bottom-0 inset-x-0 md:inset-x-[20%] lg:inset-x-[25%] z-50 pb-[env(safe-area-inset-bottom)] overflow-hidden"
+  <ToolsMenu
+      class="editor-container overflow-hidden" 
+      @click="focusEditor"
   >
-    <div
-      class="mx-2 mb-2 flex justify-between items-center gap-2 rounded-2xl bg-[var(--bg2)] text-[var(--text)] border border-[var(--btn)] px-4 py-2 shadow-lg backdrop-blur-sm"
-    >
-      <div class="flex gap-1 justify-center items-center">
-        <button
-          v-for="n in 4"
-          :key="n"
-          @click="toggleHeading(n)"
-          class="w-10 h-10 px-2 py-1 rounded-md text-sm font-medium transition-colors hover:bg-[var(--text)] hover:text-[var(--bg2)] cursor-pointer"
-        >
-          H{{ n }}
-        </button>
-      </div>
 
-      <div class="flex gap-1 justify-center items-center">
-        <button
-          @click="toggleBold"
-          :class="['toolbar-button', { 'active-toolbar-button': isBoldActive }]"
-        >
-          <strong>B</strong>
-        </button>
-
-        <button
-          @click="toggleItalic"
-          :class="['toolbar-button', { 'active-toolbar-button': isItalicActive }]"
-        >
-          <em>i</em>
-        </button>
-
-        <button
-          @click="toggleStrike"
-          :class="['toolbar-button', { 'active-toolbar-button': isStrikeActive }]"
-        >
-          <s>S</s>
-        </button>
-
-        <button
-          @click="toggleUnderline"
-          :class="['toolbar-button', { 'active-toolbar-button': isUnderlineActive }]"
-        >
-          <u>U</u>
-        </button>
-      </div>
-
-      <div class="flex gap-1 justify-center items-center">
-        <button
-          @click="toggleToDoList"
-          :class="['toolbar-button', { 'active-toolbar-button': isTaskListActive }]"
-          style="filter: invert(1)"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M8 6L21 6.00078M8 12L21 12.0008M8 18L21 18.0007M3 6.5H4V5.5H3V6.5ZM3 12.5H4V11.5H3V12.5ZM3 18.5H4V17.5H3V18.5Z"
-              stroke="#000000"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </button>
-
-        <button
-          @click="toggleCode"
-          :class="['toolbar-button', { 'active-toolbar-button': isCodeActive }]"
-        >
-          &lt;&gt;
-        </button>
-      </div>
+    <div class="overflow-hidden">
+      <EditorContent
+        v-if="editor"
+        :editor="editor as Editor"
+        class="prose w-full h-full mb-40 overflow-hidden"
+      />
+      <Loader v-if="!editor && loader" class="absolute inset-0" :icon="false" />
     </div>
-  </div>
 
-</ToolsMenu>
+  </ToolsMenu>
 
-<SearchBar
-  v-model:visible="_searchBar"
-/>
+  <SearchBar
+    v-model:visible="_searchBar"
+  />
 
 </template>
 
@@ -158,22 +77,7 @@ const { user } = useUser();
 let provider: SocketIOProvider | null = null;
 let autosaveInterval: ReturnType<typeof setInterval> | null = null;
 
-const isBoldActive = computed(() => editor.value?.isActive('bold') ?? false);
-const isItalicActive = computed(() => editor.value?.isActive('italic') ?? false);
-const isStrikeActive = computed(() => editor.value?.isActive('strike') ?? false);
-const isUnderlineActive = computed(() => editor.value?.isActive('underline') ?? false);
-const isCodeActive = computed(() => editor.value?.isActive('code') ?? false);
-const isTaskListActive = computed(() => editor.value?.isActive('taskList') ?? false);
-
 const focusEditor = () => editor.value?.commands.focus();
-const toggleBold = () => editor.value?.chain().focus().toggleBold().run();
-const toggleItalic = () => editor.value?.chain().focus().toggleItalic().run();
-const toggleStrike = () => editor.value?.chain().focus().toggleStrike().run();
-const toggleCode = () => editor.value?.chain().focus().toggleCode().run();
-const toggleToDoList = () => editor.value?.chain().focus().toggleTaskList().run();
-const toggleUnderline = () => editor.value?.chain().focus().toggleUnderline().run();
-const toggleHeading = (level: number) => editor.value?.chain().focus().toggleHeading({ level } as any).run();
-
 
 function checkForMath() {
   if (!editor.value) return;
@@ -251,7 +155,6 @@ const startAutoSave = () => {
 
 
 const initEditor = async () => {
-  if (editor.value) return;
 
   const ydoc = new Y.Doc();
   provider = new SocketIOProvider(api_url, props.data.uuid, user.value?.id || "", ydoc);
@@ -304,6 +207,9 @@ const initEditor = async () => {
 
   isLoaded.value = true;
   loader.value = false;
+
+  await nextTick();
+
   editor.value?.commands.setContent(props.data.content);
 
 };

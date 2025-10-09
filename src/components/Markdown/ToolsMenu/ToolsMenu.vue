@@ -8,53 +8,57 @@
 
     <slot />
 
-    <div
-      v-if="showMenu"
-      class="context-menu dropdown h-10 flex flex-row bg-[var(--bg2)] overflow-auto -translate-x-60"
-      :style="{ top: `${posY}px`, left: `${posX}px` }"
-    >
+    <teleport to="body">
 
-      <ul
-        v-for="(list, cat) in actions"
-        :key="cat"
-        class="flex flex-row"
-        :class="cat == 'plus' ? '' : 'pr-1 border-r-1'"
+      <div
+        v-show="showMenu"
+        class="context-menu dropdown h-10 flex flex-row bg-[var(--bg2)] overflow-auto "
+        :style="{ top: `${posY}px`, left: `${posX}px` }"
       >
 
-        <li
-          v-for="action in list"
-          :key="action.id"
+        <ul
+          v-for="(list, cat) in actions"
+          :key="cat"
+          class="flex flex-row"
+          :class="cat == 'plus' ? '' : 'pr-1 border-r-1'"
         >
-        
-          <div
-            v-if="'action' in action"
-            @click="exec(action.action)"
-            v-html="action.name"
-            class=""
-          ></div>
 
-          
-          <select
-            v-else-if="'actions' in action"
-            @change="onSelectAction($event, action.actions)"
-            class="ml-1 rounded"
+          <li
+            v-for="action in list"
+            :key="action.id"
           >
+          
+            <div
+              v-if="'action' in action"
+              @click="exec(action.action)"
+              v-html="action.name"
+              class=""
+            ></div>
 
-            <option
-              v-for="act in action.actions"
-              :key="act.id"
-              :value="act.id"
+            
+            <select
+              v-else-if="'actions' in action"
+              @change="onSelectAction($event, action.actions)"
+              class="ml-1 rounded"
             >
-              {{ act.name }}
-            </option>
 
-          </select>
+              <option
+                v-for="act in action.actions"
+                :key="act.id"
+                :value="act.id"
+              >
+                {{ act.name }}
+              </option>
 
-        </li>
+            </select>
 
-      </ul>
+          </li>
 
-    </div>
+        </ul>
+
+      </div>
+      
+    </teleport>
 
   </div>
 
@@ -70,36 +74,30 @@ import { nextTick, ref, watch } from 'vue'
 
 import type { Categories, SimpleAction } from '@/components/Markdown/ToolsMenu/ToolsMenuTypes';
 import config from '@/components/Markdown/ToolsMenu/ToolsMenuConfig.json';
+import { editor } from '../Editor';
 import PressAndHold from '@/components/PressAndHold.vue';
+import { onDragIconLoaded } from '../tiptap-extensions/dragHandle';
 const _config: any = config; // i can't assign categories type
 
-const props = defineProps<{
-    editor?: Editor;
-}>();
-
-
 const actions = ref<Categories>(_config);
-const showMenu = ref<boolean> (false)
-const posX = ref<number>(0)
-const posY = ref<number>(0)
-
-
+const showMenu = ref<boolean> (false);
+const posX = ref<number>(0);
+const posY = ref<number>(0);
 
 const openSelectionMenu = (withEditorSelect: boolean) => {
 
   if (withEditorSelect) {
 
-    const editor = props.editor;
-    if (!editor) return;
+    if (!editor.value) return;
 
-    const { from, to } = editor.state.selection;
+    const { from, to } = editor.value.state.selection;
     if (from === to) {
       showMenu.value = false;
       return;
     }
 
-    const middle = Math.floor((from + to) / 2);
-    const coords = editor.view.coordsAtPos(middle);
+    const middle = from;
+    const coords = editor.value.view.coordsAtPos(middle);
 
     posX.value = coords.left + window.scrollX;
     posY.value = coords.top + window.scrollY - 40;
@@ -114,6 +112,7 @@ const openSelectionMenu = (withEditorSelect: boolean) => {
       posY.value = e.clientY;
 
     })
+
   }
 
   setTimeout(() => {
@@ -122,16 +121,12 @@ const openSelectionMenu = (withEditorSelect: boolean) => {
 
 }
 
-// const closeMenu = () => {
-//   showMenu.value = false
-// }
-
 const exec = (action: string) => {
 
-  if (action.startsWith('getImageFile')) return insertImageFromFile(props.editor as Editor);
+  if (action.startsWith('getImageFile')) return insertImageFromFile(editor.value as Editor);
 
   const fn = new Function("editor", `return (${action})()`);
-  fn(props.editor);
+  fn(editor.value);
 
 }
 
@@ -166,12 +161,20 @@ const insertImageFromFile = (editor: Editor) => {
 
 
 watch(
-  () => props.editor?.state.selection,
+  () => editor.value?.state.selection,
   async () => {
     await nextTick()
     openSelectionMenu(true)
   }
 )
+
+onDragIconLoaded(() => {
+  const doc = document.querySelector('.drag-icon');
+  if (!doc) return;
+  doc.addEventListener('click', () => {
+    openSelectionMenu(false);
+  })
+})
 
 </script>
 
@@ -179,7 +182,7 @@ watch(
 
 .context-menu {
   position: absolute;
-  min-width: 38em;
+  min-width: 30em;
   z-index: 1000;
   border: 1px solid var(--btn);
   transition: all 0.3s;

@@ -135,13 +135,13 @@
           mt-12 overflow-x-hidden overflow-y-scroll max-w-4xl relative"
   >
 
-    <div class="w-full flex justify-start ml-[10%] mb-4 ">
+    <div class="w-full flex justify-start ml-[10%] mb-8 ">
 
-      <button ref="emojiBtn">
+      <button ref="emojiBtn"><a>
 
         <img
           v-if="note.icon" 
-          class="w-[64px] h-[64px] cursor-pointer" 
+          class="w-[80px] h-[80px] p-2 cursor-pointer" 
           :src="note.icon" 
         />
 
@@ -152,12 +152,12 @@
           Ajouter une icon
         </a>
 
-      </button>
+      </a></button>
     
     </div>
 
     <input 
-      class="text-3xl font-bold" 
+      class="text-6xl font-bold" 
       type="text" 
       placeholder="Titre..." 
       ref="title"
