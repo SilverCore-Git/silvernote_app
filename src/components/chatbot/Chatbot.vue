@@ -1,10 +1,11 @@
 <template>
 
-    <div 
+    <div
         v-if="first_loaded"
+        v-tooltip="'SilverAI'"
         @click="open = !open" 
         :class="!open ? 'bottom-6 right-6' : '-bottom-9 -right-9'"
-        class=" fixed  w-15 h-15 bg-[var(--btn)] p-2 rounded-full cursor-pointer hover"
+        class=" fixed  w-12 h-12 bg-[var(--btn)] p-2 rounded-full cursor-pointer hover"
     >
 
         <svg version="1.0" xmlns="http://www.w3.org/2000/svg"

@@ -1,0 +1,69 @@
+.resize-observer[data-v-b329ee4c] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: transparent;
+    pointer-events: none;
+    display: block;
+    overflow: hidden;
+    opacity: 0;
+}
+.resize-observer[data-v-b329ee4c] object {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
+}
+.v-popper__popper {
+    z-index: 10000;
+    top: 0;
+    left: 0;
+    outline: none;
+}
+
+
+.v-popper__popper .v-popper__inner {
+  backdrop-filter: blur(6px);
+  color: black;
+  padding: 6px;
+  font-size: 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, .1);
+}
+
+.v-popper__popper .v-popper__arrow-inner {
+  visibility: visible;
+  border-color: #fff;
+}
+
+.v-popper__popper .v-popper__arrow-outer {
+  border-color: #ddd;
+}
+
+/* Transition */
+
+.v-popper__popper.v-popper__popper--hidden {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .15s, visibility .15s;
+}
+
+.v-popper__popper.v-popper__popper--shown {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity .15s;
+}
+
+.v-popper__popper.v-popper__popper--skip-transition {
+  transition: none !important;
+}

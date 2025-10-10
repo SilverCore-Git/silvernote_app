@@ -1,11 +1,12 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router.ts';
+import FloatingVue from 'floating-vue';
 import { clerkPlugin } from '@clerk/vue';
 import pkg from '../package.json' assert { type: 'json' };
 
 
-import './style.css'
+import './style.css';
 
 const PUBLISHABLE_KEY = pkg.dev
   ? import.meta.env.VITE_CLERK_TEST_PUBLISHABLE_KEY
@@ -18,6 +19,7 @@ if (!PUBLISHABLE_KEY) {
 const app = createApp(App)
 
 app.use(clerkPlugin, { publishableKey: PUBLISHABLE_KEY });
+app.use(FloatingVue);
 
 app.use(router);
 app.mount('#app');
