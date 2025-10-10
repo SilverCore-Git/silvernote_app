@@ -23,7 +23,7 @@ const Extensions = [
   DragHandle.configure({ 
     computePositionConfig: { 
       placement: 'left-start', 
-      strategy: 'fixed' 
+      strategy: 'absolute' 
     }, 
     render: () => createDragIcon()
   }),

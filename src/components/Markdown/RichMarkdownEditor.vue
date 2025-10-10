@@ -7,11 +7,11 @@
 
     <div class="overflow-hidden">
       <EditorContent
-        v-if="editor"
+        v-if="editor && !loader"
         :editor="editor as Editor"
         class="prose w-full h-full mb-40 overflow-hidden"
       />
-      <Loader v-if="!editor && loader" class="absolute inset-0" :icon="false" />
+      <div v-else class="animate-pulse bg-gray-300 h-80 w-full rounded-xl"></div>
     </div>
 
   </ToolsMenu>
@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 
-import { ref, onMounted, onBeforeUnmount, computed, nextTick } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
