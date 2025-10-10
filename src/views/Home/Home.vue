@@ -17,8 +17,8 @@
     </Navbar>
     
     <div 
-        class="Search_bar flex flex-col lg:flex-row 
-                justify-center items-center  gap-4 w-full"
+        class="mt-16 flex flex-col lg:flex-row 
+                justify-center items-center gap-4 w-full"
     >
 
         <Search_bar class="w-1/3" :desktop="isLargeScreen" pt="" />
@@ -53,7 +53,7 @@
                     
             </Swiper>
 
-            <div>
+            <div v-tooltip="'Créer un dossier'">
 
                 <Tags_item 
                     @click="if_open_create_tag = true" 
@@ -540,15 +540,6 @@
   -moz-column-break-inside: avoid;
 }
 
-    .Search_bar {
-
-        margin-top: calc(4.5rem + env(safe-area-inset-top));
-
-        @media (min-width: 1280px) {
-            margin-top: calc(5rem + env(safe-area-inset-top));
-        }
-        
-    }
 
     .saving-svg {
         cursor: pointer;

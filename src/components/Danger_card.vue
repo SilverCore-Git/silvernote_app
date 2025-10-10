@@ -2,13 +2,13 @@
 
     <div 
         :class="btn ? 'cursor-pointer' : ''" 
-        class="bg-[#fff2d0] text-[var(--btn)] p-5 border-[var(--text)] border-2 relative
-              lg:max-w-1/2 xl:max-w-120" 
+        class="bg-[#fff2d0] text-[var(--btn)] p-3 border-[var(--text)] 
+              border-2 relative max-w-md pl-4" 
         style="border-radius: 15px; font-family: 'Montserrat';"
         @click="handleClick"
     >
-        <h1 class="font-bold text-xl md:text-2xl">{{ title }}</h1>
-        <p class="text-md md:text-lg">{{ content }}</p>
+        <h1 class="font-bold text-xl md:text-xl">{{ title }}</h1>
+        <p class="text-md md:text-md">{{ content }}</p>
     </div>
 
 </template>

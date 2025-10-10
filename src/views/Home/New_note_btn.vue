@@ -9,6 +9,7 @@
         "   
     >
         <button 
+             v-tooltip="'Créer une note'"
             @click="emit('btn_click')"
             style="box-shadow: 0 0 15px #3636364f; "
             class="add-note-btn cursor-pointer rounded-full
@@ -40,11 +41,7 @@ const emit = defineEmits<{
     }
 
     .add-note-btn:hover {
-        transform: scale(1.1);
-    }
-
-    .add-note-btn:active {
-        transform: scale(0.98);
+        transform: scale(1.2);
     }
 
     .add-note-svg {
@@ -56,8 +53,8 @@ const emit = defineEmits<{
         -webkit-mask-size: contain;
         mask-size: contain;
         background-color: #FFF8F0;
-        width: 55px;
-        height: 55px;
+        width: 45px;
+        height: 45px;
     }
 
 </style>

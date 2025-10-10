@@ -14,18 +14,18 @@
   > 
   
     <p 
-      class="font-bold text-[4vw] md:text-lg w-full overflow-hidden text-ellipsis uppercase
+      class="font-bold text-2xl w-full overflow-hidden text-ellipsis uppercase
       flex justify-start items-center flex-row gap-2">
       <img
         v-if="icon" 
-        class="w-[26px] h-[26px] cursor-pointer" 
+        class="w-[32px] h-[32px] cursor-pointer" 
         :src="icon" 
       />
       {{ utils.htmlToText(title) }}
     </p>
 
     <p 
-      class="text-[3vw] md:text-lg my-2
+      class="text-xs my-2
               max-h-50 multiline-8"
     >
       {{ utils.htmlToText(content) }}

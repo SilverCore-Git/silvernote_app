@@ -6,14 +6,14 @@
       @touchend="cancelPress"
       @touchcancel="cancelPress"
       :class="active 
-        ? 'border-3 px-2.5 py-0.5 border-[#F28C28] cursor-pointer' 
-        : 'border-1 px-3 py-1 cursor-pointer'"
+        ? 'border-3 px-1.5 py-0.5 border-[#F28C28] cursor-pointer' 
+        : 'border-1 px-2 py-1 cursor-pointer'"
       class="inline-flex items-center justify-center 
-            text-md uppercase text-center rounded-[var(--br-btn)] 
+            text-md uppercase text-center rounded-xl
             whitespace-nowrap select-none"
       :style="{ backgroundColor: tag_color, color: text_color }"
     >
-      <span class="md:text-base">
+      <span class="md:text-sm">
         {{ name }}
       </span>
     </div>

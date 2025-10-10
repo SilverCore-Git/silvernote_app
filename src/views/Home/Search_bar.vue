@@ -1,24 +1,24 @@
 <template>
 
   <div
-    class="note-card bg-[var(--bg2)] text-[var(--text)] border border-[var(--text)] z-30 rounded-2xl py-1.5
-          relative lg:mx-0 mx-4 w-full flex flex-col pl-4"
+    class="note-card bg-[var(--bg2)] text-[var(--text)] border border-[var(--text)] z-30 rounded-xl py-1
+          relative lg:mx-0 mx-4 w-full flex flex-col pl-3 max-w-xl"
     style="box-shadow: 0 0 5px #3636364f;"
     
   >
 
-    <div class="flex flex-row ">
+    <div class="flex flex-row justify-center items-center">
 
       <input 
         ref="search_input"
         v-model="searchQuery"
         type="text"
-        class="w-[88%] border-none outline-none" 
+        class="w-full border-none outline-none text-md" 
         placeholder="Recherche..."
       >
 
-      <button v-if="searchQuery !== ''" @click="searchQuery = ''" class="cross-btn absolute end-0"></button>
-      <button v-if="searchQuery == ''" @click="search_input?.focus()" class="search-btn absolute end-0"></button>
+      <button v-if="searchQuery !== ''" @click="searchQuery = ''" class="cross-btn absolute end-4"></button>
+      <button v-if="searchQuery == ''" @click="search_input?.focus()" class="search-btn absolute end-4"></button>
 
     </div>
 
@@ -35,7 +35,7 @@
 
     <div 
         v-if="filteredNotes.length && searchQuery != ''" 
-        class="space-y-2 w-full overflow-x-auto p-2 absolute top-11 bg-[var(--bg2)] rounded-2xl border border-[var(--text)]" 
+        class="space-y-2 w-full overflow-x-auto p-1 absolute top-11 bg-[var(--bg2)] rounded-xl border border-[var(--text)]" 
         :style="{ maxHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)`, minHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)` }"
     >
 
@@ -150,8 +150,8 @@ onMounted(async () => {
     .search-btn {
 
         cursor: pointer;
-        width: 25px;
-        height: 25px;
+        width: 20px;
+        height: 20px;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
@@ -164,8 +164,8 @@ onMounted(async () => {
     .cross-btn {
 
         cursor: pointer;
-        width: 35px;
-        height: 35px;
+        width: 25px;
+        height: 25px;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
