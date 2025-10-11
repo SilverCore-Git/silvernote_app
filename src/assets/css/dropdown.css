@@ -4,6 +4,7 @@
   backdrop-filter: blur(10px);
   min-width: 200px;
   padding: 0.5rem;
+  z-index: 50;
 }
 
 .dropdown ul {
