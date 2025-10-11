@@ -1,8 +1,7 @@
 <template>
 
-    <Teleport to="body">
 
-        <div>
+        <div class="absolute inset-0 ">
 
             
             <div 
@@ -17,7 +16,7 @@
                     v-if="visible"
                     @click="emitClose()"
                     class="dropdown absolute z-30"
-                    :style="{  top: `${top}px`, left: `${left}px` }"
+                    
                     
                 >
 
@@ -119,7 +118,6 @@
 
         </div>
 
-    </Teleport>
 
 </template>
 

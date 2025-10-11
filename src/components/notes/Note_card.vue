@@ -6,23 +6,26 @@
 >
 
   <div
-    class="note-card md:min-w-60 bg-[var(--bg2)] text-[var(--text)] p-3
+    class="note-card md:min-w-50 bg-[var(--bg2)] text-[var(--text)] p-3
             border-2 relative cursor-pointer h-full min-h-40 select-none"
     :class="note_settings ? 'border-[var(--btn)]' : 'border-[var(--text)]'"
     :style="{ transform: note_settings ? 'scale(1.05)' : '' }"
     style="border-radius: var(--br-card);"    
   > 
   
-    <p 
-      class="font-bold text-2xl w-full overflow-hidden text-ellipsis uppercase
-      flex justify-start items-center flex-row gap-2">
+    <div
+      class="font-bold text-lg w-full overflow-hidden
+        flex justify-start items-center flex-row gap-2 "
+    >
       <img
         v-if="icon" 
         class="w-[32px] h-[32px] cursor-pointer" 
         :src="icon" 
       />
-      {{ utils.htmlToText(title) }}
-    </p>
+      <span class="overflow-hidden text-ellipsis whitespace-nowrap uppercase">
+        {{ utils.htmlToText(title) }}
+      </span>
+    </div>
 
     <p 
       class="text-xs my-2
@@ -50,6 +53,7 @@
 </PressAndHold>
 
   <Note_settings
+    class="relative "
     :id="id"
     :top="note_settings_top"
     :left="note_settings_left"
