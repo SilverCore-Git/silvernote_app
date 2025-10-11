@@ -1,6 +1,8 @@
 .prose {
-  padding: 5px;
-  font-size: 1em;
+  font-size: .9em;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 .prose .ytb-viewer {
@@ -19,15 +21,15 @@
 }
 
 .prose h1 {
-  font-size: 2rem;
+  font-size: 1.8rem;
 }
 
 .prose h2 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
 }
 
 .prose h3 {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
 }
 
 .prose ul, .prose ol {
