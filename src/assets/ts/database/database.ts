@@ -131,7 +131,8 @@ class Database {
     public async delete(id: number, noDb?: boolean): Promise<void> {
         const db = await this.dbPromise;
         if (!noDb) {
-            await fetch(`${api_url}/api/db/delete/a/note?id=${id}`, {
+            const uuid = (await this.getNote(id))?.uuid;
+            await fetch(`${api_url}/api/db/delete/a/note?uuid=${uuid}`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -145,7 +146,7 @@ class Database {
     public async delete_tag(id: number, noDb?: boolean): Promise<void> {
         const db = await this.dbPromise;
 
-        if (!noDb) {
+        if (!noDb || true) {
             await fetch(`${api_url}/api/db/delete/a/tag?id=${id}`, {
                 method: 'POST',
                 headers: {
@@ -186,10 +187,11 @@ class Database {
 
     }
 
-    public async create_tag(tag: Tag, cloud_post?: boolean): Promise<void> {
+    public async create_tag(tag: Tag, cloud_post: boolean): Promise<void> {
         const db = await this.dbPromise;
-        tag.id = Math.floor(Math.random() * (999999999999 - 1000000 + 1)) + 1000;
         if (cloud_post) {
+            tag.id = Math.floor(Math.random() * (999999999999 - 1000000 + 1)) + 1000
+
             await fetch(`${api_url}/api/db/new/tag`, {
                 method: 'POST',
                 headers: {
@@ -205,6 +207,11 @@ class Database {
     public async getNote(id: number): Promise<Note | undefined> {
         const db = await this.dbPromise;
         return await db.get('notes', id);
+    }
+    
+    public async getTag(id: number): Promise<Tag | undefined> {
+        const db = await this.dbPromise;
+        return await db.get('tags', id);
     }
 
     public async add_notes(notes: Note[], cloud_post: boolean): Promise<void> {
