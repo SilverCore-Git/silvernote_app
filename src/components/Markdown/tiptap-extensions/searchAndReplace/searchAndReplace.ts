@@ -209,6 +209,7 @@ const replaceAll = (
   results: Range[],
   { tr, dispatch }: { tr: Transaction; dispatch: Dispatch },
 ) => {
+  if (!dispatch) return;
   let offset = 0;
 
   let resultsCopy = results.slice();

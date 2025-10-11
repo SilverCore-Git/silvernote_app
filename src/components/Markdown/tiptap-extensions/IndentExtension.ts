@@ -1,15 +1,25 @@
 import { Extension } from '@tiptap/core'
+import { Editor } from '@tiptap/core'
+
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    indent: {
+      indent: () => ReturnType
+      outdent: () => ReturnType
+    }
+  }
+}
 
 export const IndentExtension = Extension.create({
   name: 'indent',
-
+  
   addOptions() {
     return {
       maxLevel: 8,      // niveau d'indent max
       indentSize: 24,   // taille du retrait
     }
   },
-
+  
   addGlobalAttributes() {
     return [
       {
@@ -17,7 +27,7 @@ export const IndentExtension = Extension.create({
         attributes: {
           indent: {
             default: 0,
-            renderHTML: attributes => {
+            renderHTML: (attributes: { indent?: number }) => {
               const indent = attributes.indent || 0
               if (indent <= 0) return {}
               return {
@@ -29,22 +39,21 @@ export const IndentExtension = Extension.create({
       },
     ]
   },
-
+  
   addCommands() {
     return {
       indent:
         () =>
-        ({ chain, editor }) => {
+        ({ chain, editor }: { chain: () => any; editor: Editor }) => {
           const { indent = 0 } = editor.getAttributes('paragraph')
           if (indent < this.options.maxLevel) {
             return chain().updateAttributes('paragraph', { indent: indent + 1 }).run()
           }
           return false
         },
-
       outdent:
         () =>
-        ({ chain, editor }) => {
+        ({ chain, editor }: { chain: () => any; editor: Editor }) => {
           const { indent = 0 } = editor.getAttributes('paragraph')
           if (indent > 0) {
             return chain().updateAttributes('paragraph', { indent: indent - 1 }).run()
@@ -53,17 +62,15 @@ export const IndentExtension = Extension.create({
         },
     }
   },
-
+  
   addKeyboardShortcuts() {
     return {
       Tab: () => this.editor.commands.indent(),
       'Shift-Tab': () => this.editor.commands.outdent(),
-
       Backspace: () => {
         const { state } = this.editor
         const { selection } = state
         const { $from } = selection
-
         // Si le curseur est au tout début du paragraphe
         if ($from.parentOffset === 0) {
           const indent = this.editor.getAttributes('paragraph').indent || 0
