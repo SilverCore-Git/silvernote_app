@@ -53,7 +53,7 @@
                     
             </Swiper>
 
-            <div v-tooltip="'Créer un dossier'">
+            <div v-tooltip.bottom="'Créer un tag'">
 
                 <Tags_item 
                     @click="if_open_create_tag = true" 
@@ -149,7 +149,10 @@
             v-if="notes_views_mode == 'default'"
         >
 
-            <MasonryWrapper v-if="view_notes && list_notes && shared_notes" class="w-full">
+            <MasonryWrapper 
+                v-if="view_notes && list_notes && shared_notes" 
+                class="w-full "
+            >
 
                 <MasonryHr 
                     class="mt-4 absolute inset-x-0" 
@@ -321,13 +324,13 @@
                     ref="inputRef"
                     type="text"
                     class="outline-none pl-1 w-full"
-                    placeholder="Mon dossier"
+                    placeholder="Mon tag"
                     @click.stop="inputRef?.focus()"
                 />
             </div>
 
             <div @click.stop="" class="flex flex-col justify-center items-center border-2 h-full bg-[var(--bg2)]/80 border-[#F28C28] rounded-[var(--br-btn)] shadow-lg" >
-                <span>couleur de mon dossier</span>
+                <span>couleur de mon tag</span>
                 <input
                     v-model="tag_color"
                     type="color"
@@ -339,7 +342,7 @@
                 class="primary"
                 @click.stop="create_tag(tag_name, tag_color)"
             >
-                <span>Créer mon dossier</span>
+                <span>Créer mon tag</span>
             </button>
             <button
                 class="primary danger"
