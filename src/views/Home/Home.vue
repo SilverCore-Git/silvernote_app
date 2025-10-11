@@ -150,7 +150,7 @@
         >
 
             <MasonryWrapper 
-                v-if="view_notes && list_notes && shared_notes" 
+                v-if="view_notes && list_notes && shared_notes && list_notes.length > 0"
                 class="w-full "
             >
 
@@ -245,7 +245,7 @@
 
             </MasonryWrapper>
 
-            <li v-if="list_notes && list_notes.length < 1" class="flex flex-col">
+            <li v-else class="flex flex-col">
 
                 <div 
                     class="w-full h-full py-20 flex justify-center items-center flex-col gap-2"
@@ -467,7 +467,12 @@
         tag_name.value = '';
         tag_color.value = '';
 
-        await db.create_tag({ id: -1, name: tagName, active: false, color: tagColor });
+        await db.create_tag({ 
+            id: -1, 
+            name: tagName, 
+            active: false, 
+            color: tagColor 
+        }, true);
 
         all_tags.value = await db.getAll('tags');
         if_open_create_tag.value = false;

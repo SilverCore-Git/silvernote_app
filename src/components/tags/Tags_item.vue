@@ -20,49 +20,46 @@
 
     <teleport to="body">
 
-      <div class="text-white" @click.stop="menu = false" v-if="menu">
+      <div>
 
-        <div  class="fixed inset-0 bg-[#00000090] z-100" style="backdrop-filter: blur(3px);"></div>
+        <div 
+            class="z-25 fixed inset-0" 
+            @click="menu = false" 
+            v-if="menu"
+        ></div>
 
-        <section class="flex flex-col gap-4 text-center fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-110">
+        <transition name="fade-slide">
 
-          <h3 class="text-xl font-bold">modifier : {{ name }}</h3>
+          <div 
+            class="dropdown absolute"
+            :style="{ top: `${top}px`, left: `${left}px` }"
+            v-if="menu"
+          >
 
-            <div @click.stop="" class="text-[var(--text)] flex flex-col justify-center items-center border-2 h-full bg-[var(--bg2)]/80 border-[#F28C28] rounded-[var(--br-btn)] shadow-lg" >
-                <span class="font-bold">couleur de {{ name }}</span>
+            <ul>
+
+              <li class="flex flex-col">
+                <span class="">Changer la couleur</span>
                 <input
-                    v-model="tag_color"
-                    type="color"
-                    class="outline-none w-full h-10 cursor-pointer rounded-[var(--br-btn)] border-none"
+                  v-model="tag_color"
+                  type="color"
+                  class="outline-none w-full h-10 cursor-pointer rounded-[var(--br-btn)] border-none"
                 />
-            </div>
+              </li>
 
-            <button
-                @click.stop="save_tag_color(); menu = false; menu = false"
-                class="primary"
-            >
-                <span>Sauvegarder</span>
-            </button>
-            <button
-                class="danger primary"
-                @click.stop="del(1); menu = false"
-            >
-                <span>Supprimer</span>
-            </button>
-            <button
-                class="second" style="color: white;"
-                @click.stop=" menu = false; tag_color = color"
-            >
-                <span>Annuler</span>
-            </button>
+              <li @click="del(1)" class="text-red-600">Suprimer</li>
 
-        </section>
+            </ul>
+
+          </div>
+
+        </transition>
 
       </div>
 
       <ConfirmDialog 
         :visible="dialog"
-        message="Êtes vous sur de vouloir supprimer ce dossier ?"
+        message="Êtes vous sur de vouloir supprimer ce tag ?"
         @confirm="del(2); dialog = false"
         @cancel="dialog = false"
       />
@@ -91,6 +88,8 @@ const emit = defineEmits([
   'reload'
 ])
 
+const left = ref<number>(0);
+const top = ref<number>(0);
 const text_color: string = utils.get_text_color(props.color);
 const inputRef = ref<HTMLInputElement | null>(null);
 const tag_color = ref<string>(props.color);
@@ -122,6 +121,14 @@ const pressTimer = ref<number | null>(null);
 const delay = 1000; 
 
 function onLongPress() {
+  document.addEventListener('contextmenu', (e) => {
+
+    e.preventDefault();
+
+    left.value = e.clientX;
+    top.value = e.clientY;
+
+  })
   menu.value = !menu.value;
 }
 
