@@ -45,18 +45,11 @@ onBeforeUnmount(() => {
 }
 
 .masonry-item-style {
-  width: 20%;
+  width: 25%;
 }
 
 .masonry-hr-style {
   margin-bottom: 16px;
-}
-
-@media (max-width: 1500px) {
-  .masonry-sizer,
-  .masonry-item-style {
-    width: 25%;
-  }
 }
 
 @media (max-width: 1028px) {
