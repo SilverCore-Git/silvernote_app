@@ -41,6 +41,7 @@
               <li class="flex flex-col">
                 <span class="">Changer la couleur</span>
                 <input
+                  @change="save_tag_color"
                   v-model="tag_color"
                   type="color"
                   class="outline-none w-full h-10 cursor-pointer rounded-[var(--br-btn)] border-none"

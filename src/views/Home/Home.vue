@@ -110,12 +110,12 @@
                         {{ tag.name }}
                     </div>
 
-                    <ul 
+                    <MasonryWrapper 
                         class="space-y-4 mt-2
                         columns-2 md:columns-3 lg:columns-4  "
                     >
 
-                        <li 
+                        <MasonryItem 
                             v-if="list_notes && list_notes.length"
                             v-for="(note, index) in list_notes.filter(note => note.tags.includes(tag.id))" 
                             :key="index"
@@ -134,9 +134,9 @@
                                 :function_reload="reload_list"
                             />
 
-                        </li>
+                        </MasonryItem>
                     
-                    </ul>
+                    </MasonryWrapper>
 
                 </div>
 
@@ -145,7 +145,7 @@
         </div>
 
         <ul 
-            class="overflow-y-hidden h-full mt-4 min-h-[80vh] "
+            class="overflow-y-hidden h-full mt-4 min-h-[80vh] pb-100"
             v-if="notes_views_mode == 'default'"
         >
 

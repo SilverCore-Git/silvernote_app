@@ -41,7 +41,7 @@ import { Extension, InputRule } from '@tiptap/core';
 import SlashCommand from '@/components/Markdown/tiptap-extensions/SlachCommand.js';
 import { IndentExtension } from './tiptap-extensions/IndentExtension.js';
 import FileHandler from '@tiptap/extension-file-handler';
-import { CollapsibleExtension } from './tiptap-extensions/CollapsibleExtension.js';
+//import { CollapsibleExtension } from './tiptap-extensions/CollapsibleExtension.js';
 import DragHandle from './tiptap-extensions/dragHandle';
 import { _searchBar, SearchBar, SearchAndReplace } from './tiptap-extensions/searchAndReplace';
 import FileHandler_configure from './tiptap-extensions/FileHandler_configure.js';
@@ -54,7 +54,6 @@ import CollaborationCaret from '@tiptap/extension-collaboration-caret';
 
 import { useUser } from '@clerk/vue';
 import { evaluate } from 'mathjs';
-import Loader from '@/components/Loader.vue';
 import type { Note } from '@/assets/ts/type';
 import { api_url } from '@/assets/ts/backend_link';
 import { getDominantColor } from '@/assets/ts/GetColorByImage';

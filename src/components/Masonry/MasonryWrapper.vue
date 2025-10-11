@@ -1,5 +1,5 @@
 <template>
-  <div class="masonry-grid" :class="pb ? 'pb-100' : ''">
+  <div class="masonry-grid">
     <slot></slot>
   </div>
 </template>
@@ -7,10 +7,6 @@
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount, nextTick } from "vue";
 import Masonry from "masonry-layout";
-
-defineProps<{
-  pb?: boolean;
-}>();
 
 let msnry: Masonry | null = null;
 
