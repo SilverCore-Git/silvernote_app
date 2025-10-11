@@ -2,42 +2,51 @@
 
   <teleport to="body">
 
-    <div
-        v-if="visible"
-        class="fixed inset-0 z-50 flex items-center justify-center"
-        style="
-            background-color: #00000090;
-            backdrop-filter: blur(5px);
-        "
-    >
+    <transition name="fade-slide">
 
-        <div class="bg-[var(--bg2)] rounded-md shadow-md p-4 m-3 w-full max-w-sm text-sm">
+      <div
+          v-if="visible"
+          @click="cancel"
+          class="fixed inset-0 z-50 flex items-center justify-center"
+          style="
+              background-color: #00000090;
+              backdrop-filter: blur(5px);
+          "
+      >
 
-            <h2 class="text-base font-semibold mb-2">{{ title }}</h2>
+          <div 
+            class="bg-[var(--bg2)] rounded-md shadow-md p-4 m-3 
+                    w-full max-w-sm text-sm"
+            @click.stop=""
+          >
 
-            <p class="mb-4">{{ message }}</p>
+              <h2 class="text-base font-semibold mb-2">{{ title }}</h2>
 
-            <div class="flex justify-end gap-2">
+              <p class="mb-4">{{ message }}</p>
 
-                <button
-                    class="second"
-                    @click="cancel"
-                    >
-                    Annuler
-                </button>
+              <div class="flex justify-end gap-2">
 
-                <button
-                    class="danger primary"
-                    @click="confirm"
-                    >
-                    Confirmer
-                </button>
+                  <button
+                      class="second"
+                      @click.stop="cancel"
+                      >
+                      Annuler
+                  </button>
 
-            </div>
+                  <button
+                      class="danger primary"
+                      @click.stop="confirm"
+                      >
+                      Confirmer
+                  </button>
 
-        </div>
+              </div>
 
-    </div>
+          </div>
+
+      </div>
+
+    </transition>
 
   </teleport>
 
