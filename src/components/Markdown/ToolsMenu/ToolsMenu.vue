@@ -1,9 +1,5 @@
 <template>
 
-<PressAndHold
-  @long-press="openSelectionMenu(false)"
->
-
   <div>
 
     <slot />
@@ -62,8 +58,6 @@
 
   </div>
 
-</PressAndHold>
-
 </template>
 
 
@@ -75,7 +69,6 @@ import { nextTick, ref, watch } from 'vue'
 import type { Categories, SimpleAction } from '@/components/Markdown/ToolsMenu/ToolsMenuTypes';
 import config from '@/components/Markdown/ToolsMenu/ToolsMenuConfig.json';
 import { editor } from '../Editor';
-import PressAndHold from '@/components/PressAndHold.vue';
 import { onDragIconLoaded } from '../tiptap-extensions/dragHandle';
 const _config: any = config; // i can't assign categories type
 
@@ -104,14 +97,7 @@ const openSelectionMenu = (withEditorSelect: boolean) => {
 
   }
   else {
-    document.addEventListener('contextmenu', (e) => {
 
-      e.preventDefault();
-
-      posX.value = e.clientX;
-      posY.value = e.clientY;
-
-    })
 
   }
 

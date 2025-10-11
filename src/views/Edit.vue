@@ -1,6 +1,6 @@
 <template>
 
-  <header class="flex flex-row fixed inset-x-0 mx-[var(--mrl)]" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
+  <header class="flex flex-row fixed inset-x-0 mx-[var(--mrl)] pt-2 z-50">
 
     <a><div class="left-arrow absolute left-0 cursor-pointer btnHover" @click="router.push('/')" :class="hitbox ? 'bg-red-600' : ''"></div></a>
 
@@ -56,13 +56,12 @@
       
       <div
         v-if="if_open_dropdown"
-        class="absolute inset-0 z-40"
+        class="absolute inset-0"
         @click="if_open_dropdown = false"
       >
 
         <div 
-          class="dropdown absolute 
-                right-0 bg-[var(--bg2)]"
+          class="dropdown absolute right-0 "
           :style="{ top: `calc(3.4rem + env(safe-area-inset-top))` }"
         >
 
@@ -132,10 +131,17 @@
     v-if="loaded" 
     @click="if_open_dropdown = false"
     class="flex flex-col justify-start items-center h-full mx-auto
-          mt-12 overflow-x-hidden overflow-y-scroll max-w-4xl relative"
+          mt-12 overflow-x-hidden overflow-y-scroll max-w-3xl"
   >
 
-    <div class="w-full flex justify-start ml-[10%] mb-8 ">
+    <div 
+      class="flex w-[90%] mb-2 items-end"
+      :class="
+        note.icon && all_tags.filter(tag => note.tags.includes(tag.id))[0] 
+          ? 'justify-between' 
+          : 'justify-start gap-2'
+      "  
+    >
 
       <button ref="emojiBtn"><a>
 
@@ -153,12 +159,59 @@
         </a>
 
       </a></button>
+
+    <div 
+      v-if="all_tags.filter(tag => note.tags.includes(tag.id))[0]"
+      class="flex justify-center items-center flex-col max-w-80 relative p-4 rounded"
+    >
+
+      <span class="text-lg font-bold mb-4">Dossiers</span>
+
+      <ul class="flex flex-wrap gap-2 max-w-80">
+
+        <li
+          v-for="
+            tag in hide8moreTags 
+              ? all_tags.filter(tag => note.tags.includes(tag.id)).slice(0, 7) 
+              : all_tags.filter(tag => note.tags.includes(tag.id))
+          "
+          :key="tag.id"
+          :style="{ backgroundColor: tag.color }"
+          class="px-2 py-0.5 rounded text-white border text-sm"
+        >
+          {{ tag.name }}
+        </li>
+
+        <li
+          v-if="hide8moreTags"
+          class="px-2 py-0.5 rounded text-sm font-bold"
+        >
+          ...
+        </li>
+
+      </ul>
+
+      <a
+        @click="hide8moreTags = !hide8moreTags"
+        class="cursor-pointer mt-2 select-none"
+      >
+        {{ hide8moreTags ? 'voir plus' : 'voir moins' }}
+      </a>
+
+    </div>
+
+    <div
+      v-else
+    >
+      <a class="px-1">Ajouter un tag</a>
+    </div>
+
     
     </div>
 
     <input 
-      v-if="note.title"
-      class="text-6xl font-bold" 
+      v-if="loaded"
+      class="text-4xl font-extrabold mb-4 text-[var(--text-strong)]" 
       type="text" 
       placeholder="Titre..." 
       ref="title"
@@ -252,6 +305,7 @@ import { useUser } from '@clerk/vue';
 
 import db from '@/assets/ts/database/database';
 import utils from '@/assets/ts/utils';
+import { Tags as all_tags } from '@/assets/ts/database/Var'; 
 import type { Note, User } from '@/assets/ts/type';
 import { stats, isLoaded } from '@/components/Markdown/Function/Stats';
 import { editor } from '@/components/Markdown/Editor';
@@ -283,6 +337,7 @@ const note = ref<Note>({
     tags: []
 });
 
+const hide8moreTags = ref<boolean>(true);
 const if_pin_active = ref<boolean>(note.value.pinned);
 const if_open_dropdown = ref<boolean>(false);
 const export_menu = ref<boolean>(false);
