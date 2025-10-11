@@ -196,7 +196,7 @@ onUnmounted(() => {
 const updateBodyClass = () => {
   body.classList.remove("lgdesktop", "xldesktop");
   if (screen_w.value >= 2000) body.classList.add("xldesktop");
-  else if (screen_w.value >= 1500) body.classList.add("lgdesktop");
+  else if (screen_w.value >= 1200) body.classList.add("lgdesktop");
 };
 
 watch(screen_w, updateBodyClass);

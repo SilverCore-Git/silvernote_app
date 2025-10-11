@@ -1,5 +1,5 @@
 <template>
-  <div class="masonry-grid">
+  <div class="masonry-grid pb-100">
     <slot></slot>
   </div>
 </template>
@@ -45,18 +45,24 @@ onBeforeUnmount(() => {
 }
 
 .masonry-item-style {
-  width: 25%;
+  width: 20%;
 }
 
 .masonry-hr-style {
   margin-bottom: 16px;
 }
 
-
-@media (max-width: 1080px) {
+@media (max-width: 1500px) {
   .masonry-sizer,
   .masonry-item-style {
-    width: 33.333%; /* 3 colonnes */
+    width: 25%;
+  }
+}
+
+@media (max-width: 1028px) {
+  .masonry-sizer,
+  .masonry-item-style {
+    width: 33.333%;
   }
 }
 
