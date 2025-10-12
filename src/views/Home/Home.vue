@@ -62,7 +62,8 @@
                     :tag="''"
                     :active="false"
                     color="#fff5e8"
-                    class="w-20"
+                    class="w-20 hover:scale-110
+                    transition-all duration-200"
                 />
 
             </div>

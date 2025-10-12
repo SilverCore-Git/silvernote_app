@@ -33,6 +33,7 @@ h1, h2, h3, h4, h5, h6 {
   background-repeat: no-repeat;
   background-position: center;
   cursor: pointer;
+  transition: all .2s;
 }
 
 .left-arrow {
@@ -40,6 +41,9 @@ h1, h2, h3, h4, h5, h6 {
   filter: brightness(0) saturate(100%) invert(55%) sepia(65%) saturate(538%) hue-rotate(343deg) brightness(98%) contrast(98%);
 }
 
+.left-arrow:hover {
+  transform: scale(1.2);
+}
 
 a {
   cursor: pointer;

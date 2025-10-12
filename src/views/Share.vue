@@ -1,9 +1,12 @@
 <template>
 
-    <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
+    <header 
+        class="flex flex-row fixed inset-x-0 mx-[var(--mrl)] pt-2 z-50 h-25 pointer-events-none bg-amber-400"
+        style="background: linear-gradient(to top, transparent 0%, var(--bg2) 90%, var(--bg2) 100%);"
+    >
 
         <div 
-            class="left-arrow absolute left-0 cursor-pointer btnHover" 
+            class="pointer-events-auto left-arrow absolute left-0 cursor-pointer" 
             @click="router.push('/')"
         ></div>
 
@@ -11,7 +14,7 @@
             class="
                 absolute right-0
                 flex flex-row justify-center items-center
-                space-x-5
+                space-x-5 pointer-events-auto
             " 
         >
 
@@ -42,7 +45,7 @@
                 
             <div
                 v-if="share_menu && users"
-                class="absolute inset-0 z-50 w-full h-screen"
+                class="absolute inset-0 z-50 w-full pointer-events-auto h-screen"
                 @click="share_menu = false"
             >
 
@@ -123,19 +126,26 @@
     </header>
 
     <section 
-        v-if="loaded && note" 
-        class="flex flex-col justify-start items-center h-full 
-            mt-12 overflow-x-hidden overflow-y-scroll"
+        v-if="loaded"
+        class="flex flex-col justify-start items-center h-full mx-auto
+            mt-12 overflow-x-hidden overflow-y-scroll max-w-3xl"
     >
 
-        <div class="w-full flex justify-start ml-[10%] ">
+        <div 
+                class="flex w-[90%] mb-2 items-end"
+                :class="
+                    note!.icon
+                    ? 'justify-between' 
+                    : 'justify-start gap-2'
+                "  
+            >
 
-            <button ref="emojiBtn">
+            <button ref="emojiBtn"><a>
 
                 <img
-                    v-if="note.icon" 
-                    class="w-[64px] h-[64px] cursor-pointer" 
-                    :src="note.icon" 
+                    v-if="note!.icon" 
+                    class="w-[80px] h-[80px] p-2 cursor-pointer" 
+                    :src="note!.icon" 
                 />
 
                 <a 
@@ -145,12 +155,13 @@
                     Ajouter une icon
                 </a>
 
-            </button>
-        
+            </a></button>
+
         </div>
 
         <input 
-            class="text-3xl mb-3 font-bold" 
+            v-if="loaded"
+            class="text-4xl font-extrabold mb-4 text-[var(--text-strong)]" 
             type="text" 
             placeholder="Titre..." 
             ref="title"
@@ -158,6 +169,11 @@
             @input="saveTitle()"
             :readonly="!editable"
         />
+
+        <div 
+            v-else
+            class="text-3xl mb-3 font-bold animate-pulse bg-gray-300 h-10 w-[90%] rounded-xl" 
+        ></div>
 
         <RichMarkdownEditor 
             v-if="note && socket"

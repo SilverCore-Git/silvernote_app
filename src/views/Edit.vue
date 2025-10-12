@@ -1,10 +1,17 @@
 <template>
 
-  <header class="flex flex-row fixed inset-x-0 mx-[var(--mrl)] pt-2 z-50">
+  <header 
+    class="flex flex-row fixed inset-x-0 mx-[var(--mrl)] pt-2 z-50 h-25 pointer-events-none bg-amber-400"
+    style="background: linear-gradient(to top, transparent 0%, var(--bg2) 90%, var(--bg2) 100%);"
+  >
 
-    <a><div class="left-arrow absolute left-0 cursor-pointer btnHover" @click="router.push('/')" :class="hitbox ? 'bg-red-600' : ''"></div></a>
+    <div 
+      class="left-arrow absolute left-0 cursor-pointer pointer-events-auto" 
+      @click="router.push('/')" 
+      :class="hitbox ? 'bg-red-600' : ''"
+    ></div>
 
-    <div class="flex flex-row gap-4 absolute right-0">
+    <div class="flex flex-row gap-4 absolute right-0 pointer-events-auto">
 
       <div
         v-if="users.length > 0"
@@ -56,7 +63,7 @@
       
       <div
         v-if="if_open_dropdown"
-        class="absolute inset-0"
+        class="absolute inset-0 pointer-events-auto"
         @click="if_open_dropdown = false"
       >
 
@@ -160,52 +167,51 @@
 
       </a></button>
 
-    <div 
-      v-if="all_tags.filter(tag => note.tags.includes(tag.id))[0]"
-      class="flex justify-center items-center flex-col max-w-80 relative p-4 rounded"
-    >
-
-      <span class="text-lg font-bold mb-4">Dossiers</span>
-
-      <ul class="flex flex-wrap gap-2 max-w-80">
-
-        <li
-          v-for="
-            tag in hide8moreTags 
-              ? all_tags.filter(tag => note.tags.includes(tag.id)).slice(0, 7) 
-              : all_tags.filter(tag => note.tags.includes(tag.id))
-          "
-          :key="tag.id"
-          :style="{ backgroundColor: tag.color }"
-          class="px-2 py-0.5 rounded text-white border text-sm"
-        >
-          {{ tag.name }}
-        </li>
-
-        <li
-          v-if="hide8moreTags"
-          class="px-2 py-0.5 rounded text-sm font-bold"
-        >
-          ...
-        </li>
-
-      </ul>
-
-      <a
-        @click="hide8moreTags = !hide8moreTags"
-        class="cursor-pointer mt-2 select-none"
+      <div 
+        v-if="all_tags.filter(tag => note.tags.includes(tag.id))[0]"
+        class="flex justify-center items-center flex-col max-w-80 relative p-4 rounded"
       >
-        {{ hide8moreTags ? 'voir plus' : 'voir moins' }}
-      </a>
 
-    </div>
+        <span class="text-lg font-bold mb-4">Dossiers</span>
 
-    <div
-      v-else
-    >
-      <a class="px-1">Ajouter un tag</a>
-    </div>
+        <ul class="flex flex-wrap gap-2 max-w-80">
 
+          <li
+            v-for="
+              tag in hide8moreTags 
+                ? all_tags.filter(tag => note.tags.includes(tag.id)).slice(0, 7) 
+                : all_tags.filter(tag => note.tags.includes(tag.id))
+            "
+            :key="tag.id"
+            :style="{ backgroundColor: tag.color }"
+            class="px-2 py-0.5 rounded text-white border text-sm"
+          >
+            {{ tag.name }}
+          </li>
+
+          <li
+            v-if="hide8moreTags"
+            class="px-2 py-0.5 rounded text-sm font-bold"
+          >
+            ...
+          </li>
+
+        </ul>
+
+        <a
+          @click="hide8moreTags = !hide8moreTags"
+          class="cursor-pointer mt-2 select-none"
+        >
+          {{ hide8moreTags ? 'voir plus' : 'voir moins' }}
+        </a>
+
+      </div>
+
+      <div
+        v-else
+      >
+        <a class="px-1">Ajouter un tag</a>
+      </div>
     
     </div>
 

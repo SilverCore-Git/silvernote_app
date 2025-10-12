@@ -70,16 +70,19 @@ defineProps<{
   visible: boolean
 }>()
 
-const emit = defineEmits(["update:visible"])
+const emit = defineEmits(["update:visible"]);
 
-const emitClose = () => emit("update:visible", false)
-
-const handleKey = (e: KeyboardEvent) => {
-  if (e.key === "Escape") emitClose()
+const emitClose = () => {
+  searchTerm.value = "";
+  emit("update:visible", false);
 }
 
-onMounted(() => window.addEventListener("keydown", handleKey))
-onUnmounted(() => window.removeEventListener("keydown", handleKey))
+const handleKey = (e: KeyboardEvent) => {
+  if (e.key === "Escape") emitClose();
+}
+
+onMounted(() => window.addEventListener("keydown", handleKey));
+onUnmounted(() => window.removeEventListener("keydown", handleKey));
 
 </script>
 
