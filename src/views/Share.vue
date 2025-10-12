@@ -189,36 +189,44 @@
 
     <Popup
         v-model:visible="need_passwd"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
     >
 
         <div
-            class="bg-[var(--bg2)] rounded-2xl shadow-xl p-6 m-4 w-full max-w-md text-sm border border-gray-300 dark:border-zinc-700"
+            @click.stop
         >
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-zinc-100 mb-4">
-             Saisir le mot de passe
+
+            <h2 class="text-center text-xl font-semibold mb-6">
+                🔒 Saisir le mot de passe
             </h2>
 
-            <div class="flex flex-col gap-5">
-                    
-                <div>
+            <div class="flex flex-col gap-6">
 
-                    <label class="block text-base font-medium text-gray-800 dark:text-zinc-300">
+                <div class="rounded-xl p-4 border">
+
+                    <label class="block text-base font-medium mb-2">
                         Mot de passe :
                     </label>
 
                     <input
                         v-model="passwd"
                         type="password"
-                        placeholder="Entrez votre mot de passe"
-                        class="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 shadow-sm
-                                focus:outline-none focus:ring-2 focus:ring-[var(--btn)] focus:border-[var(--btn)]
-                                dark:bg-zinc-900 dark:border-zinc-700 dark:text-zinc-100"
+                        placeholder="Entrez votre mot de passe..."
+                        class="py-1 rounded-xl bg-[var(--bg2)]/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none transition"
                     />
 
                 </div>
 
-                <div class="flex justify-end gap-3 mt-6">
+                <p v-if="error" class="text-red-500 text-sm text-center">
+                    ❌ {{ error }}
+                </p>
+
+                <div class="flex justify-end gap-3 mt-4">
+                    <button
+                        class="primary danger"
+                        @click="router.push('/')"
+                    >
+                        Annuler
+                    </button>
 
                     <button
                         class="primary"
@@ -226,7 +234,6 @@
                     >
                         Confirmer
                     </button>
-
                 </div>
 
             </div>
