@@ -4,65 +4,54 @@
 
     <Popup v-model:visible="visible" @update:visible="visible = $event">
 
-      <div  
-        @click.stop
-      >
+      <div @click.stop class="relative flex flex-col gap-6 ">
 
-        <h2 class="text-center text-xl font-semibold drop-shadow-sm mb-6">
-          Partager la note : <span class="text-[var(--btn)]">{{ title }}</span>
+        <h2 class="text-center text-xl font-semibold drop-shadow-sm">
+          Partager la note : <span class="text-[#F28C28]">{{ title }}</span>
         </h2>
 
         <div class="space-y-6">
-          
-          <div class="rounded-xl p-4">
+
+          <div class="bg-[var(--bg)]/70 rounded-2xl p-4 border border-[#F28C28]/40 shadow-inner">
 
             <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
               ⏳ Durée de validité
             </h3>
 
-            <div class="flex items-center gap-6">
+            <div class="flex flex-wrap items-center gap-6">
 
               <div class="flex items-center gap-2">
-
                 <input
                   v-model="j"
                   type="number"
                   min="0"
                   max="24"
-                  class="w-16 rounded-lg px-2 py-1 text-center border focus:outline-none focus:border-[var(--btn)]"
+                  class="w-20 px-2 py-1 text-center rounded-xl bg-[var(--bg2)]/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none transition"
                 />
-
-                <span>jours</span>
-
+                <span class="text-sm">jours</span>
               </div>
 
               <div class="flex items-center gap-2">
-
                 <input
                   v-model="h"
                   type="number"
                   min="0"
                   max="24"
-                  class="w-16 rounded-lg px-2 py-1 text-center border focus:outline-none focus:border-[var(--btn)]"
+                  class="w-20 px-2 py-1 text-center rounded-xl bg-[var(--bg2)]/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none transition"
                 />
-
-                <span>heures</span>
-
+                <span class="text-sm">heures</span>
               </div>
 
             </div>
 
           </div>
 
-          <div class="rounded-xl p-4 flex items-center justify-between">
+          <div class="bg-[var(--bg)]/70 rounded-2xl p-4 border border-[#F28C28]/40 shadow-inner flex items-center justify-between">
 
-            <div>
+            <div class="mr-2">
 
-              <h3 class="text-lg font-semibold mb-1">✏️ Modification</h3>
-
-              <p class="text-sm ">
-                Autoriser les personnes à modifier la note partagée.
-              </p>
+              <h3 class="text-lg font-semibold mb-1 ">✏️ Modification</h3>
+              <p class="text-sm">Autoriser les personnes à modifier la note partagée.</p>
 
             </div>
 
@@ -70,37 +59,41 @@
 
           </div>
 
-          <div class="rounded-xl p-4">
+          <div class="bg-[var(--bg)]/70 rounded-2xl p-4 border border-[#F28C28]/40 shadow-inner">
 
-            <div class="flex justify-between">
+            <div class="flex justify-between items-center mb-2">
 
-              <h3 class="text-lg font-semibold mb-2">🔒 Mot de passe</h3>
+              <h3 class="text-lg font-semibold ">🔒 Mot de passe</h3>
 
               <Switch v-model="password" />
 
             </div>
 
-            <div
-              :class="password ? 'translate-0 relative' : 'opacity-0 absolute pointer-events-none -translate-y-5'"
-              class="transition-all duration-300"
-            >
+            <transition name="fade">
 
-              <input
-                v-model="passwd"
-                type="text"
-                placeholder="Entrer un mot de passe..."
-                class="w-full rounded-lg border focus:outline-none focus:border-[var(--btn)] p-1 pl-2"
-              />
+              <div
+                v-if="password"
+                class="transition-all duration-300 mt-3"
+              >
 
-            </div>
+                <input
+                  v-model="passwd"
+                  type="text"
+                  placeholder="Entrer un mot de passe..."
+                  class="w-full px-3 py-2 rounded-xl bg-[var(--bg2)]/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none transition"
+                />
+
+              </div>
+
+            </transition>
 
           </div>
 
           <transition name="fade">
 
-            <div v-if="share_link" class="rounded-xl p-4">
+            <div v-if="share_link" class="bg-[var(--bg)]/70 rounded-2xl p-4 border border-[#F28C28]/40 shadow-inner">
 
-              <h3 class="text-lg font-semibold mb-2">🔗 Lien généré</h3>
+              <h3 class="text-lg font-semibold mb-2 ">🔗 Lien généré</h3>
 
               <div class="flex items-center gap-2">
 
@@ -108,10 +101,13 @@
                   :value="share_link"
                   type="url"
                   readonly
-                  class="flex-1 rounded-lg px-3 py-2 border"
+                  class="flex-1 rounded-xl px-3 py-2 bg-[var(--bg2)]/80 border border-[#F28C28]/40  outline-none"
                 />
 
-                <button @click="copy_link" class="primary">
+                <button 
+                  @click="copy_link" 
+                  class="primary"
+                >
                   Copier
                 </button>
 
@@ -127,14 +123,14 @@
 
         </div>
 
-        <div class="flex justify-end gap-3 mt-8">
+        <div class="flex justify-end gap-3 mt-4">
 
-          <a
-            class="px-4 py-2"
+          <button
+            class="primary danger"
             @click="emit('update:modelValue', false)"
           >
             {{ share_link === '' ? 'Annuler' : 'Fermer' }}
-          </a>
+          </button>
 
           <button
             class="primary"

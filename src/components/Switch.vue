@@ -1,5 +1,5 @@
 <template>
-  <div @click="toggle" class="switch">
+  <div @click="toggle" class="switch min-w-12.5">
     <input :checked="modelValue" type="checkbox" />
     <div class="slider"></div>
   </div>

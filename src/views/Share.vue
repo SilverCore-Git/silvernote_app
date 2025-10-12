@@ -126,7 +126,7 @@
     </header>
 
     <section 
-        v-if="loaded"
+        v-if="loaded && note"
         class="flex flex-col justify-start items-center h-full mx-auto
             mt-12 overflow-x-hidden overflow-y-scroll max-w-3xl"
     >
@@ -134,7 +134,7 @@
         <div 
                 class="flex w-[90%] mb-2 items-end"
                 :class="
-                    note!.icon
+                    note?.icon
                     ? 'justify-between' 
                     : 'justify-start gap-2'
                 "  
@@ -143,9 +143,9 @@
             <button ref="emojiBtn"><a>
 
                 <img
-                    v-if="note!.icon" 
+                    v-if="note.icon" 
                     class="w-[80px] h-[80px] p-2 cursor-pointer" 
-                    :src="note!.icon" 
+                    :src="note.icon" 
                 />
 
                 <a 
@@ -165,7 +165,7 @@
             type="text" 
             placeholder="Titre..." 
             ref="title"
-            v-model="note!.title"
+            v-model="note.title"
             @input="saveTitle()"
             :readonly="!editable"
         />
@@ -187,8 +187,8 @@
     </section>
 
 
-    <div
-        v-if="need_passwd"
+    <Popup
+        v-model:visible="need_passwd"
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
     >
 
@@ -233,7 +233,7 @@
 
         </div>
 
-    </div>
+    </Popup>
 
 
     <div
@@ -289,6 +289,7 @@ import { io, Socket } from 'socket.io-client';
 import { EmojiButton } from '@joeattardi/emoji-button';
 import Success from '@/components/alert/Success.vue';
 import utils from '@/assets/ts/utils';
+import Popup from '@/components/popup/Popup.vue';
 
 
 const props = defineProps<{
