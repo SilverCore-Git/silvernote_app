@@ -310,51 +310,87 @@
         @btn_click="create_new_note"
     />
 
-    <div v-if="if_open_create_tag">
+    <Teleport to="body">
 
-        <div  
-            class="fixed inset-0 bg-black/50 z-100"
-            @click="if_open_create_tag = false"
-        ></div>
+        <Transition name="fade-slide">
 
-        <section class="flex flex-col gap-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-110">
-
-            <div class="p-1 text-center w-full border-2 bg-[var(--bg2)]/80 border-[#F28C28] rounded-[var(--br-btn)] shadow-lg">
-                <input
-                    v-model="tag_name"
-                    ref="inputRef"
-                    type="text"
-                    class="outline-none pl-1 w-full"
-                    placeholder="Mon tag"
-                    @click.stop="inputRef?.focus()"
-                />
-            </div>
-
-            <div @click.stop="" class="flex flex-col justify-center items-center border-2 h-full bg-[var(--bg2)]/80 border-[#F28C28] rounded-[var(--br-btn)] shadow-lg" >
-                <span>couleur de mon tag</span>
-                <input
-                    v-model="tag_color"
-                    type="color"
-                    class="outline-none w-full h-10 cursor-pointer rounded-[var(--br-btn)] border-none"
-                />
-            </div>
-
-            <button
-                class="primary"
-                @click.stop="create_tag(tag_name, tag_color)"
+            <Popup 
+                v-model:visible="if_open_create_tag"
+                @update:visible="if_open_create_tag = $event"
             >
-                <span>Créer mon tag</span>
-            </button>
-            <button
-                class="primary danger"
-                @click.stop="if_open_create_tag = false"
-            >
-                <span>Annuler</span>
-            </button>
 
-        </section>
+                <div
+                    class="
+                        relative flex flex-col gap-6 
+                    "
+                    @click.stop
+                >
+                    
+                    <h2 class="text-center text-xl font-semibold text-[var(--btn)] drop-shadow-sm">
+                        Nouveau tag
+                    </h2>
 
-    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-bold">Nom du tag</label>
+                        <input
+                            v-model="tag_name"
+                            ref="inputRef"
+                            type="text"
+                            class="px-3 py-2 rounded-xl bg-[var(--bg)]/80 border border-[var(--btn)]/40 focus:border-[var(--btn)] outline-none shadow-inner placeholder-gray-400 transition"
+                            placeholder="ex : Travail, Idée, Projet..."
+                            @click.stop="inputRef?.focus()"
+                        />
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+
+                        <label class="text-sm font-bold">Couleur</label>
+
+                        <div class="flex items-center justify-between bg-[var(--bg)]/80 rounded-xl border border-[var(--btn)]/40 px-3 py-2">
+                            <span class="text-sm">Choisissez une couleur :</span>
+                            <input
+                                v-model="tag_color"
+                                type="color"
+                                class="cursor-pointer w-10 h-10 rounded-full border-2 border-[var(--btn)]/50 transition hover:scale-110 hover:border-[var(--btn)]"
+                            />
+                        </div>
+
+                    </div>
+
+                    <div class="flex justify-center">
+                        <span
+                            class="px-4 py-2 rounded-full text-sm font-semibold shadow-md border transition-all"
+                            :style="{ backgroundColor: tag_color, borderColor: tag_color }"
+                        >
+                            {{ tag_name || 'Mon tag' }}
+                        </span>
+                    </div>
+
+                    <div class="flex gap-3 justify-center mt-2">
+                        
+                        <button
+                            class="primary flex-1"
+                            @click.stop="create_tag(tag_name, tag_color)"
+                        >
+                            Créer
+                        </button>
+
+                        <button
+                            class="primary danger flex-1"
+                            @click.stop="if_open_create_tag = false"
+                        >
+                            Annuler
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </Popup>
+
+        </Transition>
+
+    </Teleport>
 
 </template>
 
@@ -387,6 +423,7 @@
         Tags as all_tags, 
         SharedNotes as shared_notes 
     } from '@/assets/ts/database/Var';
+import Popup from '@/components/popup/Popup.vue';
     
     const router = useRouter();
 

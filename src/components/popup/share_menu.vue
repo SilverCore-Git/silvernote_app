@@ -5,11 +5,10 @@
     <Popup v-model:visible="visible" @update:visible="visible = $event">
 
       <div  
-        @click.stop 
-        class="max-w-lg w-full rounded-2xl"
+        @click.stop
       >
 
-        <h2 class="text-2xl font-bold text-center mb-6">
+        <h2 class="text-center text-xl font-semibold drop-shadow-sm mb-6">
           Partager la note : <span class="text-[var(--btn)]">{{ title }}</span>
         </h2>
 
@@ -17,7 +16,7 @@
           
           <div class="rounded-xl p-4">
 
-            <h3 class="text-lg font-semibold mb-3 flex items-center gap-2">
+            <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
               ⏳ Durée de validité
             </h3>
 

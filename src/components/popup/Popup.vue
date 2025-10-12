@@ -6,16 +6,18 @@
             
             <div
                 v-if="visible"
-                class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+                class="fixed inset-0 z-50 flex items-center justify-center
+                bg-black/70 backdrop-blur-sm"
                 @click.self="emitClose"
             >
             
                 <div
-                    class="bg-[var(--bg2)] rounded-2xl shadow-xl p-6 m-4 w-full max-w-md text-sm border border-gray-300 dark:border-zinc-700 relative"
+                    class="bg-[var(--bg2)] rounded-2xl shadow-xl
+                    p-6 m-4 w-full max-w-sm text-sm border border-[#F28C28]/60 relative"
                 >
                     
                     <a
-                        class="absolute top-5 right-5 h-8 w-8"
+                        class="absolute top-5 right-5 h-8 w-8 z-100"
                         @click="emitClose"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-full w-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
