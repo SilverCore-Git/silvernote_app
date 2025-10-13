@@ -33,7 +33,6 @@
 
 .v-popper__popper .v-popper__inner {
   backdrop-filter: blur(6px);
-  color: black;
   padding: 6px;
   font-size: 12px;
   border-radius: 6px;
