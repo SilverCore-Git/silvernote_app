@@ -25,7 +25,7 @@
             <div class="flex flex-row justify-center items-center">
 
                 <h1 class=" text-white flex flex-row justify-center items-center gap-2 text-xl">
-                    <img src="/favicon.svg" class="w-6" alt="logo"><span class="hidden sm:block">SilverNote</span>
+                    <img src="/favicon.svg" class="w-6 rounded-md border-2 border-white"><span class="hidden sm:block">SilverNote</span>
                 </h1>
 
             </div>
