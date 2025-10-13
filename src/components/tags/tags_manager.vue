@@ -1,45 +1,86 @@
 <template>
 
     <teleport to="body">
-
-        <div
-            v-if="props.active"
-            class="fixed inset-0 z-50 flex items-center justify-center"
-            style="background-color: #00000090; backdrop-filter: blur(3px);"
+        
+        <Popup
+            v-model:visible="props.active"
+            @click.self="close"
         >
+            
+            <div
+                @click.stop
+                class="text-sm flex flex-col gap-6"
+            >
 
-            <div class="fixed inset-0 top-10 z-50 flex items-center justify-center px-4">
+                <div class="text-center">
+                        
+                    <h1 class="text-xl font-semibold mb-1">
+                        Gérer les dossiers
+                    </h1>
 
-                <div
-                    class="bg-[var(--bg2)] rounded-md p-4 m-3 mb-25 w-full max-w-sm text-sm flex flex-col items-center justify-center top"
-                    style="border-radius: 15px;"
-                >
+                    <p class="text-gray-600 dark:text-zinc-400 text-sm">
+                        Sélectionnez les dossiers contenant la note.
+                    </p>
 
-                    <h1 class="text-2xl font-bold" style="letter-spacing: 2px;">Gérer les dossiers</h1>
-                    <span>Sélectionnez les dossiers contenant la note</span>
+                </div>
 
-                    <ul class="flex flex-col items-center gap-5 w-full max-h-[60vh] overflow-auto pr-20 pl-20 mt-10">
+                <div 
+                    class="
+                        flex-1 overflow-y-auto max-h-[60vh] px-1 scrollbar-thin 
+                        scrollbar-thumb-gray-300 dark:scrollbar-thumb-zinc-700 scrollbar-track-transparent
+                        "
+                    >
+                        
+                    <ul class="flex flex-col gap-4">
 
                         <li
-                            class="w-full"
                             v-for="(tag, index) in all_tags"
                             :key="index"
+                            class="
+                                
+                                "
                         >
 
-                            <label class="flex flex-row justify-between items-center" :for="`switch-${tag.id}`">
+                            <label
+                                class="
+                                    flex items-center justify-between border rounded-xl cursor-pointer
+                                    p-3 bg-[var(--bg2)]/80 hover:scale-102 transition select-none
+                                "
+                                :for="`switch-${tag.id}`"
+                            >
+                                
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-4 h-4 rounded-full border border-gray-400"
+                                        :style="{ backgroundColor: tag.color || '#ccc' }"
+                                    ></div>
+                                    <span class="text-base font-medium text-gray-900 dark:text-zinc-100 truncate max-w-[150px]">
+                                        {{ tag.name }}
+                                    </span>
+                                </div>
 
-                                <span class="text-lg max-w-[60%]">{{ tag.name }}</span>
+                                <div class="relative inline-flex items-center ">
 
-                                <div class="switch flex flex-row">
-                                    
-                                <input
-                                    :id="`switch-${tag.id}`"
-                                    type="checkbox"
-                                    :checked="tagsLocal.includes(tag.id)"
-                                    @change="toggleTag(tag.id)"
-                                />
+                                    <input
+                                        :id="`switch-${tag.id}`"
+                                        type="checkbox"
+                                        class="sr-only peer"
+                                        :checked="tagsLocal.includes(tag.id)"
+                                        @change="toggleTag(tag.id)"
+                                    />
 
-                                <span class="slider"></span>
+                                    <div
+                                        class="
+                                            w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 
+                                            peer-focus:ring-[var(--btn)] rounded-full peer
+                                            peer-checked:bg-[var(--btn)] transition-all
+                                        "
+                                    ></div>
+
+                                    <div
+                                        class="absolute left-[2px] top-[2px] w-5 h-5 bg-white
+                                        rounded-full transition-transform peer-checked:translate-x-5"
+                                    ></div>
 
                                 </div>
 
@@ -49,8 +90,12 @@
 
                     </ul>
 
-                    <button
-                        class="second mt-8"
+                </div>
+
+                <div class="flex justify-end mt-4">
+
+                    <button 
+                        class="primary" 
                         @click="close"
                     >
                         Fermer
@@ -60,11 +105,12 @@
 
             </div>
 
-        </div>
+        </Popup>
 
     </teleport>
 
 </template>
+
 
 
 <script setup lang="ts">
@@ -73,6 +119,7 @@ import { onMounted, ref, watch, defineEmits, defineProps } from 'vue';
 
 import db from '@/assets/ts/database/database';
 import type { Tag } from '@/assets/ts/type';
+import Popup from '../popup/Popup.vue';
 
 const props = defineProps<{
     tags: number[];
