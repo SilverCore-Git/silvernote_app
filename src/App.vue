@@ -7,15 +7,17 @@
       <div class=" w-full h-full" :class="[ 'Edit', 'Share' ].includes(route.name as string) ? 'flex' : ''">
         
         <div 
-          v-if="!loader && !is_offline && InitDB.isLoaded()"
+          v-if="!loader && InitDB.isLoaded()"
           class="flex-1 relative overflow-hidden"
           :class="[ 'Edit', 'Share' ].includes(route.name as string) && route.query.chatbot == 'relative' ? 'mx-4' : 'mr-[var(--mrl)] ml-[var(--mrl)] '"
         >
           <router-view />
         </div>
 
-        <div v-if="true"
-            class=" z-50 relative">
+        <div 
+          v-if="true"
+          class=" z-50 relative"
+        >
           <Chatbot :visible="open_chatbot" />
         </div>
 
@@ -28,7 +30,7 @@
         </div>
       </div>
 
-      <div v-if="is_offline" class="fixed inset-0 bg-[var(--bg)] z-50">
+      <!-- <div v-if="is_offline" class="fixed inset-0 bg-[var(--bg)] z-50">
         <div class="flex justify-center items-center flex-col w-screen h-screen">
 
             <div class="w-30 h-30">
@@ -50,7 +52,7 @@
             </button>
           
         </div>
-      </div>
+      </div> -->
   
     </SignedIn>
 
