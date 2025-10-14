@@ -2,6 +2,7 @@ export interface SimpleAction {
     id: number;
     name: string;
     action: string; // Function
+    tooltip: string;
 }
 
 interface SelectedAction {

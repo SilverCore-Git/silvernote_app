@@ -9,7 +9,7 @@
       <EditorContent
         v-if="editor && !loader"
         :editor="editor as Editor"
-        class="prose w-full h-full mb-40 overflow-hidden"
+        class="prose"
       />
       <div v-else class="animate-pulse bg-gray-300 h-80 w-full rounded-xl"></div>
     </div>
@@ -43,6 +43,7 @@ import { IndentExtension } from './tiptap-extensions/IndentExtension.js';
 import FileHandler from '@tiptap/extension-file-handler';
 //import { CollapsibleExtension } from './tiptap-extensions/CollapsibleExtension.js';
 import DragHandle from './tiptap-extensions/dragHandle';
+import './css/DragHandler.scss';
 import { _searchBar, SearchBar, SearchAndReplace } from './tiptap-extensions/searchAndReplace';
 import FileHandler_configure from './tiptap-extensions/FileHandler_configure.js';
 import { Markdown } from 'tiptap-markdown';
@@ -254,20 +255,47 @@ onBeforeUnmount(() => {
 @import './css/tiptap_carets.css';
 @import './tiptap-extensions/dragHandle/drag-icon.css';
 
-.editor-container {
-  width: 90%;
-  min-height: 70vh;
-  display: flex;
-  flex-direction: column;
+.editor-container .ProseMirror {
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
+  line-break: normal;
+  text-wrap: pretty;
+
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  color: var(--text);
+  width: 100%;
+  min-width: 0;
 }
 
-.editor-container .ProseMirror {
-  height: 100%;
-  overflow-y: hidden;
-  border: none;
-  outline: none;
-  box-shadow: none;
+.editor-container .prose {
+  all: unset;
+  display: block;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: break-word;
   font-family: system-ui, sans-serif;
+  color: var(--text);
+  margin-bottom: 10em;
+  margin-right: 2.6em;
+  margin-left: 2.6em;
+  outline: none;
+}
+
+.ProseMirror:focus {
+  outline: none;
+  border: 0;
+}
+
+.editor-container .ProseMirror p,
+.editor-container .ProseMirror li,
+.editor-container .ProseMirror div {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  hyphens: none;
 }
 
 .ProseMirror p.is-empty::before {

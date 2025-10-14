@@ -28,14 +28,14 @@
               v-if="'action' in action"
               @click="exec(action.action)"
               v-html="action.name"
-              class=""
+              v-tooltip.bottom="action.tooltip"
             ></div>
 
             
             <select
               v-else-if="'actions' in action"
               @change="onSelectAction($event, action.actions)"
-              class="ml-1 rounded"
+              class="ml-1 rounded bg-[var(--bg2)]"
             >
 
               <option

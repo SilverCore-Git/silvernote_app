@@ -1,17 +1,24 @@
 <template>
 
+  <div
+    class="fixed z-40 inset-x-0 top-0 h-30 pointer-events-none"
+    style="background: linear-gradient(to top, transparent 0%, var(--bg2) 100%);"
+  ></div>
+
   <header 
-    class="flex flex-row fixed inset-x-0 mx-[var(--mrl)] pt-2 z-50 h-25 pointer-events-none bg-amber-400"
-    style="background: linear-gradient(to top, transparent 0%, var(--bg2) 90%, var(--bg2) 100%);"
+    class="
+          flex flex-row fixed inset-x-0 mx-[var(--mrl)]
+          pt-2 z-50 mt-5
+          "
   >
 
     <div 
-      class="left-arrow absolute left-0 cursor-pointer pointer-events-auto" 
+      class="left-arrow absolute left-0 cursor-pointer" 
       @click="router.push('/')" 
       :class="hitbox ? 'bg-red-600' : ''"
     ></div>
 
-    <div class="flex flex-row gap-4 absolute right-0 pointer-events-auto">
+    <div class="flex flex-row gap-4 absolute right-0">
 
       <div
         v-if="users.length > 0"

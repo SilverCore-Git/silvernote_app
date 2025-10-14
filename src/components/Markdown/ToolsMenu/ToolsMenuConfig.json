@@ -4,7 +4,8 @@
     {
       "id": 1,
       "name": "Résumé",
-      "action": "()=> editor.chain().focus().insertContent('Résumé IA...').run()"
+      "action": "()=> editor.chain().focus().insertContent('Résumé IA...').run()",
+      "tooltip": "Faire un resumé par ia"
     },
     {
       "id": 2,
@@ -28,17 +29,20 @@
     {
       "id": 6,
       "name": "<strong>B</strong",
-      "action": "()=> editor.chain().focus().toggleBold().run()"
+      "action": "()=> editor.chain().focus().toggleBold().run()",
+      "tooltip": "Gras"
     },
     {
       "id": 7,
       "name": "<i>I</i>",
-      "action": "()=> editor.chain().focus().toggleItalic().run()"
+      "action": "()=> editor.chain().focus().toggleItalic().run()",
+      "tooltip": "Italique"
     },
     {
       "id": 8,
       "name": "<u>U</u>",
-      "action": "()=> editor.chain().focus().toggleUnderline().run()"
+      "action": "()=> editor.chain().focus().toggleUnderline().run()",
+      "tooltip": "Souligner"
     },
 
     {
@@ -73,7 +77,8 @@
     {
       "id": 10,
       "name": "image",
-      "action": "getImageFile"
+      "action": "getImageFile",
+      "tooltip": "incerer une image"
     }
   ]
 }

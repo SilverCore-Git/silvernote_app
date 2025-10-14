@@ -1,57 +1,63 @@
-.prose {
+.tiptap {
   font-size: .9em;
   font-family: 'Inter', sans-serif;
   font-size: 16px;
   line-height: 1.6;
+  word-break: normal;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  hyphens: none;
+  
 }
 
-.prose .ytb-viewer {
+
+.tiptap .ytb-viewer {
   width: 100%;
 }
 
-.prose img,
-.prose .ytb-viewer {
+.tiptap img,
+.tiptap .ytb-viewer {
   border-radius: 12px;
 }
 
 
-.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+.tiptap h1, .tiptap h2, .tiptap h3, .tiptap h4, .tiptap h5, .tiptap h6 {
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
 
-.prose h1 {
+.tiptap h1 {
   font-size: 1.8rem;
 }
 
-.prose h2 {
+.tiptap h2 {
   font-size: 1.4rem;
 }
 
-.prose h3 {
+.tiptap h3 {
   font-size: 1.2rem;
 }
 
-.prose ul, .prose ol {
+.tiptap ul, .tiptap ol {
   padding-left: 1.5rem;
   list-style-type: disc;
 }
 
-.prose ul {
+.tiptap ul {
   list-style: disc;
 }
 
-.prose ol {
+.tiptap ol {
   list-style: decimal;
 }
 
-.prose hr {
+.tiptap hr {
   height: 2px;
   background-color: #D96E30;
   border: none;
 }
 
-.prose blockquote {
+.tiptap blockquote {
   border-left: 4px solid #D96E30;
   padding-left: 1rem;
   color: #555;
@@ -59,13 +65,13 @@
   margin: 1rem 0;
 }
 
-.prose a {
+.tiptap a {
     text-decoration: underline;
     color: #555;
     cursor: pointer;
 }
 
-.prose code {
+.tiptap code {
   color: var(--btn); 
   background-color: rgba(255, 255, 255, 0.05);
   padding: 0.2em 0.4em;
@@ -75,7 +81,7 @@
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.prose p {
+.tiptap p {
   margin-top: 1em;
   margin-bottom: 1em;
 }

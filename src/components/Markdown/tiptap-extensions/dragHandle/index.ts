@@ -3,7 +3,7 @@ import NodeRange from '@tiptap/extension-node-range';
 
 function createDragIcon(): HTMLElement {
   const icon = document.createElement('div');
-  icon.className = 'drag-icon';
+  icon.className = 'drag-icon';  
   return icon;
 }
 
