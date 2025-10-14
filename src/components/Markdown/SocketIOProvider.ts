@@ -13,7 +13,7 @@ export class SocketIOProvider {
 
     this.socket = io(serverUrl, {
       path: "/socket.io/share",
-      transports: ["websocket", "polling"],
+      transports: ["websocket"],
       autoConnect: true,
       forceNew: true,
       upgrade: false,

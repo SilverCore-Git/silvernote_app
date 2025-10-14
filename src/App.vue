@@ -128,10 +128,6 @@ watch(() => route.query.form, (form) => {
   main_form.value = form === "main";
 });
 
-const reload = () => {
-  window.location.reload();
-}
-
 watch(isLoaded, (loaded) => {
   if (loaded && !user.value?.id) {
     router.push({ query: { ...route.query, form: "main" } });
