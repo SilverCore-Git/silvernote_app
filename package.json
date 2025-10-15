@@ -2,7 +2,7 @@
   "name": "silvernote_front",
   "private": true,
   "version": "0.1.2-beta",
-  "dev": true,
+  "dev": false,
   "type": "module",
   "scripts": {
     "dev": "vite",

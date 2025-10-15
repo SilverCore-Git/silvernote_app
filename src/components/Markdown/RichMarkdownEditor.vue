@@ -1,7 +1,7 @@
 <template>
 
   <ToolsMenu
-      class="editor-container overflow-hidden" 
+      class="editor-container" 
       @click="focusEditor"
   >
 
@@ -157,7 +157,14 @@ const startAutoSave = () => {
 const initEditor = async () => {
 
   const ydoc = new Y.Doc();
-  provider = new SocketIOProvider(api_url, props.data.uuid, user.value?.id || "", ydoc);
+  provider = new SocketIOProvider(
+    api_url == 'http://localhost:3000' 
+      ? 'http://localhost:3434' 
+      : api_url, 
+    props.data.uuid, 
+    user.value?.id || "",
+    ydoc
+  );
 
   const color = await getColorByImage();
 
@@ -255,6 +262,14 @@ onBeforeUnmount(() => {
 @import './css/tiptap_carets.css';
 @import './tiptap-extensions/dragHandle/drag-icon.css';
 
+.editor-container {
+  width: 100%;
+  max-width: 90%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .editor-container .ProseMirror {
   white-space: pre-wrap;
   word-break: keep-all;
@@ -266,7 +281,6 @@ onBeforeUnmount(() => {
   font-size: 1rem;
   letter-spacing: 0.01em;
   color: var(--text);
-  width: 100%;
   min-width: 0;
 }
 
@@ -279,8 +293,6 @@ onBeforeUnmount(() => {
   font-family: system-ui, sans-serif;
   color: var(--text);
   margin-bottom: 10em;
-  margin-right: 2.6em;
-  margin-left: 2.6em;
   outline: none;
 }
 
