@@ -60,34 +60,12 @@
   
       <div>
   
-        <div
-          v-if="signin_form || signup_form"
-          class="left-arrow absolute left-[var(--mrl)] top-[var(--mrl)]"
-          @click="router.push({ query: { form: 'main' } })"
-        ></div>
+        <div 
+          class="flex flex-col justify-center items-center w-screen h-screen"
+        >
 
-        <div v-if="main_form" class="flex flex-col justify-center items-center w-screen h-screen">
-
-          <img class="w-20 mb-2" src="/favicon.svg" alt="" />
-          
-          <h1 class="text-3xl font-bold mb-8">silvernote</h1>
-          
-          <button class="second w-35 mb-2" @click="router.push({ query: { form: 'signin' } })">
-            Se connecter
-          </button>
-          
-          <button class="primary w-35" @click="router.push({ query: { form: 'signup' } })">
-            S'inscrire
-          </button>
+          <ConnectionPage />
         
-        </div>
-        
-        <div v-if="signup_form" class="flex flex-col justify-center items-center w-screen h-screen">
-          <SignUp />
-        </div>
-        
-        <div v-if="signin_form" class="flex flex-col justify-center items-center w-screen h-screen">
-          <SignIn />
         </div>
     
       </div>
@@ -106,7 +84,8 @@ import Loader from "./components/Loader.vue";
 import Chatbot from "./components/chatbot/Chatbot.vue";
 import { Session } from "./assets/ts/backend_link";
 import { init_theme } from "./assets/ts/theme";
-import { SignedIn, SignedOut, SignIn, SignUp, useUser } from "@clerk/vue";
+import { SignedIn, SignedOut, useUser } from "@clerk/vue";
+import { ConnectionPage } from '@/lib/silvernote-vue';
 import { loaded } from "./assets/ts/utils";
 import InitDB from "./assets/ts/database/init";
 
@@ -117,16 +96,7 @@ const route = useRoute();
 const router = useRouter();
 const { user, isLoaded } = useUser();
 
-const signin_form = ref<boolean>(route.query.form === "signin");
-const signup_form = ref<boolean>(route.query.form === "signup");
-const main_form = ref<boolean>(route.query.form === "main");
 const is_offline = ref<boolean>(false);
-
-watch(() => route.query.form, (form) => {
-  signin_form.value = form === "signin";
-  signup_form.value = form === "signup";
-  main_form.value = form === "main";
-});
 
 watch(isLoaded, (loaded) => {
   if (loaded && !user.value?.id) {
