@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 
 import { ref } from 'vue'
 import { useSignIn } from '@clerk/vue'
@@ -19,18 +19,18 @@ const handleSubmit = async () => {
     isLoading.value = true
 
     try {
-        const result = await signIn.value.create({
+        const result = await signIn.value?.create({
         identifier: email.value,
         password: password.value,
         })
 
-        if (result.status === 'complete') {
-            await setActive({ session: result.createdSessionId })
+        if (result?.status === 'complete' && setActive.value) {
+            await setActive.value({ session: result.createdSessionId })
             router.push('/')
         } else {
-            console.log('Statut de connexion:', result.status)
+            console.log('Statut de connexion:', result?.status)
         }
-    } catch (err) {
+    } catch (err: any) {
         console.error('Erreur de connexion:', err)
         error.value = err.errors?.[0]?.message || 'Erreur lors de la connexion'
     } finally {
@@ -38,16 +38,16 @@ const handleSubmit = async () => {
     }
 }
 
-const handleOAuth = async (provider) => {
+const handleOAuth = async (provider: 'google' | 'discord') => {
     if (!isLoaded.value) return
     
     try {
-        await signIn.value.authenticateWithRedirect({
+        await signIn.value?.authenticateWithRedirect({
             strategy: `oauth_${provider}`,
             redirectUrl: '/sso-callback',
             redirectUrlComplete: '/'
         })
-    } catch (err) {
+    } catch (err: any) {
         console.error(`Erreur OAuth ${provider}:`, err)
         error.value = err.errors?.[0]?.message || `Erreur lors de la connexion avec ${provider}`
     }

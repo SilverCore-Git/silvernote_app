@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 
 import { ref } from 'vue'
 import { useSignUp } from '@clerk/vue'
@@ -23,19 +23,19 @@ const handleSubmit = async () => {
 
     try {
         
-        await signUp.value.create({
+        await signUp.value?.create({
             emailAddress: email.value,
             password: password.value,
             username: username.value,
         })
 
-        await signUp.value.prepareEmailAddressVerification({ 
+        await signUp.value?.prepareEmailAddressVerification({ 
             strategy: 'email_code' 
         })
 
         pendingVerification.value = true
 
-    } catch (err) {
+    } catch (err: any) {
         console.error('Erreur lors de l\'inscription:', err)
         error.value = err.errors?.[0]?.message || 'Erreur lors de la création du compte'
     } finally {
@@ -52,18 +52,18 @@ const handleVerification = async () => {
     try {
 
         // Vérifier le code email
-        const completeSignUp = await signUp.value.attemptEmailAddressVerification({
+        const completeSignUp = await signUp.value?.attemptEmailAddressVerification({
             code: code.value,
         })
 
-        if (completeSignUp.status === 'complete') {
-            await setActive({ session: completeSignUp.createdSessionId })
-            router.push('/') // Redirection après inscription réussie
+        if (completeSignUp?.status === 'complete' && setActive.value) {
+            await setActive.value({ session: completeSignUp.createdSessionId });
+            router.push('/'); // Redirection après inscription réussie
         } else {
-            console.log('Statut d\'inscription:', completeSignUp.status)
+            console.log('Statut d\'inscription:', completeSignUp?.status);
         }
 
-    } catch (err) {
+    } catch (err: any) {
         console.error('Erreur de vérification:', err)
         error.value = err.errors?.[0]?.message || 'Code de vérification invalide'
     } finally {
@@ -71,16 +71,16 @@ const handleVerification = async () => {
     }
 }
 
-const handleOAuth = async (provider) => {
+const handleOAuth = async (provider: 'google' | 'discord') => {
     if (!isLoaded.value) return
     
     try {
-        await signUp.value.authenticateWithRedirect({
-        strategy: `oauth_${provider}`,
-        redirectUrl: '/sso-callback',
-        redirectUrlComplete: '/'
+        await signUp.value?.authenticateWithRedirect({
+            strategy: `oauth_${provider}`,
+            redirectUrl: '/sso-callback',
+            redirectUrlComplete: '/'
         })
-    } catch (err) {
+    } catch (err: any) {
         console.error(`Erreur OAuth ${provider}:`, err)
         error.value = err.errors?.[0]?.message || `Erreur lors de l'inscription avec ${provider}`
     }
