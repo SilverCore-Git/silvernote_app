@@ -463,7 +463,12 @@ const init = () => {
 
 const wSocket = () => {
 
-    socket = io(api_url, { path: "/socket.io/share" });
+    socket = io(
+      api_url == 'http://localhost:3000'
+        ? 'http://localhost:3434'
+        : api_url, 
+      { path: "/socket.io/share" }
+    );
 
     socket.on('connect', () => {
         console.log('WebSocket connecté !');

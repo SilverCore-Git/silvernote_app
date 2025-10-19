@@ -136,7 +136,8 @@ class InitDB {
             return;
         }
 
-        SharedNotes.value = res.notes;
+        const resNotes: any[] = res.notes;
+        SharedNotes.value = resNotes.filter(note => note.user_id != this.user?.value.id);
         return;
     }
 

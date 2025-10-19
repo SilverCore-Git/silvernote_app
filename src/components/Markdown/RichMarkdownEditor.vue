@@ -155,12 +155,12 @@ const startAutoSave = () => {
 
 
 const initEditor = async () => {
-
+  
   const ydoc = new Y.Doc();
   provider = new SocketIOProvider(
-    api_url == 'http://localhost:3000' 
-      ? 'http://localhost:3434' 
-      : api_url, 
+    api_url == 'http://localhost:3000'
+      ? 'http://localhost:3434'
+      : api_url,
     props.data.uuid, 
     user.value?.id || "",
     ydoc
