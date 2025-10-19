@@ -88,7 +88,7 @@ const handleOAuth = async (provider) => {
                         
                     <div>
 
-                        <label for="email" class="block text-sm font-medium text-gray-700">
+                        <label for="email" class="block text-sm font-medium">
                             Email ou nom d'utilisateur
                         </label>
 
@@ -112,7 +112,7 @@ const handleOAuth = async (provider) => {
 
                         <label 
                             for="password" 
-                            class="block text-sm font-medium text-gray-700"
+                            class="block text-sm font-medium"
                         >
                             Mot de passe
                         </label>
@@ -145,7 +145,7 @@ const handleOAuth = async (provider) => {
 
                 <div class="my-4 flex items-center">
                     <hr class="flex-grow border-gray-300" />
-                    <span class="px-2 text-gray-500 text-sm">ou</span>
+                    <span class="px-2 text-sm">ou</span>
                     <hr class="flex-grow border-gray-300" />
                 </div>
 
@@ -154,11 +154,7 @@ const handleOAuth = async (provider) => {
                     <button
                         @click="handleOAuth('google')"
                         :disabled="isLoading || !isLoaded"
-                        class="
-                            w-full py-2 px-4 flex items-center justify-center cursor-pointer 
-                            border border-gray-300 rounded-lg hover:bg-gray-100 transition 
-                            disabled:opacity-50 disabled:cursor-not-allowed
-                        "
+                        class="second w-full"
                     >
                         <img 
                             src="./assets/icon/google.svg" 
@@ -170,11 +166,7 @@ const handleOAuth = async (provider) => {
                     <button
                         @click="handleOAuth('discord')"
                         :disabled="isLoading || !isLoaded"
-                        class="
-                            w-full py-2 px-4 flex items-center justify-center cursor-pointer 
-                            border border-gray-300 rounded-lg hover:bg-gray-100 transition 
-                            disabled:opacity-50 disabled:cursor-not-allowed
-                        "
+                        class="second w-full"
                     >
                         <img 
                             src="./assets/icon/discord.svg" 

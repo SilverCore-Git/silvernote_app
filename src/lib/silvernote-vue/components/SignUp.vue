@@ -125,18 +125,18 @@ const handleOAuth = async (provider) => {
                     </p>
                     
                     <div>
-                        <label for="code" class="block text-sm font-medium text-gray-700">
-                        Code de vérification
+                        <label for="code" class="block text-sm font-medium">
+                            Code de vérification
                         </label>
                         <input 
-                        type="text" 
-                        id="code" 
-                        v-model="code"
-                        placeholder="123456"
-                        required
-                        :disabled="isLoading"
-                        maxlength="6"
-                        class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--btn)] focus:border-[var(--btn)] outline-none disabled:opacity-50"
+                            type="text" 
+                            id="code" 
+                            v-model="code"
+                            placeholder="123456"
+                            required
+                            :disabled="isLoading"
+                            maxlength="6"
+                            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--btn)] focus:border-[var(--btn)] outline-none disabled:opacity-50"
                         />
                     </div>
 
@@ -157,7 +157,7 @@ const handleOAuth = async (provider) => {
                 >
 
                     <div>
-                        <label for="username" class="block text-sm font-medium text-gray-700">
+                        <label for="username" class="block text-sm font-medium">
                             Nom d'utilisateur
                         </label>
                         <input 
@@ -172,7 +172,7 @@ const handleOAuth = async (provider) => {
                     </div>
                         
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700">
+                        <label for="email" class="block text-sm font-medium">
                             Email
                         </label>
                         <input 
@@ -187,7 +187,7 @@ const handleOAuth = async (provider) => {
                     </div>
 
                     <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700">
+                        <label for="password" class="block text-sm font-medium">
                             Mot de passe
                         </label>
 
@@ -216,7 +216,7 @@ const handleOAuth = async (provider) => {
                         
                     <div class="my-4 flex items-center">
                         <hr class="flex-grow border-gray-300" />
-                        <span class="px-2 text-gray-500 text-sm">ou</span>
+                        <span class="px-2 text-sm">ou</span>
                         <hr class="flex-grow border-gray-300" />
                     </div>
 
@@ -225,7 +225,7 @@ const handleOAuth = async (provider) => {
                         <button
                             @click="handleOAuth('google')"
                             :disabled="isLoading || !isLoaded"
-                            class="w-full py-2 px-4 flex items-center justify-center cursor-pointer border border-gray-300 rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            class="second w-full"
                         >
                         <img 
                             src="./assets/icon/google.svg" 
@@ -238,7 +238,7 @@ const handleOAuth = async (provider) => {
                         <button
                             @click="handleOAuth('discord')"
                             :disabled="isLoading || !isLoaded"
-                            class="w-full py-2 px-4 flex items-center justify-center cursor-pointer border border-gray-300 rounded-lg hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            class="second w-full"
                         >
                         <img 
                             src="./assets/icon/discord.svg" 
