@@ -59,7 +59,7 @@ const handleOAuth = async (provider) => {
             <div 
                 class="
                     relative z-10 bg-[var(--bg2)] rounded-2xl shadow-lg 
-                    p-8 w-full max-w-md -translate-y-10 lg:translate-y-0
+                    p-8 w-full max-w-md
                 "
             >
 

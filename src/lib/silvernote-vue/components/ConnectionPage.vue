@@ -7,7 +7,7 @@ import SignIn from './SignIn.vue';
 import SignUp from './SignUp.vue';
 
 const route = useRoute();
-const changeForm = ref<number>(0);
+const changeForm = ref<number>(route.query.form == 'signup' ? 1 : 0);
 
 watch(() => route.query.form, () => {
   changeForm.value++
@@ -17,22 +17,20 @@ watch(() => route.query.form, () => {
 
 <template>
 
-  <div class="w-screen h-screen bg-signin">
+  <div class="w-screen h-screen bg-signin flex justify-center items-center">
 
     <div
       class="
-            flex justify-start items-center
-             transition-all duration-500
+            w-full h-full flex justify-start items-center transition-all duration-500
       "
-      :style="{ transform: `rotate(${180*changeForm}deg)` }"
+      :style="{ transform: `rotate(${360*changeForm}deg)` }"
     >
 
         <div 
           class="
-                h-screen w-screen lg:w-1/2 flex justify-center items-center flex-col
-                transition-all duration-200
+                w-full lg:w-1/2 justify-center items-center flex-col
           "
-          :class="route.query.form == 'signin' ? 'opacity-100' : 'opacity-0'"
+          :class="route.query.form != 'signup' ? 'flex' : 'hidden'"
         >
 
             <SignIn />
@@ -41,13 +39,12 @@ watch(() => route.query.form, () => {
 
         <div 
           class="
-                h-screen w-screen lg:w-1/2 flex justify-center items-center flex-col
-                transition-all duration-200
+                w-full lg:w-1/2 justify-center items-center flex-col
           "
-          :class="route.query.form == 'signup' ? 'opacity-100' : 'opacity-0'"
+          :class="route.query.form == 'signup' ? 'flex' : 'hidden'"
         >
 
-            <SignUp style="transform: scale(-1);" />
+            <SignUp />
 
         </div>
 
