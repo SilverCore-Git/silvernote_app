@@ -48,7 +48,7 @@
 
         </section>
 
-        <section
+        <!-- <section
             class="flex flex-col w-full gap-4"
         >
 
@@ -58,22 +58,11 @@
                 Paramètres divers
             </h1>
 
-            <label
-                class="cursor-pointer w-full flex justify-between items-center"
-                :class="hitbox ? 'bg-red-600' : ''"
-            >
-
-              <span>Couleur</span>
-
-              <input type="color" v-model="color">
-              
-            </label>
-
             <hr
                 class="mb-2 mt-4 opacity-25"
             />
 
-        </section>
+        </section> -->
 
         <section
             class="flex flex-col w-full gap-4"
@@ -155,7 +144,7 @@ import { useRouter } from 'vue-router';
 
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 
-import { version } from '../../package.json';
+import { version } from '../../../package.json';
 import { SettingsDB, settings as settingsObj  } from '@/assets/ts/settings';
 import type { Settings } from '@/assets/ts/type';
 import { hitbox as if_hitbox } from '@/assets/ts/settings';
@@ -230,7 +219,7 @@ const download_db = async () => {
 
   try {
 
-      const blob = new Blob([JSON.stringify(json_file)], { type: 'application/json' }); // utilisation de blob pour créer une ressource avec des données brut
+      const blob = new Blob([JSON.stringify(json_file)], { type: 'application/snote' });
 
       const url = URL.createObjectURL(blob);
       const lien = document.createElement('a');
