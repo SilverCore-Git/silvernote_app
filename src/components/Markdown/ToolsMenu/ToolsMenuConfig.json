@@ -10,7 +10,7 @@
     {
       "id": 2,
       "name": "Demander a l'IA",
-      "action": "()=> editor.chain().focus().insertContent('Résumé IA...').run()"
+      "action": "AskToAI"
     }
   ],
 
