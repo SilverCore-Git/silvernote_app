@@ -1,57 +1,64 @@
 <script lang="ts" setup>
 
-import { ref } from 'vue'
-import { useSignIn } from '@clerk/vue'
-import { useRouter } from 'vue-router'
+import { ref } from 'vue';
+import { useSignIn } from '@clerk/vue';
+import { useRoute, useRouter } from 'vue-router';
 
-const router = useRouter()
-const { signIn, isLoaded, setActive } = useSignIn()
+const router = useRouter();
+const route = useRoute();
+const { signIn, isLoaded, setActive } = useSignIn();
 
-const email = ref('')
-const password = ref('')
-const error = ref('')
-const isLoading = ref(false)
+const email = ref<string>('');
+const password = ref<string>('');
+const error = ref<string>('');
+const isLoading = ref<boolean>(false);
+const redirectUrl = ref<string>(window.location.host);
+
+if (route.query.redirect) redirectUrl.value = String(route.query.redirect);
 
 const handleSubmit = async () => {
-    if (!isLoaded.value) return
+    if (!isLoaded.value) return;
     
-    error.value = ''
-    isLoading.value = true
+    error.value = '';
+    isLoading.value = true;
 
     try {
+
         const result = await signIn.value?.create({
-        identifier: email.value,
-        password: password.value,
+            identifier: email.value,
+            password: password.value,
         })
 
         if (result?.status === 'complete' && setActive.value) {
-            await setActive.value({ session: result.createdSessionId })
-            router.push('/')
+            await setActive.value({ session: result.createdSessionId });
+            window.location.href = redirectUrl.value;
         } else {
-            console.log('Statut de connexion:', result?.status)
+            console.log('Statut de connexion:', result?.status);
         }
+
     } catch (err: any) {
-        console.error('Erreur de connexion:', err)
-        error.value = err.errors?.[0]?.message || 'Erreur lors de la connexion'
+        console.error('Erreur de connexion:', err);
+        error.value = err.errors?.[0]?.message || 'Erreur lors de la connexion';
     } finally {
-        isLoading.value = false
+        isLoading.value = false;
     }
 }
 
 const handleOAuth = async (provider: 'google' | 'discord') => {
-    if (!isLoaded.value) return
+    if (!isLoaded.value) return;
     
     try {
         await signIn.value?.authenticateWithRedirect({
             strategy: `oauth_${provider}`,
             redirectUrl: '/sso-callback',
-            redirectUrlComplete: '/'
-        })
+            redirectUrlComplete: redirectUrl.value
+        });
     } catch (err: any) {
-        console.error(`Erreur OAuth ${provider}:`, err)
-        error.value = err.errors?.[0]?.message || `Erreur lors de la connexion avec ${provider}`
+        console.error(`Erreur OAuth ${provider}:`, err);
+        error.value = err.errors?.[0]?.message || `Erreur lors de la connexion avec ${provider}`;
     }
 }
+
 </script>
 
 <template>
@@ -181,7 +188,7 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
                     Pas de compte ? 
                     <a 
                         class="ml-2 font-bold px-1"
-                        @click="router.push('/?form=signup')"
+                        @click="router.push({ query: { form: 'signup' } })"
                     >
                         s'inscrire
                     </a>

@@ -1,25 +1,29 @@
 <script lang="ts" setup>
 
-import { ref } from 'vue'
-import { useSignUp } from '@clerk/vue'
-import { useRouter } from 'vue-router'
+import { ref } from 'vue';
+import { useSignUp } from '@clerk/vue';
+import { useRoute, useRouter } from 'vue-router';
 
-const router = useRouter()
-const { signUp, isLoaded, setActive } = useSignUp()
+const router = useRouter();
+const route = useRoute();
+const { signUp, isLoaded, setActive } = useSignUp();
 
-const username = ref('')
-const email = ref('')
-const password = ref('')
-const error = ref('')
-const isLoading = ref(false)
-const pendingVerification = ref(false)
-const code = ref('')
+const username = ref<string>('');
+const email = ref<string>('');
+const password = ref<string>('');
+const error = ref<string>('');
+const isLoading = ref<boolean>(false);
+const pendingVerification = ref<boolean>(false);
+const code = ref<string>('');
+const redirectUrl = ref<string>(window.location.host);
+
+if (route.query.redirect) redirectUrl.value = String(route.query.redirect);
 
 const handleSubmit = async () => {
-    if (!isLoaded.value) return
+    if (!isLoaded.value) return;
     
-    error.value = ''
-    isLoading.value = true
+    error.value = '';
+    isLoading.value = true;
 
     try {
         
@@ -44,45 +48,45 @@ const handleSubmit = async () => {
 }
 
 const handleVerification = async () => {
-    if (!isLoaded.value) return
+    if (!isLoaded.value) return;
     
-    error.value = ''
-    isLoading.value = true
+    error.value = '';
+    isLoading.value = true;
 
     try {
 
         // Vérifier le code email
         const completeSignUp = await signUp.value?.attemptEmailAddressVerification({
             code: code.value,
-        })
+        });
 
         if (completeSignUp?.status === 'complete' && setActive.value) {
             await setActive.value({ session: completeSignUp.createdSessionId });
-            router.push('/'); // Redirection après inscription réussie
+            window.location.href = redirectUrl.value;
         } else {
             console.log('Statut d\'inscription:', completeSignUp?.status);
         }
 
     } catch (err: any) {
-        console.error('Erreur de vérification:', err)
-        error.value = err.errors?.[0]?.message || 'Code de vérification invalide'
+        console.error('Erreur de vérification:', err);
+        error.value = err.errors?.[0]?.message || 'Code de vérification invalide';
     } finally {
-        isLoading.value = false
+        isLoading.value = false;
     }
 }
 
 const handleOAuth = async (provider: 'google' | 'discord') => {
-    if (!isLoaded.value) return
+    if (!isLoaded.value) return;
     
     try {
         await signUp.value?.authenticateWithRedirect({
             strategy: `oauth_${provider}`,
             redirectUrl: '/sso-callback',
-            redirectUrlComplete: '/'
+            redirectUrlComplete: redirectUrl.value
         })
     } catch (err: any) {
-        console.error(`Erreur OAuth ${provider}:`, err)
-        error.value = err.errors?.[0]?.message || `Erreur lors de l'inscription avec ${provider}`
+        console.error(`Erreur OAuth ${provider}:`, err);
+        error.value = err.errors?.[0]?.message || `Erreur lors de l'inscription avec ${provider}`;
     }
 }
 
@@ -271,7 +275,7 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
                             Tu as déjà un compte ? 
                         <a 
                             class="ml-2 font-bold px-1 cursor-pointer hover:underline"
-                            @click="router.push('/?form=signin')"
+                            @click="router.push({ query: { form: 'signin' } })"
                         >
                             se connecter
                         </a>
