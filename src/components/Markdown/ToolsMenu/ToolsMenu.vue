@@ -64,13 +64,17 @@
 <script setup lang="ts">
 
 import { Editor } from '@tiptap/vue-3';
-import { nextTick, ref, watch } from 'vue'
+import { nextTick, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 import type { Categories, SimpleAction } from '@/components/Markdown/ToolsMenu/ToolsMenuTypes';
 import config from '@/components/Markdown/ToolsMenu/ToolsMenuConfig.json';
 import { editor } from '../Editor';
 import { onDragIconLoaded } from '../tiptap-extensions/dragHandle';
 const _config: any = config; // i can't assign categories type
+
+const route = useRoute();
+const router = useRouter();
 
 const actions = ref<Categories>(_config);
 const showMenu = ref<boolean> (false);
@@ -110,6 +114,7 @@ const openSelectionMenu = (withEditorSelect: boolean) => {
 const exec = (action: string) => {
 
   if (action.startsWith('getImageFile')) return insertImageFromFile(editor.value as Editor);
+  if (action.startsWith('AskToAI')) return AskToAI();
 
   const fn = new Function("editor", `return (${action})()`);
   fn(editor.value);
@@ -144,6 +149,35 @@ const insertImageFromFile = (editor: Editor) => {
   input.click();
 };
 
+
+const AskToAI = () => {
+
+  router.push({
+    query: {
+      ...route.query,
+      aiquery: undefined,
+      chatbot: undefined
+    }
+  });
+
+  setTimeout(() => {
+
+    if (!editor.value) return;
+
+    const { from, to } = editor.value.state.selection;
+    router.push({
+      query: {
+        ...route.query,
+        aiquery: editor.value.state.doc.textBetween(from, to, ' '),
+        chatbot: 'fixed'
+      }
+    });
+
+    showMenu.value = false;
+
+  }, 100);
+
+}
 
 
 watch(
