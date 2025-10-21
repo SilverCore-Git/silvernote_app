@@ -324,13 +324,6 @@ const send = async (prompt: string): Promise<void> => {
             })
         });
 
-        const data = await response.json();
-        if (data.error) {
-            add_error(data.message);
-            loading.value = false;
-            return;
-        }
-
         if (!response.ok) {
             loading.value = false;
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -498,7 +491,7 @@ const Open = (): void => {
 
 watch(() => route.query.aiquery, () => {
     if (route.query.aiquery && route.query.aiquery !== '') {
-        send(String(route.query.aiquery));
+        add_message(String(route.query.aiquery));
     }
 });
 

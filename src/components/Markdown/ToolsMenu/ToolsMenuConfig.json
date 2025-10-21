@@ -4,7 +4,7 @@
     {
       "id": 1,
       "name": "Résumé",
-      "action": "()=> editor.chain().focus().insertContent('Résumé IA...').run()",
+      "action": "AskToAI('Résume moi ce texte : ')",
       "tooltip": "Faire un resumé par ia"
     },
     {

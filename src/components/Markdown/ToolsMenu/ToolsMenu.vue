@@ -114,7 +114,16 @@ const openSelectionMenu = (withEditorSelect: boolean) => {
 const exec = (action: string) => {
 
   if (action.startsWith('getImageFile')) return insertImageFromFile(editor.value as Editor);
-  if (action.startsWith('AskToAI')) return AskToAI();
+  if (action.startsWith('AskToAI')) {
+    AskToAI(
+        action.replace('AskToAI', '').startsWith('(') 
+          ? action
+              .replace(/AskToAI/g, '')
+              .replace(/[()']/g, '')
+              .trim()
+          : undefined
+      );
+  }
 
   const fn = new Function("editor", `return (${action})()`);
   fn(editor.value);
@@ -150,7 +159,7 @@ const insertImageFromFile = (editor: Editor) => {
 };
 
 
-const AskToAI = () => {
+const AskToAI = (prompt?: string) => {
 
   router.push({
     query: {
@@ -168,7 +177,7 @@ const AskToAI = () => {
     router.push({
       query: {
         ...route.query,
-        aiquery: editor.value.state.doc.textBetween(from, to, ' '),
+        aiquery: prompt?.replace('undefined', '').trim() + editor.value.state.doc.textBetween(from, to, ' '),
         chatbot: 'fixed'
       }
     });
