@@ -2,10 +2,9 @@
 
 import { ref } from 'vue';
 import { useSignUp } from '@clerk/vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const route = useRoute();
 const { signUp, isLoaded, setActive } = useSignUp();
 
 const username = ref<string>('');
@@ -15,9 +14,7 @@ const error = ref<string>('');
 const isLoading = ref<boolean>(false);
 const pendingVerification = ref<boolean>(false);
 const code = ref<string>('');
-const redirectUrl = ref<string>(window.location.host);
 
-if (route.query.redirect) redirectUrl.value = String(route.query.redirect);
 
 const handleSubmit = async () => {
     if (!isLoaded.value) return;
@@ -62,7 +59,7 @@ const handleVerification = async () => {
 
         if (completeSignUp?.status === 'complete' && setActive.value) {
             await setActive.value({ session: completeSignUp.createdSessionId });
-            window.location.href = redirectUrl.value;
+            router.push('/');
         } else {
             console.log('Statut d\'inscription:', completeSignUp?.status);
         }
@@ -82,7 +79,7 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
         await signUp.value?.authenticateWithRedirect({
             strategy: `oauth_${provider}`,
             redirectUrl: '/sso-callback',
-            redirectUrlComplete: redirectUrl.value
+            redirectUrlComplete: '/'
         })
     } catch (err: any) {
         console.error(`Erreur OAuth ${provider}:`, err);
