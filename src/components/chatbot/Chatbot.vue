@@ -137,7 +137,7 @@
 
 
                 <footer 
-                    class="h-15 flex justify-between items-center flex-row"
+                    class="h-15 flex justify-between items-center flex-row rounded-b-2xl"
                 >
 
                     <input 
@@ -324,23 +324,34 @@ const send = async (prompt: string): Promise<void> => {
             })
         });
 
+        const data = await response.json();
+        if (data.error) {
+            add_error(data.message);
+            loading.value = false;
+            return;
+        }
+
         if (!response.ok) {
+            loading.value = false;
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const contentType = response.headers.get("content-type");
         if (!contentType?.includes("text/event-stream")) {
+            loading.value = false;
             throw new Error("Invalid response format - expected event stream");
         }
 
         const reader = response.body?.getReader();
         if (!reader) {
+            loading.value = false;
             throw new Error("No readable stream available");
         }
 
         const decoder = new TextDecoder();
 
         if (!reader) {
+            loading.value = false;
             add_error("Pas de flux reçu");
             return;
         }
@@ -485,12 +496,28 @@ const Open = (): void => {
 
 }
 
+watch(() => route.query.aiquery, () => {
+    if (route.query.aiquery && route.query.aiquery !== '') {
+        send(String(route.query.aiquery));
+    }
+});
+
 onUnmounted(() => close());
 onMounted(() => {
     Open();
 });
 
-
+watch(() => route.query.chatbot, () => {
+    if (
+        route.query.chatbot 
+        && route.query.chatbot == 'fixed' 
+        || route.query.chatbot == 'relative'
+    )
+    {
+        pos.value = route.query.chatbot;
+        open.value = true;
+    }
+})
 watch(() => pos.value, (newVal) => {
     if (newVal === 'relative') {
         setTimeout(() => {
