@@ -250,7 +250,24 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
 
                     </div>
 
-                    <p class="text-sm text-center mt-6">
+                    <div class="text-sm mt-4">
+                        En créant un compte, vous acceptez nos 
+                        <a 
+                            href="https://www.silvernote.fr/conditions-general-utilisation" 
+                            target="_blank"
+                            class="underline"
+                        >Conditions d'Utilisation</a>
+                        et reconnaissez avoir reçu notre 
+                        <a 
+                            href="https://www.silvernote.fr/politique-de-confidentialite" 
+                            target="_blank"
+                            class="underline"
+                        >Politique de Confidentialité</a>.
+                    </div>
+
+                    <hr class="flex-grow border-gray-300 my-4" />
+
+                    <p class="text-sm text-center mt-4 -mb-2">
                             Tu as déjà un compte ? 
                         <a 
                             class="ml-2 font-bold px-1 cursor-pointer hover:underline"
