@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import DOMPurify from 'dompurify';
 import { api_url } from './backend_link';
 
@@ -102,10 +103,34 @@ class utils {
         setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
-    public exportMarkdownToPDF(text: string, title: string) {
-        const doc = new jsPDF();
-        doc.text(text, 10, 10);
-        doc.save(title);
+    public async downloadHtmlToPdf(html: string, fileName = "document.pdf") {
+
+        const response = await fetch("https://api.pdfshift.io/v3/convert/pdf", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-API-Key": import.meta.env.VITE_PDFSHIFT_KEY,
+            },
+            body: JSON.stringify({
+                source: html,
+                landscape: false,
+                use_print: true,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erreur API PDFShift : ${response.statusText}`);
+        }
+
+        const blob = await response.blob();
+
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        window.URL.revokeObjectURL(url);
+
     }
 
 }
