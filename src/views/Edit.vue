@@ -375,7 +375,7 @@ const export_note = async (ext: string): Promise<void> => {
   export_loading.value = true;
   await download({
     format: ext as 'html' | 'pdf',
-    title: note.value.title
+    id: note.value.id
   }).then(() => {
     export_loading.value = false;
     export_menu.value = false;
