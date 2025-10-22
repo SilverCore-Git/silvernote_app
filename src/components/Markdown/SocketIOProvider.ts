@@ -11,6 +11,8 @@ export class SocketIOProvider {
     this.doc = doc;
     this.awareness = new awarenessProtocol.Awareness(doc);
 
+    this.awareness.setLocalStateField('user', { name: 'SilverAI', color: '#F28C28' });
+
     this.socket = io(serverUrl, {
       path: "/socket.io/share",
       transports: ["websocket", "polling"],
