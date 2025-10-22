@@ -173,7 +173,6 @@ import MessageDubble from './MessageDubble.vue';
 import { useUser } from '@clerk/vue';
 import db from '@/assets/ts/database/database';
 import { api_url } from '@/assets/ts/backend_link';
-import { io, Socket } from 'socket.io-client';
 import type { Note } from '@/assets/ts/type';
 
 const props = defineProps<{
@@ -197,9 +196,6 @@ const session_id = ref<string>('');
 const user_id = ref<string | undefined>('');
 const silverai_active = ref<boolean>(false);
 const pos = ref<'fixed' | 'relative'>('fixed');
-
-let socket_is_connect: boolean = false;
-let socket: Socket;
 
 watch(() => message.value, () => lengthOfMessage.value = max_LenghtOfMessage - message.value.length)
 
@@ -307,8 +303,10 @@ const send = async (prompt: string): Promise<void> => {
 
         let note: Note | undefined = undefined;
 
-        if (route.query.id) {
+        if (route.params.id) {
             note = await db.getNote(Number(route.params.id));
+        } else if (route.params.uuid) {
+            note!.uuid = String(route.params.uuid);
         }
         
         const response = await fetch(`${api_url}/api/ai/send`, {
@@ -369,24 +367,6 @@ const send = async (prompt: string): Promise<void> => {
                     newMessage.text = newMessage.text.replace(/#34/g, "\n")
                                                     .replace("#34", "\n");
 
-                    if (newMessage.text.startsWith('[CMD]')) {
-
-                        const message = newMessage.text;
-                        const regex = /\[CMD\]\s+UUID:\s*([^\s]+)\s+CONTENT:\s*(.+)/;
-                        const match = message.match(regex);
-
-                        if (match) {
-
-                            const uuid = match[1];
-                            const content = match[2];
-
-                            if (!socket_is_connect) wsConnect(uuid);
-                            wsSend(uuid, content)
-
-                        }
-
-                    }
-
                 }
             } catch (err: any) {
                 loading.value = false;
@@ -403,30 +383,6 @@ const send = async (prompt: string): Promise<void> => {
 
 };
 
-const wsConnect = (uuid: string) => {
-
-    socket = io(api_url, { path: "/socket.io/" });
-
-    socket.on('connect', () => {
-        console.log('WebSocket connecté !');
-        socket_is_connect = true;
-        socket.emit('join_share', { uuid: uuid });
-    });
-
-    socket.on('disconnect', () => {
-        console.log('WebSocket déconnecté !');
-    });
-
-}
-
-const wsSend = (uuid: string, content: string) => {
-
-    socket.emit('edit_note', { 
-        uuid: uuid,
-        content: content
-    })
-
-}
 
 const close = async () => {
 
