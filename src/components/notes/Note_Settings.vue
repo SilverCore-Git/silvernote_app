@@ -51,7 +51,7 @@
                                     "
                             ></div>
 
-                            Modifier les dossiers
+                            Modifier les tags
 
                         </li>
 
