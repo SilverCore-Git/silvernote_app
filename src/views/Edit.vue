@@ -332,6 +332,7 @@ import Share_menu from '@/components/popup/share_menu.vue';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
 import { download } from '@/components/Markdown/Function/Export';
 import { showSearchBar } from '@/components/Markdown/tiptap-extensions/searchAndReplace';
+import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 
 const props = defineProps<{ id: number | 'new' }>()
 const { user } = useUser();
@@ -400,6 +401,7 @@ const delete_note = async (state: number): Promise<void> => {
   else if (state == 2) {
     await db.delete(note.value.id);
     showDialog.value = false;
+    router.push('/');
   };
   
 };

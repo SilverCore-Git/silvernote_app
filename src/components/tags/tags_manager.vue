@@ -54,8 +54,8 @@
                                         class="w-4 h-4 rounded-full border border-gray-400"
                                         :style="{ backgroundColor: tag.color || '#ccc' }"
                                     ></div>
-                                    <span class="text-base font-medium text-gray-900 dark:text-zinc-100 truncate max-w-[150px]">
-                                        {{ tag.name }}
+                                    <span class="text-base font-medium truncate max-w-[150px]">
+                                        {{ tag.name || '...' }}
                                     </span>
                                 </div>
 

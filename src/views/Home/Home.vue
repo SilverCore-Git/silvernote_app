@@ -56,7 +56,7 @@
             <div v-tooltip.bottom="'Créer un tag'">
 
                 <Tags_item 
-                    @click="if_open_create_tag = true" 
+                    @click="if_open_create_tag = true; tag_color = utils.getRandomHexColor()" 
                     :id="null"
                     name="+"
                     :tag="''"
@@ -370,7 +370,7 @@
                         
                         <button
                             class="primary flex-1"
-                            @click.stop="create_tag(tag_name, tag_color)"
+                            @click.stop="create_tag"
                         >
                             Créer
                         </button>
@@ -495,22 +495,21 @@ import Popup from '@/components/popup/Popup.vue';
     };
 
 
-    const create_tag = async (tagName: string, tagColor: string): Promise<void> => {
+    const create_tag = async (): Promise<void> => {
 
-        if (!tagName) return;
-        if (!tagColor) tagColor = '#FFF';
+        if (!tag_name.value) return;
 
-        console.log('création du tag :', tagName, '\n avec la couleur :', tagColor);
-
-        tag_name.value = '';
-        tag_color.value = '';
+        console.log('création du tag :', tag_name.value, '\n avec la couleur :', tag_color.value);
 
         await db.create_tag({ 
             id: -1, 
-            name: tagName, 
+            name: tag_name.value, 
             active: false, 
-            color: tagColor 
+            color: tag_color.value 
         }, true);
+
+        tag_name.value = '';
+        tag_color.value = '';
 
         all_tags.value = await db.getAll('tags');
         if_open_create_tag.value = false;
