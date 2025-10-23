@@ -96,8 +96,8 @@
                 <span>Téléverser une base de donnée</span>
 
                 <div>
-                  <button @click="open_input" class=" second">Téléversez un fichier</button>
-                  <input ref="file_input" @change="get_db_file($event)" accept=".snote,.json" class="w-0" type="file">
+                  <button @click="open_input" class=" second">Téléverser un fichier</button>
+                  <input ref="file_input" @change="get_db_file($event)" accept=".snote" class="w-0" type="file">
                 </div>
 
             </label>

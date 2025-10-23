@@ -3,6 +3,9 @@ import db from "@/assets/ts/database/database";
 import { editor } from '../Editor';
 import type { Note } from "@/assets/ts/type";
 
+import ToDoList_css from '../css/ToDoList.css?inline';
+import basic_css from '../css/basic.css?inline';
+
 
 export const download = async ({
     format,
@@ -49,6 +52,14 @@ const HtmlFileModel = ({ icon, title, content }: Note): string => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>${title}</title>
         <style>
+            :root {
+                --btn: #F28C28;
+                --bg: #FFF8F0;
+                --bg2: #fff5e8;
+                --text: #3B3B3B;
+                --text-strong: rgb(51, 51, 51);
+                --shadow: #33333346;
+            }
             body {
                 font-family: 'Inter', sans-serif;
                 background-color: #FFF8F0;
@@ -60,7 +71,6 @@ const HtmlFileModel = ({ icon, title, content }: Note): string => {
                 margin: 0;
                 padding: 2rem;
             }
-
             .container {
                 max-width: 52em;
                 width: 100%;
@@ -72,35 +82,19 @@ const HtmlFileModel = ({ icon, title, content }: Note): string => {
                 justify-content: start;
                 align-items: center;
             }
-
-            .h1 {
-                font-size: 2.5em;
-                font-weight: 700;
-                color: #334155;
-                margin-bottom: 1rem;
-            }
-
-            p {
-                font-size: 1.1em;
-                line-height: 1.6;
-                color: #475569;
-            }
-
-            img {
-                max-width: 52em;
-                border-radius: 15px
-            }
-
+            ${ToDoList_css}
+            ${basic_css}
         </style>
         </head>
         <body>
 
-        <div class="container">
+        <div class="container tiptap">
 
             <div class="flex-raw">
                 <img 
                     style="margin-right: 12px; width: 3em; height: 3em;"
-                    src="${icon}">
+                    src="${icon}"
+                >
                 <h1 class="h1">${title}</h1>
             </div>
 
