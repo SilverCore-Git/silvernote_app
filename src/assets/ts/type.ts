@@ -20,6 +20,8 @@ export interface Note {
 };
 
 export interface Tag {
+    uuid: string;
+    _id: string | undefined; // added by indexed db
     id: number;
     active: boolean;
     name: string;

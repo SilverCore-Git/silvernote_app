@@ -501,7 +501,8 @@ import Popup from '@/components/popup/Popup.vue';
 
         console.log('création du tag :', tag_name.value, '\n avec la couleur :', tag_color.value);
 
-        await db.create_tag({ 
+        await db.create_tag({
+            uuid: '',
             id: -1, 
             name: tag_name.value, 
             active: false, 
