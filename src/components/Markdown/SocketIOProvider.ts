@@ -3,13 +3,16 @@ import * as Y from "yjs";
 import * as awarenessProtocol from "y-protocols/awareness";
 
 export class SocketIOProvider {
+
   private socket: Socket;
   private doc: Y.Doc;
   private awareness;
+  private onAICommand: (command: string, content: string) => void;
 
-  constructor(serverUrl: string, room: string, userId: string, doc: Y.Doc) {
+  constructor(serverUrl: string, room: string, userId: string, doc: Y.Doc, onAICommand: (command: string, content: string) => void) {
     this.doc = doc;
     this.awareness = new awarenessProtocol.Awareness(doc);
+    this.onAICommand = onAICommand;
 
     this.awareness.setLocalStateField('user', { name: 'SilverAI', color: '#F28C28' });
 
@@ -36,9 +39,14 @@ export class SocketIOProvider {
       }
     });
 
+    this.socket.on("ai-command", ({ command, content }: { command: string, content: string }) => {
+      this.onAICommand?.(command, content);
+    });
+
     // Handle updates
     this.socket.on("y-update", (update: ArrayBuffer) => {
       try {
+        console.log('update')
         const uint8Array = new Uint8Array(update);
         Y.applyUpdate(this.doc, uint8Array);
       } catch (error) {

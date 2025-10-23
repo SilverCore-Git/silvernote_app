@@ -368,6 +368,7 @@ const send = async (prompt: string): Promise<void> => {
                                                     .replace("#34", "\n");
 
                 }
+
             } catch (err: any) {
                 loading.value = false;
                 add_error(err.message || "Erreur inconnue");

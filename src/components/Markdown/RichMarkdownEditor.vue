@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 
-import { ref, onMounted, onBeforeUnmount, nextTick, reactive } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
@@ -163,7 +163,12 @@ const initEditor = async () => {
       : api_url,
     props.data.uuid, 
     user.value?.id || "",
-    ydoc
+    ydoc,
+    (command, content) => {
+      if (command === 'insertContent' && editor.value) {
+        editor.value.commands.setContent(content);
+      }
+    }
   );
 
   const color = await getColorByImage();
@@ -177,7 +182,6 @@ const initEditor = async () => {
       TaskList,
       TodoInput,
       SlashCommand,
-      //CollapsibleExtension,
       SearchAndReplace,
       Link.configure({ openOnClick: false, autolink: true, linkOnPaste: true }),
       Underline,
@@ -190,7 +194,10 @@ const initEditor = async () => {
       Markdown.configure({ html: true }),
       Placeholder.configure({ placeholder: 'Commencez à écrire ici...' }),
       FileHandler.configure(FileHandler_configure),
-      Collaboration.configure({ document: ydoc }),
+      Collaboration.configure({ 
+        document: ydoc,
+        field: 'prosemirror'
+      }),
       CollaborationCaret.configure({
         provider,
         user: { 
