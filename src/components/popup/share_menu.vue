@@ -25,7 +25,7 @@
                   v-model="j"
                   type="number"
                   min="0"
-                  max="24"
+                  max="365"
                   class="w-20 px-2 py-1 text-center rounded-xl bg-[var(--bg2)]/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none transition"
                 />
                 <span class="text-sm">jours</span>
