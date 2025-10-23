@@ -145,12 +145,13 @@ class Database {
 
     public async delete_tag(id: number, noDb?: boolean): Promise<void> {
         const db = await this.dbPromise;
+        const tag = await db.get('tags', id);
 
-        if (!noDb || true) {
-            await fetch(`${api_url}/api/db/delete/a/tag?id=${id}`, {
+        if (!noDb || true ) {
+            await fetch(`${api_url}/api/db/delete/a/tag?uuid=${tag!.uuid}`, {
                 method: 'POST',
                 headers: {
-                'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
                 },
                 credentials: 'include',
             })
@@ -190,6 +191,7 @@ class Database {
     public async create_tag(tag: Tag, cloud_post: boolean): Promise<void> {
         const db = await this.dbPromise;
         if (cloud_post) {
+            tag.uuid = await utils.UUID();
             tag.id = Math.floor(Math.random() * (999999999999 - 1000000 + 1)) + 1000
 
             await fetch(`${api_url}/api/db/new/tag`, {
@@ -252,6 +254,7 @@ class Database {
 
         if (tag) {
 
+            tag._id = undefined;
             tag.color = color;
             
             await fetch(`${api_url}/api/db/update/a/tag`, {
