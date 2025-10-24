@@ -1,5 +1,6 @@
 .dropdown {
   border-radius: var(--br-btn, 10px);
+  border: 1px solid var(--btn);
   box-shadow: 0 8px 15px rgba(54, 54, 54, 0.288);
   backdrop-filter: blur(10px);
   min-width: 200px;
