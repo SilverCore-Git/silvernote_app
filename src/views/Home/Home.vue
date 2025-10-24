@@ -56,7 +56,7 @@
             <div v-tooltip.bottom="'Créer un tag'">
 
                 <Tags_item 
-                    @click="if_open_create_tag = true; tag_color = utils.getRandomHexColor()" 
+                    @click="openTagCreator" 
                     :id="null"
                     name="+"
                     :tag="''"
@@ -338,7 +338,6 @@
                             type="text"
                             class="px-3 py-2 rounded-xl bg-[var(--bg)]/80 border border-[var(--btn)]/40 focus:border-[var(--btn)] outline-none shadow-inner placeholder-gray-400 transition"
                             placeholder="ex : Travail, Idée, Projet..."
-                            @click.stop="inputRef?.focus()"
                         />
                     </div>
 
@@ -397,7 +396,7 @@
 <script setup lang='ts'>
 
     import { useRouter } from 'vue-router';
-    import { onMounted, ref, watch, onUnmounted } from 'vue';
+    import { onMounted, ref, watch, onUnmounted, nextTick } from 'vue';
     import { Swiper, SwiperSlide } from 'swiper/vue';
     import 'swiper/css';
 
@@ -423,11 +422,13 @@
         Tags as all_tags, 
         SharedNotes as shared_notes 
     } from '@/assets/ts/database/Var';
-import Popup from '@/components/popup/Popup.vue';
+    import Popup from '@/components/popup/Popup.vue';
     
     const router = useRouter();
 
-    const create_new_note = () => router.push(`/edit/new?pinned=false`);
+    const create_new_note = () => {
+        router.push(`/edit/new?pinned=false`);
+    }
 
     const isOnline = ref<boolean>(localStorage.getItem('online') == "true");
     //const online_btn = ref<HTMLDivElement | null>(null);
@@ -456,6 +457,14 @@ import Popup from '@/components/popup/Popup.vue';
     onUnmounted(() => {
         window.removeEventListener('resize', updateSize);
     })
+
+
+    const openTagCreator = async () => {
+        if_open_create_tag.value = true; 
+        tag_color.value = utils.getRandomHexColor();
+        await nextTick();
+        inputRef.value?.focus()
+    }
 
     const withdraw = async () => {
         const notes: Note[] = await db.getAll('notes');
@@ -503,6 +512,7 @@ import Popup from '@/components/popup/Popup.vue';
 
         await db.create_tag({
             uuid: '',
+            _id: '',
             id: -1, 
             name: tag_name.value, 
             active: false, 
