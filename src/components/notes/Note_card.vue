@@ -7,14 +7,15 @@
 
   <div
     class="note-card md:min-w-50 bg-[var(--bg2)] text-[var(--text)] p-3
-            border-2 relative cursor-pointer h-full min-h-40 select-none"
+            border-2 relative cursor-pointer h-full min-h-40 select-none
+            text-lg"
     :class="note_settings ? 'border-[var(--btn)]' : 'border-[var(--text)]'"
     :style="{ transform: note_settings ? 'scale(1.05)' : '' }"
     style="border-radius: var(--br-card);"    
   > 
   
     <div
-      class="font-bold text-lg w-full overflow-hidden
+      class="font-bold w-full overflow-hidden
         flex justify-start items-center flex-row gap-2 "
     >
       <img
@@ -28,10 +29,9 @@
     </div>
 
     <p 
-      class="text-xs my-2
-              max-h-50 multiline-8"
+      class="text-xs my-2 multiline-8"
     >
-      {{ utils.htmlToText(content) }}
+      {{ utils.htmlToText(content).slice(0, 500) }}
     </p>
 
     <div
@@ -189,12 +189,29 @@ watch(theme, () => {
 <style scoped>
 
 .note-card {
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease;
+}
+
+.note-card p {
+  max-height: 12.5em;
 }
 
 .note-card:hover {
   box-shadow: 0 0 10px color-mix(in srgb, var(--btn) 50%, transparent);
+  z-index: 49;
   transform: scale(1.05);
+}
+
+.note-card:hover p {
+  max-height: 16em;
+}
+
+.note-card:hover span {
+  white-space: normal;
+}
+
+.note-card:hover .multiline-8 {
+  -webkit-line-clamp: 14;
 }
 
 .folder-svg {
