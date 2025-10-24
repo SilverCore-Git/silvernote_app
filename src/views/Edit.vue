@@ -229,6 +229,7 @@
       placeholder="Titre..." 
       ref="title"
       v-model="note.title"
+      @keydown.enter="editor?.commands.focus()"
     />
 
     <div 
@@ -524,7 +525,7 @@ const create_new_note = async () => {
     });
 
     await nextTick();
-    title.value?.focus();
+    setTimeout(() => title.value?.focus(), 200);
 
 }
 
