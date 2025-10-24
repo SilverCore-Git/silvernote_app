@@ -4,7 +4,7 @@
         <div class="left-arrow absolute left-0" :class="hitbox ? 'bg-red-600' : ''" @click="router.push('/settings')"></div>
     </header>
 
-    <div class="flex justify-start items-center my-12 ml-4 mr-4">
+    <div class="flex justify-start items-center md:mx-[18%] my-12 ml-4 mr-4">
 
         <section>
 
@@ -40,6 +40,19 @@
                 <li><strong>Nom :</strong> {{ user?.fullName }}</li>
                 <li><strong>Email :</strong> {{ user?.primaryEmailAddress?.emailAddress }}</li>
                 <li><strong>ID utilisateur :</strong> {{ user?.id }}</li>
+            </ul>
+
+            <h1 
+                class="text-2xl mb-1 font-bold mt-5"
+            >Avantage du compte</h1>
+
+            <ul class="ml-1 space-y-1">
+                <li><strong>Plan :</strong> {{ plan?.name }}</li>
+                <li><strong>Nombre de notes max :</strong> {{ plan?.benefits?.notesLength }}</li>
+                <li><strong>Nombre de tags max :</strong> {{ plan?.benefits?.tagsLength }}</li>
+                <li><strong>SilverAI ? :</strong> {{ plan?.benefits?.SilverAI }}</li>
+                <li><strong>nombre de message SilverAI /jours :</strong> {{ plan?.benefits?.SilverAILengthPerDay }}</li>
+                <li><strong>Partage de note ? :</strong> {{ plan?.benefits?.ShareNote }}</li>
             </ul>
 
             <h1
@@ -112,6 +125,7 @@
 
     import back from '@/assets/ts/backend_link';
     import db from '@/assets/ts/database/database';
+    import { usePlan } from '@/assets/ts/user/UserPlan';
 
     import { hitbox as if_hitbox} from '@/assets/ts/settings';
     import Warning from '@/components/alert/Warning.vue';
@@ -123,6 +137,7 @@
     onMounted(async () => { hitbox = await if_hitbox() })
 
     const router = useRouter();
+    const { plan } = usePlan();
 
     const confirmDialog = ref<boolean>(false);
     const danger = ref<{ text: string, value: boolean }>({ text: "Message de test", value: false });
