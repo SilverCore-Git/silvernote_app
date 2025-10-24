@@ -5,7 +5,7 @@ import type { Plan } from "../type";
 
 
 
-export function useUserPlan() {
+export function usePlan() {
 
     const { user, isLoaded } = useUser();
     const userPlan = ref<Plan | null>(null);
@@ -18,12 +18,7 @@ export function useUserPlan() {
 
         try {
 
-            const res = await fetch(`${api_url}/user/plan/get`, {
-                headers: { 
-                    "Content-Type": "application/json" 
-                },
-                body: JSON.stringify({ userId: user.value.id }),
-            });
+            const res = await fetch(`${api_url}/user/plan/get?userId=${user.value.id}`);
 
             if (!res.ok) throw new Error(`Erreur API (${res.status})`);
             const data = await res.json();
