@@ -59,7 +59,7 @@ import type { Note } from '@/assets/ts/type';
 import { api_url } from '@/assets/ts/backend_link';
 import { getDominantColor } from '@/assets/ts/GetColorByImage';
 import db from '@/assets/ts/database/database';
-import ToolsMenu from '@/components/Markdown/ToolsMenu/ToolsMenu.vue';
+import ToolsMenu from '@/components/Markdown/ToolsMenu/toolsBar/ToolsMenu.vue';
 
 import { editor, isLoaded } from './Editor';
 
@@ -150,8 +150,15 @@ const saveNote = async () => {
 };
 
 const startAutoSave = () => {
-  autosaveInterval = setInterval(saveNote, 10000);
+  autosaveInterval = setInterval(saveNote, 10 * 1000);
 };
+
+const handleSaveShortcut = (e: KeyboardEvent) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+    e.preventDefault();
+    saveNote();
+  }
+}
 
 
 const initEditor = async () => {
@@ -246,12 +253,14 @@ const updateSize = () => { isLargeScreen.value = window.innerWidth >= 1024; };
 
 onMounted(() => {
   window.addEventListener('resize', updateSize);
+  window.addEventListener('keydown', handleSaveShortcut)
   initEditor();
   startAutoSave();
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', updateSize);
+  window.removeEventListener('keydown', handleSaveShortcut)
   if (editor.value) editor.value.destroy();
   if (provider) provider.destroy();
   if (autosaveInterval) clearInterval(autosaveInterval);
