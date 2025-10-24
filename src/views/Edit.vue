@@ -463,13 +463,18 @@ const wSocket = () => {
         if (users.value.includes(user_visitor)) return;
         if (users.value.includes(user_owner)) return;
 
-        users.value.push(user_visitor);
+        if (!users.value.includes(user_visitor) && !users.value.includes(user_owner)) 
+        {
+          users.value.push(user_visitor);
+        }
 
     })
 
-    socket.on('title-update', async (update: string) => {
-        note.value!.title = update;
-    })
+    let ignoreNextUpdate: boolean = false;
+    socket.on('title-update', (update: string) => {
+      ignoreNextUpdate = true;
+      if (note.value) note.value.title = update;
+    });
 
     socket.on('icon-update', async (update: string) => {
         note.value!.icon = update;
@@ -479,18 +484,27 @@ const wSocket = () => {
         console.log('WebSocket déconnecté !');
     });
 
-    let onupdate: boolean = false;
-    watch(() => note.value?.title, () => {
-      if (onupdate) return;
-      onupdate = true;
+    watch(
+      () => note.value?.title,
+      (newTitle) => {
 
-      setTimeout(() => {
-        console.log('title update : ', note.value?.title)
-        socket.emit('title-update', note.value?.title);
-        onupdate = false;
+        if (ignoreNextUpdate) {
+          ignoreNextUpdate = false;
+          return;
+        }
+
+        debounceEmit(newTitle);
+
+      }
+    );
+
+    let timeout: any;
+    function debounceEmit(title?: string) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        socket.emit('title-update', title);
       }, 500);
-
-    })
+    }
 
     watch(() => note.value?.icon, () => {
       socket.emit('icon-update', note.value?.icon);
