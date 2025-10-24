@@ -63,8 +63,10 @@
 
       </div>
 
-      <MdInputeMenu
-        v-if="mdInputeMenu"
+      <MdInputeMenu 
+        v-model:show="mdInputeMenu"
+        :top="posY"
+        :left="posX"
       />
       
     </teleport>
@@ -80,11 +82,11 @@ import { Editor } from '@tiptap/vue-3';
 import { nextTick, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import type { Categories, SimpleAction } from '@/components/Markdown/ToolsMenu/ToolsMenuTypes';
-import config from '@/components/Markdown/ToolsMenu/ToolsMenuConfig.json';
-import { editor } from '../Editor';
-import { onDragIconLoaded } from '../tiptap-extensions/dragHandle';
-import MdInputeMenu from './mdInputeMenu.vue';
+import type { Categories, SimpleAction } from '../ToolsMenuTypes';
+import config from './ToolsMenuConfig.json';
+import { editor } from '../../Editor';
+import { onDragIconLoaded } from '../../tiptap-extensions/dragHandle';
+import MdInputeMenu from '../mdInputType/mdInputMenu.vue';
 const _config: any = config; // i can't assign categories type
 
 const route = useRoute();
@@ -105,6 +107,7 @@ const openSelectionMenu = (withEditorSelect: boolean) => {
     const { from, to } = editor.value.state.selection;
     if (from === to) {
       showMenu.value = false;
+      mdInputeMenu.value = false;
       return;
     }
 
@@ -153,7 +156,7 @@ const onSelectAction = (event: Event, actionsList: SimpleAction[]) => {
 };
 
 const openMdInputMenu = () => {
-  mdInputeMenu.value = true;
+  mdInputeMenu.value = !mdInputeMenu.value;
 }
 
 const insertImageFromFile = (editor: Editor) => {
@@ -202,6 +205,7 @@ const AskToAI = (prompt?: string) => {
     });
 
     showMenu.value = false;
+    mdInputeMenu.value = false;
 
   }, 100);
 
@@ -256,6 +260,5 @@ onDragIconLoaded(() => {
   cursor: pointer;
   border-radius: 4px;
 }
-
 
 </style>
