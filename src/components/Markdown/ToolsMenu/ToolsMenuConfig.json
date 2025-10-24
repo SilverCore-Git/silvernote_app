@@ -75,10 +75,18 @@
   ],
   "plus": [
     {
-      "id": 10,
+      "id": 765435234,
       "name": "image",
       "action": "getImageFile",
       "tooltip": "incerer une image"
+    }
+  ],
+  "MdInputMenu": [
+    {
+      "id": 12345435543,
+      "name": "+",
+      "action": "openMdInputMenu",
+      "tooltip": "Modifier le texte"
     }
   ]
 }

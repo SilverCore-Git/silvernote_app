@@ -16,16 +16,25 @@
           v-for="(list, cat) in actions"
           :key="cat"
           class="flex flex-row"
-          :class="cat == 'plus' ? '' : 'pr-1 border-r-1'"
+          :class="cat == 'MdInputMenu' ? '' : 'pr-1 border-r-1'"
         >
 
           <li
             v-for="action in list"
             :key="action.id"
+            :class="cat == 'MdInputMenu' ? 'nohover' : ''"
           >
           
             <div
               v-if="'action' in action"
+              :class="
+                cat == 'MdInputMenu' 
+                  ? `
+                      border border-gray-400 hover:border-[var(--text)] 
+                      transition-all duration-200 rounded-lg px-1.5
+                    ` 
+                  : ''
+              "
               @click="exec(action.action)"
               v-html="action.name"
               v-tooltip.bottom="action.tooltip"
@@ -53,6 +62,10 @@
         </ul>
 
       </div>
+
+      <MdInputeMenu
+        v-if="mdInputeMenu"
+      />
       
     </teleport>
 
@@ -71,11 +84,13 @@ import type { Categories, SimpleAction } from '@/components/Markdown/ToolsMenu/T
 import config from '@/components/Markdown/ToolsMenu/ToolsMenuConfig.json';
 import { editor } from '../Editor';
 import { onDragIconLoaded } from '../tiptap-extensions/dragHandle';
+import MdInputeMenu from './mdInputeMenu.vue';
 const _config: any = config; // i can't assign categories type
 
 const route = useRoute();
 const router = useRouter();
 
+const mdInputeMenu = ref<boolean>(false);
 const actions = ref<Categories>(_config);
 const showMenu = ref<boolean> (false);
 const posX = ref<number>(0);
@@ -114,6 +129,7 @@ const openSelectionMenu = (withEditorSelect: boolean) => {
 const exec = (action: string) => {
 
   if (action.startsWith('getImageFile')) return insertImageFromFile(editor.value as Editor);
+  if (action.startsWith('openMdInputMenu')) return openMdInputMenu();
   if (action.startsWith('AskToAI')) {
     AskToAI(
         action.replace('AskToAI', '').startsWith('(') 
@@ -136,6 +152,9 @@ const onSelectAction = (event: Event, actionsList: SimpleAction[]) => {
   if (act) exec(act.action);
 };
 
+const openMdInputMenu = () => {
+  mdInputeMenu.value = true;
+}
 
 const insertImageFromFile = (editor: Editor) => {
   

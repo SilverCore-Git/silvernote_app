@@ -18,4 +18,5 @@ export interface Categories {
     collaboration: Action[];
     text: Action[];
     plus: Action[];
+    MdInputMenu: Action[];
 }
