@@ -1,15 +1,12 @@
 .tiptap {
-  font-size: .9em;
-  font-family: 'Inter', sans-serif;
   font-size: 16px;
+  font-family: 'Inter', sans-serif;
   line-height: 1.6;
   word-break: normal;
   overflow-wrap: anywhere;
   white-space: normal;
   hyphens: none;
-  
 }
-
 
 .tiptap .ytb-viewer {
   width: 100%;
@@ -20,28 +17,14 @@
   border-radius: 12px;
 }
 
-
 .tiptap h1, .tiptap h2, .tiptap h3, .tiptap h4, .tiptap h5, .tiptap h6 {
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
 
-.tiptap h1 {
-  font-size: 1.8rem;
-}
-
-.tiptap h2 {
-  font-size: 1.4rem;
-}
-
-.tiptap h3 {
-  font-size: 1.2rem;
-}
-
-.tiptap ul, .tiptap ol {
-  padding-left: 1.5rem;
-  list-style-type: disc;
-}
+.tiptap h1 { font-size: 1.8rem; }
+.tiptap h2 { font-size: 1.4rem; }
+.tiptap h3 { font-size: 1.2rem; }
 
 .tiptap ul {
   list-style: disc;
@@ -49,6 +32,37 @@
 
 .tiptap ol {
   list-style: decimal;
+}
+
+.tiptap ul,
+.tiptap ol {
+  padding-left: 1.5rem;
+  margin: 0.5em 0;
+  display: block;
+  gap: 0.4em;
+  list-style-position: outside;
+}
+
+.tiptap ul li,
+.tiptap ol li {
+  display: list-item;
+  align-items: initial;
+  gap: 0;
+  padding: 0.2em 0;
+  margin: 0;
+}
+
+
+.tiptap ul li::marker,
+.tiptap ol li::marker {
+  color: var(--btn);
+}
+
+.tiptap ul li p,
+.tiptap ol li p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
 }
 
 .tiptap hr {
@@ -66,13 +80,13 @@
 }
 
 .tiptap a {
-    text-decoration: underline;
-    color: #555;
-    cursor: pointer;
+  text-decoration: underline;
+  color: #555;
+  cursor: pointer;
 }
 
 .tiptap code {
-  color: var(--btn); 
+  color: var(--btn);
   background-color: rgba(255, 255, 255, 0.05);
   padding: 0.2em 0.4em;
   border-radius: 4px;
