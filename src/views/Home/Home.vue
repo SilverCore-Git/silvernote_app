@@ -429,19 +429,6 @@
     const router = useRouter();
     const { plan } = usePlan();
 
-    const create_new_note = () => {
-
-        const notesLength = list_notes.value.length;
-        if (!plan.value || !plan.value.benefits) return new salert('Plan et benefits ne sont pas définit.', 'error');
-
-        if (notesLength > plan.value.benefits.notesLength) // si le plan est épuisé en note
-        {
-            return new salert('Nombre de note maximal autorisé par le plan atteint.', 'error');
-        }
-
-        router.push(`/edit/new?pinned=false`);
-
-    }
 
     const isOnline = ref<boolean>(localStorage.getItem('online') == "true");
     //const online_btn = ref<HTMLDivElement | null>(null);
@@ -520,6 +507,19 @@
     const create_tag = async (): Promise<void> => {
 
         if (!tag_name.value) return;
+        if (!plan.value || !plan.value.benefits) {
+            new salert('Plan et benefits ne sont pas définit.', 'error');
+            return;
+        }
+
+        const tagLength = all_tags.value.length;
+
+        if (tagLength > plan.value!.benefits!.tagsLength) // si le plan est epuisé en tag
+        {
+            new salert('Nombre de tag maximal autorisé par le plan atteint.', 'error');
+            if_open_create_tag.value = false;
+            return
+        }
 
         console.log('création du tag :', tag_name.value, '\n avec la couleur :', tag_color.value);
 
@@ -539,6 +539,20 @@
         if_open_create_tag.value = false;
 
     };
+
+    const create_new_note = () => {
+
+        const notesLength = list_notes.value.length;
+        if (!plan.value || !plan.value.benefits) return new salert('Plan et benefits ne sont pas définit.', 'error');
+
+        if (notesLength > plan.value.benefits.notesLength) // si le plan est épuisé en note
+        {
+            return new salert('Nombre de note maximal autorisé par le plan atteint.', 'error');
+        }
+
+        router.push(`/edit/new?pinned=false`);
+
+    }
 
     const reload_list = async () => {        
 
