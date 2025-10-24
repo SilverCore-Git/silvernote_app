@@ -10,7 +10,10 @@
             border-2 relative cursor-pointer h-full min-h-40 select-none
             text-lg"
     :class="note_settings ? 'border-[var(--btn)]' : 'border-[var(--text)]'"
-    :style="{ transform: note_settings ? 'scale(1.05)' : '' }"
+    :style="note_settings ? { 
+      transform: 'scale(1.05)',
+      zIndex: 49
+    } : {}"
     style="border-radius: var(--br-card);"    
   > 
   
@@ -18,18 +21,26 @@
       class="font-bold w-full overflow-hidden
         flex justify-start items-center flex-row gap-2 "
     >
+
       <img
         v-if="icon" 
         class="w-[32px] h-[32px] cursor-pointer" 
         :src="icon" 
       />
-      <span class="overflow-hidden text-ellipsis whitespace-nowrap uppercase">
+
+      <span 
+        class="overflow-hidden text-ellipsis uppercase"
+        :class="note_settings ? 'whitespace-normal' : 'whitespace-nowrap'"
+      >
         {{ utils.htmlToText(title) }}
       </span>
+
     </div>
 
     <p 
-      class="text-xs my-2 multiline-8"
+      class="text-xs my-2"
+      :class="note_settings ? 'multiline-14' : 'multiline-8'"
+      :style="{ maxHeight: note_settings ? '16em' : '' }"
     >
       {{ utils.htmlToText(content).slice(0, 500) }}
     </p>
@@ -232,6 +243,13 @@ watch(theme, () => {
 .multiline-8 {
   display: -webkit-box;
   -webkit-line-clamp: 8;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.multiline-14 {
+  display: -webkit-box;
+  -webkit-line-clamp: 14;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

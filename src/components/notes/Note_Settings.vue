@@ -1,7 +1,7 @@
 <template>
 
 
-        <div class="absolute inset-0 ">
+        <div class="absolute inset-0">
 
             
             <div 
@@ -15,9 +15,7 @@
                 <div
                     v-if="visible"
                     @click="emitClose()"
-                    class="dropdown absolute z-30"
-                    
-                    
+                    class="dropdown inset-x-0 absolute z-30"                    
                 >
 
                     <ul>

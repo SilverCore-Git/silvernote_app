@@ -57,6 +57,7 @@
             : `url(${pinEmpty})`
         }"
         @click="change_pin_state"
+        v-tooltip="if_pin_active ? 'Désépingler' : 'Épingler'"
       ></div>
 
       <div
