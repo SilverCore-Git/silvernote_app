@@ -73,6 +73,22 @@ a:hover {
   background-color: rgba(199, 199, 199, 0.788);
 }
 
+.default-input {
+  @apply w-full px-2 py-1 rounded-lg bg-[var(--bg2)]/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none
+}
+
+.default-input-p-0 {
+  @apply w-full rounded-lg bg-[var(--bg2)]/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none
+}
+
+.default-input-border-0 {
+  @apply w-full px-2 py-1 rounded-lg bg-[var(--bg2)]/80 outline-none
+}
+
+.default-input-border-p-0,
+.default-input-border-p-0 {
+  @apply w-full rounded-lg bg-[var(--bg2)]/80 outline-none
+}
 
 .fade-slide-enter-active,
 .fade-slide-leave-active {
