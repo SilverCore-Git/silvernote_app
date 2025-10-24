@@ -6,6 +6,31 @@ export interface User {
     isMe: boolean;
 }
 
+export interface Plan {
+    name: string;
+    uuid: string;
+    color: string;
+    sub_id?: string;
+    void?: boolean;
+    plan_data?: {
+        each?: 'month' | 'year' | 'life';
+        family?: boolean;
+        family_data?: {
+            owner?: boolean;
+        }
+    };
+    benefits?: Benefits;
+};
+
+export interface Benefits {
+    planId: string;
+    notesLength: number;
+    tagsLength: number;
+    SilverAI: boolean;
+    SilverAILengthPerDay: number;
+    ShareNote: boolean;
+}
+
 export interface Note {
     id: number;
     uuid: string;
