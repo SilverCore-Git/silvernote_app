@@ -58,10 +58,10 @@ import { evaluate } from 'mathjs';
 import type { Note } from '@/assets/ts/type';
 import { api_url } from '@/assets/ts/backend_link';
 import { getDominantColor } from '@/assets/ts/GetColorByImage';
-import db from '@/assets/ts/database/database';
 import ToolsMenu from '@/components/Markdown/ToolsMenu/toolsBar/ToolsMenu.vue';
 
 import { editor, isLoaded } from './Editor';
+import { saveNote } from './Function/saveNote.js';
 
 const props = defineProps<{
   id: number
@@ -127,36 +127,14 @@ const TodoInput = TaskItem.extend({
   }
 })
 
-
-const saveNote = async () => {
-
-  const newContent = editor.value?.getHTML();
-  const note = await db.getNote(props.data.id);
-
-  if (newContent && note) 
-  {
-
-    const newNote: Note = { ...note, content: newContent };
-    await db.saveContent(newContent, props.data.id);
-    await fetch(`${api_url}/api/db/update/a/note`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ note: newNote })
-    });
-
-  }
-
-};
-
 const startAutoSave = () => {
-  autosaveInterval = setInterval(saveNote, 10 * 1000);
+  autosaveInterval = setInterval(() => saveNote(props.data.id), 10 * 1000);
 };
 
 const handleSaveShortcut = (e: KeyboardEvent) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
     e.preventDefault();
-    saveNote();
+    saveNote(props.data.id);
   }
 }
 
@@ -264,7 +242,7 @@ onBeforeUnmount(() => {
   if (editor.value) editor.value.destroy();
   if (provider) provider.destroy();
   if (autosaveInterval) clearInterval(autosaveInterval);
-  saveNote();
+  saveNote(props.data.id);
 });
 
 </script>

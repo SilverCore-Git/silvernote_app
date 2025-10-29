@@ -1,6 +1,4 @@
 import { ref } from 'vue';
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import DOMPurify from 'dompurify';
 import { api_url } from './backend_link';
 

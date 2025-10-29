@@ -8,18 +8,7 @@ export const api_url: string = dev ? 'http://localhost:3000' : 'https://api.silv
 
 
 const dev_db: { notes: Note[], tags: Tag[] } = {
-  tags: [
-    { id: 1, active: false, name: "Work", color: "#FFB6C1" },
-    { id: 2, active: false, name: "Personal", color: "#ADD8E6" },
-    { id: 3, active: false, name: "Ideas", color: "#90EE90" },
-    { id: 4, active: false, name: "Urgent", color: "#FFA500" },
-    { id: 5, active: false, name: "Shopping", color: "#FFD700" },
-    { id: 6, active: false, name: "Travel", color: "#87CEFA" },
-    { id: 7, active: false, name: "Fitness", color: "#98FB98" },
-    { id: 8, active: false, name: "Projects", color: "#DA70D6" },
-    { id: 9, active: false, name: "Learning", color: "#F08080" },
-    { id: 10, active: false, name: "Misc", color: "#D3D3D3" }
-  ],
+  tags: [],
   notes: Array.from({ length: 20 }, (_, i) => {
     const id = i + 1;
     const uuid = crypto.randomUUID();
@@ -114,10 +103,10 @@ const save_all = async (notes: Note[], tags: Tag[]): Promise<any> => {
     body: JSON.stringify({ tags }),
   }).then(res => res.json());
 
-  if (res_notes.error) return salert('Une erreur est survenue lors de la sauvegarde des notes', 'error');
-  if (res_tags.error) return salert('Une erreur est survenue lors de la sauvegarde des dossiers', 'error');
+  if (res_notes.error) return new salert('Une erreur est survenue lors de la sauvegarde des notes', 'error');
+  if (res_tags.error) return new salert('Une erreur est survenue lors de la sauvegarde des dossiers', 'error');
 
-  if (res_notes && res_tags) return salert('Notes et dossiers sauvegardé avec succès !', 'success');
+  if (res_notes && res_tags) return new salert('Notes et dossiers sauvegardé avec succès !', 'success');
 
 }
 
