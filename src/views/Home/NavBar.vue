@@ -1,6 +1,5 @@
 <template>
 
-    <!-- click for hidde dropdown -->
     <div 
         class="fixed inset-0 z-50"
         @click="if_open_dropdown = false"
@@ -13,27 +12,32 @@
             box-shadow: 0 0 15px #36363681;
         " 
         class="
-                top-0 left-0 w-screen
-                text-2xl font-bold max-h-12
-                bg-[var(--btn)] z-50
-                flex items-center justify-center fixed 
+                fixed inset-y-0 left-0
+                text-2xl font-bold w-[16vw]
+                bg-[var(--bg2)] z-50 p-4
+                flex items-start justify-center dropdown
             "
     >
 
-        <div class="flex flex-row justify-between items-center w-full ml-[var(--mrl)] mr-[var(--mrl)]">
+        <ul class="w-full">
             
-            <div class="flex flex-row justify-center items-center">
+            <li class="gap-2 w-full">
 
-                <h1 class=" text-white flex flex-row justify-center items-center gap-2 text-xl">
-                    <img src="/favicon.svg" class="w-6 rounded-md border-2 border-white"><span class="hidden sm:block">SilverNote</span>
-                </h1>
+                <img src="/favicon.svg" class="w-8 rounded-md">
 
-            </div>
+                <div class="flex flex-col">
+                    <span class="text-base">SilverNote</span>
+                    <span class="text-[var(--text-little)] text-[10px] -mt-1">version {{ version }}</span>
+                </div>
 
-            <div class="flex flex-row justify-center items-center gap-6 md:gap-5">
+            </li>
 
+            <div 
+                class="flex flex-row justify-between items-center 
+                        gap-6 md:gap-5 w-full mb-4 px-2"
+            >
 
-                <div class="flex items-center justify-center ">
+                <a class="p-1.5 flex items-center justify-center ">
                     <UserButton 
                         :appearance="{
                             elements: {
@@ -44,20 +48,23 @@
                             }
                         }" 
                         />
-                </div>
+                </a>
 
                 <slot></slot>
 
-                <div
-                    class="ellipsis-svg
-                            w-7
-                            h-7
-                        " 
-                    @click="if_open_dropdown = !if_open_dropdown"
-                ></div>
+                <a class="p-1.5">
+                    <div
+                        class="gear-svg
+                                w-7
+                                h-7
+                            "
+                        @click="router.push('/settings')"
+                    ></div>
+                </a>
 
-                
-                <transition name="fade-slide">
+            </div>
+
+                            <transition name="fade-slide">
 
                     <div
                         v-if="if_open_dropdown"
@@ -121,9 +128,7 @@
 
                 </transition>
 
-            </div>
-
-        </div>
+        </ul>
 
     </header>
 
@@ -149,25 +154,16 @@ const openAccount = () => {
 
 <style scoped>
 
-header {
-    height: calc(3.5rem + env(safe-area-inset-top));
-    @media (min-width: 1280px) {
-        height: calc(3.6rem + env(safe-area-inset-top));
-    }
-}
-
 .ellipsis-svg {
     cursor: pointer;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url('/assets/svgs/ellipsis.svg');
-    filter: invert(1);
     transition: all 0.3s ease;
 }
 
 .nav-svg {
-    filter: invert(1);
     width: 3vw;
     height: 3vw;
     cursor: pointer;
@@ -182,6 +178,7 @@ header {
     background-repeat: no-repeat;
     background-position: center;
     background-image: url('../../assets/svgs/gear.svg');
+    filter: brightness(0) saturate(100%) invert(61%) sepia(43%) saturate(1182%) hue-rotate(343deg) brightness(99%) contrast(92%);
 }
 
 .grid-svg {

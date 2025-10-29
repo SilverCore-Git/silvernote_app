@@ -3,306 +3,319 @@
 
     <Navbar>
 
-        <div 
-            class="reload-svg 
-                    w-6
-                    h-6
-                " 
-            :class="[
-                { rotating: isRotating }
-            ]"
-            @click="reload_list"
-        ></div>
+        <a class="p-1.5">
+            <div
+                class="reload-svg
+                        w-6
+                        h-6
+                    " 
+                :class="[
+                    { rotating: isRotating }
+                ]"
+                @click="reload_list"
+            ></div>
+        </a>
 
     </Navbar>
     
-    <div 
-        class="mt-16 flex flex-col lg:flex-row 
-                justify-center items-center gap-4 w-full"
-    >
-
-        <Search_bar class="w-1/3" :desktop="isLargeScreen" pt="" />
+    <div class="ml-[16vw] p-6 flex flex-col h-screen overflow-hidden w-full">
 
         <div 
-            class="w-full lg:w-2/3 flex items-center justify-center gap-4"
-        >
-        
-            <Swiper
-                :slides-per-view="'auto'"
-                :space-between="8"
-                class="w-full lg:w-500 pr-1.5 pl-1.5 rounded-xl"
-                v-if="all_tags && all_tags.length" 
-            >
-
-                <SwiperSlide 
-                    v-for="(tag, index) in all_tags"
-                    :key="index"
-                    class="!w-auto"
-                >
-
-                    <Tags_item 
-                        @click.stop="add_tag_filter(tag.id)" 
-                        @reload="reload_list"
-                        :id="tag.id" :name="tag.name" 
-                        :tag="tag.name" 
-                        :active="tag.active"
-                        :color="tag.color"
-                    />
-
-                </SwiperSlide>
-                    
-            </Swiper>
-
-            <div v-tooltip.bottom="'Créer un tag'">
-
-                <Tags_item 
-                    @click="openTagCreator" 
-                    :id="null"
-                    name="+"
-                    :tag="''"
-                    :active="false"
-                    color="#fff5e8"
-                    class="w-20 hover:scale-110
-                    transition-all duration-200"
-                />
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class=" overflow-x-hidden mb-30" >
-
-        <Danger_card 
-            v-if="tip" 
-            style="box-shadow: 0 0 15px #3636364f;" 
-            class="mt-4"
-            title="Tip of the week" 
-            content="You can create a new note with +" 
-        />
-
-        <Danger_card 
-            v-if="if_danger_card" 
-            style="box-shadow: 0 0 15px #3636364f;" 
-            class="mt-4"
-            :title="Danger_card_props?.title"
-            :btn="Danger_card_props?.btn"
-            :href="Danger_card_props?.href"
-            :content="Danger_card_props?.message" 
-        />
-
-        <div 
-            class="overflow-y-auto mt-4 min-h-screen space-y-5"
-            v-if="notes_views_mode == 'tag'"
+            class=" flex flex-col flex-shrink-0
+                    justify-center items-start gap-4 w-full"
         >
 
-            <div 
-                v-for="tag in all_tags"
+            <div
+                class="flex flex-col lg:flex-row
+                    justify-center items-center gap-4 w-full"
             >
 
-                <div v-if="list_notes && list_notes.find(note => note.tags.includes(tag.id))">
-
-                    <div 
-                        class="font-bold text-lg p-2 rounded-[var(--br-btn)]
-                        border-2 w-30 flex justify-center items-center border-[var(--text)]"
-                        :style="{ backgroundColor: tag.color, color: utils.get_text_color(tag.color) }"
-                    >
-                        {{ tag.name }}
-                    </div>
-
-                    <MasonryWrapper 
-                        class="space-y-4 mt-2
-                        columns-2 md:columns-3 lg:columns-4  "
-                    >
-
-                        <MasonryItem 
-                            v-if="list_notes && list_notes.length"
-                            v-for="(note, index) in list_notes.filter(note => note.tags.includes(tag.id))" 
-                            :key="index"
-                        >
-
-                            <Note_card
-                                @pin="withdraw"
-                                :id="note.id"
-                                :icon="note.icon"
-                                :uuid="note.uuid"
-                                :pinned="note.pinned"
-                                :title="note.title" 
-                                :content="note.content" 
-                                :date="note.date"
-                                :tags="note.tags.map(tag => Number(tag))"
-                                :function_reload="reload_list"
-                            />
-
-                        </MasonryItem>
-                    
-                    </MasonryWrapper>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <ul 
-            class="overflow-y-hidden h-full mt-4 min-h-[80vh] pb-100"
-            v-if="notes_views_mode == 'default'"
-        >
-
-            <MasonryWrapper 
-                v-if="view_notes && list_notes && shared_notes && list_notes.length > 0"
-                class="w-full "
-            >
-
-                <MasonryHr 
-                    class="mt-4 absolute inset-x-0" 
-                    v-if="list_notes.filter(note => note.pinned == true).length"
-                >
-                    <span class="font-bold text-lg">Notes épinglées</span>
-                </MasonryHr>
-
-                <MasonryItem
-                    v-if="list_notes && list_notes.length"
-                    v-for="(note, index) in list_notes.filter(note => note.pinned == true)" 
-                    :key="index"
-                >
-
-                    <Note_card
-                        @pin="withdraw"
-                        :id="note.id"
-                        :uuid="note.uuid"
-                        :pinned="note.pinned"
-                        :icon="note.icon"
-                        :title="note.title" 
-                        :content="note.content" 
-                        :date="note.date"
-                        :tags="note.tags.map(tag => Number(tag))"
-                        :function_reload="reload_list"
-                    />
-
-                </MasonryItem>
-
-
-
-                <MasonryHr 
-                    class="mt-4 absolute inset-x-0" 
-                    v-if="shared_notes && shared_notes.length > 0"
-                >
-                    <span class="font-bold text-lg">Notes partagées</span>
-                </MasonryHr>
-
-                <MasonryItem 
-                    v-if="shared_notes && shared_notes.length > 0"
-                    v-for="(note, index) in shared_notes" 
-                    :key="index"
-                >
-
-                    <Note_card
-                        @pin="withdraw"
-                        :id="note.id"
-                        :uuid="note.uuid"
-                        :pinned="note.pinned"
-                        :icon="note.icon"
-                        :title="note.title" 
-                        :content="note.content" 
-                        :date="note.date"
-                        :tags="note.tags.map(tag => Number(tag))"
-                        :function_reload="reload_list"
-                        :click="() => router.push(`/share/${note.uuid}`)"
-                    />
-
-                </MasonryItem>
-
-
-                <MasonryHr 
-                    class="mt-4 absolute inset-x-0" 
-                    v-if="list_notes.filter(note => note.pinned == true).length || shared_notes.length"
-                >
-                    <span class="font-bold text-lg">Autres</span>
-                </MasonryHr>
-
-                <MasonryItem 
-                    v-if="list_notes && list_notes.length"
-                    v-for="(note, index) in list_notes.filter(note => note.pinned == false)" 
-                    :key="index"
-                >
-
-                    <Note_card
-                        @pin="withdraw"
-                        :id="note.id"
-                        :uuid="note.uuid"
-                        :pinned="note.pinned"
-                        :icon="note.icon"
-                        :title="note.title" 
-                        :content="note.content" 
-                        :date="note.date"
-                        :tags="note.tags.map(tag => Number(tag))"
-                        :function_reload="reload_list"
-                    />
-
-                </MasonryItem>
-
-
-            </MasonryWrapper>
-
-            <li v-else class="flex flex-col">
+                <Search_bar class="w-1/3" :desktop="isLargeScreen" pt="" />
 
                 <div 
-                    class="w-full h-full py-20 flex justify-center items-center flex-col gap-2"
+                    class="w-full lg:w-2/3 flex items-center justify-center gap-4"
                 >
-
-                    <div class="w-30 h-30">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M17 17L21 21M21 17L17 21M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H13M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19M19 9V14" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-
-                    <p class="font-bold text-xl">
-                        Aucune note trouvée !
-                    </p>
-
-                    <div 
-                        v-if="all_tags?.filter(tag => tag.active == true).length"
-                        class="font-bold text-xl flex flex-col max-w-55 mt-6"
+                
+                    <Swiper
+                        :slides-per-view="'auto'"
+                        :space-between="8"
+                        class="w-full lg:w-500 pr-1.5 pl-1.5 rounded-xl"
+                        v-if="all_tags && all_tags.length" 
                     >
 
-                        <span class="mb-2">Filtre activé :</span>
-
-                        <ul class="flex flex-wrap gap-2">
-                            <span 
-                                v-for="tag in all_tags?.filter(tag => tag.active == true)"
-                                class="border border-[var(--text)] px-1.5 rounded-lg uppercase text-sm truncate"
-                                :style="{ backgroundColor: tag.color, color: utils.get_text_color(tag.color) }"
-                            >
-                                {{ tag.name }}
-                            </span>
-                        </ul>
-
-                    </div>
-
-                    <div
-                        v-else
-                    >
-
-                        <button 
-                            @click="create_new_note"
-                            class="primary scale uppercase"
+                        <SwiperSlide 
+                            v-for="(tag, index) in all_tags"
+                            :key="index"
+                            class="!w-auto"
                         >
-                            créer une note
-                        </button>
+
+                            <Tags_item 
+                                @click.stop="add_tag_filter(tag.id)" 
+                                @reload="reload_list"
+                                :id="tag.id" :name="tag.name" 
+                                :tag="tag.name" 
+                                :active="tag.active"
+                                :color="tag.color"
+                            />
+
+                        </SwiperSlide>
+                            
+                    </Swiper>
+
+                    <div v-tooltip.bottom="'Créer un tag'">
+
+                        <Tags_item 
+                            @click="openTagCreator" 
+                            :id="null"
+                            name="+"
+                            :tag="''"
+                            :active="false"
+                            color="#fff5e8"
+                            class="w-20 hover:scale-110
+                            transition-all duration-200"
+                        />
 
                     </div>
 
                 </div>
 
-            </li>
+            </div>
 
-            <li v-if="list_notes == undefined" class=" flex-col">
-                <Loader :icon="false" />
-            </li>
+            <Danger_card 
+                v-if="tip" 
+                style="box-shadow: 0 0 15px #3636364f;" 
+                class="mt-4 lg:w-2/3"
+                title="Tip of the week" 
+                content="You can create a new note with +" 
+            />
 
-        </ul>
+            <Danger_card 
+                v-if="if_danger_card" 
+                style="box-shadow: 0 0 15px #3636364f;" 
+                class="mt-4 lg:w-2/3"
+                :title="Danger_card_props?.title"
+                :btn="Danger_card_props?.btn"
+                :href="Danger_card_props?.href"
+                :content="Danger_card_props?.message" 
+            />
+
+        </div>
+
+        <div class="flex-1 overflow-y-auto overflow-x-hidden pb-20 max-w-5xl" >
+
+            <div 
+                class="space-y-5"
+                v-if="notes_views_mode == 'tag'"
+            >
+
+                <div 
+                    v-for="tag in all_tags"
+                >
+
+                    <div v-if="list_notes && list_notes.find(note => note.tags.includes(tag.id))">
+
+                        <div 
+                            class="font-bold text-lg p-2 rounded-[var(--br-btn)]
+                            border-2 w-30 flex justify-center items-center border-[var(--text)]"
+                            :style="{ backgroundColor: tag.color, color: utils.get_text_color(tag.color) }"
+                        >
+                            {{ tag.name }}
+                        </div>
+
+                        <MasonryWrapper 
+                            class="space-y-4 mt-2
+                            columns-2 md:columns-3 lg:columns-4  "
+                        >
+
+                            <MasonryItem 
+                                v-if="list_notes && list_notes.length"
+                                v-for="(note, index) in list_notes.filter(note => note.tags.includes(tag.id))" 
+                                :key="index"
+                            >
+
+                                <Note_card
+                                    @pin="withdraw"
+                                    :id="note.id"
+                                    :icon="note.icon"
+                                    :uuid="note.uuid"
+                                    :pinned="note.pinned"
+                                    :title="note.title" 
+                                    :content="note.content" 
+                                    :date="note.date"
+                                    :tags="note.tags.map(tag => Number(tag))"
+                                    :function_reload="reload_list"
+                                />
+
+                            </MasonryItem>
+                        
+                        </MasonryWrapper>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <ul 
+                class="mt-4"
+                v-if="notes_views_mode == 'default'"
+            >
+
+                <MasonryWrapper 
+                    v-if="view_notes && list_notes && shared_notes && list_notes.length > 0"
+                    class="w-full "
+                >
+
+                    <MasonryHr 
+                        class="mt-4 absolute inset-x-0" 
+                        v-if="list_notes.filter(note => note.pinned == true).length"
+                    >
+                        <span class="font-bold text-lg">Notes épinglées</span>
+                    </MasonryHr>
+
+                    <MasonryItem
+                        v-if="list_notes && list_notes.length"
+                        v-for="(note, index) in list_notes.filter(note => note.pinned == true)" 
+                        :key="index"
+                    >
+
+                        <Note_card
+                            @pin="withdraw"
+                            :id="note.id"
+                            :uuid="note.uuid"
+                            :pinned="note.pinned"
+                            :icon="note.icon"
+                            :title="note.title" 
+                            :content="note.content" 
+                            :date="note.date"
+                            :tags="note.tags.map(tag => Number(tag))"
+                            :function_reload="reload_list"
+                        />
+
+                    </MasonryItem>
+
+
+
+                    <MasonryHr 
+                        class="mt-4 absolute inset-x-0" 
+                        v-if="shared_notes && shared_notes.length > 0"
+                    >
+                        <span class="font-bold text-lg">Notes partagées</span>
+                    </MasonryHr>
+
+                    <MasonryItem 
+                        v-if="shared_notes && shared_notes.length > 0"
+                        v-for="(note, index) in shared_notes" 
+                        :key="index"
+                    >
+
+                        <Note_card
+                            @pin="withdraw"
+                            :id="note.id"
+                            :uuid="note.uuid"
+                            :pinned="note.pinned"
+                            :icon="note.icon"
+                            :title="note.title" 
+                            :content="note.content" 
+                            :date="note.date"
+                            :tags="note.tags.map(tag => Number(tag))"
+                            :function_reload="reload_list"
+                            :click="() => router.push(`/share/${note.uuid}`)"
+                        />
+
+                    </MasonryItem>
+
+
+                    <MasonryHr 
+                        class="mt-4 absolute inset-x-0" 
+                        v-if="list_notes.filter(note => note.pinned == true).length || shared_notes.length"
+                    >
+                        <span class="font-bold text-lg">Autres</span>
+                    </MasonryHr>
+
+                    <MasonryItem 
+                        v-if="list_notes && list_notes.length"
+                        v-for="(note, index) in list_notes.filter(note => note.pinned == false)" 
+                        :key="index"
+                    >
+
+                        <Note_card
+                            @pin="withdraw"
+                            :id="note.id"
+                            :uuid="note.uuid"
+                            :pinned="note.pinned"
+                            :icon="note.icon"
+                            :title="note.title" 
+                            :content="note.content" 
+                            :date="note.date"
+                            :tags="note.tags.map(tag => Number(tag))"
+                            :function_reload="reload_list"
+                        />
+
+                    </MasonryItem>
+
+
+                </MasonryWrapper>
+
+                <li v-else class="flex flex-col">
+
+                    <div 
+                        class="w-full h-full py-20 flex justify-center items-center flex-col gap-2"
+                    >
+
+                        <div class="w-30 h-30">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17 17L21 21M21 17L17 21M13 3H8.2C7.0799 3 6.51984 3 6.09202 3.21799C5.71569 3.40973 5.40973 3.71569 5.21799 4.09202C5 4.51984 5 5.0799 5 6.2V17.8C5 18.9201 5 19.4802 5.21799 19.908C5.40973 20.2843 5.71569 20.5903 6.09202 20.782C6.51984 21 7.0799 21 8.2 21H13M13 3L19 9M13 3V7.4C13 7.96005 13 8.24008 13.109 8.45399C13.2049 8.64215 13.3578 8.79513 13.546 8.89101C13.7599 9 14.0399 9 14.6 9H19M19 9V14" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+
+                        <p class="font-bold text-xl">
+                            Aucune note trouvée !
+                        </p>
+
+                        <div 
+                            v-if="all_tags?.filter(tag => tag.active == true).length"
+                            class="font-bold text-xl flex flex-col max-w-55 mt-6"
+                        >
+
+                            <span class="mb-2">Filtre activé :</span>
+
+                            <ul class="flex flex-wrap gap-2">
+                                <span 
+                                    v-for="tag in all_tags?.filter(tag => tag.active == true)"
+                                    class="border border-[var(--text)] px-1.5 rounded-lg uppercase text-sm truncate"
+                                    :style="{ backgroundColor: tag.color, color: utils.get_text_color(tag.color) }"
+                                >
+                                    {{ tag.name }}
+                                </span>
+                            </ul>
+
+                        </div>
+
+                        <div
+                            v-else
+                        >
+
+                            <button 
+                                @click="create_new_note"
+                                class="primary scale uppercase"
+                            >
+                                créer une note
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </li>
+
+                <li v-if="list_notes == undefined" class=" flex-col">
+                    <Loader :icon="false" />
+                </li>
+
+            </ul>
+
+        </div>
 
     </div>
 
@@ -640,7 +653,7 @@
         background-repeat: no-repeat;
         background-position: center;
         background-image: url('../../assets/svgs/reload.svg');
-        filter: invert(1);
+        filter: brightness(0) saturate(100%) invert(61%) sepia(43%) saturate(1182%) hue-rotate(343deg) brightness(99%) contrast(92%);
     }
 
     .moon-svg {
