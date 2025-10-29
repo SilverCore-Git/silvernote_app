@@ -64,7 +64,27 @@
 
             </div>
 
-                            <transition name="fade-slide">
+            <li class="li">
+                <div class="icon-svg ">🛑</div>
+                <span>Toutes les notes</span>
+            </li>
+
+            <li class="li">
+                <div class="icon-svg ">🛑</div>
+                <span>Notes epinglé</span>
+            </li>
+
+            <li class="li">
+                <div class="icon-svg ">🛑</div>
+                <span>Notes partagées</span>
+            </li>
+
+            <li class="li">
+                <div class="icon-svg ">🛑</div>
+                <span>Corbeil</span>
+            </li>
+
+            <transition name="fade-slide">
 
                     <div
                         v-if="if_open_dropdown"
@@ -161,6 +181,17 @@ const openAccount = () => {
     background-position: center;
     background-image: url('/assets/svgs/ellipsis.svg');
     transition: all 0.3s ease;
+}
+
+.li {
+    font-size: 16px;
+    line-height: 1.5;
+    font-weight: 400;
+    :where(& > :not(:last-child)) {
+        --tw-space-x-reverse: 0;
+        margin-inline-start: calc(calc(var(--spacing) * 2) /* 0.5rem = 8px */ * var(--tw-space-x-reverse));
+        margin-inline-end: calc(calc(var(--spacing) * 2) /* 0.5rem = 8px */ * calc(1 - var(--tw-space-x-reverse)));
+    }
 }
 
 .nav-svg {

@@ -21,7 +21,7 @@
     <div class="ml-[16vw] p-6 flex flex-col h-screen overflow-hidden w-full">
 
         <div 
-            class=" flex flex-col flex-shrink-0
+            class=" flex flex-col flex-shrink-0 mb-4
                     justify-center items-start gap-4 w-full"
         >
 
@@ -101,7 +101,10 @@
 
         </div>
 
-        <div class="flex-1 overflow-y-auto overflow-x-hidden pb-20 max-w-5xl" >
+        <div 
+            class="flex-1 overflow-y-auto overflow-x-hidden h-full
+                    p-4 pt-0 pb-60 max-w-5xl shadow-inner rounded-2xl" 
+        >
 
             <div 
                 class="space-y-5"
@@ -156,8 +159,7 @@
 
             </div>
 
-            <ul 
-                class="mt-4"
+            <ul
                 v-if="notes_views_mode == 'default'"
             >
 
@@ -318,10 +320,6 @@
         </div>
 
     </div>
-
-    <New_note_btn 
-        @btn_click="create_new_note"
-    />
 
     <Teleport to="body">
 
