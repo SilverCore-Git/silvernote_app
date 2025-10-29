@@ -3,7 +3,7 @@
     <div 
         :class="btn ? 'cursor-pointer' : ''" 
         class="bg-[#fff2d0] text-[var(--btn)] p-3 border-[var(--text)] 
-              border-2 relative max-w-md pl-4" 
+              border-2 relative pl-4" 
         style="border-radius: 15px; font-family: 'Montserrat';"
         @click="handleClick"
     >

@@ -9,8 +9,9 @@
         <div 
           v-if="!loader && InitDB.isLoaded()"
           class="flex-1 relative overflow-hidden"
-          :class="[ 'Edit', 'Share' ].includes(route.name as string) && route.query.chatbot == 'relative' ? 'mx-4' : 'mr-[var(--mrl)] ml-[var(--mrl)] '"
+          
         >
+        <!-- :class="[ 'Edit', 'Share' ].includes(route.name as string) && route.query.chatbot == 'relative' ? 'mx-4' : 'mr-[var(--mrl)] ml-[var(--mrl)] '" -->
           <router-view />
         </div>
 
