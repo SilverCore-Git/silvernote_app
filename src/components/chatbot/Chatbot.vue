@@ -67,29 +67,19 @@
 
         <div
             v-if="open"
-            :class="[
-                pos === 'fixed'
-                    ? 'fixed w-screen h-screen md:h-[90%] md:w-120 md:max-h-[85%] flex flex-col'
-                    : 'relative h-screen flex flex-col w-[400px] resize-container group',
-                pos === 'fixed'
-                    ? open
-                        ? 'right-0 inset-y-0 md:bottom-8 md:top-auto md:right-8'
-                        : ''
-                    : ''
-
-            ]"
+            class="
+                    fixed inset-y-0 right-0  group
+                    bg-[var(--bg2)] z-50 m-6 p-0
+                    dropdown flex flex-col justify-between
+            "
         >
-        
-            <div 
-                class="relative z-50 w-full bg-[var(--bg2)] rounded-2xl 
-                shadow flex flex-col justify-between h-full resize-handle"
-            >
+
+            <div class="resize-handle-bar"></div>
 
                 <header 
                     class="h-15 bg-[var(--btn)] flex justify-between 
                             items-center px-5 text-white flex-row 
-                            shadow-[var(--btn)] draggable z-30"
-                    :class="pos === 'fixed' ? 'rounded-t-2xl' : ''"
+                            shadow-[var(--btn)] draggable z-30 rounded-t-xl"
                 >
 
                     <div class="flex justify-center items-center flex-row">
@@ -137,7 +127,7 @@
 
 
                 <footer 
-                    class="h-15 flex justify-between items-center flex-row rounded-b-2xl"
+                    class="h-15 flex justify-between items-center flex-row rounded-b-xl"
                 >
 
                     <input 
@@ -159,15 +149,13 @@
 
             </div>
 
-        </div>
-
     </Transition>
     
 </template>
 
 <script lang="ts" setup>
 
-import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
+import { nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import MessageDubble from './MessageDubble.vue';
 import { useUser } from '@clerk/vue';
@@ -243,52 +231,47 @@ const scroll_to_bottom = () => {
 }
 
 const initResize = () => {
-    const handle = document.querySelector<HTMLElement>('.resize-handle');
-    const container = document.querySelector<HTMLElement>('.group');
-    
-    if (!handle || !container) return;
 
-    let startWidth = 0;
-    let startX = 0;
-    let isResizing = false;
-
-    const startResize = (e: MouseEvent) => {
-        if (pos.value === 'fixed') return;
-
-        const handleRect = handle.getBoundingClientRect();
-        const isInResizeZone = e.clientX >= handleRect.left - 8 && e.clientX <= handleRect.left + 8;
+    nextTick(() => {
         
-        if (!isInResizeZone) return;
-        
-        isResizing = true;
-        startWidth = container.offsetWidth;
-        startX = e.clientX;
-        document.body.style.cursor = 'ew-resize';
-        document.body.style.userSelect = 'none';
-        
-        document.addEventListener('mousemove', resize);
-        document.addEventListener('mouseup', stopResize);
-        e.preventDefault();
-    };
+        const handle = document.querySelector<HTMLElement>('.resize-handle-bar');
+        const container = document.querySelector<HTMLElement>('.group');
+        if (!handle || !container) return;
 
-    const resize = (e: MouseEvent) => {
-        if (!isResizing) return;
-        const diff = e.clientX - startX;
-        const newWidth = Math.max(300, Math.min(1000, startWidth - diff));
-        container.style.width = `${newWidth}px`;
-    };
+        let startWidth = 0;
+        let startX = 0;
+        let isResizing = false;
 
-    const stopResize = () => {
-        isResizing = false;
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
-        document.removeEventListener('mousemove', resize);
-        document.removeEventListener('mouseup', stopResize);
-    };
+        const startResize = (e: MouseEvent) => {
+            isResizing = true;
+            startWidth = container.offsetWidth;
+            startX = e.clientX;
+            document.body.style.cursor = 'ew-resize';
+            document.body.style.userSelect = 'none';
 
-    handle.addEventListener('mousedown', startResize);
-}
+            document.addEventListener('mousemove', resize);
+            document.addEventListener('mouseup', stopResize);
+        };
 
+        const resize = (e: MouseEvent) => {
+            if (!isResizing) return;
+            const diff = startX - e.clientX; // inversé pour tirer de l'autre coté
+            const newWidth = Math.min(Math.max(300, startWidth + diff), 1000);
+            container.style.width = `${newWidth}px`;
+        };
+
+        const stopResize = () => {
+            isResizing = false;
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+            document.removeEventListener('mousemove', resize);
+            document.removeEventListener('mouseup', stopResize);
+        };
+
+        handle.addEventListener('mousedown', startResize);
+        onUnmounted(() => handle.removeEventListener('mousedown', startResize));
+    });
+};
 
 
 const send = async (prompt: string): Promise<void> => {
@@ -468,32 +451,11 @@ watch(() => route.query.chatbot, () => {
         open.value = true;
     }
 })
-watch(() => pos.value, (newVal) => {
-    if (newVal === 'relative') {
-        setTimeout(() => {
-            console.log('Initializing resize...');
-            initResize();
-        }, 100);
-    }
-    if (newVal === 'fixed') {
-        const container = document.querySelector<HTMLElement>('.group');
-        if (!container) return;
-        container.classList = 'w-screen md:w-120';
-    }
-    router.push({
-        query: {
-            ...route.query,
-            chatbot: pos.value
-        }
+watch(() => open.value, async () => {
+    await nextTick(() => {
+        console.log('Initializing resize...');
+        initResize();
     });
-});
-watch(() => open.value, () => {
-    if (pos.value === 'relative') {
-        setTimeout(() => {
-            console.log('Initializing resize...');
-            initResize();
-        }, 100);
-    }
     router.push({
         query: open.value 
             ? {
@@ -577,33 +539,22 @@ footer:has(input:focus) {
     transform: scale(1.1);
 } 
 
-.group:has(.resize-handle) {
-    position: relative;
+
+.resize-handle-bar {
+  position: absolute;
+  top: 0;
+  left: -6px;
+  width: 12px;
+  height: 100%;
+  cursor: ew-resize;
+  background: transparent;
+  transition: background-color 0.2s;
+  z-index: 50;
 }
 
-.group .resize-handle {
-    position: relative !important;
+.resize-handle-bar:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-.group .resize-handle::before {
-    content: "";
-    position: absolute;
-    left: -8px;
-    top: 0;
-    width: 16px;
-    height: 100%;
-    cursor: default;
-    z-index: 100;
-}
-
-.group .resize-handle:hover::before {
-    cursor: ew-resize;
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-.group .resize-handle:hover::before {
-    background-color: var(--btn);
-    opacity: 0.2;
-}
 
 </style>
