@@ -13,8 +13,8 @@
         " 
         class="
                 fixed inset-y-0 left-0
-                text-2xl font-bold w-[16vw]
-                bg-[var(--bg2)] z-50 p-4
+                text-2xl font-bold w-60
+                bg-[var(--bg2)] z-50 p-4 m-6
                 flex items-start justify-center dropdown
             "
     >
@@ -34,8 +34,20 @@
 
             <div 
                 class="flex flex-row justify-between items-center 
-                        gap-6 md:gap-5 w-full mb-4 px-2"
+                        gap-6 md:gap-5 w-full mb-6 px-2"
             >
+
+                <a class="p-1.5">
+                    <div
+                        class="gear-svg
+                                w-7
+                                h-7
+                            "
+                        @click="router.push('/settings')"
+                    ></div>
+                </a>
+
+                <slot></slot>
 
                 <a class="p-1.5 flex items-center justify-center ">
                     <UserButton 
@@ -50,39 +62,62 @@
                         />
                 </a>
 
-                <slot></slot>
-
-                <a class="p-1.5">
-                    <div
-                        class="gear-svg
-                                w-7
-                                h-7
-                            "
-                        @click="router.push('/settings')"
-                    ></div>
-                </a>
-
             </div>
 
-            <li class="li">
-                <div class="icon-svg ">🛑</div>
+            <span class="text-xs text-[var(--text-little)]">Trier par</span>
+
+            <li 
+                class="li"
+                @click="setFilter('all')"
+            >
+                <i class="bi bi-journal-text text-[var(--btn)] text-xl" />
                 <span>Toutes les notes</span>
             </li>
 
-            <li class="li">
-                <div class="icon-svg ">🛑</div>
+            <li 
+                class="li"
+                @click="setFilter('pinned')"
+            >
+                <i class="bi bi-pin-angle-fill text-[var(--btn)] text-xl" />
                 <span>Notes epinglé</span>
             </li>
 
-            <li class="li">
-                <div class="icon-svg ">🛑</div>
+            <li 
+                class="li"
+                @click="setFilter('shared')"
+            >
+                <i class="bi bi-people-fill text-[var(--btn)] text-xl" />
                 <span>Notes partagées</span>
             </li>
 
-            <li class="li">
-                <div class="icon-svg ">🛑</div>
+            <li 
+                class="li"
+                @click="setFilter('bin')"
+            >
+                <i class="bi bi-trash-fill text-[var(--btn)] text-xl" />
                 <span>Corbeil</span>
             </li>
+
+            <hr class="my-2 text-transparent" />
+
+            <span class="text-xs text-[var(--text-little)]">Affichage</span>
+
+            <li 
+                @click.stop="toggle_notes_views_mode()" 
+                class="li nohover2"
+            >
+                <i 
+                    class="bi text-[var(--btn)] text-xl"
+                    :class="notes_views_mode === 'default' ? 'bi-grid' : 'bi-grid-3x3-gap-fill'"
+                />
+                <span>Organiser par {{ notes_views_mode == "default" ? 'tags' : 'épinglé' }} </span>
+            </li>
+
+
+
+            <div class="absolute bottom-2 inset-x-4 ">
+                <New_note_btn />
+            </div>
 
             <transition name="fade-slide">
 
@@ -160,7 +195,8 @@ import { UserButton } from '@clerk/vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { version, dev } from '../../../package.json';
-import { notes_views_mode, toggle_notes_views_mode } from '@/assets/ts/Notes_views';
+import { notes_views_mode, toggle_notes_views_mode, notes_filter, type Notes_filter } from '@/assets/ts/Notes_views';
+import New_note_btn from './New_note_btn.vue';
 
 const router = useRouter();
 const if_open_dropdown = ref<boolean>(false);
@@ -169,6 +205,9 @@ const openAccount = () => {
     window.open('https://www.silvernote.fr/user/profile');
 }
 
+const setFilter = (a: Notes_filter): void => {
+    notes_filter.value = a;
+}
 
 </script>
 
@@ -187,11 +226,16 @@ const openAccount = () => {
     font-size: 16px;
     line-height: 1.5;
     font-weight: 400;
+    transition: all 0.3s;
     :where(& > :not(:last-child)) {
         --tw-space-x-reverse: 0;
         margin-inline-start: calc(calc(var(--spacing) * 2) /* 0.5rem = 8px */ * var(--tw-space-x-reverse));
         margin-inline-end: calc(calc(var(--spacing) * 2) /* 0.5rem = 8px */ * calc(1 - var(--tw-space-x-reverse)));
-    }
+    };
+}
+
+.li:not(.nohover2):hover {
+    padding-left: 1.5em;
 }
 
 .nav-svg {
