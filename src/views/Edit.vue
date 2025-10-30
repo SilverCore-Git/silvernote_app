@@ -7,15 +7,14 @@
 
   <header 
     class="
-          flex flex-row fixed inset-x-0 mx-[var(--mrl)]
-          pt-2 z-50 mt-5
+            flex flex-row fixed inset-x-0 
+            pt-2 z-50 mt-5 mx-[20%]
           "
   >
 
     <div 
       class="left-arrow absolute left-0 cursor-pointer" 
-      @click="router.push('/')" 
-      :class="hitbox ? 'bg-red-600' : ''"
+      @click="router.back()"
     ></div>
 
     <div class="flex flex-row gap-4 absolute right-0">
@@ -634,9 +633,7 @@ const init_emoji_picker = () => {
 }
 
 
-// Start
-onMounted(async () => {
-
+const initNote = async () => {
   try {
 
     // création d'une nouvelle note
@@ -656,9 +653,16 @@ onMounted(async () => {
   } catch (err) {
     console.error("Erreur lors de l'initialisation :", err);
   }
+}
 
+
+// Start
+onMounted(async () => await initNote());
+// if props in route change
+watch(() => route.params.id, async () => {
+  loaded.value = false;
+  await initNote();
 });
-
 
 onBeforeUnmount(async () => {
 

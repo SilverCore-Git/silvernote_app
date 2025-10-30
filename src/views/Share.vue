@@ -7,14 +7,14 @@
 
     <header 
         class="
-            flex flex-row fixed inset-x-0 mx-[var(--mrl)]
+            flex flex-row fixed inset-x-0 mx-[20%]
             pt-2 z-50 mt-5
             "
     >
 
         <div 
             class="left-arrow absolute left-0 cursor-pointer" 
-            @click="router.push('/')"
+            @click="router.back()"
         ></div>
 
         <div 

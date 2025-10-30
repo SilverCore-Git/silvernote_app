@@ -1,7 +1,10 @@
 <template>
 
     <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
-        <div class="left-arrow absolute left-0" :class="hitbox ? 'bg-red-600' : ''" @click="router.push('/settings')"></div>
+        <div 
+            class="left-arrow absolute left-0 cursor-pointer" 
+            @click="router.back()"
+        ></div>
     </header>
 
     <div class="flex justify-start items-center md:mx-[18%] my-12 ml-4 mr-4">
