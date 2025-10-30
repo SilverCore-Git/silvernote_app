@@ -41,7 +41,7 @@ import { Extension, InputRule } from '@tiptap/core';
 import SlashCommand from '@/components/Markdown/tiptap-extensions/SlachCommand.js';
 import { IndentExtension } from './tiptap-extensions/IndentExtension.js';
 import FileHandler from '@tiptap/extension-file-handler';
-import History from '@tiptap/extension-history';
+import { noteBtnLink } from './tiptap-extensions/noteBtnLink';
 //import { CollapsibleExtension } from './tiptap-extensions/CollapsibleExtension.js';
 import DragHandle from './tiptap-extensions/dragHandle';
 import './css/DragHandler.scss';
@@ -161,12 +161,13 @@ const initEditor = async () => {
 
   editor.value = new Editor({
     extensions: [
-      StarterKit.configure({ 
+      StarterKit.configure({
+        history: false,
         blockquote: false
       }),
-      History,
       TaskList,
       TodoInput,
+      noteBtnLink,
       SlashCommand,
       SearchAndReplace,
       Link.configure({ openOnClick: false, autolink: true, linkOnPaste: true }),
