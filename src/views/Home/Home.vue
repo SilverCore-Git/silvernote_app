@@ -3,7 +3,7 @@
 
     <Navbar>
 
-        <a class="p-1.5">
+        <a class="p-1.5" v-tooltip.bottom="'Recharger'">
             <div
                 class="reload-svg
                         w-6
