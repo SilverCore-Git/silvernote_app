@@ -7,6 +7,7 @@ import pkg from '../package.json' assert { type: 'json' };
 
 
 import './style.css';
+import 'bootstrap-icons/font/bootstrap-icons.css'
 
 const PUBLISHABLE_KEY = pkg.dev
   ? import.meta.env.VITE_CLERK_TEST_PUBLISHABLE_KEY
