@@ -28,6 +28,7 @@ const SlashCommand = Extension.create<ExclaimOptions>({
                 'Citation',
                 'Trait de séparation',
                 'Code',
+                'Lien vers une note'
             ],
         };
     },
@@ -65,6 +66,8 @@ const SlashCommand = Extension.create<ExclaimOptions>({
                         'Citation': () => editor.chain().focus().deleteRange(range).toggleBlockquote().run(),
                         'Trait de séparation': () => editor.chain().focus().deleteRange(range).setHorizontalRule().run(),
                         'Code': () => editor.chain().focus().deleteRange(range).setCodeBlock().run(),
+
+                        'Lien vers une note': () => { const id = prompt('Id de la note ?'); if(id) editor.chain().focus().setNoteBtnLink({ noteId: Number(id) }).run() }
                         
                     };
 
