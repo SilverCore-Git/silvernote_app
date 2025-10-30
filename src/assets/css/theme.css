@@ -14,16 +14,9 @@
     --br-btn: 12px;
     --br-tag: 8px;
 
-    --mrl: 1rem;
+    --mrl: 1em;
+    --mlr: 1em;
 
-}
-
-body.lgdesktop {
-  --mrl: 12%;
-}
-
-body.xldesktop {
-  --mrl: 22%;
 }
 
 body.dark {
