@@ -21,16 +21,28 @@
 
         <ul class="w-full">
             
-            <li class="gap-2 w-full">
+            <li class="flex flex-col ">
 
-                <img src="/favicon.svg" class="w-8 rounded-md ml-4">
+                <div class="flex flex-row gap-2 items-center justify-center">
 
-                <div class="flex flex-col">
-                    <span class="text-base">SilverNote app</span>
-                    <span class="text-[var(--text-little)] text-[10px] -mt-1">
-                        version {{ version }}
-                    </span>
+                    <img src="/favicon.svg" class="w-8 rounded-md" />
+
+                    <div class="flex flex-col items-start">
+                        <span class="text-base">SilverNote app</span>
+                        <span class="text-[var(--text-little)] text-[10px] -mt-1">
+                            version {{ version }}
+                        </span>
+                    </div>
+
                 </div>
+
+                <span 
+                    v-if="dev" 
+                    class="text-sm text-[var(--btn)]" 
+                    style="letter-spacing: 0.2px;"
+                >
+                    Development mode
+                </span>
 
             </li>
 
@@ -142,9 +154,9 @@ import New_note_btn from './New_note_btn.vue';
 const router = useRouter();
 const if_open_dropdown = ref<boolean>(false);
 
-const openAccount = () => {
-    window.open('https://www.silvernote.fr/user/profile');
-}
+// const openAccount = () => {
+//     window.open('https://www.silvernote.fr/user/profile');
+// }
 
 const setFilter = (a: Notes_filter): void => {
     notes_filter.value = a;
