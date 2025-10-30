@@ -1,37 +1,101 @@
-/* Style général du tableau */
+/* ===== TABLE CONTAINER ===== */
 .ProseMirror table {
   width: 100%;
-  border-collapse: collapse;
-  margin: 1em 0;
-  font-family: system-ui, sans-serif;
+  max-width: 100%;
+  border-collapse: separate; /* nécessaire pour border-radius */
+  border-spacing: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--btn);
+  transition: all 0.2s ease;
 }
 
-/* Style des cellules */
+/* ===== CELLS ===== */
 .ProseMirror th,
 .ProseMirror td {
-  border: 1px solid #ccc;
-  padding: 0.5em 1em;
+  border: none;
+  padding: 12px 15px;
   text-align: left;
+  vertical-align: middle;
+  font-size: 15px;
+  position: relative;
+  transition: background 0.25s ease, color 0.25s ease;
+  background: var(--bg);
 }
 
-/* En-tête */
+/* ===== ENTÊTE ===== */
 .ProseMirror th {
-  background-color: #f3f4f6; /* gris clair */
   font-weight: 600;
+  background: var(--bg2);
+  color: var(--text-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,0.05);
+  border-bottom: 1px solid var(--btn);
 }
 
-/* Lignes alternées */
-.ProseMirror tr:nth-child(even) td {
-  background-color: #f9fafb; /* gris très clair */
+/* Hover pour les cellules */
+.ProseMirror td:hover {
+  background: rgba(255, 159, 77, 0.1); /* léger orange chaud */
 }
 
-/* Style sur hover */
-.ProseMirror tr:hover td {
-  background-color: #e5e7eb; /* gris clair légèrement plus foncé */
+/* ===== FOCUS CELL ===== */
+.ProseMirror td:focus-within {
+  outline: 2px solid var(--btn);
+  outline-offset: -2px;
+  background: rgba(255, 159, 77, 0.15);
 }
 
-/* Pour des tableaux responsives */
-.ProseMirror table {
-  display: block;
-  overflow-x: auto;
+/* ===== HANDLE DE REDIMENSION ===== */
+.ProseMirror .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: var(--btn);
+  cursor: col-resize;
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.ProseMirror th:hover .column-resize-handle,
+.ProseMirror td:hover .column-resize-handle {
+  opacity: 1;
+}
+
+/* Curseur global pendant le resize */
+.resize-cursor {
+  cursor: col-resize !important;
+}
+
+/* ===== ROUNDED TABLE STYLE ===== */
+.ProseMirror table tr:first-child th:first-child {
+  border-top-left-radius: 12px;
+}
+
+.ProseMirror table tr:first-child th:last-child {
+  border-top-right-radius: 12px;
+}
+
+.ProseMirror table tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
+}
+
+.ProseMirror table tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .ProseMirror table {
+    font-size: 14px;
+  }
+
+  .ProseMirror th,
+  .ProseMirror td {
+    padding: 10px;
+  }
 }
