@@ -4,8 +4,11 @@
   box-shadow: 0 8px 15px rgba(54, 54, 54, 0.288);
   backdrop-filter: blur(10px);
   min-width: 200px;
-  padding: 0.5rem;
   z-index: 50;
+}
+
+.dropdown:not(.p-0) {
+  padding: .5em;
 }
 
 .dropdown ul {

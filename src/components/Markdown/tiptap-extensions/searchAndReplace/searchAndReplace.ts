@@ -31,6 +31,9 @@ import {
 import { Node as PMNode } from "@tiptap/pm/model";
 
 declare module "@tiptap/core" {
+  interface Storage {
+    searchAndReplace: SearchAndReplaceStorage
+  }
   interface Commands<ReturnType> {
     search: {
       /**

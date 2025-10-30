@@ -28,22 +28,21 @@
         :src="icon" 
       />
 
-      <span 
+      <span
         class="overflow-hidden text-ellipsis uppercase"
         :class="note_settings ? 'whitespace-normal' : 'whitespace-nowrap'"
-      >
-        {{ utils.htmlToText(title) }}
-      </span>
+        v-html="utils.clean_html(title)"
+      ></span>
 
     </div>
 
-    <p 
+    <p
+      v-if="cleanHTML === false"
       class="text-xs my-2"
       :class="note_settings ? 'multiline-14' : 'multiline-8'"
       :style="{ maxHeight: note_settings ? '16em' : '' }"
-    >
-      {{ utils.htmlToText(content).slice(0, 500) }}
-    </p>
+      v-html="utils.clean_html(content).slice(0, 600)"
+    ></p>
 
     <div
       class="flex flex-wrap gap-1.5
@@ -64,6 +63,7 @@
 </PressAndHold>
 
   <Note_settings
+    v-if="function_reload"
     class="relative "
     :id="id"
     :top="note_settings_top"
@@ -108,7 +108,8 @@ const props = defineProps<{
     tags: number[];
     id: number;
     uuid: string;
-    function_reload: () => Promise<any>;
+    cleanHTML?: boolean;
+    function_reload?: () => Promise<any>;
     click?: () => void;
 }>()
 

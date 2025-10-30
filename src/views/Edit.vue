@@ -661,10 +661,20 @@ onMounted(async () => {
 
 
 onBeforeUnmount(async () => {
+
   if (note.value.title == '') {
-    console.log('Sauvegarde de la note vide')
-    socket.emit('title-update', 'Note sans titre');
-    db.saveTitle('Note sans titre', note.value.id);
+
+    if (note.value.content == '') 
+    {
+      await db.delete(note.value.id, false);
+    }
+    else 
+    {
+      console.log('Sauvegarde de la note vide')
+      socket.emit('title-update', 'Note sans titre');
+      db.saveTitle('Note sans titre', note.value.id);
+    }
+
   }
   else
   {

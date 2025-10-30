@@ -9,7 +9,7 @@
         <div 
           v-if="!loader && InitDB.isLoaded()"
           class="flex-1 relative overflow-hidden"
-          :class="[ 'Edit', 'Share' ].includes(route.name as string) && route.query.chatbot == 'relative' ? 'mx-4' : 'mr-[var(--mrl)] ml-[var(--mrl)] '"
+          :class="[ 'Edit', 'Share' ].includes(route.name as string) && route.query.chatbot == 'relative' ? 'mx-4' : 'mr-[var(--mlr)] ml-[var(--mrl)] '"
         >
           <router-view />
         </div>
@@ -162,9 +162,11 @@ onUnmounted(() => {
 });
 
 const updateBodyClass = () => {
-  body.classList.remove("lgdesktop", "xldesktop");
+  body.classList.remove("lgdesktop", "xldesktop", "xsdesktop", "xxsdesktop", "phone");
   if (screen_w.value >= 1700) body.classList.add("xldesktop");
-  else if (screen_w.value >= 1200) body.classList.add("lgdesktop");
+  else if (screen_w.value >= 1400) body.classList.add("lgdesktop");
+  else if (screen_w.value >= 1072) body.classList.add("xsdesktop");
+  else body.classList.add("phone");
 };
 
 watch(screen_w, updateBodyClass);

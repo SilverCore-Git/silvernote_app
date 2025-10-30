@@ -7,6 +7,7 @@
 @import './assets/css/dropdown.css';
 @import './assets/css/button.css';
 @import './assets/css/ToolTip.css';
+@import './assets/css/responsive.css';
 
 
 p, span {
@@ -48,8 +49,6 @@ h1, h2, h3, h4, h5, h6 {
 a {
   cursor: pointer;
   border-radius: 5px;
-  padding-right: 1px;
-  padding-left: 1px;
   transition: all .2s;
 }
 

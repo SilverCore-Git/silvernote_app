@@ -12,7 +12,7 @@
         class="w-48 dropdown bg-[var(--bg2)] border border-[var(--btn)]"
       >
 
-        <span class="text-xs text-[var(--text)]">
+        <span class="text-xs text-[var(--text-little)]">
           Transformer en
         </span>
 
