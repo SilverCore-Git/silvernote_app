@@ -18,7 +18,7 @@
 
     </Navbar>
     
-    <div class="ml-[16vw] p-6 flex flex-col h-screen overflow-hidden w-full">
+    <div class="p-6 flex flex-col h-screen overflow-hidden w-full">
 
         <div 
             class=" flex flex-col flex-shrink-0 mb-4
@@ -26,14 +26,13 @@
         >
 
             <div
-                class="flex flex-col lg:flex-row
-                    justify-center items-center gap-4 w-full"
+                class="flex flex-col gap-2 w-full"
             >
 
-                <Search_bar class="w-1/3" :desktop="isLargeScreen" pt="" />
+                <Search_bar :desktop="isLargeScreen" pt="" />
 
                 <div 
-                    class="w-full lg:w-2/3 flex items-center justify-center gap-4"
+                    class="flex items-center justify-center gap-4"
                 >
                 
                     <Swiper
@@ -71,7 +70,7 @@
                             :tag="''"
                             :active="false"
                             color="#fff5e8"
-                            class="w-20 hover:scale-110
+                            class="w-20 button-scale
                             transition-all duration-200"
                         />
 
@@ -169,14 +168,14 @@
                 >
 
                     <MasonryHr 
-                        class="mt-4 absolute inset-x-0" 
-                        v-if="list_notes.filter(note => note.pinned == true).length"
+                        class="mt-4 absolute inset-x-0"
+                        v-if="list_notes.filter(note=> note.pinned == true).length && notes_filter == 'all' || notes_filter == 'pinned'"
                     >
                         <span class="font-bold text-lg">Notes épinglées</span>
                     </MasonryHr>
 
                     <MasonryItem
-                        v-if="list_notes && list_notes.length"
+                        v-if="list_notes && list_notes.length && notes_filter == 'all' || notes_filter == 'pinned' "
                         v-for="(note, index) in list_notes.filter(note => note.pinned == true)" 
                         :key="index"
                     >
@@ -200,13 +199,13 @@
 
                     <MasonryHr 
                         class="mt-4 absolute inset-x-0" 
-                        v-if="shared_notes && shared_notes.length > 0"
+                        v-if="shared_notes && shared_notes.length > 0 && notes_filter == 'all' || notes_filter == 'shared'"
                     >
                         <span class="font-bold text-lg">Notes partagées</span>
                     </MasonryHr>
 
                     <MasonryItem 
-                        v-if="shared_notes && shared_notes.length > 0"
+                        v-if="shared_notes && shared_notes.length > 0 && notes_filter == 'all' || notes_filter == 'shared' "
                         v-for="(note, index) in shared_notes" 
                         :key="index"
                     >
@@ -230,13 +229,13 @@
 
                     <MasonryHr 
                         class="mt-4 absolute inset-x-0" 
-                        v-if="list_notes.filter(note => note.pinned == true).length || shared_notes.length"
+                        v-if="list_notes.filter(note => note.pinned == true).length || shared_notes.length && notes_filter === 'all' "
                     >
                         <span class="font-bold text-lg">Autres</span>
                     </MasonryHr>
 
                     <MasonryItem 
-                        v-if="list_notes && list_notes.length"
+                        v-if="list_notes && list_notes.length && notes_filter == 'all'"
                         v-for="(note, index) in list_notes.filter(note => note.pinned == false)" 
                         :key="index"
                     >
@@ -259,7 +258,7 @@
 
                 </MasonryWrapper>
 
-                <li v-else class="flex flex-col">
+                <li v-else-if="!isRotating" class="flex flex-col">
 
                     <div 
                         class="w-full h-full py-20 flex justify-center items-center flex-col gap-2"
@@ -415,7 +414,7 @@
     import back from '@/assets/ts/backend_link';
     import utils from '@/assets/ts/utils';
     import type { Note, Tag } from '@/assets/ts/type';
-    import { notes_views_mode } from '@/assets/ts/Notes_views'
+    import { notes_filter, notes_views_mode } from '@/assets/ts/Notes_views';
     import InitDB from '@/assets/ts/database/init';
 
     import Danger_card from '@/components/Danger_card.vue';
@@ -427,7 +426,6 @@
     import MasonryItem from '@/components/Masonry/MasonryItem.vue';
     import MasonryHr from '@/components/Masonry/MasonryHr.vue';
     import Loader from '@/components/Loader.vue';
-    import New_note_btn from '@/views/Home/New_note_btn.vue';
     import { 
         Notes as list_notes, 
         Tags as all_tags, 
@@ -572,27 +570,27 @@
         isRotating.value = true;
         view_notes.value = false;
 
-        setTimeout(async () => {
+        list_notes.value = [];
+        all_tags.value = [];
+        shared_notes.value = [];
 
-            list_notes.value = [];
-            all_tags.value = [];
-            shared_notes.value = [];
+        await nextTick();
 
-            await InitDB.init_local_tags();
-            await InitDB.init_local_notes();
-            await InitDB.init_shared_notes();
+        await InitDB.init_local_tags();
+        await InitDB.init_local_notes();
+        await InitDB.init_shared_notes();
 
-            console.log('Rechargement des db...')
+        console.log('Rechargement des db...')
 
-            view_notes.value = true;
+        await nextTick();
 
-            setTimeout(() => {
-                isRotating.value = false;
-            }, 200);
+        view_notes.value = true;
 
-        }, 300);
+        setTimeout(() => {
+            isRotating.value = false;
+        }, 200);
 
-    };
+    }
 
 
     onMounted(async () => {
@@ -621,6 +619,12 @@
         }
 
     });
+
+    watch(() => notes_filter.value, async () => {
+        view_notes.value = false;
+        await nextTick();
+        view_notes.value = true;
+    })
 
 
 </script>

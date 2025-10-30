@@ -19,11 +19,11 @@
 }
 
 body.lgdesktop {
-  --mrl: 15%;
+  --mrl: 12%;
 }
 
 body.xldesktop {
-  --mrl: 25%;
+  --mrl: 22%;
 }
 
 body.dark {
