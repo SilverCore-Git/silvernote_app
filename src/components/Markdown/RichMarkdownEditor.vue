@@ -176,7 +176,9 @@ const initEditor = async () => {
       Youtube.configure({ HTMLAttributes: { class: 'ytb-viewer' } }),
       UndoRedo,
       CharacterCount,
-      TableKit,
+      TableKit.configure({
+        table: { resizable: true },
+      }),
       IndentExtension,
       Markdown.configure({ html: true }),
       Placeholder.configure({ placeholder: 'Commencez à écrire ici...' }),
