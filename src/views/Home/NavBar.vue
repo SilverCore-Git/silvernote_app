@@ -11,7 +11,7 @@
             font-family: 'InterTight', sans-serif; 
             box-shadow: 0 0 15px #36363681;
         " 
-        class="
+        class="phone-hidden
                 fixed inset-y-0 left-0
                 text-2xl font-bold w-60
                 bg-[var(--bg2)] z-50 p-4 m-6
@@ -98,7 +98,7 @@
                 @click="setFilter('bin')"
             >
                 <i class="bi bi-trash-fill text-[var(--btn)] text-xl" />
-                <span>Corbeil</span>
+                <span>Corbeille</span>
             </li>
 
             <hr class="my-2 text-transparent" />

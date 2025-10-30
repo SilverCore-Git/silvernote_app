@@ -29,7 +29,7 @@
                 class="flex flex-col gap-2 w-full"
             >
 
-                <Search_bar :desktop="isLargeScreen" pt="" />
+                <Search_bar />
 
                 <div 
                     class="flex items-center justify-center gap-4"
@@ -320,6 +320,15 @@
 
     </div>
 
+    <div 
+        class="
+            fixed inset-x-0 bottom-6 phone-show-flex
+            justify-center items-center
+        "
+    >
+        <div class="w-14 h-14"><New_note_btn /></div>
+    </div>
+
     <Teleport to="body">
 
         <Transition name="fade-slide">
@@ -434,6 +443,7 @@
     import Popup from '@/components/popup/Popup.vue';
     import { usePlan } from '@/assets/ts/user/UserPlan';
     import { salert } from '@/assets/ts/salert';
+import New_note_btn from './New_note_btn.vue';
     
     const router = useRouter();
     const { plan } = usePlan();

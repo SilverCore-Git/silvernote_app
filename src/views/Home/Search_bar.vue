@@ -1,9 +1,11 @@
 <template>
 
   <div
-    class="note-card bg-[var(--bg2)] text-[var(--text)] 
+    class=" 
+            bg-[var(--bg2)] text-[var(--text)] 
             border z-30 rounded-xl
-          relative lg:mx-0 mx-4 w-full flex flex-col py-2 px-3"
+            w-full flex flex-col py-2 px-3
+    "
     :class="isFocus ? 'border-[var(--btn)]' : 'border-[var(--text-little)]'"
     style="box-shadow: 0 0 5px #3636364f;"
     
@@ -83,10 +85,6 @@ import utils from '@/assets/ts/utils';
 import Note_card from '@/components/notes/Note_card.vue';
 import MasonryWrapper from '@/components/Masonry/MasonryWrapper.vue';
 import MasonryItem from '@/components/Masonry/MasonryItem.vue';
-
-defineProps<{
-  desktop?: boolean;
-}>()
 
 const search_input = ref<HTMLInputElement | null>(null);
 const isFocus = ref<boolean>(false);
