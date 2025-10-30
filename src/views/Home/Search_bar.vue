@@ -1,24 +1,27 @@
 <template>
 
   <div
-    class="note-card bg-[var(--bg2)] text-[var(--text)] border border-[var(--text)] z-30 rounded-xl py-1
-          relative lg:mx-0 mx-4 w-full flex flex-col pl-3 max-w-xl"
+    class="note-card bg-[var(--bg2)] text-[var(--text)] 
+            border z-30 rounded-xl
+          relative lg:mx-0 mx-4 w-full flex flex-col py-2 px-3"
+    :class="isFocus ? 'border-[var(--btn)]' : 'border-[var(--text-little)]'"
     style="box-shadow: 0 0 5px #3636364f;"
     
   >
 
     <div class="flex flex-row justify-center items-center">
 
+      <button @click="search_input?.focus()" class="search-btn absolute left-0"></button>
+
       <input 
         ref="search_input"
+        @focus="isFocus = true"
+        @blur="isFocus = false"
         v-model="searchQuery"
         type="text"
-        class="w-full border-none outline-none text-md" 
+        class="w-full border-none outline-none text-md ml-2" 
         placeholder="Recherche..."
       >
-
-      <button v-if="searchQuery !== ''" @click="searchQuery = ''" class="cross-btn absolute end-4"></button>
-      <button v-if="searchQuery == ''" @click="search_input?.focus()" class="search-btn absolute end-4"></button>
 
     </div>
 
@@ -29,46 +32,36 @@
         Aucune note trouvée.
     </div>
 
-  </div>
-
-  <div class="absolute top-0 inset-x-0 z-50 md:w-2/5">
-
-    <div 
-        v-if="filteredNotes.length && searchQuery != ''" 
-        class="space-y-2 w-full overflow-x-auto p-1 absolute top-11 bg-[var(--bg2)] rounded-xl border border-[var(--text)]" 
-        :style="{ maxHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)`, minHeight: `calc(100vh - 3.5rem - ${props.pt} - 5.3rem)` }"
-    >
+    <div class="absolute top-2 inset-x-0 z-50">
 
       <div 
-        v-for="note in filteredNotes" 
-        :key="note.id"
-        @click="router.push(`/edit/${note.id}?pinned=${note.pinned}`)"
-        class="bg-[var(--bg2)] p-2 shadow cursor-pointer border-1 border-[var(--text)]"
-        style="border-radius: var(--br-card);"
+          v-if="filteredNotes.length && searchQuery != '' && isFocus" 
+          class="space-y-2 w-full overflow-x-auto p-3 absolute top-10 h-[90vh]
+                  bg-[var(--bg2)] rounded-xl border border-[var(--text-little)]"
       >
-        <h3 
-            class="font-semibold"
-            v-html="highlightMatch(utils.clean_html(note.title), searchQuery)"
-        ></h3>
 
-        <p 
-            class="text-sm max-h-20 overflow-hidden mb-3"
-            v-html="highlightMatch(utils.clean_html(note.content), searchQuery)"
-        ></p>
+        <MasonryWrapper class="w-full">
+        
+          <MasonryItem
+            v-for="note in filteredNotes" 
+          >
 
-        <div class="w-full flex flex-row justify-start items-center
-          overflow-scroll whitespace-nowrap overflow-x-auto text-ellipsis scrollbar-none">
+            <Note_card 
+              :key="note.id"
+              :id="note.id"
+              :icon="note.icon"
+              :uuid="note.uuid"
+              :pinned="note.pinned"
+              :title="highlightMatch(utils.htmlToText(note.title), searchQuery)" 
+              :content="highlightMatch(utils.htmlToText(note.content), searchQuery)"
+              :clean-HTML="false" 
+              :date="note.date"
+              :tags="note.tags.map(tag => Number(tag))"
+            />
 
-          <div 
-            v-for="(tag, index) in all_tags.filter(tag => note.tags.includes(tag.id))" 
-            :key="index" 
-            class="ml-2 border-1 border-[var(--text)] pr-1.5 pl-1.5 rounded-[var(--br-tag)]" 
-            :style="{ backgroundColor: tag.color, color: utils.get_text_color(tag.color) }" 
-            :class="hitbox ? 'bg-teal-500' : ''"
-            v-html="highlightMatch(utils.clean_html(tag.name), searchQuery)"
-          ></div>
+          </MasonryItem>
 
-        </div>
+        </MasonryWrapper>
 
       </div>
 
@@ -83,24 +76,21 @@
 <script lang="ts" setup>
 
 import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 import db from '@/assets/ts/database/database';
 import type { Note, Tag } from '@/assets/ts/type';
-import { hitbox as if_hitbox } from '@/assets/ts/settings';
 import utils from '@/assets/ts/utils';
+import Note_card from '@/components/notes/Note_card.vue';
+import MasonryWrapper from '@/components/Masonry/MasonryWrapper.vue';
+import MasonryItem from '@/components/Masonry/MasonryItem.vue';
 
-let hitbox: boolean;
-onMounted(async () => { hitbox = await if_hitbox() })
-
-const props = defineProps<{
-  pt?: string;
+defineProps<{
   desktop?: boolean;
 }>()
 
 const search_input = ref<HTMLInputElement | null>(null);
+const isFocus = ref<boolean>(false);
 
-const router = useRouter();
 const searchQuery = ref('');
 const list_notes = ref<Note[]>([]);
 const all_tags = ref<Tag[]>([]);
