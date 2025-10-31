@@ -3,7 +3,10 @@
 
     <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
 
-        <div class="left-arrow absolute left-0" :class="hitbox ? 'bg-red-600' : ''" @click="router.push('/')"></div>
+        <div 
+          class="left-arrow absolute left-0 cursor-pointer" 
+          @click="router.back()"
+        ></div>
 
         <div class="legal absolute right-0" :class="hitbox ? 'bg-red-600' : ''" @click="router.push('/legale')"></div>
 
