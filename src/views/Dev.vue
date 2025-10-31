@@ -130,14 +130,10 @@
     import db from '@/assets/ts/database/database';
     import { usePlan } from '@/assets/ts/user/UserPlan';
 
-    import { hitbox as if_hitbox} from '@/assets/ts/settings';
     import Warning from '@/components/alert/Warning.vue';
     import Danger from '@/components/alert/Danger.vue';
     import Success from '@/components/alert/Success.vue';
     import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
-
-    let hitbox: boolean;
-    onMounted(async () => { hitbox = await if_hitbox() })
 
     const router = useRouter();
     const { plan } = usePlan();

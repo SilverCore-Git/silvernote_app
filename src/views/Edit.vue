@@ -338,8 +338,6 @@ import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 const props = defineProps<{ id: number | 'new' }>()
 const { user } = useUser();
 
-let hitbox: boolean;
-
 // Initialisation de la note
 const note = ref<Note>({
     title: '',

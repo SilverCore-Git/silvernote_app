@@ -22,8 +22,8 @@
 
 import database from '@/assets/ts/database/database'
 import { NodeViewWrapper, nodeViewProps } from '@tiptap/vue-3'
-import { nextTick, onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import {  useRouter } from 'vue-router'
 
 const props = defineProps({
     ...nodeViewProps,
