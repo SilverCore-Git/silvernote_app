@@ -135,24 +135,38 @@
 
 
                 <footer 
-                    class="h-15 flex justify-between items-center flex-row rounded-b-xl"
+                    class=" flex justify-between items-end flex-row rounded-b-xl p-2"
                 >
-
-                    <input 
-                        type="text" 
-                        name="message" 
+                    <textarea
+                        ref="messageInput"
+                        name="message"
                         id="message"
-                        :maxlength="max_LenghtOfMessage"
                         placeholder="Envoyer un message"
                         v-model="message"
-                        class=" outline-0 h-full w-[70%] pl-5"
-                        @keyup.enter="add_message(message); message = ''; "
+                        :maxlength="max_LenghtOfMessage"
+                        @input="autoResize"
+                        @keyup.enter="add_message(message); message = ''; resetHeight();"
+                        class="
+                            resize-none overflow-y-auto max-h-40 outline-0 
+                            w-[70%] bg-transparent px-3 py-2 rounded-md 
+                            text-base transition-all duration-150
+                        "
+                        :class="lengthOfMessage < 20 ? 'w-[70%]' : 'w-[90%]'"
+                        rows="1"
+                    ></textarea>
+
+                    <span
+                        v-if="lengthOfMessage < 20"
+                        :class="lengthOfMessage < 11 ? 'text-red-500' : 'text-gray-500'"
+                        class="text-sm"
                     >
+                        {{ lengthOfMessage }}
+                    </span>
 
-                    <span :class="lengthOfMessage < 11 ? 'text-red-500' : ''">{{ lengthOfMessage }}</span>
-
-                    <div @click="add_message(message); message = ''" class="svg send w-10 h-10 mr-5 cursor-pointer"></div>
-
+                    <div 
+                        @click="add_message(message); message = ''; resetHeight();" 
+                        class="svg send w-10 h-10 mr-5 cursor-pointer hover:scale-110 transition-transform"
+                    ></div>
                 </footer>
 
             </div>
@@ -179,7 +193,7 @@ const { user } = useUser();
 const route = useRoute();
 const router = useRouter();
 
-const max_LenghtOfMessage: number = 150;
+const max_LenghtOfMessage: number = 9999999999999;
 const open = ref<boolean>(props?.visible || false);
 
 const pk_ai_api: string = import.meta.env.VITE_SECRET_AI_API_KEY;
@@ -192,6 +206,7 @@ const session_id = ref<string>('');
 const user_id = ref<string | undefined>('');
 const silverai_active = ref<boolean>(true);
 const pos = ref<'fixed' | 'relative'>('fixed');
+const messageInput = ref<HTMLTextAreaElement | null>(null)
 
 // Refs pour le scroll intelligent
 const messagesContainer = ref<HTMLElement | null>(null);
@@ -210,6 +225,19 @@ const checkIfAtBottom = () => {
     isAtBottom.value = scrollHeight - scrollTop - clientHeight < threshold;
     shouldAutoScroll.value = isAtBottom.value;
 };
+
+const autoResize = () => {
+  const el = messageInput.value
+  if (!el) return
+  el.style.height = 'auto'
+  el.style.height = el.scrollHeight + 'px'
+}
+
+const resetHeight = () => {
+  const el = messageInput.value
+  if (!el) return
+  el.style.height = 'auto'
+}
 
 // Fonction de scroll améliorée
 const scrollToBottom = (force = false) => {

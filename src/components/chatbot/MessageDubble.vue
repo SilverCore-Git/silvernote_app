@@ -2,9 +2,9 @@
 
   <div 
     :class="[
-      ' wrap-break-word max-w-[85%] p-4 rounded-2xl',
+      ' break-all max-w-[85%] p-4 rounded-2xl',
       annimation,
-      origin === 'ai' ? 'ai-message' : origin === 'error' ? 'error-message' : 'user-message max-w-[45%]'
+      origin === 'ai' ? 'ai-message' : origin === 'error' ? 'error-message' : 'user-message max-w-[75%]'
     ]"
     style="animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);"
   >
@@ -24,9 +24,7 @@
 
           <div class="tool-card-header">
             <div class="tool-badge" :class="`badge-${action.status}`">
-              <span class="badge-icon">
-                {{ getToolIcon(action.status) }}
-              </span>
+              <i class="badge-icon" :class="getToolIcon(action.status)" />
               <span class="badge-text">{{ 
                 formatToolName(action.name) 
               }}</span>
@@ -39,9 +37,7 @@
 
           <div class="tool-card-header" v-if="action.result">
             <div class="tool-badge" :class="`badge-${action.status}`">
-              <span class="badge-icon">
-                {{ getToolIcon(action.status) }}
-              </span>
+            <i class="badge-icon" :class="getToolIcon(action.status)" />
               <span class="badge-text">{{ 
                 formatToolName(action.result) 
               }}</span>
@@ -235,10 +231,10 @@ function formatToolName(name: string): string {
 
 function getToolIcon(status: string): string {
   switch (status) {
-    case 'loading': return '⏳';
-    case 'success': return '✅';
-    case 'error': return '❌';
-    default: return '🔧';
+    case 'loading': return 'bi bi-hourglass-split text-amber-500';
+    case 'success': return 'bi bi-check-circle-fill text-emerald-500';
+    case 'error': return 'bi bi-x-circle-fill text-rose-500';
+    default: return 'bi bi-wrench-adjustable-circle-fill text-indigo-500';
   }
 }
 
