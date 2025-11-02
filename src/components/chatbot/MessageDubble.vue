@@ -2,7 +2,7 @@
 
   <div 
     :class="[
-      ' break-all max-w-[85%] p-4 rounded-2xl',
+      ' break-normal max-w-[85%] p-4 rounded-2xl',
       annimation,
       origin === 'ai' ? 'ai-message' : origin === 'error' ? 'error-message' : 'user-message max-w-[75%]'
     ]"
