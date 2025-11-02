@@ -443,7 +443,7 @@
     import Popup from '@/components/popup/Popup.vue';
     import { usePlan } from '@/assets/ts/user/UserPlan';
     import { salert } from '@/assets/ts/salert';
-import New_note_btn from './New_note_btn.vue';
+    import New_note_btn from './New_note_btn.vue';
     
     const router = useRouter();
     const { plan } = usePlan();
