@@ -2,9 +2,10 @@
 
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { SignIn, SignUp } from '@clerk/vue';
 
-import SignIn from './SignIn.vue';
-import SignUp from './SignUp.vue';
+// import SignIn from './SignIn.vue';
+// import SignUp from './SignUp.vue';
 
 const route = useRoute();
 const changeForm = ref<number>(route.query.form == 'signup' ? 1 : 0);

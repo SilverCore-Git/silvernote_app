@@ -46,7 +46,7 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
     try {
         await signIn.value?.authenticateWithRedirect({
             strategy: `oauth_${provider}`,
-            redirectUrl: '/sso-callback',
+            redirectUrl: '/',
             redirectUrlComplete: '/'
         });
     } catch (err: any) {
