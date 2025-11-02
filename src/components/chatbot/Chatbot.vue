@@ -89,6 +89,7 @@
                         <span class="font-bold mr-2 text-xl">SilverIA</span>
                         <div class="round" :class="silverIA_active ? 'green' : 'red'"></div>
                     </div>
+                    <span>v{{ silveria_version }}</span>
 
                     <div
                         class="flex justify-center items-center gap-4"
@@ -184,6 +185,7 @@ import { useUser } from '@clerk/vue';
 import db from '@/assets/ts/database/database';
 import { api_url } from '@/assets/ts/backend_link';
 import type { Note } from '@/assets/ts/type';
+import { silveria_version } from '@/../package.json'
 
 const props = defineProps<{
     visible?: boolean;
