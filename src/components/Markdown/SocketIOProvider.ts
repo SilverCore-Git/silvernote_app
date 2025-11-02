@@ -1,108 +1,128 @@
-import { io, Socket } from "socket.io-client";
-import * as Y from "yjs";
-import * as awarenessProtocol from "y-protocols/awareness";
+// SocketIOProvider.ts
+import { io, Socket } from 'socket.io-client';
+import * as Y from 'yjs';
+import * as awarenessProtocol from 'y-protocols/awareness';
 
 export class SocketIOProvider {
+  public socket: Socket;
+  public doc: Y.Doc;
+  public awareness: awarenessProtocol.Awareness;
+  private room: string;
+  private userId: string;
+  private onAICommand?: (command: string, content: any) => void;
 
-  private socket: Socket;
-  private doc: Y.Doc;
-  private awareness;
-  private onAICommand: (command: string, content: string) => void;
-
-  constructor(serverUrl: string, room: string, userId: string, doc: Y.Doc, onAICommand: (command: string, content: string) => void) {
+  constructor(
+    serverUrl: string,
+    room: string,
+    userId: string,
+    doc: Y.Doc,
+    onAICommand?: (command: string, content: any) => void
+  ) {
     this.doc = doc;
-    this.awareness = new awarenessProtocol.Awareness(doc);
+    this.room = room;
+    this.userId = userId;
     this.onAICommand = onAICommand;
+    this.awareness = new awarenessProtocol.Awareness(doc);
 
-    this.awareness.setLocalStateField('user', { name: 'SilverAI', color: '#F28C28' });
-
+    // Connexion au serveur
     this.socket = io(serverUrl, {
-      path: "/socket.io/share",
-      transports: ["websocket", "polling"],
-      autoConnect: true
+      path: '/socket.io/share',
+      transports: ['websocket', 'polling'],
+      autoConnect: true,
     });
 
-    this.socket.connect();
+    this.setupListeners();
+  }
 
-    this.socket.on("connect", () => {
-      console.log("Connected to collaboration server");
-      this.socket.emit("join-room", { room, userId });
+  private setupListeners() {
+    // Connexion établie
+    this.socket.on('connect', () => {
+      console.log('✅ Connected to collaboration server');
+      this.socket.emit('join-room', { 
+        room: this.room, 
+        userId: this.userId 
+      });
     });
 
-    // Handle initial sync
-    this.socket.on("sync", (update: Uint8Array) => {
-      try {
-        const uint8Array = new Uint8Array(update);
-        Y.applyUpdate(this.doc, uint8Array);
-      } catch (error) {
-        console.error("Error applying sync update:", error);
+    // Réception de l'état initial
+    this.socket.on('sync', (state: Uint8Array) => {
+      console.log('📥 Received initial sync');
+      Y.applyUpdate(this.doc, state);
+    });
+
+    // Réception des updates Yjs
+    this.socket.on('y-update', (update: Uint8Array) => {
+      console.log('📩 Received y-update from server');
+      Y.applyUpdate(this.doc, update);
+    });
+
+    // Réception des updates de titre
+    this.socket.on('title-update', (newTitle: string) => {
+      console.log('📝 Title updated:', newTitle);
+      // Émettre un événement personnalisé pour le composant parent
+      window.dispatchEvent(new CustomEvent('note-title-update', { 
+        detail: { title: newTitle } 
+      }));
+    });
+
+    // Réception des updates d'icône
+    this.socket.on('icon-update', (newIcon: string) => {
+      console.log('🎨 Icon updated');
+      window.dispatchEvent(new CustomEvent('note-icon-update', { 
+        detail: { icon: newIcon } 
+      }));
+    });
+
+    // 🆕 Commandes de l'IA
+    this.socket.on('ai-command', (data: { command: string; content: any }) => {
+      console.log('🤖 Received AI command:', data.command);
+      
+      if (this.onAICommand) {
+        this.onAICommand(data.command, data.content);
+      }
+
+      // Gérer les commandes directement ici si nécessaire
+      if (data.command === 'insertContent') {
+        // La commande sera gérée par le callback onAICommand
+        // qui appelle editor.commands.setContent() ou insertContent()
       }
     });
 
-    this.socket.on("ai-command", ({ command, content }: { command: string, content: string }) => {
-      this.onAICommand?.(command, content);
+    // Awareness (curseurs collaboratifs)
+    this.socket.on('awareness-update', (update: Uint8Array) => {
+      awarenessProtocol.applyAwarenessUpdate(this.awareness, update, 'remote');
     });
 
-    // Handle updates
-    this.socket.on("y-update", (update: ArrayBuffer) => {
-      try {
-        console.log('update')
-        const uint8Array = new Uint8Array(update);
-        Y.applyUpdate(this.doc, uint8Array);
-      } catch (error) {
-        console.error("Error applying y-update:", error);
-      }
+    // Envoyer les updates locaux
+    this.doc.on('update', (update: Uint8Array) => {
+      this.socket.emit('y-update', update);
     });
 
-    // Send updates
-    this.doc.on("update", (update: Uint8Array) => {
-      if (this.socket.connected) {
-        try {
-          this.socket.emit("y-update", update);
-        } catch (error) {
-          console.error("Error sending update:", error);
-        }
-      }
+    // Envoyer les updates d'awareness
+    this.awareness.on('update', ({ added, updated, removed }: any) => {
+      const changedClients = added.concat(updated).concat(removed);
+      const update = awarenessProtocol.encodeAwarenessUpdate(
+        this.awareness,
+        changedClients
+      );
+      this.socket.emit('awareness-update', update);
     });
 
-    // Handle awareness updates
-    this.awareness.on("update", ({ added, updated, removed }: any) => {
-      if (this.socket.connected) {
-        try {
-          const changedClients = added.concat(updated).concat(removed);
-          const awarenessUpdate = awarenessProtocol.encodeAwarenessUpdate(
-            this.awareness,
-            changedClients
-          );
-          // Send the Uint8Array directly
-          this.socket.emit("awareness-update", awarenessUpdate);
-        } catch (error) {
-          console.error("Error sending awareness update:", error);
-        }
-      }
+    // Gestion des erreurs
+    this.socket.on('connect_error', (error) => {
+      console.error('❌ Connection error:', error);
     });
 
-    this.socket.on("awareness-update", (update: ArrayBuffer) => {
-      try {
-        const uint8Array = new Uint8Array(update);
-        awarenessProtocol.applyAwarenessUpdate(this.awareness, uint8Array, this.socket);
-      } catch (error) {
-        console.error("Error applying awareness update:", error);
-      }
-    });
-
-    // Error handling
-    this.socket.on("connect_error", (error: Error) => {
-      console.error("Connection error:", error);
-    });
-
-    this.socket.on("error", (error: Error) => {
-      console.error("Socket error:", error);
+    this.socket.on('disconnect', () => {
+      console.log('🔌 Disconnected from collaboration server');
     });
   }
 
   destroy() {
-    this.socket.disconnect();
+    console.log('🧹 Destroying SocketIO provider');
     this.awareness.destroy();
+    this.socket.disconnect();
   }
 }
+
+export default SocketIOProvider;

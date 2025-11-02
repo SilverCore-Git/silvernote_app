@@ -84,33 +84,37 @@
             <li 
                 class="li"
                 @click="setFilter('all')"
+                :class="notes_filter == 'all' ? 'bg-[var(--btn)]' : ''"
             >
-                <i class="bi bi-journal-text text-[var(--btn)] text-xl" />
+                <i 
+                    :class="notes_filter == 'all' ? '' : 'text-[var(--btn)]'"
+                    class="bi bi-journal-text text-xl"
+                />
                 <span>Toutes les notes</span>
             </li>
 
             <li 
                 class="li"
                 @click="setFilter('pinned')"
+                :class="notes_filter == 'pinned' ? 'bg-[var(--btn)]' : ''"
             >
-                <i class="bi bi-pin-angle-fill text-[var(--btn)] text-xl" />
+                <i 
+                    :class="notes_filter == 'pinned' ? '' : 'text-[var(--btn)]'"
+                    class="bi bi-pin-angle-fill text-xl"
+                />
                 <span>Notes epinglé</span>
             </li>
 
             <li 
                 class="li"
                 @click="setFilter('shared')"
+                :class="notes_filter == 'shared' ? 'bg-[var(--btn)]' : ''"
             >
-                <i class="bi bi-people-fill text-[var(--btn)] text-xl" />
+                <i 
+                    :class="notes_filter == 'shared' ? '' : 'text-[var(--btn)]'"
+                    class="bi bi-people-fill text-xl"
+                />
                 <span>Notes partagées</span>
-            </li>
-
-            <li 
-                class="li"
-                @click="setFilter('bin')"
-            >
-                <i class="bi bi-trash-fill text-[var(--btn)] text-xl" />
-                <span>Corbeille</span>
             </li>
 
             <hr class="my-2 text-transparent" />
@@ -131,7 +135,7 @@
 
 
             <div 
-                class="absolute bottom-2 inset-x-4 "
+                class="absolute bottom-3.5 inset-x-5 "
             >
                 <New_note_btn @btn_click="newNote"  />
             </div>

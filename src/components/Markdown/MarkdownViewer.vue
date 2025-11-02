@@ -18,7 +18,7 @@ import TaskList from "@tiptap/extension-task-list";
 import TaskItem from "@tiptap/extension-task-item";
 
 const props = defineProps<{
-  content: string;
+  content: string | Promise<string>;
 }>();
 
 const editor = ref<Editor | null>(null);

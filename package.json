@@ -1,7 +1,8 @@
 {
   "name": "silvernote_front",
   "private": true,
-  "version": "0.2.1-beta",
+  "version": "0.2.3-beta",
+  "silveria_version": "2.0.0",
   "dev": true,
   "type": "module",
   "scripts": {
