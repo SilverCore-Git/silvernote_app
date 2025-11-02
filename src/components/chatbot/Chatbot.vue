@@ -2,7 +2,7 @@
 
     <div
         v-if="first_loaded"
-        v-tooltip="'SilverAI'"
+        v-tooltip="'SilverIA'"
         @click="open = !open" 
         :class="!open ? 'bottom-6 right-6' : '-bottom-9 -right-9'"
         class=" fixed  w-12 h-12 p-2 rounded-full cursor-pointer hover"
@@ -86,8 +86,8 @@
                 >
 
                     <div class="flex justify-center items-center flex-row">
-                        <span class="font-bold mr-2 text-xl">SilverAI</span>
-                        <div class="round" :class="silverai_active ? 'green' : 'red'"></div>
+                        <span class="font-bold mr-2 text-xl">SilverIA</span>
+                        <div class="round" :class="silverIA_active ? 'green' : 'red'"></div>
                     </div>
 
                     <div
@@ -204,7 +204,7 @@ const message = ref<string>("");
 const lengthOfMessage = ref<number>(max_LenghtOfMessage);
 const session_id = ref<string>('');
 const user_id = ref<string | undefined>('');
-const silverai_active = ref<boolean>(true);
+const silverIA_active = ref<boolean>(true);
 const pos = ref<'fixed' | 'relative'>('fixed');
 const messageInput = ref<HTMLTextAreaElement | null>(null)
 
@@ -287,7 +287,7 @@ const add_message = (content: string) => {
         add_message('');
     }
     if (content == '/open 4545') {
-        silverai_active.value = true;
+        silverIA_active.value = true;
         return;
     }
     if (content == '/close 4545') {
@@ -297,7 +297,7 @@ const add_message = (content: string) => {
     if (content && content !== '') {
         AllMessage.value.push({ origin: 'user', text: content });
         scrollToBottom(true); // Force scroll pour les messages utilisateur
-        if (!silverai_active.value) {
+        if (!silverIA_active.value) {
             return add_error("Jeremy n'est actuellement pas en ligne.")
         }
         loading.value = true;
@@ -479,7 +479,7 @@ const Open = (): void => {
             }).then(res => res.json())
 
             if (res.error) {
-                silverai_active.value = false;
+                silverIA_active.value = false;
                 add_error(res.message);
                 first_loaded.value = true;
                 return clearInterval(int)

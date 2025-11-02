@@ -69,7 +69,7 @@
           <span></span>
           <span></span>
         </div>
-        <span class="typing-text">SilverAI réfléchit...</span>
+        <span class="typing-text">SilverIA réfléchit...</span>
       </div>
       
     </div>
