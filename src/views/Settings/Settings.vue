@@ -1,7 +1,7 @@
 
 <template>
 
-    <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
+    <header class="flex flex-row relative mx-2 lg:mx-0" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
 
         <div 
           class="left-arrow absolute left-0 cursor-pointer" 
@@ -12,7 +12,11 @@
 
     </header>
 
-    <div class="flex flex-col justify-start relative items-start min-h-[80VH] md:mx-[20%] mt-12 overflow-x-hidden">
+    <NavBar />
+
+    <div 
+      class="flex flex-col justify-start relative items-start 
+      min-h-[80VH] mx-4 md:mx-[20%] mt-12 overflow-x-hidden">
         
         <section
             class="flex flex-col w-full gap-4"
@@ -158,6 +162,7 @@ import { setThemePreference } from '@/assets/ts/theme';
 import Success from '@/components/alert/Success.vue';
 import Danger from '@/components/alert/Danger.vue';
 import { api_url } from '@/assets/ts/backend_link';
+import NavBar from './NavBar.vue';
 
 let hitbox: boolean;
 onMounted(async () => { hitbox = await if_hitbox() })

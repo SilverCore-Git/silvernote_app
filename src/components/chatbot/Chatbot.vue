@@ -198,7 +198,6 @@ const router = useRouter();
 const max_LenghtOfMessage: number = 9999999999999;
 const open = ref<boolean>(props?.visible || false);
 
-const pk_ai_api: string = import.meta.env.VITE_SECRET_AI_API_KEY;
 const loading = ref<boolean>(false);
 const first_loaded = ref<boolean>(false);
 const AllMessage = ref<{ origin: 'ai' | 'user' | 'error', text: string }[]>([]);

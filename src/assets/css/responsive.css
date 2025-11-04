@@ -1,6 +1,7 @@
 body.phone {
   --mrl: 0;
   --mlr: 0;
+  --mt: 4em;
 }
 
 body.phone .phone-hidden,

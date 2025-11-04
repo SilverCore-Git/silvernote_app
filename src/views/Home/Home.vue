@@ -328,11 +328,15 @@
 
     <div 
         class="
-            fixed inset-x-0 bottom-6 phone-show-flex
-            justify-center items-center
+            fixed inset-x-0 bottom-6 flex
+            justify-center items-center z-50
+             pointer-events-none
         "
     >
-        <div @click="create_new_note()" class="w-14 h-14">
+        <div 
+            @click="create_new_note()" 
+            class="w-16 h-16 pointer-events-auto"
+        >
             <New_note_btn />
         </div>
     </div>

@@ -7,8 +7,8 @@
 
     <header 
         class="
-            flex flex-row fixed inset-x-0 mx-[20%]
-            pt-2 z-50 mt-5
+                flex flex-row fixed inset-x-0 
+                pt-2 z-50 m-4 lg:m-0 lg:mx-[20%]
             "
     >
 
@@ -135,7 +135,7 @@
     <section 
         v-if="loaded && note"
         class="flex flex-col justify-start items-center h-full mx-auto
-            mt-12 overflow-x-hidden overflow-y-scroll max-w-3xl"
+            mt-18 overflow-x-hidden overflow-y-scroll max-w-3xl"
     >
 
         <div 
