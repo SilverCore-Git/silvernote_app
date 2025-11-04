@@ -379,7 +379,6 @@ const send = async (prompt: string): Promise<void> => {
             method: 'POST',
             headers: { 
                 "Content-Type": "application/json",
-                "authorization": pk_ai_api
             },
             body: JSON.stringify({ 
                 uuid: session_id.value, 
@@ -454,7 +453,6 @@ const close = async () => {
         method: 'POST',
         headers: { 
             "Content-Type": "application/json",
-            "authorization": pk_ai_api
         },
         body: JSON.stringify({ userID: user_id.value, uuid: session_id.value })
     }).then(res => res.json())
@@ -473,7 +471,6 @@ const Open = (): void => {
                 method: 'POST',
                 headers: { 
                     "Content-Type": "application/json",
-                    "authorization": pk_ai_api
                 },
                 body: JSON.stringify({ 
                     user: user.value
