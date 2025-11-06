@@ -24,7 +24,7 @@
 
         <ul class="w-full">
             
-            <li class="flex-col phone-hidden-flex">
+            <li class="flex-col flex-phone-hidden">
 
                 <div class="flex flex-row gap-2 items-center justify-center">
 
@@ -50,6 +50,7 @@
             </li>
 
             <div 
+                v-if="false"
                 class="flex flex-row justify-between items-center w-full px-4"
             >
 
@@ -80,7 +81,7 @@
 
             </div>
 
-            <div class="phone-hidden-flex flex-col gap-2">
+            <div class="phone-hidden" v-if="false">
 
                 <hr class="mt-3 mb-4" />
 
@@ -139,13 +140,6 @@
 
             </div>
 
-            <div 
-                v-if="false"
-                class="absolute bottom-3.5 inset-x-5 phone-hidden"
-            >
-                <New_note_btn @btn_click="newNote"  />
-            </div>
-
         </ul>
 
     </header>
@@ -159,7 +153,6 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { version, dev } from '../../../package.json';
 import { notes_views_mode, toggle_notes_views_mode, notes_filter, type Notes_filter } from '@/assets/ts/Notes_views';
-import New_note_btn from './New_note_btn.vue';
 
 const router = useRouter();
 const if_open_dropdown = ref<boolean>(false);
@@ -172,9 +165,6 @@ const setFilter = (a: Notes_filter): void => {
     notes_filter.value = a;
 }
 
-const newNote = () => {
-    router.push('/edit/new');
-}
 
 </script>
 

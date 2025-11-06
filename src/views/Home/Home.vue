@@ -258,7 +258,7 @@
 
                 </MasonryWrapper>
 
-                <li v-else-if="!isRotating" class="flex flex-col">
+                <li v-else-if="!isRotating && view_notes" class="flex flex-col">
 
                     <div 
                         class="w-full h-full py-20 flex justify-center items-center flex-col gap-2"
@@ -310,8 +310,14 @@
 
                 </li>
 
-                <li v-if="list_notes == undefined" class=" flex-col">
-                    <Loader :icon="false" />
+                <li v-else class="pt-4 w-full">
+                    <ul class="flex gap-4 flex-wrap">
+                        <li 
+                            v-for="i in 4"
+                            :key="i"
+                            class="animate-pulse bg-gray-300 h-60 w-50 rounded-xl"
+                        ></li>
+                    </ul>
                 </li>
 
             </ul>
@@ -322,11 +328,17 @@
 
     <div 
         class="
-            fixed inset-x-0 bottom-6 phone-show-flex
-            justify-center items-center
+            fixed inset-x-0 bottom-6 flex
+            justify-center items-center z-50
+             pointer-events-none
         "
     >
-        <div class="w-14 h-14"><New_note_btn /></div>
+        <div 
+            @click="create_new_note()" 
+            class="w-16 h-16 pointer-events-auto"
+        >
+            <New_note_btn />
+        </div>
     </div>
 
     <Teleport to="body">
@@ -434,7 +446,6 @@
     import MasonryWrapper from '@/components/Masonry/MasonryWrapper.vue';
     import MasonryItem from '@/components/Masonry/MasonryItem.vue';
     import MasonryHr from '@/components/Masonry/MasonryHr.vue';
-    import Loader from '@/components/Loader.vue';
     import { 
         Notes as list_notes, 
         Tags as all_tags, 
@@ -573,7 +584,14 @@
 
     }
 
-    const reload_list = async () => {        
+    const reload_list = async (a?: 'just_view') => {
+        
+        if (a == 'just_view') {
+            view_notes.value = false;
+            await nextTick();
+            view_notes.value = true;
+            return;
+        }
 
         if (isRotating.value) return;
 
@@ -605,10 +623,10 @@
 
     onMounted(async () => {
 
+        reload_list()
+
         if_danger_card.value = isOnline.value ? await back.info_message() ? true : false : false; 
         Danger_card_props.value = isOnline.value ? await back.info_message() : undefined;
-
-        await reload_list();
 
     });
 

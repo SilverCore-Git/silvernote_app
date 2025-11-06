@@ -9,7 +9,10 @@
         <div 
           v-if="!loader && InitDB.isLoaded()"
           class="flex-1 relative overflow-hidden"
-          :class="[ 'Edit', 'Share' ].includes(route.name as string) && route.query.chatbot == 'relative' ? 'mx-4' : 'mr-[var(--mlr)] ml-[var(--mrl)] '"
+          :class="
+                  [ 'Edit', 'Share' ].includes(route.name as string) && route.query.chatbot == 'relative' ? 
+                    'mx-4'
+                    : route.name == 'Home' ? 'mt-(--mt) mr-(--mlr) ml-(--mrl)' : 'mr-(--mlr) ml-(--mrl)'"
         >
           <router-view />
         </div>

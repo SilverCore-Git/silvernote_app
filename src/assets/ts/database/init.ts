@@ -5,6 +5,7 @@ import { nextTick, type Ref } from "vue";
 import type { Note } from "../type";
 import { Notes, Tags, SharedNotes } from "./Var";
 import { api_url } from '../backend_link';
+import utils from '../utils';
 
 
 class InitDB {
@@ -40,6 +41,8 @@ class InitDB {
                 });
 
             }
+
+            await nextTick();
 
             await this.init_shared_notes();
             await this.init_local_notes();
@@ -144,6 +147,10 @@ class InitDB {
     
     private async verify_cloud_db (): Promise<boolean> 
     {
+
+        const notes_hash: string = await utils.hash(await db.getAll('notes'));
+        const tags_hash: string = await utils.hash(await db.getAll('tags'));
+
         const res = await fetch(`${api_url}/api/db/verify/data`, {
             method: "POST",
             headers: {
@@ -151,8 +158,8 @@ class InitDB {
             },
             credentials: 'include',
             body: JSON.stringify({ 
-                notes: await db.getAll('notes') || [], 
-                tags: await db.getAll('tags') || []
+                notes: notes_hash, 
+                tags: tags_hash
             }),
         }).then(res => res.json());
         return res.ok;
