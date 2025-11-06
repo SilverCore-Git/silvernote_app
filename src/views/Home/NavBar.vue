@@ -24,7 +24,7 @@
 
         <ul class="w-full">
             
-            <li class="flex-col flex-phone-hidden">
+            <li class="flex-col phone-hidden-flex">
 
                 <div class="flex flex-row gap-2 items-center justify-center">
 
@@ -80,7 +80,7 @@
 
             </div>
 
-            <div class="phone-hidden">
+            <div class="phone-hidden-flex flex-col gap-2">
 
                 <hr class="mt-3 mb-4" />
 

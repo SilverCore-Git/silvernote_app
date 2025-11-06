@@ -132,6 +132,7 @@ import Tags_manager from '../tags/tags_manager.vue';
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';
 import ConfirmDialog from '../popup/ConfirmDialog.vue';
+import { Notes } from '@/assets/ts/database/Var';
 
 const props = defineProps<{
     id: number;
@@ -170,7 +171,8 @@ const delete_note = async (state: number): Promise<void> => {
         await db.delete(props.id, false);
 
         emit('update:visible', false);
-        props.function_reload()
+        Notes.value = Notes.value.filter(note => note.id !== props.id);
+        
     }
     return;
 }

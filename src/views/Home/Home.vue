@@ -584,7 +584,14 @@
 
     }
 
-    const reload_list = async () => {        
+    const reload_list = async (a?: 'just_view') => {
+        
+        if (a == 'just_view') {
+            view_notes.value = false;
+            await nextTick();
+            view_notes.value = true;
+            return;
+        }
 
         if (isRotating.value) return;
 

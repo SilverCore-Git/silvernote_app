@@ -2,7 +2,7 @@
 
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { SignIn, SignUp } from '@clerk/vue';
+import { SignIn, SignInButton, SignUp } from '@clerk/vue';
 
 // import SignIn from './SignIn.vue';
 // import SignUp from './SignUp.vue';
@@ -22,9 +22,8 @@ watch(() => route.query.form, () => {
 
     <div
       class="
-            w-full h-full flex justify-start items-center transition-all duration-500
+            w-full h-full flex justify-start items-center
       "
-      :style="{ transform: `rotate(${360*changeForm}deg)` }"
     >
 
         <div 
@@ -34,7 +33,14 @@ watch(() => route.query.form, () => {
           :class="route.query.form != 'signup' ? 'flex' : 'hidden'"
         >
 
-            <SignIn />
+            <!-- <SignIn
+              oauthFlow="popup"
+              :withSignUp="true"
+            /> -->
+
+            <SignInButton>
+              <button class="primary">Se connecter</button>
+            </SignInButton>
 
         </div>
 
@@ -45,7 +51,10 @@ watch(() => route.query.form, () => {
           :class="route.query.form == 'signup' ? 'flex' : 'hidden'"
         >
 
-            <SignUp />
+            <SignUp
+              oauthFlow="popup"
+              :withSignUp="true"
+            />
 
         </div>
 
