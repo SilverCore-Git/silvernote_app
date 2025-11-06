@@ -2,7 +2,7 @@
 
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { SignIn, SignInButton, SignUp } from '@clerk/vue';
+import { SignInButton, SignUp } from '@clerk/vue';
 
 // import SignIn from './SignIn.vue';
 // import SignUp from './SignUp.vue';

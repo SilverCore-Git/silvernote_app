@@ -12,7 +12,7 @@
                 :class="[
                     { rotating: isRotating }
                 ]"
-                @click="reload_list"
+                @click="reload_list()"
             ></div>
         </a>
 
