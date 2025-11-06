@@ -1,6 +1,6 @@
 <template>
 
-  <div>
+  <div :class="mobile_class">
   
     <SignedIn>
 
@@ -91,6 +91,7 @@ import { SignedIn, SignedOut, useUser } from "@clerk/vue";
 import { ConnectionPage } from '@/lib/silvernote-vue';
 import { loaded } from "./assets/ts/utils";
 import InitDB from "./assets/ts/database/init";
+import mobile_config from "@/configs/mobile.json";
 
 const loader = ref<boolean>(true);
 const open_chatbot = ref<boolean | undefined>(undefined);
@@ -100,6 +101,9 @@ const router = useRouter();
 const { user, isLoaded } = useUser();
 
 const is_offline = ref<boolean>(false);
+const mobile_class = mobile_config.active 
+                        ? `mt-[${mobile_config.margin.top}] mb-[${mobile_config.margin.bottom}]`
+                        : "";
 
 watch(isLoaded, (loaded) => {
   if (loaded && !user.value?.id) {
