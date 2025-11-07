@@ -5,7 +5,7 @@ const path = require('path');
 const https = require('https');
 const Console = require('./logger');
 
-const if_dev = process.env.DEV == 'true';
+const if_dev = true;
 const isLinux = process.platform === 'linux';
 
 // Vérifie la connexion Internet
@@ -44,8 +44,7 @@ async function create_main_window() {
 
   const console = new Console(win);
   Menu.setApplicationMenu(null);
-
-  win.loadURL('https://app.silvernote.fr');
+  win.loadFile(path.join(__dirname, 'dist/index.html'));
 
   console.log('Initialising shortcut...');
 
@@ -126,13 +125,13 @@ function create_update_window() {
 
 app.whenReady().then(async () => {
   // Tu peux commenter ou décommenter selon si tu veux activer les mises à jour :
-  // if (await isOnline() && !isLinux) {
-  //   console.log('Lancement avec vérification de mise à jour');
-  //   create_update_window();
-  // } else {
-  //   console.log('Lancement sans mise à jour');
-  //   create_main_window();
-  // }
+  if (await isOnline() && !isLinux) {
+    console.log('Lancement avec vérification de mise à jour');
+    create_update_window();
+  } else {
+    console.log('Lancement sans mise à jour');
+    create_main_window();
+  }
 
   console.log('Lancement direct (sans Express)');
   create_main_window();
