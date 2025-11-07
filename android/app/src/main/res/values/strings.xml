@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">silvernote</string>
+    <string name="title_activity_main">silvernote</string>
+    <string name="package_name">fr.silvercore.silvernote</string>
+    <string name="custom_url_scheme">fr.silvercore.silvernote</string>
+</resources>

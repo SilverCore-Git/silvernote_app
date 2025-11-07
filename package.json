@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.2.4-beta",
   "silveria_version": "2.0.0",
-  "dev": true,
+  "dev": false,
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -19,6 +19,8 @@
     "url": "git+https://github.com/SilverCore-Git/silvernote.git"
   },
   "dependencies": {
+    "@capacitor/android": "^7.4.4",
+    "@capacitor/core": "^7.4.4",
     "@clerk/clerk-js": "^5.93.0",
     "@clerk/vue": "^1.14.1",
     "@joeattardi/emoji-button": "^4.6.4",
@@ -63,6 +65,7 @@
     "yjs": "^13.6.27"
   },
   "devDependencies": {
+    "@capacitor/cli": "^7.4.4",
     "@tailwindcss/vite": "^4.1.7",
     "@types/masonry-layout": "^4.2.8",
     "@vitejs/plugin-vue": "^5.2.3",
