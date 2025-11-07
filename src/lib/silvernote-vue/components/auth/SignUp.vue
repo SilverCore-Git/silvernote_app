@@ -1,17 +1,17 @@
 <script lang="ts" setup>
 
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import { useSignUp } from '@clerk/vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { error, handleOAuth, isLoading } from './auth';
 
 const router = useRouter();
+const route = useRoute();
 const { signUp, isLoaded, setActive } = useSignUp();
 
 const username = ref<string>('');
 const email = ref<string>('');
 const password = ref<string>('');
-const error = ref<string>('');
-const isLoading = ref<boolean>(false);
 const pendingVerification = ref<boolean>(false);
 const code = ref<string>('');
 
@@ -20,7 +20,7 @@ const handleSubmit = async () => {
     if (!isLoaded.value) return;
     
     error.value = '';
-    isLoading.value = true;
+    isLoading.value = 'snote';
 
     try {
         
@@ -28,6 +28,7 @@ const handleSubmit = async () => {
             emailAddress: email.value,
             password: password.value,
             username: username.value,
+            legalAccepted: true,
         })
 
         await signUp.value?.prepareEmailAddressVerification({ 
@@ -40,7 +41,7 @@ const handleSubmit = async () => {
         console.error('Erreur lors de l\'inscription:', err)
         error.value = err.errors?.[0]?.message || 'Erreur lors de la création du compte'
     } finally {
-        isLoading.value = false
+        isLoading.value = undefined
     }
 }
 
@@ -48,7 +49,7 @@ const handleVerification = async () => {
     if (!isLoaded.value) return;
     
     error.value = '';
-    isLoading.value = true;
+    isLoading.value = 'snote';
 
     try {
 
@@ -59,7 +60,8 @@ const handleVerification = async () => {
 
         if (completeSignUp?.status === 'complete' && setActive.value) {
             await setActive.value({ session: completeSignUp.createdSessionId });
-            router.push('/');
+            await nextTick();
+            window.location.href = String(route.query.redirectUrl) || '/'
         } else {
             console.log('Statut d\'inscription:', completeSignUp?.status);
         }
@@ -68,22 +70,7 @@ const handleVerification = async () => {
         console.error('Erreur de vérification:', err);
         error.value = err.errors?.[0]?.message || 'Code de vérification invalide';
     } finally {
-        isLoading.value = false;
-    }
-}
-
-const handleOAuth = async (provider: 'google' | 'discord') => {
-    if (!isLoaded.value) return;
-    
-    try {
-        await signUp.value?.authenticateWithRedirect({
-            strategy: `oauth_${provider}`,
-            redirectUrl: '/sso-callback',
-            redirectUrlComplete: '/'
-        })
-    } catch (err: any) {
-        console.error(`Erreur OAuth ${provider}:`, err);
-        error.value = err.errors?.[0]?.message || `Erreur lors de l'inscription avec ${provider}`;
+        isLoading.value = undefined;
     }
 }
 
@@ -135,7 +122,7 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
                             v-model="code"
                             placeholder="123456"
                             required
-                            :disabled="isLoading"
+                            :disabled="isLoading !== undefined"
                             maxlength="6"
                             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--btn)] focus:border-[var(--btn)] outline-none disabled:opacity-50"
                         />
@@ -143,7 +130,7 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
 
                     <button
                         type="submit"
-                        :disabled="isLoading || !isLoaded"
+                        :disabled="isLoading !== undefined || !isLoaded"
                         class="w-full primary disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {{ isLoading ? 'Vérification...' : 'Vérifier' }}
@@ -167,7 +154,7 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
                             v-model="username"
                             placeholder="PatricLeBG"
                             required
-                            :disabled="isLoading"
+                            :disabled="isLoading !== undefined"
                             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--btn)] focus:border-[var(--btn)] outline-none disabled:opacity-50"
                         />
                     </div>
@@ -182,7 +169,7 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
                             v-model="email"
                             placeholder="email@example.com"
                             required
-                            :disabled="isLoading"
+                            :disabled="isLoading !== undefined"
                             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--btn)] focus:border-[var(--btn)] outline-none disabled:opacity-50"
                         />
                     </div>
@@ -198,17 +185,17 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
                             v-model="password"
                             placeholder="••••••••"
                             required
-                            :disabled="isLoading"
+                            :disabled="isLoading !== undefined"
                             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--btn)] focus:border-[var(--btn)] outline-none disabled:opacity-50"
                         />
                     </div>
 
                     <button
                         type="submit"
-                        :disabled="isLoading || !isLoaded"
+                        :disabled="isLoading !== undefined || !isLoaded"
                         class="w-full primary disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {{ isLoading ? 'Création...' : 'Créer mon compte' }}
+                        {{ isLoading == 'snote' ? 'Création...' : 'Créer mon compte' }}
                     </button>
 
                 </form>
@@ -224,28 +211,30 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
                     <div class="space-y-3">
 
                         <button
-                            @click="handleOAuth('google')"
-                            :disabled="isLoading || !isLoaded"
+                            @click="handleOAuth('google', isLoaded, signUp)"
+                            :disabled="isLoading !== undefined || !isLoaded"
                             class="second w-full"
+                            :class="isLoading == 'google' ? 'loader' : ''"
                         >
-                        <img 
-                            src="./assets/icon/google.svg" 
-                            class="w-5 h-5 mr-2"
-                            alt="Google"
-                        />
+                            <img 
+                                src="../assets/icon/google.svg" 
+                                class="w-5 h-5 mr-2"
+                                alt="Google"
+                            />
                             S'enregistrer avec Google
                         </button>
 
                         <button
-                            @click="handleOAuth('discord')"
-                            :disabled="isLoading || !isLoaded"
+                            @click="handleOAuth('discord', isLoaded, signUp)"
+                            :disabled="isLoading !== undefined || !isLoaded"
                             class="second w-full"
+                            :class="isLoading == 'discord' ? 'loader' : ''"
                         >
-                        <img 
-                            src="./assets/icon/discord.svg" 
-                            class="w-5 h-5 mr-2"
-                            alt="Discord"
-                        />
+                            <img 
+                                src="../assets/icon/discord.svg" 
+                                class="w-5 h-5 mr-2"
+                                alt="Discord"
+                            />
                             S'enregistrer avec Discord
                         </button>
 

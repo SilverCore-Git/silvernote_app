@@ -1,13 +1,11 @@
 <template>
 
   <div :class="mobile_class">
-  
-    <SignedIn>
 
       <div class=" w-full h-full" :class="[ 'Edit', 'Share' ].includes(route.name as string) ? 'flex' : ''">
         
         <div 
-          v-if="!loader && InitDB.isLoaded()"
+          v-if="route.name == 'sign' || route.name == 'ssoCallback' || !loader && InitDB.isLoaded()"
           class="flex-1 relative overflow-hidden"
           :class="
                   [ 'Edit', 'Share' ].includes(route.name as string) && route.query.chatbot == 'relative' ? 
@@ -21,7 +19,7 @@
           v-if="true"
           class=" z-50 relative"
         >
-          <Chatbot :visible="open_chatbot" />
+          <Chatbot v-if="open_chatbot" />
         </div>
 
       </div>
@@ -56,24 +54,6 @@
           
         </div>
       </div> -->
-  
-    </SignedIn>
-
-    <SignedOut>
-  
-      <div>
-  
-        <div 
-          class="flex flex-col justify-center items-center w-screen h-screen"
-        >
-
-          <ConnectionPage />
-        
-        </div>
-    
-      </div>
-    
-    </SignedOut>
 
   </div>
 
@@ -87,29 +67,24 @@ import Loader from "./components/Loader.vue";
 import Chatbot from "./components/chatbot/Chatbot.vue";
 import { Session } from "./assets/ts/backend_link";
 import { init_theme } from "./assets/ts/theme";
-import { SignedIn, SignedOut, useUser } from "@clerk/vue";
-import { ConnectionPage } from '@/lib/silvernote-vue';
+import { useAuth, useUser } from "@clerk/vue";
 import { loaded } from "./assets/ts/utils";
 import InitDB from "./assets/ts/database/init";
 import mobile_config from "@/configs/mobile.json";
 
 const loader = ref<boolean>(true);
-const open_chatbot = ref<boolean | undefined>(undefined);
+const open_chatbot = ref<boolean>(true);
 const session = new Session();
 const route = useRoute();
 const router = useRouter();
 const { user, isLoaded } = useUser();
+const { isSignedIn } = useAuth()
 
 const is_offline = ref<boolean>(false);
 const mobile_class = mobile_config.active 
                         ? `mt-[${mobile_config.margin.top}] mb-[${mobile_config.margin.bottom}]`
                         : "";
 
-watch(isLoaded, (loaded) => {
-  if (loaded && !user.value?.id) {
-    router.push({ query: { ...route.query, form: "main" } });
-  }
-});
 
 onMounted(async () => {
   
@@ -119,14 +94,25 @@ onMounted(async () => {
 
   const interval = setInterval(async () => {
 
-    if (isLoaded.value && user.value) {
+    if (isLoaded.value) {
 
-      await session.create(user.value);
+      if (!isSignedIn.value) {
+        router.push('/auth/sign');
+        open_chatbot.value = false;
+        loader.value = false;
+        return;
+      }
 
-      InitDB.init(user);
-      await InitDB.main();
+      if (user.value) {
 
-      clearInterval(interval);
+        await session.create(user.value);
+
+        InitDB.init(user);
+        await InitDB.main();
+
+        clearInterval(interval);
+
+      }
 
     }
 
@@ -139,9 +125,6 @@ onMounted(async () => {
     tries++
 
   }, 1000);
-
-  const chatbot = route.query?.chatbot || '0';
-  open_chatbot.value = chatbot === '1';
 
   const stopLoader = setInterval(() => {
 
