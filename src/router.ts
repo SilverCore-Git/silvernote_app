@@ -5,6 +5,8 @@ import Edit from './views/Edit.vue';
 import Settings from './views/Settings/Settings.vue';
 import Dev from './views/Dev.vue';
 import Share from './views/Share.vue';
+import { signPage, ssoCallback } from './lib/silvernote-vue/index.ts';
+
 
 const routes = [
   { 
@@ -42,6 +44,22 @@ const routes = [
     component: Share,
     props: true,
     meta: { title: 'SilverNote - Partage' }
+  },
+
+  // auth
+  { 
+    path: '/auth/sign',
+    name: 'sign',
+    component: signPage,
+    props: true,
+    meta: { title: 'SilverNote - auth' }
+  },
+  { 
+    path: '/auth/sso-callback',
+    name: 'ssoCallback',
+    component: ssoCallback,
+    props: true,
+    meta: { title: 'SilverNote - auth' }
   }
 ]
 

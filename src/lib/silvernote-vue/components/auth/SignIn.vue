@@ -1,22 +1,22 @@
 <script lang="ts" setup>
 
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import { useSignIn } from '@clerk/vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { error, handleOAuth, isLoading } from './auth';
 
 const router = useRouter();
+const route = useRoute();
 const { signIn, isLoaded, setActive } = useSignIn();
 
 const email = ref<string>('');
 const password = ref<string>('');
-const error = ref<string>('');
-const isLoading = ref<boolean>(false);
 
 const handleSubmit = async () => {
     if (!isLoaded.value) return;
     
     error.value = '';
-    isLoading.value = true;
+    isLoading.value = 'snote';
 
     try {
 
@@ -27,7 +27,8 @@ const handleSubmit = async () => {
 
         if (result?.status === 'complete' && setActive.value) {
             await setActive.value({ session: result.createdSessionId });
-            router.push('/');
+            await nextTick();
+            window.location.href = String(route.query.redirectUrl) || '/'
         } else {
             console.log('Statut de connexion:', result?.status);
         }
@@ -36,22 +37,7 @@ const handleSubmit = async () => {
         console.error('Erreur de connexion:', err);
         error.value = err.errors?.[0]?.message || 'Erreur lors de la connexion';
     } finally {
-        isLoading.value = false;
-    }
-}
-
-const handleOAuth = async (provider: 'google' | 'discord') => {
-    if (!isLoaded.value) return;
-    
-    try {
-        await signIn.value?.authenticateWithRedirect({
-            strategy: `oauth_${provider}`,
-            redirectUrl: '/',
-            redirectUrlComplete: '/'
-        });
-    } catch (err: any) {
-        console.error(`Erreur OAuth ${provider}:`, err);
-        error.value = err.errors?.[0]?.message || `Erreur lors de la connexion avec ${provider}`;
+        isLoading.value = undefined;
     }
 }
 
@@ -101,7 +87,7 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
                             v-model="email"
                             placeholder="email@example.com ou pseudo"
                             required
-                            :disabled="isLoading"
+                            :disabled="isLoading !== undefined"
                             class="
                                 mt-1 block w-full px-4 py-2 border border-gray-300 
                                 rounded-lg focus:ring-[var(--btn)] focus:border-[var(--btn)] 
@@ -126,7 +112,7 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
                             v-model="password"
                             placeholder="••••••••"
                             required
-                            :disabled="isLoading"
+                            :disabled="isLoading !== undefined"
                             class="
                                 mt-1 block w-full px-4 py-2 border border-gray-300 
                                 rounded-lg focus:ring-[var(--btn)] focus:border-[var(--btn)] 
@@ -138,10 +124,10 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
 
                     <button
                         type="submit"
-                        :disabled="isLoading || !isLoaded"
+                        :disabled="isLoading !== undefined || !isLoaded"
                         class="w-full primary disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {{ isLoading ? 'Connexion...' : 'Se connecter' }}
+                        {{ isLoading == 'snote' ? 'Connexion...' : 'Se connecter' }}
                     </button>
 
                 </form>
@@ -155,24 +141,26 @@ const handleOAuth = async (provider: 'google' | 'discord') => {
                 <div class="space-y-3">
 
                     <button
-                        @click="handleOAuth('google')"
-                        :disabled="isLoading || !isLoaded"
+                        @click="handleOAuth('google', isLoaded, signIn)"
+                        :disabled="isLoading !== undefined || !isLoaded"
                         class="second w-full"
+                        :class="isLoading == 'google' ? 'loader' : ''"
                     >
                         <img 
-                            src="./assets/icon/google.svg" 
+                            src="../assets/icon/google.svg" 
                             class="w-5 h-5 mr-2"
                         />
                         Se connecter avec Google
                     </button>
 
                     <button
-                        @click="handleOAuth('discord')"
-                        :disabled="isLoading || !isLoaded"
+                        @click="handleOAuth('discord', isLoaded, signIn)"
+                        :disabled="isLoading !== undefined || !isLoaded"
                         class="second w-full"
+                        :class="isLoading == 'discord' ? 'loader' : ''"
                     >
                         <img 
-                            src="./assets/icon/discord.svg" 
+                            src="../assets/icon/discord.svg" 
                             class="w-5 h-5 mr-2"
                         />
                         Se connecter avec Discord
