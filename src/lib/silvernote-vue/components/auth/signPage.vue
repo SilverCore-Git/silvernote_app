@@ -15,7 +15,7 @@ const form = ref<'signin' | 'signup'>('signin');
 onMounted(() => {
   const interval = setInterval(() => {
     if (isLoaded.value) {
-      if (isSignedIn) router.push('/');
+      if (isSignedIn.value) router.push('/');
       clearInterval(interval)
     }
   }, 200);
