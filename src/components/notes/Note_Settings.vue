@@ -42,7 +42,7 @@
                         >
                             
                             <div
-                                class="folder-svg
+                                class="tag-svg
                                         mr-2
                                         w-7
                                         h-7
@@ -50,22 +50,6 @@
                             ></div>
 
                             Modifier les tags
-
-                        </li>
-
-                        <li
-                            @click="share = true"
-                        >
-
-                            <div
-                                class="share-svg
-                                        mr-2
-                                        w-6
-                                        h-6
-                                    "
-                            ></div>
-
-                            Partager
 
                         </li>
 
@@ -82,6 +66,39 @@
                             ></div>
 
                             Supprimer
+
+                        </li>
+
+                        <hr />
+
+                        <li
+                            @click="openNewTab()"
+                        >
+
+                            <div
+                                class="open-in-new-svg
+                                        mr-2
+                                        w-7
+                                        h-7
+                                    "
+                            ></div>
+
+                            Ouvrir dans un nouvelle onglet
+                        </li>
+
+                        <li
+                            @click="share = true"
+                        >
+
+                            <div
+                                class="share-svg
+                                        mr-2
+                                        w-6
+                                        h-6
+                                    "
+                            ></div>
+
+                            Partager
 
                         </li>
 
@@ -177,6 +194,10 @@ const delete_note = async (state: number): Promise<void> => {
     return;
 }
 
+const openNewTab = () => {
+    window.open(`/edit/${props.id}`, '_blanc')
+}
+
 const change_pin_state = async () => {
     if_pin_active.value = !if_pin_active.value;
     await db.togle_pinned(props.id);
@@ -225,12 +246,22 @@ onMounted(async () => {
     transition: all 0.3s ease;
 }
 
-.folder-svg {
+.open-in-new-svg {
     cursor: pointer;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url('../../assets/svgs/folder.svg');
+    background-image: url('/assets/svgs/open-in-new.svg');
+    filter: brightness(0) saturate(100%) invert(55%) sepia(65%) saturate(538%) hue-rotate(343deg) brightness(98%) contrast(98%);
+    transition: all 0.3s ease;
+}
+
+.tag-svg {
+    cursor: pointer;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url('../../assets/svgs/tag.svg');
     filter: brightness(0) saturate(100%) invert(55%) sepia(65%) saturate(538%) hue-rotate(343deg) brightness(98%) contrast(98%);
     transition: all 0.3s ease;
 }
