@@ -1,0 +1,204 @@
+<!-- projet initialisé avec silverbatch => https://www.silvercore.fr -->
+
+<!-- silvercore / silvertone, tous droits réservés -->
+
+<!doctype html>
+
+<html lang="fr">
+
+  <head>
+
+    <!-- divers -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="hostname" content="app.silvernote.fr" />
+    <meta name="copyright" content="2025 | SilverCore - SilverNote" />
+    <meta name="author" content="SilverCore - SilverNote" />
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="theme-color" content="#F28C28" />
+
+
+    <!-- meta SEO -->
+    <meta name="keywords" content="silvernote" />
+    <meta name="description" content=" SilverNote est une application simple de prise de notes, compatible avec les appareils mobiles, les ordinateurs et le web. " />
+    <meta name="language" content="fr" />
+    <meta name="geo.region" content="FR" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="rating" content="general" />
+    <meta name="format-detection" content="telephone=no" />
+
+
+    <!-- meta open graph -->
+    <meta property="og:title" content="" /> <!-- rempli par vue-router -->
+    <meta property="og:description" content=" SilverNote est une application simple de prise de notes, compatible avec les appareils mobiles, les ordinateurs et le web. " />
+    <meta property="og:image" content="https://app.silvernote.fr/favicon.png" />
+    <meta property="og:site_name" content="SilverNote" /> 
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://app.silvernote.fr/" /> 
+
+
+    <link rel="icon" type="image/svg" href="/favicon.svg" />
+
+    <!-- preload -->
+    <link rel="preload" as="image" href="/assets/webp/pin_plein.webp" />
+    <link rel="preload" as="image" href="/assets/webp/pin_vide.webp" />
+
+    <link rel="preload" as="image" href="/assets/svgs/ellipsis.svg" />
+    <link rel="preload" as="image" href="/assets/svgs/moon.svg" />
+    <link rel="preload" as="image" href="/assets/svgs/sun.svg" />
+    <link rel="preload" as="image" href="/assets/svgs/wifi_on.svg" />
+    <link rel="preload" as="image" href="/assets/svgs/wifi_off.svg" />
+
+    <script>
+
+      const handleClose = (event) => {
+        fetch('https://api.silvernote.fr/user/session/close', {
+          method: 'POST',
+          credentials: "include"
+        });
+        //event.returnValue = "Êtes-vous sûr de vouloir quitter ?";
+      };
+      window.addEventListener('beforeunload', handleClose);
+
+    </script>
+
+    <style>
+
+      * {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      *::-webkit-scrollbar {
+        display: none;
+      }
+
+      body {
+        background-color: var(--bg);
+        color: var(--text);
+        overflow-x: hidden;
+        font-family: 'Inter', sans-serif;
+        transition: background-color 900ms;
+        min-width: 370px;
+        min-height: 500px;
+      }
+
+      #app {
+        min-width: 370px;
+        min-height: 500px;
+      }
+
+    ._spinner {
+      position: relative;
+      width: 90px;
+      height: 90px;
+    }
+
+    .spiner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      border: 4px solid transparent;
+    }
+
+    .spiner1 {
+      width: 40px;
+      height: 40px;
+      border-right-color: var(--btn);
+      animation: spinner-rotate 0.6s linear infinite;
+    }
+
+    .spiner2 {
+      width: 60px;
+      height: 60px;
+      border-right-color: var(--btn);
+      opacity: 0.9;
+      animation: spinner-rotate 1s linear infinite;
+      animation-delay: 0.3s;
+    }
+
+    .spiner3 {
+      width: 77px;
+      height: 77px;
+      border: 6px solid var(--btn);
+      border-right-color: transparent;
+      border-top-color: transparent;
+      opacity: 0.6;
+      animation: spinner-reverse 1.5s linear infinite;
+    }
+
+    .spiner4 {
+      border: 6px solid var(--btn);
+      animation: spinner-flash 3s ease-in-out infinite;
+    }
+
+    @keyframes spinner-rotate {
+      100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    @keyframes spinner-reverse {
+      100% {
+        transform: translate(-50%, -50%) rotate(-360deg);
+      }
+    }
+
+    @keyframes spinner-flash {
+      0% {
+        width: 70px;
+        height: 70px;
+        opacity: 0;
+      }
+      5% {
+        opacity: 0;
+      }
+      15% {
+        width: 97px;
+        height: 97px;
+        opacity: 1;
+      }
+      30% {
+        width: 70px;
+        height: 70px;
+        opacity: 0.1;
+      }
+      100% {
+        width: 70px;
+        height: 70px;
+        opacity: 0;
+      }
+    }
+
+    </style>
+
+
+    <script type="module" crossorigin src="/assets/index-CO3YVird.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CAmG3Clg.css">
+  </head>
+
+  <!-- body managed by vite/vue -->
+
+  <body>
+
+    <div id="app">
+      <div class="flex flex-col justify-center items-center min-h-screen">
+        <div class="_spinner">
+          <div class="spiner spiner1"></div>
+          <div class="spiner spiner2"></div>
+          <div class="spiner spiner3"></div>
+          <div class="spiner spiner4"></div>
+        </div>
+      </div>
+    </div>
+
+
+  </body>
+
+
+</html>
