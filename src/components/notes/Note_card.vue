@@ -49,6 +49,7 @@
             overflow-hidden "
     >
       <span 
+        v-if="tags"
         v-for="(tag, index) in Tags" 
         :key="index" 
         class="border border-[var(--text)] px-1.5 rounded-lg uppercase text-sm truncate"

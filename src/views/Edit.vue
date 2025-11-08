@@ -81,6 +81,10 @@
 
           <ul>
 
+            <li @click="tagManager = true">Gérer les tags</li>
+
+            <hr />
+
             <li v-if="editor" @click="()=> editor?.chain().focus().undo().run()">Annuler</li>
             <li v-if="editor" @click="()=> editor?.chain().focus().redo().run()">Rétablir</li>
             <li v-if="editor" @click="showSearchBar">Rechercher</li>
@@ -151,7 +155,7 @@
     <div 
       class="flex w-[90%] mb-2 items-end"
       :class="
-        note.icon && all_tags.filter(tag => note.tags.includes(tag.id))[0] 
+        note.icon && all_tags.filter((tag: Tag) => note.tags.includes(tag.id))[0] 
           ? 'justify-between' 
           : 'justify-start gap-2'
       "  
@@ -174,48 +178,48 @@
 
       </a></button>
 
-      <div 
-        v-if="all_tags.filter(tag => note.tags.includes(tag.id))[0]"
-        class="flex justify-center items-center flex-col max-w-80 relative p-4 rounded"
+      <div
+        v-if="note.tags.length > 0"
+        class="flex flex-col items-center max-w-80 w-full"
       >
 
-        <span class="text-lg font-bold mb-4">Dossiers</span>
+        <span class="text-lg font-semibold tracking-wide mb-1">Tags</span>
 
-        <ul class="flex flex-wrap gap-2 max-w-80">
-
+        <ul class="flex flex-wrap justify-center gap-2 max-w-80">
           <li
             v-for="
-              tag in hide8moreTags 
-                ? all_tags.filter(tag => note.tags.includes(tag.id)).slice(0, 7) 
-                : all_tags.filter(tag => note.tags.includes(tag.id))
+              tag in hide8moreTags
+                ? all_tags.filter((t: any) => note.tags.includes(t.id)).slice(0, 7)
+                : all_tags.filter((t: any) => note.tags.includes(t.id))
             "
             :key="tag.id"
             :style="{ backgroundColor: tag.color }"
-            class="px-2 py-0.5 rounded text-white border text-sm"
+            class="px-2.5 py-1 rounded-lg text-white border text-sm shadow-sm"
           >
             {{ tag.name }}
           </li>
 
           <li
-            v-if="hide8moreTags"
-            class="px-2 py-0.5 rounded text-sm font-bold"
+            v-if="hide8moreTags && note.tags.length > 7"
+            class="px-2.5 py-1 rounded-lg text-sm font-bold bg-(--bg2)"
           >
             ...
           </li>
-
         </ul>
 
-        <a
+        <button
+          v-if="note.tags.length > 7"
           @click="hide8moreTags = !hide8moreTags"
-          class="cursor-pointer mt-2 select-none"
+          class="mt-1 text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium"
         >
-          {{ hide8moreTags ? 'voir plus' : 'voir moins' }}
-        </a>
+          {{ hide8moreTags ? 'Voir plus' : 'Voir moins' }}
+        </button>
 
       </div>
 
       <div
         v-else
+        @click="tagManager = true"
       >
         <a class="px-1">Ajouter un tag</a>
       </div>
@@ -261,6 +265,14 @@
     message="Voulez-vous vraiment supprimer cette note ?"
     @confirm="delete_note(2)"
     @cancel="showDialog = false"
+  />
+
+  <Tags_manager
+    v-if="note"
+    v-model:active="tagManager"
+    :tags="note.tags"
+    :loader="onUpdateTags"
+    @update:tags="onTagsUpdate()"
   />
 
   <Popup v-model:visible="export_menu">
@@ -320,7 +332,7 @@ import { useUser } from '@clerk/vue';
 import db from '@/assets/ts/database/database';
 import utils from '@/assets/ts/utils';
 import { Tags as all_tags } from '@/assets/ts/database/Var'; 
-import type { Note, User } from '@/assets/ts/type';
+import type { Note, Tag, User } from '@/assets/ts/type';
 import { stats, isLoaded } from '@/components/Markdown/Function/Stats';
 import { editor } from '@/components/Markdown/Editor';
 
@@ -334,6 +346,7 @@ import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
 import { download } from '@/components/Markdown/Function/Export';
 import { showSearchBar } from '@/components/Markdown/tiptap-extensions/searchAndReplace';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
+import Tags_manager from '@/components/tags/tags_manager.vue';
 
 const props = defineProps<{ id: number | 'new' }>()
 const { user } = useUser();
@@ -350,6 +363,7 @@ const note = ref<Note>({
     tags: []
 });
 
+const tagManager = ref<boolean>(false);
 const hide8moreTags = ref<boolean>(true);
 const if_pin_active = ref<boolean>(note.value.pinned);
 const if_open_dropdown = ref<boolean>(false);
@@ -363,6 +377,7 @@ const title = ref<HTMLInputElement | null>(null);
 const loaded = ref<boolean>(false);
 const shared = ref<boolean>(false);
 const users = ref<User[]>([]);
+const onUpdateTags = ref<boolean>(false);
 
 const attrs = useAttrs();
 const router = useRouter();
@@ -390,6 +405,29 @@ const getUserByUUID = async (user_id: string, type: 'owner' | 'visitor'): Promis
     return { ...data, type };
 
 }
+
+
+const onTagsUpdate = async (newTags: number[]) => {
+  if (onUpdateTags.value) return;
+  onUpdateTags.value = true;
+
+  await nextTick();
+
+  db.saveTags(newTags || [], note.value.id);
+  const _note = await db.getNote(note.value.id);
+  if (_note) {
+    note.value.tags = _note.tags || [];
+  }
+  else
+  {
+    console.error('_note is undefine on onTagsUpdate()');
+  } 
+
+  await nextTick();
+
+  tagManager.value = false;
+  onUpdateTags.value = false;
+};
 
 const delete_note = async (state: number): Promise<void> => {
   
@@ -430,6 +468,16 @@ const change_pin_state = async (): Promise<void> => {
 
 const update_title = () => {
   document.title = `SilverNote - ${note.value.title}`;
+}
+
+
+watch(() => note.tags, async () => await fixTags())
+
+const fixTags = async () => {
+  if (!note.tags)
+  {
+    note.tags = (await db.getNote(props.id))?.tags || [];
+  };
 }
 
 
@@ -484,7 +532,7 @@ const wSocket = () => {
 
     watch(
       () => note.value?.title,
-      (newTitle) => {
+      (newTitle: string) => {
 
         if (ignoreNextUpdate) {
           ignoreNextUpdate = false;
@@ -641,6 +689,10 @@ const initNote = async () => {
 
     // récupération d'une note existante
     await get_existing_note();
+
+    await nextTick();
+
+    await fixTags();
 
     loaded.value = true;
 

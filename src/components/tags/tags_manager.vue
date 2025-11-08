@@ -34,6 +34,7 @@
                     <ul class="flex flex-col gap-4">
 
                         <li
+                            v-if="all_tags.length > 0"
                             v-for="(tag, index) in all_tags"
                             :key="index"
                             class="
@@ -88,6 +89,13 @@
 
                         </li>
 
+                        <li
+                            v-else
+                            class="flex justify-center items-center font-bold"
+                        >
+                            <span>Aucun tag trouvé</span>
+                        </li>
+
                     </ul>
 
                 </div>
@@ -95,7 +103,8 @@
                 <div class="flex justify-end mt-4">
 
                     <button 
-                        class="primary" 
+                        class="primary"
+                        :class="loader ? 'loader' : ''" 
                         @click="close"
                     >
                         Fermer
@@ -124,6 +133,7 @@ import Popup from '../popup/Popup.vue';
 const props = defineProps<{
     tags: number[];
     active: boolean;
+    loader?: boolean
 }>();
 
 const emit = defineEmits<{
@@ -136,7 +146,7 @@ const tagsLocal = ref<number[]>([...props.tags]);
 
 const toggleTag = (id: number) => {
     if (tagsLocal.value.includes(id)) {
-        tagsLocal.value = tagsLocal.value.filter(t => t !== id);
+        tagsLocal.value = tagsLocal.value.filter((t: any) => t !== id);
     } else {
         tagsLocal.value.push(id);
     }
@@ -147,7 +157,7 @@ const close = () => {
     emit('update:active', false);
 };
 
-watch(() => props.active, (newVal) => {
+watch(() => props.active, (newVal: boolean) => {
     if (newVal) {
         tagsLocal.value = [...props.tags];
     }
