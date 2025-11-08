@@ -3,7 +3,9 @@ const { autoUpdater } = require('electron-updater');
 const log = require('electron-log');
 const path = require('path');
 const https = require('https');
-const Console = require('./logger');
+const Console = require('./assets/logger');
+const initializeDiscordRPC = require('./assets/dicord_rpc');
+
 
 const if_dev = true;
 const isLinux = process.platform === 'linux';
@@ -58,6 +60,13 @@ async function create_main_window() {
     console.warn('App en mode dev');
     win.webContents.openDevTools({ mode: 'detach' });
   }
+
+
+  const { setActivity } = initializeDiscordRPC();
+  win.on('page-title-updated', (event, title) => {
+    setActivity(title);
+  });
+
 }
 
 function create_update_window() {
@@ -139,6 +148,8 @@ app.whenReady().then(async () => {
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) create_main_window();
   });
+
+
 });
 
 app.on('window-all-closed', () => {
