@@ -16,6 +16,8 @@ import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import TaskList from "@tiptap/extension-task-list";
 import TaskItem from "@tiptap/extension-task-item";
+import { TableKit } from "@tiptap/extension-table";
+import { Markdown } from "tiptap-markdown";
 
 const props = defineProps<{
   content: string | Promise<string>;
@@ -28,11 +30,13 @@ onMounted(() => {
 
     editor.value = new Editor({
         extensions: [
-        StarterKit,
-        Underline,
-        Link.configure({ openOnClick: true }),
-        TaskList,
-        TaskItem,
+          StarterKit,
+          Underline,
+          Link.configure({ openOnClick: true }),
+          Markdown.configure({ html: true }),
+          TaskList,
+          TaskItem,
+          TableKit,
         ],
         content: props.content,
         editable: false,
@@ -50,3 +54,11 @@ onBeforeUnmount(() => {
 });
 
 </script>
+
+<style lang="css" scoped>
+
+@import './css/basic.css';
+@import './css/Table.css';
+@import './css/ToDoList.css';
+
+</style>
