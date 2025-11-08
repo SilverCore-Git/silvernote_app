@@ -125,13 +125,13 @@ function create_update_window() {
 
 app.whenReady().then(async () => {
   // Tu peux commenter ou décommenter selon si tu veux activer les mises à jour :
-  if (await isOnline() && !isLinux) {
-    console.log('Lancement avec vérification de mise à jour');
-    create_update_window();
-  } else {
-    console.log('Lancement sans mise à jour');
-    create_main_window();
-  }
+  // if (await isOnline() && !isLinux) {
+  //   console.log('Lancement avec vérification de mise à jour');
+  //   create_update_window();
+  // } else {
+  //   console.log('Lancement sans mise à jour');
+  //   create_main_window();
+  // }
 
   console.log('Lancement direct (sans Express)');
   create_main_window();
