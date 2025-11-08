@@ -101,7 +101,10 @@ onMounted(async () => {
     if (isLoaded.value) {
 
       if (!isSignedIn.value) {
-        router.push('/auth/sign');
+        router.push({
+          query: route.query,
+          path: "/auth/sign"
+        });
         open_chatbot.value = false;
         loader.value = false;
         return;

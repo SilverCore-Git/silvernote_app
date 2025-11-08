@@ -1,18 +1,20 @@
 <script lang="ts" setup>
 
 import { nextTick, ref } from 'vue';
-import { useSignIn } from '@clerk/vue';
+import { useClerk, useSignIn } from '@clerk/vue';
 import { useRoute, useRouter } from 'vue-router';
 import { error, handleOAuth, isLoading } from './auth';
 
 const router = useRouter();
 const route = useRoute();
+const clerk = useClerk();
 const { signIn, isLoaded, setActive } = useSignIn();
 
 const email = ref<string>('');
 const password = ref<string>('');
 
 const handleSubmit = async () => {
+    
     if (!isLoaded.value) return;
     
     error.value = '';
@@ -141,7 +143,7 @@ const handleSubmit = async () => {
                 <div class="space-y-3">
 
                     <button
-                        @click="handleOAuth('google', isLoaded, signIn)"
+                        @click="handleOAuth('google', isLoaded, signIn, clerk)"
                         :disabled="isLoading !== undefined || !isLoaded"
                         class="second w-full"
                         :class="isLoading == 'google' ? 'loader' : ''"
@@ -154,7 +156,7 @@ const handleSubmit = async () => {
                     </button>
 
                     <button
-                        @click="handleOAuth('discord', isLoaded, signIn)"
+                        @click="handleOAuth('discord', isLoaded, signIn, clerk)"
                         :disabled="isLoading !== undefined || !isLoaded"
                         class="second w-full"
                         :class="isLoading == 'discord' ? 'loader' : ''"

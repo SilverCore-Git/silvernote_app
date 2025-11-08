@@ -15,7 +15,26 @@ const form = ref<'signin' | 'signup'>('signin');
 onMounted(() => {
   const interval = setInterval(() => {
     if (isLoaded.value) {
-      if (isSignedIn.value) router.push('/');
+      if (isSignedIn.value) 
+      {
+        if (route.query.redirectUrl)
+        {
+          const redirectUrl = route.query.redirectUrl as string;
+
+          if (!redirectUrl) {
+            router.push('/');
+            return;
+          }
+
+          const url = new URL(redirectUrl);
+          url.searchParams.set('utm_source', 'silvernote-auth');
+          window.location.href = url.toString();
+        }
+        else
+        {
+          router.push('/');
+        }
+      }
       clearInterval(interval)
     }
   }, 200);
