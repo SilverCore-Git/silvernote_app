@@ -15,7 +15,7 @@ module.exports = function initializeDiscordRPC() {
             state,
             startTimestamp,
             largeImageKey: "logo",
-            smallImageKey: state.startsWith('Silvernote') ? '' : 'pencil',
+            smallImageKey: state.endsWith('- Silvernote edit') ? 'pencil' : '',
             buttons: [
                 { label: "Découvrir silvernote", url: "https://www.silvernote.fr" }
             ],
