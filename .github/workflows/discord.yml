@@ -1,0 +1,34 @@
+name: Build & Send to Discord
+
+on:
+  push:
+    branches: [ "recette" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm i --force
+
+      - name: Build project
+        run: npm run build
+
+      - name: Zip dist folder
+        run: zip -r dist.zip dist/
+
+      - name: Send to Discord
+        run: |
+          curl -X POST \
+            -H "Content-Type: multipart/form-data" \
+            -F "file=@dist.zip" \
+            https://discord.com/api/webhooks/1437092067909042297/9OqgWRci7VaQ5ZPyOMrQOwtxkVmPgfw_ua3aDkEEfrzAAF5G_APj-1xo9CJjkrtyfSBg
