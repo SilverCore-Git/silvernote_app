@@ -8,7 +8,7 @@
     <header 
         class="
                 flex flex-row fixed inset-x-0 
-                pt-2 z-50 m-4 lg:m-0 lg:mx-[20%]
+                pt-4 z-50 m-4 lg:m-0 lg:mx-[20%]
             "
     >
 
