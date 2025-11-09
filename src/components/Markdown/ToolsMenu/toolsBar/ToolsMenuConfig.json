@@ -14,15 +14,7 @@
     }
   ],
 
-  "collaboration": [
 
-    {
-      "id": 4,
-      "name": "Commenter",
-      "action": "()=> console.log('Partager lien')"
-    }
-
-  ],
 
   "text": [
 
