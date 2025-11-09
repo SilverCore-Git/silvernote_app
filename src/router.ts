@@ -14,28 +14,28 @@ const routes = [
     name: 'Home', 
     component: Home,
     props: {},
-    meta: { title: 'SilverNote - Home' }
+    meta: { title: 'Accueil - Silvernote' }
   },
   { 
     path: '/edit/:id', 
     name: 'Edit', 
     component: Edit,
     props: true,
-    meta: { title: 'SilverNote - Edit' }
+    meta: { title: 'Silvernote' }
   },
   { 
     path: '/settings', 
     name: 'Settings', 
     component: Settings,
     props: {},
-    meta: { title: 'SilverNote - Settings' }
+    meta: { title: 'Settings - Silvernote' }
   },
   { 
     path: '/dev', 
     name: 'dev', 
     component: Dev,
     props: {},
-    meta: { title: 'SilverNote - dev access' }
+    meta: { title: 'dev access - Silvernote' }
   },
 
   { 
@@ -43,7 +43,7 @@ const routes = [
     name: 'Share', 
     component: Share,
     props: true,
-    meta: { title: 'SilverNote - Partage' }
+    meta: { title: 'Partage - Silvernote' }
   },
 
   // auth
@@ -52,14 +52,14 @@ const routes = [
     name: 'sign',
     component: signPage,
     props: true,
-    meta: { title: 'SilverNote - auth' }
+    meta: { title: 'auth - Silvernote' }
   },
   { 
     path: '/auth/sso-callback',
     name: 'ssoCallback',
     component: ssoCallback,
     props: true,
-    meta: { title: 'SilverNote - auth' }
+    meta: { title: 'auth - Silvernote' }
   }
 ]
 
