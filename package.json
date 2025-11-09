@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.2.5-beta",
   "silveria_version": "2.0.0",
-  "dev": false,
+  "dev": true,
   "type": "module",
   "scripts": {
     "dev": "vite",

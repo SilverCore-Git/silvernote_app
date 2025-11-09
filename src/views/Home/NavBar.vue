@@ -11,10 +11,13 @@
             font-family: 'InterTight', sans-serif; 
             box-shadow: 0 0 15px #36363681;
         " 
+        :style="{
+            top: mobile.active ? mobile.margin.top : 0,
+            bottom: mobile.active ? mobile.margin.bottom : 0
+        }"
         class="
                 fixed 
-                lg:inset-y-0 lg:left-0 
-                inset-x-0 top-0 
+                lg:inset-y-0 lg:left-0 inset-x-0
                 text-2xl font-bold lg:w-60
                 bg-[var(--bg2)] z-50 
                 lg:p-4 py-1 p-0 mt-4 lg:mt-6 mx-6
@@ -160,6 +163,7 @@ import { useRouter } from 'vue-router';
 import { version, dev } from '../../../package.json';
 import { notes_views_mode, toggle_notes_views_mode, notes_filter, type Notes_filter } from '@/assets/ts/Notes_views';
 import New_note_btn from './New_note_btn.vue';
+import mobile from  '@/configs/mobile.json';
 
 const router = useRouter();
 const if_open_dropdown = ref<boolean>(false);

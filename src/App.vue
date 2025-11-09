@@ -1,6 +1,11 @@
 <template>
 
-  <div :class="mobile_class">
+  <div 
+    :style="{
+      marginTop: mobile_config.margin.top,
+      marginBottom: mobile_config.margin.bottom
+    }"
+  >
 
       <div class=" w-full h-full" :class="[ 'Edit', 'Share' ].includes(route.name as string) ? 'flex' : ''">
         
@@ -75,6 +80,7 @@ import { useAuth, useUser } from "@clerk/vue";
 import { loaded } from "./assets/ts/utils";
 import InitDB from "./assets/ts/database/init";
 import mobile_config from "@/configs/mobile.json";
+import { sticky } from "tippy.js";
 
 const loader = ref<boolean>(true);
 const open_chatbot = ref<boolean>(true);
@@ -85,9 +91,6 @@ const { user, isLoaded } = useUser();
 const { isSignedIn } = useAuth()
 
 const is_offline = ref<boolean>(false);
-const mobile_class = mobile_config.active 
-                        ? `mt-[${mobile_config.margin.top}] mb-[${mobile_config.margin.bottom}]`
-                        : "";
 
 
 onMounted(async () => {
