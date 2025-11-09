@@ -3,7 +3,7 @@ name: Build & Send to Discord
 on:
   push:
     branches: [ "recette" ]
- 
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,6 +16,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+
+      - name: Create .env file
+        run: |
+          echo "VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}" >> .env
+          echo "VITE_PDFSHIFT_KEY=${{ secrets.VITE_PDFSHIFT_KEY }}" >> .env
 
       - name: Install dependencies
         run: npm i --force
