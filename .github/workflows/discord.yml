@@ -2,7 +2,7 @@ name: Build & Send to Discord
 
 on:
   push:
-    branches: [ "recette" ]
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -28,12 +28,19 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Get version from package.json
+        id: get_version
+        run: |
+          VERSION=$(cat package.json | jq -r '.version')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Zip dist folder
-        run: zip -r dist.zip dist/
+        run: |
+          zip -r "dist-${{ steps.get_version.outputs.version }}.zip" dist/
 
       - name: Send to Discord
         run: |
           curl -X POST \
             -H "Content-Type: multipart/form-data" \
-            -F "file=@dist.zip" \
+            -F "file=@dist-${{ steps.get_version.outputs.version }}.zip" \
             https://discord.com/api/webhooks/1437092067909042297/9OqgWRci7VaQ5ZPyOMrQOwtxkVmPgfw_ua3aDkEEfrzAAF5G_APj-1xo9CJjkrtyfSBg
