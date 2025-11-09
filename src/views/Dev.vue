@@ -118,7 +118,6 @@
 <script lang="ts" setup>
 
     import { onMounted, ref, watch } from 'vue'
-    import { useRouter } from 'vue-router';
     import { useUser } from '@clerk/vue';
     const { user } = useUser();
     import { version } from '../../package.json';
@@ -131,9 +130,8 @@
     import Danger from '@/components/alert/Danger.vue';
     import Success from '@/components/alert/Success.vue';
     import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
-import BackBtn from '@/components/backBtn.vue';
+    import BackBtn from '@/components/backBtn.vue';
 
-    const router = useRouter();
     const { plan } = usePlan();
 
     const confirmDialog = ref<boolean>(false);

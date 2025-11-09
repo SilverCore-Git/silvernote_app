@@ -45,7 +45,7 @@
                             <label
                                 class="
                                     flex items-center justify-between border rounded-xl cursor-pointer
-                                    p-3 bg-[var(--bg2)]/80 hover:scale-102 transition select-none
+                                    p-3 bg-(--bg2)/80 hover:scale-102 transition select-none
                                 "
                                 :for="`switch-${tag.id}`"
                             >
@@ -73,8 +73,8 @@
                                     <div
                                         class="
                                             w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 
-                                            peer-focus:ring-[var(--btn)] rounded-full peer
-                                            peer-checked:bg-[var(--btn)] transition-all
+                                            peer-focus:ring-(--btn) rounded-full peer
+                                            peer-checked:bg-(--btn) transition-all
                                         "
                                     ></div>
 

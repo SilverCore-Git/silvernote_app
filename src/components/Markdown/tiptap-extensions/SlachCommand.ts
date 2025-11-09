@@ -2,7 +2,7 @@ import { Extension } from '@tiptap/core';
 import { VueRenderer } from '@tiptap/vue-3';
 import Suggestion, { type SuggestionOptions } from '@tiptap/suggestion';
 import tippy, { type Instance as TippyInstance } from 'tippy.js';
-import MdInputMenu from '../ToolsMenu/mdinputType/mdinputMenu.vue';
+import mdinputMenu from '../ToolsMenu/mdInputType/mdInputMenu.vue';
 
 export interface SlashCommandOptions {
   suggestion: Omit<SuggestionOptions, 'editor'>;
@@ -24,7 +24,7 @@ export const SlashCommand = Extension.create<SlashCommandOptions>({
 
           return {
             onStart: (props: any) => {
-              component = new VueRenderer(MdInputMenu, {
+              component = new VueRenderer(mdinputMenu, {
                 props: {
                     show: { type: Boolean, required: true },
                     type: { type: String, default: 'insert' }

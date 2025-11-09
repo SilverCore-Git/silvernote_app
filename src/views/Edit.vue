@@ -267,9 +267,9 @@
   <Tags_manager
     v-if="note"
     v-model:active="tagManager"
-    :tags="note.tags"
+    :tags="note.tags.map((tag: any) => number(tag))"
     :loader="onUpdateTags"
-    @update:tags="onTagsUpdate()"
+    @update:tags="onTagsUpdate"
   />
 
   <Popup v-model:visible="export_menu">
@@ -344,6 +344,7 @@ import { showSearchBar } from '@/components/Markdown/tiptap-extensions/searchAnd
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import Tags_manager from '@/components/tags/tags_manager.vue';
 import BackBtn from '@/components/backBtn.vue';
+import { number } from 'mathjs';
 
 const props = defineProps<{ id: number | 'new' }>()
 const { user } = useUser();
@@ -468,12 +469,12 @@ const update_title = () => {
 }
 
 
-watch(() => note.tags, async () => await fixTags())
+watch(() => note.value.tags, async () => await fixTags())
 
 const fixTags = async () => {
-  if (!note.tags)
+  if (!note.value.tags)
   {
-    note.tags = (await db.getNote(props.id))?.tags || [];
+    note.value.tags = (await db.getNote(props.id as number))?.tags || [];
   };
 }
 

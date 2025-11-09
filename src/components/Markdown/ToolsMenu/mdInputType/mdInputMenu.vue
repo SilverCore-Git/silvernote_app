@@ -59,7 +59,6 @@
 import { defineProps, defineEmits, ref, computed, watch, nextTick } from 'vue';
 import config from './mdInputMenu.json';
 import { editor } from '../../Editor';
-import type { Editor } from '@tiptap/core';
 
 const props = defineProps<{
   top: number;
@@ -107,7 +106,7 @@ const filteredOpt = computed(() => {
 
 
 const exec = (action: string) => {
-  if (action.startsWith('getImageFile')) return insertImageFromFile(editor.value as Editor);
+  if (action.startsWith('getImageFile')) return insertImageFromFile(editor);
   const fn = new Function("editor", `return (${action})()`);
   fn(editor.value);
 };
@@ -119,7 +118,7 @@ watch(() => props.show, async (val) => {
   }
 })
 
-const insertImageFromFile = (editor: Editor) => {
+const insertImageFromFile = (editor: any) => {
   
   const input = document.createElement("input");
   input.type = "file";
