@@ -3,7 +3,7 @@ name: Build & Send to Discord
 on:
   push:
     branches: [ "recette" ]
-
+ 
 jobs:
   build:
     runs-on: ubuntu-latest
