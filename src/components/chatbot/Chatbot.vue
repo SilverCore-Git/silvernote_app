@@ -146,7 +146,7 @@
                         v-model="message"
                         :maxlength="max_LenghtOfMessage"
                         @input="autoResize"
-                        @keyup.enter="add_message(message); message = ''; resetHeight();"
+                        @keyup.enter.prevent="handleEnter"
                         class="
                             resize-none overflow-y-auto max-h-40 outline-0 
                             w-[70%] bg-transparent px-3 py-2 rounded-md 
@@ -195,7 +195,7 @@ const { user } = useUser();
 const route = useRoute();
 const router = useRouter();
 
-const max_LenghtOfMessage: number = 9999999999999;
+const max_LenghtOfMessage: number = 50;
 const open = ref<boolean>(props?.visible || false);
 
 const loading = ref<boolean>(false);
@@ -214,7 +214,21 @@ const messagesContainer = ref<HTMLElement | null>(null);
 const isAtBottom = ref<boolean>(true);
 const shouldAutoScroll = ref<boolean>(true);
 
-watch(() => message.value, () => lengthOfMessage.value = max_LenghtOfMessage - message.value.length)
+watch(() => message.value, () => lengthOfMessage.value = max_LenghtOfMessage - message.value.length);
+
+const handleEnter = (e: any) => {
+  if (e.shiftKey) {
+    // SHIFT + ENTER → nouvelle ligne
+    message.value += "\n";
+    return;
+  }
+
+  // ENTER → envoyer le message
+  add_message(message.value);
+  message.value = "";
+  resetHeight();
+}
+
 
 // Vérifier si on est en bas
 const checkIfAtBottom = () => {
@@ -314,6 +328,9 @@ const add_error = (content: string) => {
 
 const initResize = () => {
 
+    const maxW = window.innerWidth * 0.76;
+    const minW = 300;
+
     nextTick(() => {
         
         const handle = document.querySelector<HTMLElement>('.resize-handle-bar');
@@ -338,7 +355,7 @@ const initResize = () => {
         const resize = (e: MouseEvent) => {
             if (!isResizing) return;
             const diff = startX - e.clientX;
-            const newWidth = Math.min(Math.max(300, startWidth + diff), 1000);
+            const newWidth = Math.min(Math.max(minW, startWidth + diff), maxW);
             container.style.width = `${newWidth}px`;
         };
 

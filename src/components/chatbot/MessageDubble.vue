@@ -1,9 +1,16 @@
 <template>
 
+  <div
+
+    v-if="origin === 'ai' && text.length < 1"
+    class="loader"
+
+  ></div>
+
   <div 
+    v-else
     :class="[
       ' break-normal max-w-[85%] p-4 rounded-2xl',
-      annimation,
       origin === 'ai' ? 'ai-message' : origin === 'error' ? 'error-message' : 'user-message max-w-[75%]'
     ]"
     style="animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);"
@@ -78,7 +85,6 @@
       v-else-if="origin === 'user'" 
       class="user-content"
     >
-      <img class="w-6 h-6 rounded-full " :src="user?.imageUrl"></img>
       <div>{{ text }}</div>
     </div>
 
@@ -98,7 +104,6 @@
 
 import { ref, watch, nextTick, onMounted } from 'vue';
 import { marked } from 'marked';
-import { useUser } from '@clerk/vue';
 
 const props = defineProps<{
   origin: 'ai' | 'user' | 'error' | 'tool';
@@ -121,8 +126,6 @@ const toolActions = ref<ToolAction[]>([]);
 const cleanedText = ref<string>('');
 const isTyping = ref<boolean>(false);
 const renderedChunks = ref<string[]>([]);
-let annimation = ''; 
-const { user } = useUser();
 
 function scrollToBottom() {
   nextTick(() => {
@@ -139,9 +142,6 @@ watch(() => props.text, (newText, oldText) => {
     }
     return;
   }
-
-  if (props.text.length < 1) annimation = 'scaleUp';
-  if (props.text.length > 0) annimation = '';
 
   let processedText = newText;
   const newToolActions: ToolAction[] = [...toolActions.value];

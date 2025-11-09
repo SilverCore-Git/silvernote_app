@@ -376,13 +376,34 @@
   font-weight: 700;
 }
 
-.scaleUp {
-    animation: scaleUp 2s ease infinite;
-    
+
+.loader {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  
+  background: linear-gradient(135deg, var(--btn), #ff5e62, #ff9966);
+  background-size: 200% 200%;
+  animation:
+    pulse 1.6s ease-in-out infinite,
+    gradientMove 3.5s ease infinite,
+    glowPulse 2.4s ease-in-out infinite;
 }
 
-@keyframes scaleUp {
+@keyframes pulse {
   0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  50% { transform: scale(1.08); }
   100% { transform: scale(1); }
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 8px rgba(255, 94, 98, 0.3); }
+  50% { box-shadow: 0 0 16px rgba(255, 94, 98, 0.55); }
+  100% { box-shadow: 0 0 8px rgba(255, 94, 98, 0.3); }
 }
