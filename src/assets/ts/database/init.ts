@@ -10,7 +10,6 @@ import utils from '../utils';
 
 class InitDB {
 
-
     private user: Ref<any> | undefined;
     private loaded: boolean;
 

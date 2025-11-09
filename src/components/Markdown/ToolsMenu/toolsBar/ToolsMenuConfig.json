@@ -70,6 +70,12 @@
           "action": "()=> editor.chain().focus().setParagraph().run()"
         }
       ]
+    },
+
+    {
+      "id": 764532,
+      "name": "<strong>A</sctrong> <i class=\"bi bi-arrow-down-short\" />",
+      "action": "openColorEditor"
     }
 
   ],

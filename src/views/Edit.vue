@@ -247,7 +247,7 @@
       :uuid="note.uuid"
       :data="note"
     />
-
+    
   </section>
 
   <share_menu
@@ -332,7 +332,6 @@ import { Tags as all_tags } from '@/assets/ts/database/Var';
 import type { Note, Tag, User } from '@/assets/ts/type';
 import { stats, isLoaded } from '@/components/Markdown/Function/Stats';
 import { editor } from '@/components/Markdown/Editor';
-
 
 import pinFull from '/assets/webp/pin_plein.webp?url';
 import pinEmpty from '/assets/webp/pin_vide.webp?url';

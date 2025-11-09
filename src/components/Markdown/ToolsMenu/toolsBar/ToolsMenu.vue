@@ -16,7 +16,7 @@
           v-for="(list, cat) in actions"
           :key="cat"
           class="flex flex-row"
-          :class="cat == 'MdInputMenu' ? '' : 'pr-1 border-r-1'"
+          :class="cat == 'MdInputMenu' ? '' : 'pr-1 border-r'"
         >
 
           <li
@@ -28,7 +28,7 @@
             <div
               v-if="'action' in action"
               :class="
-                cat == 'MdInputMenu' 
+                cat == 'MdInputMenu' || action.id == 764532
                   ? `
                       border border-gray-400 hover:border-[var(--text)] 
                       transition-all duration-200 rounded-lg px-1.5
@@ -68,6 +68,12 @@
         :top="posY"
         :left="posX"
       />
+
+      <colorEditor 
+        v-model:show="IfcolorEditor"
+        :top="posY"
+        :left="posX"
+      />
       
     </teleport>
 
@@ -87,11 +93,13 @@ import config from './ToolsMenuConfig.json';
 import { editor } from '../../Editor';
 import { onDragIconLoaded } from '../../tiptap-extensions/dragHandle';
 import MdInputeMenu from '../mdInputType/mdInputMenu.vue';
+import colorEditor from '../colorEditor/colorEditor.vue';
 const _config: any = config; // i can't assign categories type
 
 const route = useRoute();
 const router = useRouter();
 
+const IfcolorEditor = ref<boolean>(false);
 const mdInputeMenu = ref<boolean>(false);
 const actions = ref<Categories>(_config);
 const showMenu = ref<boolean> (false);
@@ -108,6 +116,7 @@ const openSelectionMenu = (withEditorSelect: boolean) => {
     if (from === to) {
       showMenu.value = false;
       mdInputeMenu.value = false;
+      IfcolorEditor.value = false;
       return;
     }
 
@@ -133,6 +142,7 @@ const exec = (action: string) => {
 
   if (action.startsWith('getImageFile')) return insertImageFromFile(editor.value as Editor);
   if (action.startsWith('openMdInputMenu')) return openMdInputMenu();
+  if (action.startsWith('openColorEditor')) return openColorEditor();
   if (action.startsWith('AskToAI')) {
     AskToAI(
         action.replace('AskToAI', '').startsWith('(') 
@@ -157,6 +167,10 @@ const onSelectAction = (event: Event, actionsList: SimpleAction[]) => {
 
 const openMdInputMenu = () => {
   mdInputeMenu.value = !mdInputeMenu.value;
+}
+
+const openColorEditor = () => {
+  IfcolorEditor.value = !IfcolorEditor.value;
 }
 
 const insertImageFromFile = (editor: Editor) => {
@@ -206,6 +220,7 @@ const AskToAI = (prompt?: string) => {
 
     showMenu.value = false;
     mdInputeMenu.value = false;
+    IfcolorEditor.value = false;
 
   }, 100);
 

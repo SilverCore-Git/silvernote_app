@@ -60,6 +60,9 @@ import type { Note } from '@/assets/ts/type';
 import { api_url } from '@/assets/ts/backend_link';
 import { getDominantColor } from '@/assets/ts/GetColorByImage';
 import ToolsMenu from '@/components/Markdown/ToolsMenu/toolsBar/ToolsMenu.vue';
+import Color from '@tiptap/extension-color';
+import TextStyle from '@tiptap/extension-text-style';
+import Highlight from '@tiptap/extension-highlight'
 
 import { editor, isLoaded } from './Editor';
 import { saveNote } from './Function/saveNote.js';
@@ -175,6 +178,11 @@ const initEditor = async () => {
       Image.configure({ inline: false, allowBase64: true }),
       Youtube.configure({ HTMLAttributes: { class: 'ytb-viewer' } }),
       UndoRedo,
+      Color,
+      TextStyle,
+      Highlight.configure({
+        multicolor: true
+      }),
       CharacterCount,
       TableKit.configure({
         table: { resizable: true },

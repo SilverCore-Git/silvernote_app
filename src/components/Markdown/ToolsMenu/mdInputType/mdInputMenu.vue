@@ -1,7 +1,7 @@
 <template>
 
   <div 
-    :style="{ top: `${top + 50}px`, left: `${left + 455}px` }" 
+    :style="{ top: `${top + 50}px`, left: `${left + 518}px` }" 
     class="absolute"
   >
 
