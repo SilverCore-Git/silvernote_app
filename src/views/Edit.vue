@@ -12,10 +12,7 @@
           "
   >
 
-    <div 
-      class="left-arrow absolute left-0 cursor-pointer" 
-      @click="router.back()"
-    ></div>
+    <BackBtn />
 
     <div class="flex flex-row gap-4 absolute right-0">
 
@@ -347,6 +344,7 @@ import { download } from '@/components/Markdown/Function/Export';
 import { showSearchBar } from '@/components/Markdown/tiptap-extensions/searchAndReplace';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import Tags_manager from '@/components/tags/tags_manager.vue';
+import BackBtn from '@/components/backBtn.vue';
 
 const props = defineProps<{ id: number | 'new' }>()
 const { user } = useUser();

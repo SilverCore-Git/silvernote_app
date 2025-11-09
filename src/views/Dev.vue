@@ -1,10 +1,7 @@
 <template>
 
     <header class="flex flex-row relative" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
-        <div 
-            class="left-arrow absolute left-0 cursor-pointer" 
-            @click="router.back()"
-        ></div>
+        <BackBtn />
     </header>
 
     <div class="flex justify-start items-center md:mx-[18%] my-12 ml-4 mr-4">
@@ -134,6 +131,7 @@
     import Danger from '@/components/alert/Danger.vue';
     import Success from '@/components/alert/Success.vue';
     import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
+import BackBtn from '@/components/backBtn.vue';
 
     const router = useRouter();
     const { plan } = usePlan();

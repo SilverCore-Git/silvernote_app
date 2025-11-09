@@ -12,10 +12,7 @@
             "
     >
 
-        <div 
-            class="left-arrow absolute left-0 cursor-pointer" 
-            @click="router.back()"
-        ></div>
+        <BackBtn />
 
         <div 
             class="
@@ -304,6 +301,7 @@ import { EmojiButton } from '@joeattardi/emoji-button';
 import Success from '@/components/alert/Success.vue';
 import utils from '@/assets/ts/utils';
 import Popup from '@/components/popup/Popup.vue';
+import BackBtn from '@/components/backBtn.vue';
 
 
 const props = defineProps<{

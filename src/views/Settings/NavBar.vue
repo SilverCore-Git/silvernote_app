@@ -24,7 +24,7 @@
 
         <ul class="w-full">
             
-            <li class="flex-col flex-phone-hidden">
+            <li class="flex-col phone-hidden-flex">
 
                 <div class="flex flex-row gap-2 items-center justify-center">
 

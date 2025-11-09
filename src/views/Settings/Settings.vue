@@ -3,10 +3,7 @@
 
     <header class="flex flex-row relative mx-2 lg:mx-0" style="padding-top: calc(1rem + env(safe-area-inset-top)/2);">
 
-        <div 
-          class="left-arrow absolute left-0 cursor-pointer" 
-          @click="router.back()"
-        ></div>
+        <BackBtn />
 
         <div class="legal absolute right-0" :class="hitbox ? 'bg-red-600' : ''" @click="router.push('/legale')"></div>
 
@@ -163,6 +160,7 @@ import Success from '@/components/alert/Success.vue';
 import Danger from '@/components/alert/Danger.vue';
 import { api_url } from '@/assets/ts/backend_link';
 import NavBar from './NavBar.vue';
+import BackBtn from '@/components/backBtn.vue';
 
 let hitbox: boolean;
 onMounted(async () => { hitbox = await if_hitbox() })

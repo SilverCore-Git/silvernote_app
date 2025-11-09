@@ -188,7 +188,7 @@
 <script lang="ts" setup>
 
 import { nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import MessageDubble from './MessageDubble.vue';
 import { useUser } from '@clerk/vue';
 import db from '@/assets/ts/database/database';
@@ -202,7 +202,6 @@ const props = defineProps<{
 
 const { user } = useUser();
 const route = useRoute();
-const router = useRouter();
 
 const max_LenghtOfMessage: number = 50;
 const open = ref<boolean>(props?.visible || false);
@@ -217,7 +216,7 @@ const user_id = ref<string | undefined>('');
 const silverIA_active = ref<boolean>(true);
 const pos = ref<'fixed' | 'relative'>('fixed');
 const messageInput = ref<HTMLTextAreaElement | null>(null)
-const isPhone = document.body.classList.contains('phone');
+let isPhone: boolean = false;
 
 // Refs pour le scroll intelligent
 const messagesContainer = ref<HTMLElement | null>(null);
@@ -488,7 +487,15 @@ const close = async () => {
 }
 
 
-const Open = (): void => {
+const Open = async (): Promise<void> => {
+
+    await nextTick();
+
+    isPhone = document.body.classList.contains('phone');
+
+    if (route.query.chatbot) {
+        open.value = true;
+    }
 
     const int = setInterval(async () => {
 
@@ -518,11 +525,6 @@ const Open = (): void => {
             }
 
     }, 1000)
-
-    if (route.query.chatbot === 'relative' || route.query.chatbot === 'fixed') {
-        open.value = true;
-        pos.value = route.query.chatbot as 'relative' | 'fixed';
-    }
 
 }
 
@@ -556,17 +558,6 @@ watch(() => open.value, async () => {
         if (open.value) {
             setTimeout(() => scrollToBottom(true), 100);
         }
-    });
-    router.push({
-        query: open.value 
-            ? {
-                ...route.query,
-                chatbot: pos.value
-            }
-            : {
-                ...route.query,
-                chatbot: undefined
-            }
     });
 })
 watch(() => route.name, () => {
