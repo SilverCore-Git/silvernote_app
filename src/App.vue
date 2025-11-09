@@ -81,7 +81,6 @@ import { useAuth, useUser } from "@clerk/vue";
 import { loaded } from "./assets/ts/utils";
 import InitDB from "./assets/ts/database/init";
 import mobile_config from "@/configs/mobile.json";
-import { sticky } from "tippy.js";
 
 const loader = ref<boolean>(true);
 const open_chatbot = ref<boolean>(true);
