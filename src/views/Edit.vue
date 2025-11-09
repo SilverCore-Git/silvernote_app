@@ -465,7 +465,7 @@ const change_pin_state = async (): Promise<void> => {
 };
 
 const update_title = () => {
-  document.title = `${note.value.title} - Silvernote`;
+  document.title = `${note.value.title} - Silvernote edit`;
 }
 
 
