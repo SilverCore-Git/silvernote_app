@@ -12,8 +12,7 @@
             box-shadow: 0 0 15px #36363681;
         " 
         :style="{
-            top: mobile.active ? mobile.margin.top : 0,
-            bottom: mobile.active ? mobile.margin.bottom : 0
+            top: mobile.active ? mobile.margin.top : 0
         }"
         class="
                 fixed 

@@ -1,9 +1,10 @@
 <template>
 
-  <div 
+  <div
+  class=" overflow-hidden"
     :style="{
-      marginTop: mobile_config.margin.top,
-      marginBottom: mobile_config.margin.bottom
+      marginTop: mobile_config.active ? mobile_config.margin.top : 0,
+      marginBottom: mobile_config.active ? mobile_config.margin.bottom : 0,
     }"
   >
 
@@ -11,7 +12,7 @@
         
         <div 
           v-if="route.name == 'sign' || route.name == 'ssoCallback' || !loader && InitDB.isLoaded()"
-          class="flex-1 relative overflow-hidden"
+          class="flex-1 relative "
           :class="
                   [ 'Edit', 'Share' ].includes(route.name as string) && route.query.chatbot == 'relative' ? 
                     'mx-4'
