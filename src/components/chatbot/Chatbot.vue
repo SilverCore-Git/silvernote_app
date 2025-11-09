@@ -68,10 +68,19 @@
 
         <div
             v-if="open"
-            class="
-                    fixed inset-y-0 right-0  group
-                    bg-(--bg2) z-50 m-6 p-0
-                    dropdown flex flex-col justify-between
+            class="dropdown flex flex-col justify-between"
+            :class="
+                isPhone 
+                    ? 
+                        `
+                            fixed inset-0 p-0
+                            bg-(--bg2) z-50
+                        `
+                    :
+                        `
+                            fixed inset-y-0 right-0 group
+                            bg-(--bg2) z-50 m-6 p-0
+                        `
             "
         >
 
@@ -208,6 +217,7 @@ const user_id = ref<string | undefined>('');
 const silverIA_active = ref<boolean>(true);
 const pos = ref<'fixed' | 'relative'>('fixed');
 const messageInput = ref<HTMLTextAreaElement | null>(null)
+const isPhone = document.body.classList.contains('phone');
 
 // Refs pour le scroll intelligent
 const messagesContainer = ref<HTMLElement | null>(null);
