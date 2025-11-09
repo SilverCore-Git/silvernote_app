@@ -57,7 +57,7 @@
     },
     {
         "name": "Image",
-        "fn": "() => { const url = prompt('URL de l\\'image ?'); if(url) editor.chain().focus().setImage({ src: url }).run(); }"
+        "fn": "getImageFile"
     },
     {
         "name": "Lien vers une note",

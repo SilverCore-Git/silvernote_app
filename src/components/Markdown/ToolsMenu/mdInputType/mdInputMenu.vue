@@ -59,11 +59,13 @@
 import { defineProps, defineEmits, ref, computed, watch, nextTick } from 'vue';
 import config from './mdInputMenu.json';
 import { editor } from '../../Editor';
+import type { Editor } from '@tiptap/core';
 
 const props = defineProps<{
   top: number;
   left: number;
   show: boolean;
+  type?: 'insert' | 'all';
 }>();
 
 defineEmits<{
@@ -75,8 +77,25 @@ interface Opt {
   fn: string;
 }
 
+const insertName: string[] = [
+  'Image',
+  'Lien vers une note',
+  'Liste à puces',
+  'Liste numérotée',
+  'Liste de tâches',
+  'Code inline',
+  'Titre h1',
+  'Titre h2',
+  'Titre h3',
+]
+
 const search = ref<string>('');
-const opt = ref<Opt[]>(config);
+const opt = ref<Opt[]>(
+  props.type 
+    ? props.type == 'insert'
+      ? config.filter(c => insertName.includes(c.name))
+      : config
+    : config);
 const searchInput = ref<HTMLInputElement | null>(null)
 
 const filteredOpt = computed(() => {
@@ -88,6 +107,7 @@ const filteredOpt = computed(() => {
 
 
 const exec = (action: string) => {
+  if (action.startsWith('getImageFile')) return insertImageFromFile(editor.value as Editor);
   const fn = new Function("editor", `return (${action})()`);
   fn(editor.value);
 };
@@ -98,5 +118,26 @@ watch(() => props.show, async (val) => {
     searchInput.value?.focus()
   }
 })
+
+const insertImageFromFile = (editor: Editor) => {
+  
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+
+  input.onchange = () => {
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const url = reader.result as string;
+      editor.chain().focus().setImage({ src: url }).run();
+    };
+    reader.readAsDataURL(file);
+  };
+
+  input.click();
+};
 
 </script>
