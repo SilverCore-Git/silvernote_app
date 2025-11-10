@@ -5,6 +5,7 @@ import Edit from './views/Edit.vue';
 import Settings from './views/Settings/Settings.vue';
 import Dev from './views/Dev.vue';
 import Share from './views/Share.vue';
+import Chatbot from './components/chatbot/Chatbot.vue';
 import { signPage, ssoCallback } from './lib/silvernote-vue/index.ts';
 
 
@@ -37,6 +38,16 @@ const routes = [
     props: {},
     meta: { title: 'dev access - Silvernote' }
   },
+  { 
+    path: '/silveria', 
+    name: 'silveria', 
+    component: Chatbot,
+    props: {
+      visible: true,
+      fullscreen: true
+    },
+    meta: { title: 'silveria - Silvernote' }
+  },
 
   { 
     path: '/share/:uuid', 
@@ -51,7 +62,6 @@ const routes = [
     path: '/auth/sign',
     name: 'sign',
     component: signPage,
-    props: true,
     meta: { title: 'auth - Silvernote' }
   },
   { 

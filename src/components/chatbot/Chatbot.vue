@@ -1,11 +1,19 @@
 <template>
 
     <div
-        v-if="first_loaded"
+        class="fixed top-4 left-4"
+    >
+        <BackBtn />
+    </div>
+
+    <div
+        v-if="!fullscreen && first_loaded"
         v-tooltip="'SilverIA'"
         @click="open = !open" 
-        :class="!open ? 'bottom-6 right-6' : '-bottom-9 -right-9'"
-        class=" fixed  w-12 h-12 p-2 rounded-full cursor-pointer hover"
+        :class="[
+            !open ? 'bottom-6 right-6' : '-bottom-9 -right-9'
+        ]"
+        class="fixed w-12 h-12 p-2 rounded-full cursor-pointer hover"
         style="background: linear-gradient(135deg, #ff5e62 0%, var(--btn) 100%);"
     >
 
@@ -70,17 +78,20 @@
             v-if="open"
             class="dropdown flex flex-col justify-between"
             :class="
-                isPhone 
-                    ? 
-                        `
-                            fixed inset-0 p-0
-                            bg-(--bg2) z-50
-                        `
-                    :
-                        `
-                            fixed inset-y-0 right-0 group
-                            bg-(--bg2) z-50 m-6 p-0
-                        `
+                fullscreen 
+                    ? `fixed inset-x-(--mrl) inset-y-4
+                        z-50 bg-(--bg2) p-0`
+                    : isPhone 
+                        ?
+                            `
+                                fixed inset-0 p-0
+                                bg-(--bg2) z-50
+                            `
+                        :
+                            `
+                                fixed inset-y-0 right-0 group
+                                bg-(--bg2) z-50 m-6 p-0
+                            `
             "
         >
 
@@ -101,6 +112,7 @@
                     <span>v{{ silveria_version }}</span>
 
                     <div
+                        v-if="!fullscreen"
                         class="flex justify-center items-center gap-4"
                     >
 
@@ -195,16 +207,18 @@ import db from '@/assets/ts/database/database';
 import { api_url } from '@/assets/ts/backend_link';
 import type { Note } from '@/assets/ts/type';
 import { silveria_version } from '@/../package.json'
+import BackBtn from '../backBtn.vue';
 
 const props = defineProps<{
     visible?: boolean;
+    fullscreen?: boolean;
 }>()
 
 const { user } = useUser();
 const route = useRoute();
 
 const max_LenghtOfMessage: number = 50;
-const open = ref<boolean>(props?.visible || false);
+const open = ref<boolean>(props.visible || false);
 
 const loading = ref<boolean>(false);
 const first_loaded = ref<boolean>(false);
@@ -216,7 +230,7 @@ const user_id = ref<string | undefined>('');
 const silverIA_active = ref<boolean>(true);
 const pos = ref<'fixed' | 'relative'>('fixed');
 const messageInput = ref<HTMLTextAreaElement | null>(null)
-let isPhone: boolean = false;
+let isPhone: boolean = props.fullscreen || false;
 
 // Refs pour le scroll intelligent
 const messagesContainer = ref<HTMLElement | null>(null);
@@ -491,7 +505,7 @@ const Open = async (): Promise<void> => {
 
     await nextTick();
 
-    isPhone = document.body.classList.contains('phone');
+    isPhone = props.fullscreen || document.body.classList.contains('phone');
 
     if (route.query.chatbot) {
         open.value = true;

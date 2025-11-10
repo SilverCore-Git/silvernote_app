@@ -26,7 +26,7 @@
         </div>
 
         <div 
-          v-if="true"
+          v-if="route.name !== 'silveria'"
           class=" z-50 relative"
         >
           <Chatbot v-if="open_chatbot" />
