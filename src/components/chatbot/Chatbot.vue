@@ -1,6 +1,7 @@
 <template>
 
     <div
+        v-if="fullscreen"
         class="fixed top-4 left-4"
     >
         <BackBtn />
