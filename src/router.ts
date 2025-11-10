@@ -14,7 +14,6 @@ const routes = [
     path: '/', 
     name: 'Home', 
     component: Home,
-    props: {},
     meta: { title: 'Accueil - Silvernote' }
   },
   { 
@@ -28,14 +27,12 @@ const routes = [
     path: '/settings', 
     name: 'Settings', 
     component: Settings,
-    props: {},
     meta: { title: 'Settings - Silvernote' }
   },
   { 
     path: '/dev', 
     name: 'dev', 
     component: Dev,
-    props: {},
     meta: { title: 'dev access - Silvernote' }
   },
   { 
@@ -71,7 +68,6 @@ const routes = [
     path: '/auth/sso-callback',
     name: 'ssoCallback',
     component: ssoCallback,
-    props: true,
     meta: { title: 'auth - Silvernote' }
   }
 ]
