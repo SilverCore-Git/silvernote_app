@@ -106,8 +106,9 @@
                     style="background: linear-gradient(135deg, #ff5e62 0%, var(--btn) 100%);"
                 >
 
-                    <div class="flex justify-center items-center flex-row">
-                        <span class="font-bold mr-2 text-xl">SilverIA</span>
+                    <div class="flex justify-center items-center flex-row gap-2">
+                        <img src="../../assets/img/SilverIA.webp" class="w-10 h-10" />
+                        <span class="font-bold text-xl">SilverIA</span>
                         <div class="round" :class="silverIA_active ? 'green' : 'red'"></div>
                     </div>
                     <span>v{{ silveria_version }}</span>

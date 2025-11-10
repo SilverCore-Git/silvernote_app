@@ -46,7 +46,10 @@ const routes = [
       visible: true,
       fullscreen: true
     },
-    meta: { title: 'silveria - Silvernote' }
+    meta: { 
+      title: 'SilverIA',
+      favicon: '/assets/webp/SilverIA.webp'
+    }
   },
 
   { 
@@ -82,8 +85,9 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, _from, next) => {
+router.beforeEach((to: any, _from: any, next: any) => {
   const title = to.meta.title as string;
+  const favicon = to.meta.favicon as string;
 
   if (title) {
     document.title = title;
@@ -99,8 +103,20 @@ router.beforeEach((to, _from, next) => {
     }
   }
 
+  if (favicon) {
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.setAttribute('rel', 'icon');
+      document.head.appendChild(link);
+    }
+
+    link.setAttribute('href', favicon);
+  }
+
   next();
 });
+
 
 
 export default router
