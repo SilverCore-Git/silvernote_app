@@ -34,7 +34,8 @@ const handleOAuth = async (provider: 'google' | 'discord', isLoaded: boolean, si
             throw new Error('La popup a été bloquée. Veuillez autoriser les popups pour ce site.');
         }
         
-        const origin = window.location.origin;
+        let origin: string = window.location.origin;
+        if (origin.startsWith('file')) origin = 'silvernote:/'
         const redirectUrl = `${origin}/auth/sso-callback`;
         const redirectUrlComplete = route?.query?.redirectUrl 
             ? `${origin}${route.query.redirectUrl}` 
