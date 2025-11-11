@@ -44,21 +44,29 @@ async function create_main_window() {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false,
-      partition: "persist:silvernote", // ✅ cookies persistants pour Clerk
-      webSecurity: false,               // ✅ Google OAuth support
+      partition: "persist:silvernote",
+      webSecurity: false,
     },
   });
 
   const console = new Console(mainWindow);
   Menu.setApplicationMenu(null);
 
-  // ✅ Ouvrir les liens OAuth dans navigateur externe
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith("about:")) {
+      return { action: "allow" };
+    }
+
+    console.log(url)
+
     shell.openExternal(url);
     return { action: "deny" };
   });
 
-  // ✅ Charge ton build Vue
+  mainWindow.webContents.on("did-create-window", (childWindow) => {
+    childWindow.webContents.session = mainWindow.webContents.session;
+  });
+
   mainWindow.loadFile(path.join(__dirname, "dist/index.html"));
 
   console.log("Initialising shortcut...");

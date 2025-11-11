@@ -45,6 +45,7 @@
     <!-- preload -->
     <link rel="preload" as="image" href="./assets/webp/pin_plein.webp" />
     <link rel="preload" as="image" href="./assets/webp/pin_vide.webp" />
+    <link rel="preload" as="image" href="./assets/webp/SilverIA.webp" />
 
     <link rel="preload" as="image" href="./assets/svgs/ellipsis.svg" />
     <link rel="preload" as="image" href="./assets/svgs/moon.svg" />
@@ -70,18 +71,18 @@
     <style>
 
       * {
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+        scrollbar-color: var(--btn) var(--bg2);
       }
 
-      *::-webkit-scrollbar {
-        display: none;
+      *::-webkit-scrollbar-thumb {
+        background: var(--btn);
+        border-radius: 10px;
       }
 
       body {
         background-color: var(--bg);
         color: var(--text);
-        overflow-x: hidden;
+        overflow: hidden;
         font-family: 'Inter', sans-serif;
         transition: background-color 900ms;
         min-width: 370px;
@@ -93,103 +94,109 @@
         min-height: 500px;
       }
 
-    ._spinner {
-      position: relative;
-      width: 90px;
-      height: 90px;
-    }
-
-    .spiner {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      border: 4px solid transparent;
-    }
-
-    .spiner1 {
-      width: 40px;
-      height: 40px;
-      border-right-color: var(--btn);
-      animation: spinner-rotate 0.6s linear infinite;
-    }
-
-    .spiner2 {
-      width: 60px;
-      height: 60px;
-      border-right-color: var(--btn);
-      opacity: 0.9;
-      animation: spinner-rotate 1s linear infinite;
-      animation-delay: 0.3s;
-    }
-
-    .spiner3 {
-      width: 77px;
-      height: 77px;
-      border: 6px solid var(--btn);
-      border-right-color: transparent;
-      border-top-color: transparent;
-      opacity: 0.6;
-      animation: spinner-reverse 1.5s linear infinite;
-    }
-
-    .spiner4 {
-      border: 6px solid var(--btn);
-      animation: spinner-flash 3s ease-in-out infinite;
-    }
-
-    @keyframes spinner-rotate {
-      100% {
-        transform: translate(-50%, -50%) rotate(360deg);
+      ._spinner {
+        position: relative;
+        width: 90px;
+        height: 90px;
       }
-    }
 
-    @keyframes spinner-reverse {
-      100% {
-        transform: translate(-50%, -50%) rotate(-360deg);
+      .spiner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        border: 4px solid transparent;
       }
-    }
 
-    @keyframes spinner-flash {
-      0% {
-        width: 70px;
-        height: 70px;
-        opacity: 0;
+      .spiner1 {
+        width: 40px;
+        height: 40px;
+        border-right-color: #F28C28;
+        animation: spinner-rotate 0.6s linear infinite;
       }
-      5% {
-        opacity: 0;
+
+      .spiner2 {
+        width: 60px;
+        height: 60px;
+        border-right-color: #F28C28;
+        opacity: 0.9;
+        animation: spinner-rotate 1s linear infinite;
+        animation-delay: 0.3s;
       }
-      15% {
-        width: 97px;
-        height: 97px;
-        opacity: 1;
+
+      .spiner3 {
+        width: 77px;
+        height: 77px;
+        border: 6px solid #F28C28;
+        border-right-color: transparent;
+        border-top-color: transparent;
+        opacity: 0.6;
+        animation: spinner-reverse 1.5s linear infinite;
       }
-      30% {
-        width: 70px;
-        height: 70px;
-        opacity: 0.1;
+
+      .spiner4 {
+        border: 6px solid #F28C28;
+        animation: spinner-flash 3s ease-in-out infinite;
       }
-      100% {
-        width: 70px;
-        height: 70px;
-        opacity: 0;
+
+      @keyframes spinner-rotate {
+        100% {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
       }
-    }
+
+      @keyframes spinner-reverse {
+        100% {
+          transform: translate(-50%, -50%) rotate(-360deg);
+        }
+      }
+
+      @keyframes spinner-flash {
+        0% {
+          width: 70px;
+          height: 70px;
+          opacity: 0;
+        }
+        5% {
+          opacity: 0;
+        }
+        15% {
+          width: 97px;
+          height: 97px;
+          opacity: 1;
+        }
+        30% {
+          width: 70px;
+          height: 70px;
+          opacity: 0.1;
+        }
+        100% {
+          width: 70px;
+          height: 70px;
+          opacity: 0;
+        }
+      }
+
+      .centered-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
 
     </style>
 
 
-    <script type="module" crossorigin src="./assets/index-CRabg77N.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-CVdOe3wr.css">
+    <script type="module" crossorigin src="./assets/index-DOxjlzBu.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-YpjBFG2t.css">
   </head>
-
-  <!-- body managed by vite/vue -->
 
   <body>
 
     <div id="app">
-      <div class="flex flex-col justify-center items-center min-h-screen">
+      <div class="centered-container">
         <div class="_spinner">
           <div class="spiner spiner1"></div>
           <div class="spiner spiner2"></div>

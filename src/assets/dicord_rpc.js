@@ -11,11 +11,11 @@ module.exports = function initializeDiscordRPC() {
         if (!rpc) return;
 
         rpc.setActivity({
-            details: "App de prise de note simple et intuitive",
+            details: "Silvercore Inc.",
             state,
             startTimestamp,
             largeImageKey: "logo",
-            smallImageKey: state.endsWith('- Silvernote edit') ? 'pencil' : '',
+            smallImageKey: state.endsWith('- Silvernote edit') ? 'pencil' : 'none',
             buttons: [
                 { label: "Découvrir silvernote", url: "https://www.silvernote.fr" }
             ],
