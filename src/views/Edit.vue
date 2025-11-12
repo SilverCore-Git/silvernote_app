@@ -465,7 +465,7 @@ const change_pin_state = async (): Promise<void> => {
 };
 
 const update_title = () => {
-  document.title = `SilverNote - ${note.value.title}`;
+  document.title = `${note.value.title} - Silvernote edit`;
 }
 
 
@@ -697,6 +697,7 @@ const initNote = async () => {
     await nextTick();
 
     init_emoji_picker();
+    update_title();
 
   } catch (err) {
     console.error("Erreur lors de l'initialisation :", err);
@@ -706,6 +707,7 @@ const initNote = async () => {
 
 // Start
 onMounted(async () => await initNote());
+
 // if props in route change
 watch(() => route.params.id, async () => {
   loaded.value = false;

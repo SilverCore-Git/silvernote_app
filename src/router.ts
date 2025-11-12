@@ -5,6 +5,7 @@ import Edit from './views/Edit.vue';
 import Settings from './views/Settings/Settings.vue';
 import Dev from './views/Dev.vue';
 import Share from './views/Share.vue';
+import Chatbot from './components/chatbot/Chatbot.vue';
 import { signPage, ssoCallback } from './lib/silvernote-vue/index.ts';
 
 
@@ -13,29 +14,39 @@ const routes = [
     path: '/', 
     name: 'Home', 
     component: Home,
-    props: {},
-    meta: { title: 'SilverNote - Home' }
+    meta: { title: 'Accueil - Silvernote' }
   },
   { 
     path: '/edit/:id', 
     name: 'Edit', 
     component: Edit,
     props: true,
-    meta: { title: 'SilverNote - Edit' }
+    meta: { title: 'Silvernote' }
   },
   { 
     path: '/settings', 
     name: 'Settings', 
     component: Settings,
-    props: {},
-    meta: { title: 'SilverNote - Settings' }
+    meta: { title: 'Settings - Silvernote' }
   },
   { 
     path: '/dev', 
     name: 'dev', 
     component: Dev,
-    props: {},
-    meta: { title: 'SilverNote - dev access' }
+    meta: { title: 'dev access - Silvernote' }
+  },
+  { 
+    path: '/silveria', 
+    name: 'silveria', 
+    component: Chatbot,
+    props: {
+      visible: true,
+      fullscreen: true
+    },
+    meta: { 
+      title: 'SilverIA',
+      favicon: '/assets/webp/SilverIA.webp'
+    }
   },
 
   { 
@@ -43,7 +54,7 @@ const routes = [
     name: 'Share', 
     component: Share,
     props: true,
-    meta: { title: 'SilverNote - Partage' }
+    meta: { title: 'Partage - Silvernote' }
   },
 
   // auth
@@ -51,15 +62,13 @@ const routes = [
     path: '/auth/sign',
     name: 'sign',
     component: signPage,
-    props: true,
-    meta: { title: 'SilverNote - auth' }
+    meta: { title: 'auth - Silvernote' }
   },
   { 
     path: '/auth/sso-callback',
     name: 'ssoCallback',
     component: ssoCallback,
-    props: true,
-    meta: { title: 'SilverNote - auth' }
+    meta: { title: 'auth - Silvernote' }
   }
 ]
 
@@ -72,8 +81,9 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, _from, next) => {
+router.beforeEach((to: any, _from: any, next: any) => {
   const title = to.meta.title as string;
+  const favicon = to.meta.favicon as string;
 
   if (title) {
     document.title = title;
@@ -89,8 +99,20 @@ router.beforeEach((to, _from, next) => {
     }
   }
 
+  if (favicon) {
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.setAttribute('rel', 'icon');
+      document.head.appendChild(link);
+    }
+
+    link.setAttribute('href', favicon);
+  }
+
   next();
 });
+
 
 
 export default router

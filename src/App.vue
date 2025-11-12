@@ -1,12 +1,18 @@
 <template>
 
-  <div :class="mobile_class">
+  <div
+  class=" overflow-hidden"
+    :style="{
+      marginTop: mobile_config.active ? mobile_config.margin.top : 0,
+      marginBottom: mobile_config.active ? mobile_config.margin.bottom : 0,
+    }"
+  >
 
       <div class=" w-full h-full" :class="[ 'Edit', 'Share' ].includes(route.name as string) ? 'flex' : ''">
         
         <div 
           v-if="route.name == 'sign' || route.name == 'ssoCallback' || !loader && InitDB.isLoaded()"
-          class="flex-1 relative overflow-hidden"
+          class="flex-1 relative "
           :class="
                   [ 'Edit', 'Share' ].includes(route.name as string) && route.query.chatbot == 'relative' ? 
                     'mx-4'
@@ -20,7 +26,7 @@
         </div>
 
         <div 
-          v-if="true"
+          v-if="route.name !== 'silveria'"
           class=" z-50 relative"
         >
           <Chatbot v-if="open_chatbot" />
@@ -85,9 +91,6 @@ const { user, isLoaded } = useUser();
 const { isSignedIn } = useAuth()
 
 const is_offline = ref<boolean>(false);
-const mobile_class = mobile_config.active 
-                        ? `mt-[${mobile_config.margin.top}] mb-[${mobile_config.margin.bottom}]`
-                        : "";
 
 
 onMounted(async () => {
