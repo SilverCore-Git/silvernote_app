@@ -7,16 +7,27 @@ const create_update_window = require('./windows/update/updateWindow');
 
 app.whenReady().then(async () => {
 
-  const { setActivity } = initializeDiscordRPC();
+  const { rpc, setActivity } = initializeDiscordRPC();
+
+  rpc.on('ready', () => {
+    rpc.setActivity({ state: 'Loading' });
+  });
+  
+  let mainWindow;
 
   if (isOnline()) 
   {
-    create_update_window();
+    const { window } = create_update_window();
+    mainWindow = window;
   }
   else 
   {
     create_main_window();
   }
+
+  mainWindow.on('page-title-updated', (event, title) => {
+      setActivity(title);
+  });
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) create_main_window();

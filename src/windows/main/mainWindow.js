@@ -26,4 +26,6 @@ module.exports = async function create_main_window()
         }
     });
 
+    return { window }
+
 }

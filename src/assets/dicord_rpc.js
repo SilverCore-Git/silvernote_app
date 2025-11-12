@@ -29,6 +29,6 @@ module.exports = function initializeDiscordRPC() {
 
     rpc.login({ clientId }).catch(console.error);
 
-    return { setActivity };
+    return rpc;
 
 }
