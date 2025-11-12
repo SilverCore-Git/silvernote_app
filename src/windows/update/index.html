@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mise à jour - Silvernote</title>
+  <style>
+
+    :root {
+      --primary: #f28c28;
+      --bg-gradient: linear-gradient(135deg, #2A2420 0%, #3A322D 100%);
+      --text-color: #f5f5f5;
+      --glass: #3A322D;
+      --blur: 12px;
+      --font: "Inter", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 300px;
+      height: 400px;
+      background: var(--bg-gradient);
+      color: var(--text-color);
+      font-family: var(--font);
+      overflow: hidden;
+    }
+
+    .update-card {
+      height: 100%;
+      width: 100%;
+      padding-top: 1em;
+      padding-bottom: 1em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: column;
+      background: var(--glass);
+      backdrop-filter: blur(var(--blur));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      animation: fadeIn 1s ease forwards;
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 1.4rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    ._spinner {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      margin: 0 auto;
+    }
+
+    .spiner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      border: 4px solid transparent;
+    }
+
+    .spiner1 {
+      width: 40px;
+      height: 40px;
+      border-right-color: var(--primary);
+      animation: spinner-rotate 0.6s linear infinite;
+    }
+
+    .spiner2 {
+      width: 60px;
+      height: 60px;
+      border-right-color: var(--primary);
+      opacity: 0.9;
+      animation: spinner-rotate 1s linear infinite;
+      animation-delay: 0.3s;
+    }
+
+    .spiner3 {
+      width: 77px;
+      height: 77px;
+      border: 6px solid var(--primary);
+      border-right-color: transparent;
+      border-top-color: transparent;
+      opacity: 0.6;
+      animation: spinner-reverse 1.5s linear infinite;
+    }
+
+    .spiner4 {
+      border: 6px solid var(--primary);
+      animation: spinner-flash 3s ease-in-out infinite;
+    }
+
+    .status {
+      margin-top: 25px;
+      font-size: 0.95rem;
+      letter-spacing: 0.3px;
+      color: #ccc;
+      animation: pulseText 3s ease-in-out infinite;
+    }
+
+    @keyframes spinner-rotate {
+      100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    @keyframes spinner-reverse {
+      100% {
+        transform: translate(-50%, -50%) rotate(-360deg);
+      }
+    }
+
+    @keyframes spinner-flash {
+      0% {
+        width: 70px;
+        height: 70px;
+        opacity: 0;
+      }
+      5% {
+        opacity: 0;
+      }
+      15% {
+        width: 97px;
+        height: 97px;
+        opacity: 1;
+      }
+      30% {
+        width: 70px;
+        height: 70px;
+        opacity: 0.1;
+      }
+      100% {
+        width: 70px;
+        height: 70px;
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulseText {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="update-card">
+    <h1>Mise à jour de Silvernote...</h1>
+    <div class="_spinner">
+      <div class="spiner spiner1"></div>
+      <div class="spiner spiner2"></div>
+      <div class="spiner spiner3"></div>
+      <div class="spiner spiner4"></div>
+    </div>
+    <p class="status">Vérification des mises à jour en cours...</p>
+  </div>
+</body>
+</html>
