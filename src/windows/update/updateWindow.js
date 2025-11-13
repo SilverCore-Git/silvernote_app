@@ -1,74 +1,73 @@
 const { BrowserWindow, globalShortcut } = require("electron");
-const create_main_window = require('../main/mainWindow');
+const path = require("path");
 const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
-const path = require("path");
+const create_main_window = require("../main/mainWindow");
 
+module.exports = function create_update_window() {
 
-module.exports = function create_update_window() 
-{
-        
-    const win = new BrowserWindow({
-        width: 300,
-        height: 400,
-        frame: false,
-        resizable: false,
-        maximizable: false,
-        fullscreenable: false,
-        title: 'Mise à jour - Silvernote',
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: true,
-        },
-    });
+    return new Promise((resolve, reject) => {
 
-    globalShortcut.register('CommandOrControl+Shift+I+U', () => {
-        if (win) {
-            win.webContents.openDevTools({ mode: 'detach' });
-        }
-    });
+        const win = new BrowserWindow({
+            width: 300,
+            height: 400,
+            frame: false,
+            resizable: false,
+            maximizable: false,
+            fullscreenable: false,
+            title: 'Mise à jour - Silvernote',
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: true,
+            },
+        });
 
-    win.loadFile(path.join(__dirname, './index.html'));
+        globalShortcut.register('CommandOrControl+Shift+I+U', () => {
+            if (win) {
+                win.webContents.openDevTools({ mode: 'detach' });
+            }
+        });
 
-    autoUpdater.logger = log;
-    autoUpdater.logger.transports.file.level = 'info';
-    autoUpdater.checkForUpdates();
+        win.loadFile(path.join(__dirname, './index.html'));
 
-    let update = false;
+        autoUpdater.logger = log;
+        autoUpdater.logger.transports.file.level = 'info';
+        autoUpdater.checkForUpdates();
 
-    autoUpdater.on('checking-for-update', () => {
-        console.log('Checking for update...');
-    });
+        let update = false;
 
-    autoUpdater.on('update-available', () => {
-        console.log('Downloading update...');
-        update = true;
-    });
+        autoUpdater.once('checking-for-update', () => console.log('Checking for update...'));
+        autoUpdater.once('update-available', () => {
+            console.log('Downloading update...');
+            update = true;
+        });
 
-    autoUpdater.on('update-not-available', () => {
-        win.close();
-        create_main_window();
-    });
+        autoUpdater.once('update-not-available', () => {
+            win.close();
+            const mainWin = create_main_window();
+            resolve(mainWin);
+        });
 
-    autoUpdater.on('error', () => {
-        create_main_window();
+        autoUpdater.once('error', (err) => {
+            console.error('Update error:', err);
+            const mainWin = create_main_window();
+            win.close();
+            resolve(mainWin);
+        });
+
+        autoUpdater.once('update-downloaded', () => {
+            autoUpdater.quitAndInstall();
+        });
+
         setTimeout(() => {
-            win.close();
-        }, 1000);
+            if (!update && win && !win.isDestroyed() && win.isVisible()) {
+                console.error('update timeout => close window');
+                win.close();
+                const mainWin = create_main_window();
+                resolve(mainWin);
+            }
+        }, 5 * 1000);
+
     });
-
-    autoUpdater.on('update-downloaded', () => {
-        autoUpdater.quitAndInstall();
-    });
-
-    setTimeout(() => {
-        if (!update && win && !win.isDestroyed() && win.isVisible()) {
-            console.error('update timeout => close window');
-            win.close();
-            create_main_window();
-        }
-    }, 30 * 1000);
-
-    return { window: win };
-
-}
+    
+};
