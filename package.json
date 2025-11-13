@@ -1,7 +1,7 @@
 {
   "name": "silvernote",
   "productName": "Silvernote",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Silvernote",
   "main": "src/app.js",
   "scripts": {
@@ -42,7 +42,8 @@
       {
         "provider": "github",
         "owner": "SilverCore-Git",
-        "repo": "silvernote"
+        "repo": "silvernote_app",
+        "private": false
       }
     ],
     "directories": {

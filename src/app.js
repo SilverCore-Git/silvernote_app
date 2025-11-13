@@ -24,7 +24,7 @@ app.whenReady().then(async () => {
   setActivity('Loading');
 
   mainWindow.on('page-title-updated', (event, title) => {
-      setActivity(title);
+    setActivity(title);
   });
 
   app.on('activate', () => {
