@@ -1,31 +1,43 @@
 const { BrowserWindow, Menu, globalShortcut } = require("electron");
 const Console = require("../../assets/logger");
 
-module.exports = async function create_main_window() 
-{
-        
-    const window = new BrowserWindow({
+module.exports = function create_main_window() {
+  return new Promise((resolve, reject) => {
+    try {
+      const window = new BrowserWindow({
         width: 800,
         height: 600,
         frame: true,
         webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: true,
-            disableHardwareAcceleration: true,
+          nodeIntegration: true,
+          contextIsolation: true,
+          disableHardwareAcceleration: true,
         },
-    });
+        show: false,
+      });
 
-    new Console(window);
-    Menu.setApplicationMenu(null);
+      new Console(window);
 
-    window.loadURL('https://app.silvernote.fr');
+      Menu.setApplicationMenu(null);
 
-    globalShortcut.register('CommandOrControl+Shift+I', () => {
+      window.loadURL("https://app.silvernote.fr");
+
+      globalShortcut.register("CommandOrControl+Shift+I", () => {
         if (window) {
-            window.webContents.openDevTools({ mode: 'detach' });
+          window.webContents.openDevTools({ mode: "detach" });
         }
-    });
+      });
 
-    return { window }
+      window.once("ready-to-show", () => {
+        window.show();
+        resolve({ window });
+      });
 
-}
+      window.webContents.on("did-fail-load", (event, errorCode, errorDescription) => {
+        reject(new Error(`Erreur de chargement de la fenêtre : ${errorDescription} (${errorCode})`));
+      });
+    } catch (err) {
+      reject(err);
+    }
+  });
+};

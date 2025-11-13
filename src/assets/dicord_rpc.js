@@ -4,31 +4,40 @@ const clientId = '1390336653125484555';
 
 module.exports = function initializeDiscordRPC() {
 
-    const rpc = new RPC.Client({ transport: "ipc" });
-    const startTimestamp = Date.now();
+    return new Promise((resolve, reject) => {
 
-    async function setActivity(state = "Accueil") {
-        if (!rpc) return;
+        console.log('Init RPC')
+        const rpc = new RPC.Client({ transport: "ipc" });
+        const startTimestamp = Date.now();
 
-        rpc.setActivity({
-            details: "Silvercore Inc.",
-            state,
-            startTimestamp,
-            largeImageKey: "logo",
-            smallImageKey: state.endsWith('- Silvernote edit') ? 'pencil' : 'none',
-            buttons: [
-                { label: "Découvrir silvernote", url: "https://www.silvernote.fr" }
-            ],
-            instance: false,
+        rpc.on("ready", () => {
+
+            function setActivity (state) 
+            {
+
+                rpc.setActivity({
+                    details: "Silvercore Inc.",
+                    state,
+                    startTimestamp,
+                    largeImageKey: "logo",
+                    smallImageKey: state.endsWith('- Silvernote edit') ? 'pencil' : 'none' || 'none',
+                    buttons: [
+                        { label: "Découvrir silvernote", url: "https://www.silvernote.fr" }
+                    ],
+                    instance: false,
+                });
+
+            }
+
+            console.log('RPC OK')
+            resolve({ rpc, setActivity })
         });
-    }
 
-    rpc.on("ready", () => {
-        setActivity();
+        rpc.login({ clientId }).catch((err) => {
+            console.error("❌ Erreur de connexion RPC :", err);
+            reject(err);
+        });
+
     });
-
-    rpc.login({ clientId }).catch(console.error);
-
-    return rpc;
 
 }
