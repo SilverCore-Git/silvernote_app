@@ -1,0 +1,77 @@
+{
+
+    "logo": "/assets/path/to/logo",
+    "title": "Silvercore",
+    "description": "SilverCore vous offre des services de divertissement et utilitaires originaux, respectueux de votre vie privée et accessibles à tous.",
+
+    "social": [
+        {
+            "icon": "bi-icon",
+            "href": "Discord"
+        },
+        {
+            "icon": "bi-icon",
+            "href": "Discord"
+        },
+        {
+            "icon": "bi-icon",
+            "href": "Discord"
+        }
+    ],
+
+
+    "categories": [
+
+        {
+            "title": "Information",
+            "content": [
+                {
+                    "name": "Confidentialité",
+                    "href": "https://d.d/d"
+                },
+                {
+                    "name": "Mentions legales",
+                    "href": "https://d.d/d"
+                }
+            ]
+        },
+
+        {
+            "title": "Contact",
+            "content": [
+                {
+                    "name": "Formulaire",
+                    "href": "https://d.d/d"
+                },
+                {
+                    "name": "Discord silvercore",
+                    "href": "https://d.d/d"
+                },
+                {
+                    "name": "Discord support",
+                    "href": "https://d.d/d"
+                }
+            ]
+        },
+
+        {
+            "title": "Nos services",
+            "content": [
+                {
+                    "name": "SilverIA",
+                    "href": "https://app.silvernote.fr/silveria"
+                },
+                {
+                    "name": "Silvernote",
+                    "href": "https://wwww.silvernote.fr"
+                },
+                {
+                    "name": "Silvertransfert",
+                    "href": "https://www.silvertransfert.fr"
+                }
+            ]
+        }
+
+    ]
+
+}

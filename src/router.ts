@@ -1,60 +1,24 @@
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
-
+import { createRouter, createWebHistory } from 'vue-router';
 import Home from './views/Home/Home.vue';
-import Edit from './views/Edit.vue';
-import Settings from './views/Settings.vue';
-import Dev from './views/Dev.vue';
-import Share from './views/Share.vue';
+
 
 const routes = [
   { 
     path: '/', 
     name: 'Home', 
     component: Home,
-    props: {},
-    meta: { title: 'SilverNote - Home' }
-  },
-  { 
-    path: '/edit/:id', 
-    name: 'Edit', 
-    component: Edit,
-    props: true,
-    meta: { title: 'SilverNote - Edit' }
-  },
-  { 
-    path: '/settings', 
-    name: 'Settings', 
-    component: Settings,
-    props: {},
-    meta: { title: 'SilverNote - Settings' }
-  },
-  { 
-    path: '/dev', 
-    name: 'dev', 
-    component: Dev,
-    props: {},
-    meta: { title: 'SilverNote - dev access' }
-  },
-
-  { 
-    path: '/share/:uuid', 
-    name: 'share', 
-    component: Share,
-    props: true,
-    meta: { title: 'SilverNote - Partage' }
+    meta: { title: 'Accueil - Silvercore' }
   }
 ]
 
-const isFileProtocol = window.location.protocol === 'file:'
+
 
 const router = createRouter({
-  history: isFileProtocol
-    ? createWebHashHistory(import.meta.env.BASE_URL)  // pour Electron local
-    : createWebHistory(import.meta.env.BASE_URL),    // pour Web/Express
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
 
-router.beforeEach((to, _from, next) => {
+router.beforeEach((to: any, _from: any, next: any) => {
   const title = to.meta.title as string;
 
   if (title) {
@@ -73,6 +37,7 @@ router.beforeEach((to, _from, next) => {
 
   next();
 });
+
 
 
 export default router

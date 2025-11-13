@@ -1,0 +1,30 @@
+{
+
+    "logo": "/assets/path/to/logo",
+    "title": "Silvercore",
+
+    "tab": [
+        {
+            "name": "Accueil",
+            "href": "#hero"
+        },
+        {
+            "name": "Services",
+            "href": "#services"
+        },
+        {
+            "name": "Politiques",
+            "href": "#politiques"
+        },
+        {
+            "name": "Contact",
+            "href": "#contact"
+        }
+    ],
+
+    "btn": {
+        "content": "Contact",
+        "href": "/contact"
+    }
+
+}

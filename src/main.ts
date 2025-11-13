@@ -1,22 +1,38 @@
-import { createApp } from 'vue';
-import App from './App.vue';
-import router from './router.ts';
-import { clerkPlugin } from '@clerk/vue';
-import pkg from '../package.json' assert { type: 'json' };
-
-
+import { createApp } from 'vue'
 import './style.css'
+import App from './App.vue'
+import router from './router';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
-const PUBLISHABLE_KEY = pkg.dev
-  ? import.meta.env.VITE_CLERK_TEST_PUBLISHABLE_KEY
-  : import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+const app = createApp(App);
 
-if (!PUBLISHABLE_KEY) {
-  throw new Error('Add your Clerk Publishable Key to the .env file')
-}
+app.directive("fade", {
+    beforeMount(el) {
+        // état initial invisible
+        el.style.opacity = 0;
+        el.style.transform = "translateY(100px)";
+        el.style.transition = "opacity 1s ease, transform .6s ease";
+    },
+    mounted(el) {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        el.style.opacity = 1;
+                        el.style.transform = "translateY(0)";
+                        observer.unobserve(el);
+                    }
+                });
+            },
+            {
+                threshold: 0.2
+            }
+        );
 
-const app = createApp(App)
+        observer.observe(el);
+    }
+});
 
 app.use(router);
-app.use(clerkPlugin, { publishableKey: PUBLISHABLE_KEY });
-app.mount('#app');
+
+app.mount('#app')
