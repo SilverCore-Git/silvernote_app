@@ -69,4 +69,6 @@ module.exports = function create_update_window()
         }
     }, 30 * 1000);
 
+    return { window: win };
+
 }

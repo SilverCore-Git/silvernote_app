@@ -1,7 +1,7 @@
 {
   "name": "silvernote",
   "productName": "Silvernote",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Silvernote",
   "main": "src/app.js",
   "scripts": {

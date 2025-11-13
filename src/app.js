@@ -10,7 +10,8 @@ app.whenReady().then(async () => {
 
   if (isOnline()) 
   {
-    create_update_window();
+    const { window } = await create_update_window();
+    mainWindow = window;
   }
   else 
   {
@@ -20,18 +21,11 @@ app.whenReady().then(async () => {
 
   const { setActivity } = await initializeDiscordRPC();
 
-  setActivity('Silvernote');
+  setActivity('Loading');
 
-  const interval = setInterval(() => {
-    if (mainWindow) {
-      mainWindow.on('page-title-updated', (event, title) => {
-          setActivity(title);
-      });
-      clearInterval(interval);
-      return;
-    }
-  }, 200);
-
+  mainWindow.on('page-title-updated', (event, title) => {
+      setActivity(title);
+  });
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) create_main_window();
