@@ -107,7 +107,11 @@ class InitDB {
     private async init_cloud_notes (): Promise<void> 
     {
         const data = await fetch(`${api_url}/api/db/get/user/notes?user_id=${this.user?.value?.id}`, {
-            credentials: 'include'
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+            }
         }).then(res => res.json());
         if (data) {
             await db.add_notes(data.notes, false);
@@ -117,7 +121,11 @@ class InitDB {
     private async init_cloud_tags (): Promise<void> 
     {
         const data = await fetch(`${api_url}/api/db/get/user/tags?user_id=${this.user?.value?.id}`, {
-            credentials: 'include'
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+            }
         }).then(res => res.json());
         if (data) {
             await db.add_tags(data.tags, false);
@@ -128,6 +136,10 @@ class InitDB {
     {
         const res = await fetch(`${api_url}/api/share/for/me`, {
             credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+            }
         }).then(res => res.json());
 
         if (res.error) {
@@ -154,10 +166,11 @@ class InitDB {
 
         const res = await fetch(`${api_url}/api/db/verify/data`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
             credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+            },
             body: JSON.stringify({ 
                 notes: notes_hash, 
                 tags: tags_hash
