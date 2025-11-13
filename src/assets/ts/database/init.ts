@@ -106,8 +106,9 @@ class InitDB {
 
     private async init_cloud_notes (): Promise<void> 
     {
-        const data = await fetch(`${api_url}/api/db/get/user/notes?user_id=${this.user?.value?.id}`)
-                        .then(res => res.json());
+        const data = await fetch(`${api_url}/api/db/get/user/notes?user_id=${this.user?.value?.id}`, {
+            credentials: 'include'
+        }).then(res => res.json());
         if (data) {
             await db.add_notes(data.notes, false);
         }
@@ -115,8 +116,9 @@ class InitDB {
 
     private async init_cloud_tags (): Promise<void> 
     {
-        const data = await fetch(`${api_url}/api/db/get/user/tags?user_id=${this.user?.value?.id}`)
-                        .then(res => res.json());
+        const data = await fetch(`${api_url}/api/db/get/user/tags?user_id=${this.user?.value?.id}`, {
+            credentials: 'include'
+        }).then(res => res.json());
         if (data) {
             await db.add_tags(data.tags, false);
         }
