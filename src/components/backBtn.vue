@@ -1,6 +1,7 @@
 <template>
   <div 
-    class="left-arrow absolute left-0 cursor-pointer" 
+    class="left-arrow absolute left-0 cursor-pointer z-50" 
+    :class="white ? 'white' : ''"
     @click="goBack"
   ></div>
 </template>
@@ -10,13 +11,15 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
+defineProps<{
+  white?: boolean;
+}>();
+
 const goBack = () => {
-  // Si l'historique est plus long que 1, on peut reculer
   if (window.history.length > 1) {
     router.back();
   } else {
-    // Sinon on redirige vers la route par défaut de l'app
-    router.push({ name: 'Home' }); // Remplace 'Home' par ta route par défaut
+    router.push({ name: 'Home' });
   }
 };
 </script>

@@ -35,11 +35,15 @@ h1, h2, h3, h4, h5, h6 {
   background-position: center;
   cursor: pointer;
   transition: all .2s;
+  background-image: url('./assets/svgs/left_arrow.svg');
 }
 
-.left-arrow {
-  background-image: url('./assets/svgs/left_arrow.svg');
+.left-arrow:not(.white) {
   filter: brightness(0) saturate(100%) invert(55%) sepia(65%) saturate(538%) hue-rotate(343deg) brightness(98%) contrast(98%);
+}
+
+.white {
+  filter: invert(1);
 }
 
 .left-arrow:hover {
