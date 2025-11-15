@@ -33,14 +33,17 @@ body:not(.phone) .phone-show-flex {
 body.xsdesktop {
   --mrl: 24vw;
   --mlr: 0;
+  --mt: 0;
 }
 
 body.lgdesktop {
   --mrl: 18%;
   --mlr: 18%;
+  --mt: 0;
 }
 
 body.xldesktop {
   --mrl: 22%;
   --mlr: 22%;
+  --mt: 0;
 }

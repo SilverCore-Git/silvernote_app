@@ -1,14 +1,13 @@
 <template>
 
   <div
-  class=" overflow-hidden"
     :style="{
       marginTop: mobile_config.active ? mobile_config.margin.top : 0,
       marginBottom: mobile_config.active ? mobile_config.margin.bottom : 0,
     }"
   >
 
-      <div class=" w-full h-full" :class="[ 'Edit', 'Share' ].includes(route.name as string) ? 'flex' : ''">
+      <div :class="[ 'Edit', 'Share' ].includes(route.name as string) ? 'flex' : ''">
         
         <div 
           v-if="route.name == 'sign' || route.name == 'ssoCallback' || !loader && InitDB.isLoaded()"
@@ -17,7 +16,7 @@
                   [ 'Edit', 'Share' ].includes(route.name as string) && route.query.chatbot == 'relative' ? 
                     'mx-4'
                     : route.name == 'Home' 
-                        ? 'mt-(--mt) mr-(--mlr) ml-(--mrl)' 
+                        ? 'mt-(--mt) mr-(--mlr) ml-(--mrl) ' 
                         : route.name == 'sign' 
                             ? ''
                             : 'mr-(--mlr) ml-(--mrl)'"
@@ -165,7 +164,7 @@ const updateBodyClass = () => {
   body.classList.remove("lgdesktop", "xldesktop", "xsdesktop", "xxsdesktop", "phone");
   if (screen_w.value >= 1700) body.classList.add("xldesktop");
   else if (screen_w.value >= 1400) body.classList.add("lgdesktop");
-  else if (screen_w.value >= 1072) body.classList.add("xsdesktop");
+  else if (screen_w.value >= 1024) body.classList.add("xsdesktop");
   else body.classList.add("phone");
 };
 

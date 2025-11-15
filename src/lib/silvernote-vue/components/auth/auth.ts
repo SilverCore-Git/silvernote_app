@@ -34,11 +34,9 @@ const handleOAuth = async (provider: 'google' | 'discord', isLoaded: boolean, si
             throw new Error('La popup a été bloquée. Veuillez autoriser les popups pour ce site.');
         }
         
-        const origin = window.location.protocol === 'file:' ? 'silvernote://' : window.location.origin;
-        const redirectUrl = `${origin}auth/sso-callback`;
-        const redirectUrlComplete = route?.query?.redirectUrl 
-            ? `${origin}${route.query.redirectUrl}` 
-            : `${origin}/`;
+        const origin = window.location.origin;
+        const redirectUrl = `${origin}/auth/sso-callback`;
+        const redirectUrlComplete = route?.query?.redirectUrl || '/';
         
         console.log('Redirect URLs:', {
             redirectUrl,

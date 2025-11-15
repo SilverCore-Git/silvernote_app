@@ -1,15 +1,15 @@
 <template>
 
   <ToolsMenu
-      class="editor-container" 
+      class="editor-container h-full overflow-hidden" 
       @click="focusEditor"
   >
 
-    <div class="overflow-hidden">
+    <div class="h-full">
       <EditorContent
         v-if="editor && !loader"
         :editor="editor as Editor"
-        class="prose"
+        class="prose h-full mb-20"
       />
       <div v-else class="animate-pulse bg-gray-300 h-80 w-full rounded-xl"></div>
     </div>

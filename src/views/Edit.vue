@@ -145,8 +145,10 @@
   <section 
     v-if="loaded" 
     @click="if_open_dropdown = false"
-    class="flex flex-col justify-start items-center h-full mx-auto
-          mt-18 overflow-x-hidden overflow-y-scroll max-w-3xl"
+    class="
+            flex flex-col justify-start items-center
+            mt-18 overflow-y-scroll max-w-3xl mx-auto
+          "
   >
 
     <div 
