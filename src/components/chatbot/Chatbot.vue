@@ -2,7 +2,7 @@
 
     <div
         v-if="fullscreen"
-        class="fixed top-4 left-4"
+        class="fixed top-4 left-4 z-50"
     >
         <BackBtn />
     </div>
@@ -106,6 +106,13 @@
                     style="background: linear-gradient(135deg, #ff5e62 0%, var(--btn) 100%);"
                 >
 
+                    <div
+                        v-if="fullscreen && isPhone"
+                        class="flex justify-center items-center relative"
+                    >
+                        <BackBtn :white="true" />
+                    </div>
+
                     <div class="flex justify-center items-center flex-row gap-2">
                         <img src="../../assets/img/SilverIA.webp" class="w-10 h-10" />
                         <span class="font-bold text-xl">SilverIA</span>
@@ -115,9 +122,10 @@
 
                     <div
                         v-if="!fullscreen"
-                        class="flex justify-center items-center gap-4"
+                        class="flex justify-center items-center gap-2"
                     >
 
+                        <div class="svg open-anyware w-6 h-6 cursor-pointer" @click="router.push('/silveria')"></div>
                         <div class="svg cross w-10 h-10 cursor-pointer" @click="open = false"></div>
 
                     </div>
@@ -202,7 +210,7 @@
 <script lang="ts" setup>
 
 import { nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import MessageDubble from './MessageDubble.vue';
 import { useUser } from '@clerk/vue';
 import db from '@/assets/ts/database/database';
@@ -218,8 +226,9 @@ const props = defineProps<{
 
 const { user } = useUser();
 const route = useRoute();
+const router = useRouter();
 
-const max_LenghtOfMessage: number = 50;
+const max_LenghtOfMessage: number = 130000;
 const open = ref<boolean>(props.visible || false);
 
 const loading = ref<boolean>(false);
@@ -232,7 +241,12 @@ const user_id = ref<string | undefined>('');
 const silverIA_active = ref<boolean>(true);
 const pos = ref<'fixed' | 'relative'>('fixed');
 const messageInput = ref<HTMLTextAreaElement | null>(null)
-let isPhone: boolean = props.fullscreen || false;
+const isPhone = ref<boolean>(props.fullscreen || false);
+const screen_w = ref<number>(window.innerWidth);
+
+const updateSize = () => {
+  screen_w.value = window.innerWidth;
+};
 
 // Refs pour le scroll intelligent
 const messagesContainer = ref<HTMLElement | null>(null);
@@ -507,7 +521,7 @@ const Open = async (): Promise<void> => {
 
     await nextTick();
 
-    isPhone = props.fullscreen || document.body.classList.contains('phone');
+    isPhone.value = props.fullscreen || document.body.classList.contains('phone');
 
     if (route.query.chatbot) {
         open.value = true;
@@ -544,15 +558,26 @@ const Open = async (): Promise<void> => {
 
 }
 
-watch(() => route.query.aiquery, () => {
-    if (route.query.aiquery && route.query.aiquery !== '') {
-        add_message(String(route.query.aiquery));
-    }
+
+
+window.addEventListener("resize", updateSize);
+
+onUnmounted(() => {
+  window.removeEventListener("resize", updateSize);
 });
+
 
 onUnmounted(() => close());
 onMounted(() => {
     Open();
+});
+
+
+
+watch(() => route.query.aiquery, () => {
+    if (route.query.aiquery && route.query.aiquery !== '') {
+        add_message(String(route.query.aiquery));
+    }
 });
 
 watch(() => route.query.chatbot, () => {
@@ -566,6 +591,7 @@ watch(() => route.query.chatbot, () => {
         open.value = true;
     }
 })
+
 watch(() => open.value, async () => {
     await nextTick(() => {
         console.log('Initializing resize...');
@@ -576,11 +602,16 @@ watch(() => open.value, async () => {
         }
     });
 })
+
 watch(() => route.name, () => {
     if (![ 'Edit', 'Share' ].includes(route.name as string))
     {
         pos.value = 'fixed';
     }
+})
+
+watch(screen_w, () => {
+    isPhone.value = props.fullscreen || document.body.classList.contains('phone');
 })
 
 </script>
@@ -605,6 +636,11 @@ watch(() => route.name, () => {
 
 .cross {
     background-image: url('../../assets/svgs/cross.svg');
+    filter: invert(1);
+}
+
+.open-anyware {
+    background-image: url('../../assets/svgs/open-in-new.svg');
     filter: invert(1);
 }
 

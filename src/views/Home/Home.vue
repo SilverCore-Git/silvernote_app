@@ -1,7 +1,7 @@
 
 <template>
 
-    <Navbar>
+    <Navbar >
 
         <a class="p-1.5" v-tooltip.bottom="'Recharger'">
             <div
@@ -18,10 +18,10 @@
 
     </Navbar>
     
-    <div class="p-6 flex flex-col h-screen overflow-hidden w-full">
+    <div class="p-6 flex flex-col max-h-screen lg:h-screen h-[90vh] overflow-hidden w-full">
 
         <div 
-            class=" flex flex-col flex-shrink-0 mb-4
+            class=" flex flex-col flex-shrink-0 mb-4 
                     justify-center items-start gap-4 w-full"
         >
 
@@ -102,7 +102,7 @@
 
         <div 
             class="flex-1 overflow-y-auto overflow-x-hidden h-full
-                    p-4 pt-0 pb-60 max-w-5xl shadow-inner rounded-2xl" 
+                    p-2 pt-0 pb-60 max-w-5xl shadow-inner rounded-2xl" 
         >
 
             <div 

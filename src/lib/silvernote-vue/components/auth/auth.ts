@@ -36,9 +36,7 @@ const handleOAuth = async (provider: 'google' | 'discord', isLoaded: boolean, si
         
         const origin = window.location.origin;
         const redirectUrl = `${origin}/auth/sso-callback`;
-        const redirectUrlComplete = route?.query?.redirectUrl 
-            ? `${origin}${route.query.redirectUrl}` 
-            : `${origin}/`;
+        const redirectUrlComplete = route?.query?.redirectUrl || '/';
         
         console.log('Redirect URLs:', {
             redirectUrl,
