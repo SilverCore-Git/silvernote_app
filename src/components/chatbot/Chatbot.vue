@@ -219,7 +219,7 @@ const props = defineProps<{
 const { user } = useUser();
 const route = useRoute();
 
-const max_LenghtOfMessage: number = 50;
+const max_LenghtOfMessage: number = 130000;
 const open = ref<boolean>(props.visible || false);
 
 const loading = ref<boolean>(false);
@@ -232,7 +232,12 @@ const user_id = ref<string | undefined>('');
 const silverIA_active = ref<boolean>(true);
 const pos = ref<'fixed' | 'relative'>('fixed');
 const messageInput = ref<HTMLTextAreaElement | null>(null)
-let isPhone: boolean = props.fullscreen || false;
+const isPhone = ref<boolean>(props.fullscreen || false);
+const screen_w = ref<number>(window.innerWidth);
+
+const updateSize = () => {
+  screen_w.value = window.innerWidth;
+};
 
 // Refs pour le scroll intelligent
 const messagesContainer = ref<HTMLElement | null>(null);
@@ -507,7 +512,7 @@ const Open = async (): Promise<void> => {
 
     await nextTick();
 
-    isPhone = props.fullscreen || document.body.classList.contains('phone');
+    isPhone.value = props.fullscreen || document.body.classList.contains('phone');
 
     if (route.query.chatbot) {
         open.value = true;
@@ -544,15 +549,26 @@ const Open = async (): Promise<void> => {
 
 }
 
-watch(() => route.query.aiquery, () => {
-    if (route.query.aiquery && route.query.aiquery !== '') {
-        add_message(String(route.query.aiquery));
-    }
+
+
+window.addEventListener("resize", updateSize);
+
+onUnmounted(() => {
+  window.removeEventListener("resize", updateSize);
 });
+
 
 onUnmounted(() => close());
 onMounted(() => {
     Open();
+});
+
+
+
+watch(() => route.query.aiquery, () => {
+    if (route.query.aiquery && route.query.aiquery !== '') {
+        add_message(String(route.query.aiquery));
+    }
 });
 
 watch(() => route.query.chatbot, () => {
@@ -566,6 +582,7 @@ watch(() => route.query.chatbot, () => {
         open.value = true;
     }
 })
+
 watch(() => open.value, async () => {
     await nextTick(() => {
         console.log('Initializing resize...');
@@ -576,11 +593,16 @@ watch(() => open.value, async () => {
         }
     });
 })
+
 watch(() => route.name, () => {
     if (![ 'Edit', 'Share' ].includes(route.name as string))
     {
         pos.value = 'fixed';
     }
+})
+
+watch(screen_w, () => {
+    isPhone.value = props.fullscreen || document.body.classList.contains('phone');
 })
 
 </script>
