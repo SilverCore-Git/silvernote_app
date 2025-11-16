@@ -46,6 +46,7 @@
             </label>
 
             <label
+                v-tooltip="'Cacher le contenu des notes sur l\'accueil'"
                 class="cursor-pointer w-full flex justify-between items-center"
                 v-if="IsPrivate !== undefined"
             >
@@ -91,6 +92,7 @@
             </h1>
 
             <label
+                v-tooltip="'Télécharger toutes vos notes et tout tags sous forme d\'un fichier'"
                 class="cursor-pointer w-full flex justify-between items-center"
                 :class="hitbox ? 'bg-red-600' : ''"
             >
@@ -105,6 +107,7 @@
 
 
             <label
+                v-tooltip="'Importer des notes et des tags avec fichier snote'"
                 class="cursor-pointer w-full flex justify-between items-center"
                 :class="hitbox ? 'bg-red-600' : ''"
             >
@@ -119,6 +122,7 @@
             </label>
 
             <label
+                v-tooltip="'Suprimer toutes vos notes et tout vos tags.'"
                 class="cursor-pointer w-full flex justify-between items-center"
                 :class="hitbox ? 'bg-red-600' : ''"
             >
