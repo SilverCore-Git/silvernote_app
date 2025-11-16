@@ -167,7 +167,7 @@ import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import { version } from '../../../package.json';
 import indexed_db from '@/assets/ts/database/database';
 import utils from '@/assets/ts/utils';
-import Switch from '@/components/Switch.vue';
+import Switch from '@/components/SwitchProps.vue';
 import { setThemePreference } from '@/assets/ts/theme';
 import Success from '@/components/alert/Success.vue';
 import Danger from '@/components/alert/Danger.vue';
