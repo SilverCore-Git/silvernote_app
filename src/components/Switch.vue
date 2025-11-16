@@ -1,18 +1,20 @@
 <template>
   <div @click="toggle" class="switch min-w-12.5">
-    <input :checked="modelValue" type="checkbox" />
+    <input :checked="value" type="checkbox" />
     <div class="slider"></div>
   </div>
 </template>
 
-<script lang="ts" setup>
-const props = defineProps<{ modelValue: boolean }>();
+<script setup lang="ts">
+const props = defineProps<{
+  value: boolean
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
+  (e: "update", value: boolean): void
 }>();
 
 const toggle = () => {
-  emit('update:modelValue', !props.modelValue);
-};
+  emit("update", !props.value); 
+}
 </script>
