@@ -52,16 +52,3 @@ export interface Tag {
     name: string;
     color: string;
 };
-
-export interface SettingOption {
-  id: string;
-  name: string;
-  type: string;
-  active: boolean;
-}
-
-export interface Settings {
-  généraux: SettingOption[];
-  avancé: SettingOption[];
-  dev_mode: SettingOption[];
-}

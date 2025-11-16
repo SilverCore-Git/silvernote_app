@@ -37,7 +37,14 @@
     </div>
 
     <p
-      v-if="cleanHTML === false"
+      v-if="cleanHTML === false && IsPrivate"
+      class="text-xs my-2"
+      :class="note_settings ? 'multiline-14' : 'multiline-8'"
+      :style="{ maxHeight: note_settings ? '16em' : '' }"
+    >{{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 600) }}</p>
+
+    <p
+      v-else
       class="text-xs my-2"
       :class="note_settings ? 'multiline-14' : 'multiline-8'"
       :style="{ maxHeight: note_settings ? '16em' : '' }"
@@ -95,6 +102,7 @@ import ConfirmDialog from '../popup/ConfirmDialog.vue';
 import db from '@/assets/ts/database/database';
 import utils from '@/assets/ts/utils';
 import type { Tag } from '@/assets/ts/type';
+import { IsPrivate } from '@/assets/ts/settings/privatMode';
 
 import PressAndHold from '../PressAndHold.vue';
 import Note_settings from './Note_Settings.vue';

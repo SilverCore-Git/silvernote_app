@@ -6,15 +6,15 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   value: boolean
 }>();
 
 const emit = defineEmits<{
-  (e: "update", value: boolean): void
+  (e: "update"): void
 }>();
 
 const toggle = () => {
-  emit("update", !props.value); 
+  emit("update"); 
 }
 </script>

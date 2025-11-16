@@ -22,7 +22,7 @@ class Database {
     private dbPromise: Promise<IDBPDatabase<NotesDB>>;
 
     constructor(initialNotes?: Note[], initialTags?: Tag[]) {
-        this.dbPromise = openDB<NotesDB>('notes-db', 2, {
+        this.dbPromise = openDB<NotesDB>('silvernote-db', 2, {
             upgrade(db) {
                 if (!db.objectStoreNames.contains('notes')) {
                     const store = db.createObjectStore('notes', { keyPath: 'id' });
