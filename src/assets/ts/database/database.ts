@@ -128,9 +128,9 @@ class Database {
         }
     }
 
-    public async delete(id: number, noDb?: boolean): Promise<void> {
+    public async delete(id: number, noFetchDB?: boolean): Promise<void> {
         const db = await this.dbPromise;
-        if (!noDb) {
+        if (noFetchDB !== true) {
             const uuid = (await this.getNote(id))?.uuid;
             await fetch(`${api_url}/api/db/delete/a/note?uuid=${uuid}`, {
                 method: 'POST',
@@ -143,11 +143,11 @@ class Database {
         await db.delete('notes', id);
     }
 
-    public async delete_tag(id: number, noDb?: boolean): Promise<void> {
+    public async delete_tag(id: number, noFetchDB?: boolean): Promise<void> {
         const db = await this.dbPromise;
         const tag = await db.get('tags', id);
 
-        if (!noDb || true ) {
+        if (noFetchDB !== true) {
             await fetch(`${api_url}/api/db/delete/a/tag?uuid=${tag!.uuid}`, {
                 method: 'POST',
                 headers: {
@@ -290,8 +290,6 @@ class Database {
 }
 
 export default new Database(
-    // notes,
-    // tags,
     undefined,
     undefined
 );

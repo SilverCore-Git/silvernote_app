@@ -32,7 +32,7 @@ class InitDB {
             if (!await this.verify_cloud_db()) 
             {
                 
-                db.reset().then(async () => {
+                await db.reset().then(async () => {
 
                     await this.init_cloud_tags();
                     await this.init_cloud_notes();
@@ -59,67 +59,63 @@ class InitDB {
 
 
     
-    public async init_local_notes (): Promise<void> 
+    public async init_local_notes ()
     {
-    
-        Notes.value = [];
-        Notes.value = await db.getAll('notes');
 
-        const monthMap: Record<string, number> = {
-            janvier: 0,
-            février: 1,
-            mars: 2,
-            avril: 3,
-            mai: 4,
-            juin: 5,
-            juillet: 6,
-            août: 7,
-            septembre: 8,
-            octobre: 9,
-            novembre: 10,
-            décembre: 11,
-        };
+            const notes = await db.getAll('notes');
+            Notes.value = notes;
 
-        function parseFrenchDate(dateStr: string): Date {
-            const [day, monthName, year] = dateStr.split(' ');
-            const month = monthMap[monthName.toLowerCase()];
-            return new Date(Number(year), month, Number(day));
-        }
+            const monthMap: Record<string, number> = {
+                janvier: 0,
+                février: 1,
+                mars: 2,
+                avril: 3,
+                mai: 4,
+                juin: 5,
+                juillet: 6,
+                août: 7,
+                septembre: 8,
+                octobre: 9,
+                novembre: 10,
+                décembre: 11,
+            };
 
-        Notes.value.sort((a: Note, b: Note) => {
-            if (a.pinned === b.pinned) {
-            const dateA = parseFrenchDate(a.date);
-            const dateB = parseFrenchDate(b.date);
-            return dateB.getTime() - dateA.getTime();
+            function parseFrenchDate(dateStr: string): Date {
+                const [day, monthName, year] = dateStr.split(' ');
+                const month = monthMap[monthName.toLowerCase()];
+                return new Date(Number(year), month, Number(day));
             }
-            return a.pinned ? -1 : 1;
-        });
-        
+
+            Notes.value.sort((a: Note, b: Note) => {
+                if (a.pinned === b.pinned) {
+                const dateA = parseFrenchDate(a.date);
+                const dateB = parseFrenchDate(b.date);
+                return dateB.getTime() - dateA.getTime();
+                }
+                return a.pinned ? -1 : 1;
+            });
+
     }
 
-    public async init_local_tags (): Promise<void> 
+    public async init_local_tags() 
     {
-        Tags.value = [];
         Tags.value = await db.getAll('tags');
     }
 
 
     public async init_cloud_notes (): Promise<void> 
     {
-        const data = await fetch(`${api_url}/api/db/get/user/notes?user_id=${this.user?.value?.id}`)
-                        .then(res => res.json());
-        if (data) {
-            await db.add_notes(data.notes, false);
-        }
+        const res = await fetch(`${api_url}/api/db/get/user/notes?user_id=${this.user?.value?.id}`);
+        const data = await res.json();
+        await db.add_notes(data.notes, false);
     }
+
 
     public async init_cloud_tags (): Promise<void> 
     {
-        const data = await fetch(`${api_url}/api/db/get/user/tags?user_id=${this.user?.value?.id}`)
-                        .then(res => res.json());
-        if (data) {
-            await db.add_tags(data.tags, false);
-        }
+        const res = await fetch(`${api_url}/api/db/get/user/tags?user_id=${this.user?.value?.id}`);
+        const data = await res.json();
+        await db.add_tags(data.tags, false);
     }
 
     public async init_shared_notes (): Promise<void> 
