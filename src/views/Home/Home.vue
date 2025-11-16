@@ -584,7 +584,11 @@
 
     }
 
-    const reload_list = async (a?: 'just_view') => {
+    const reload_list = async (a?: 'just_view' | 'local') => {
+
+        if (isRotating.value) return;
+        
+        isRotating.value = true;
         
         if (a == 'just_view') {
             view_notes.value = false;
@@ -593,22 +597,41 @@
             return;
         }
 
-        if (isRotating.value) return;
-
-        isRotating.value = true;
-        view_notes.value = false;
-
         list_notes.value = [];
         all_tags.value = [];
         shared_notes.value = [];
 
-        await nextTick();
+        if (a == 'local')
+        {
+            await nextTick();
 
-        await InitDB.init_local_tags();
-        await InitDB.init_local_notes();
-        await InitDB.init_shared_notes();
+            await InitDB.init_local_tags();
+            await InitDB.init_local_notes();
+            await InitDB.init_shared_notes();
 
-        console.log('Rechargement des db...')
+            console.log('Reload local db');
+        }
+
+
+        if (!a)
+        {
+            await nextTick();
+
+            db.reset().then(async () => {
+
+                await InitDB.init_cloud_tags();
+                await InitDB.init_cloud_notes();
+
+            });
+            await InitDB.init_shared_notes();
+
+            await nextTick();
+
+            await InitDB.init_local_tags();
+            await InitDB.init_local_notes();
+
+            console.log('Reload db');
+        }
 
         await nextTick();
 
@@ -623,7 +646,7 @@
 
     onMounted(async () => {
 
-        reload_list()
+        reload_list('local');
 
         if_danger_card.value = isOnline.value ? await back.info_message() ? true : false : false; 
         Danger_card_props.value = isOnline.value ? await back.info_message() : undefined;

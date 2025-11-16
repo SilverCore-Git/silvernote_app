@@ -104,7 +104,7 @@ class InitDB {
     }
 
 
-    private async init_cloud_notes (): Promise<void> 
+    public async init_cloud_notes (): Promise<void> 
     {
         const data = await fetch(`${api_url}/api/db/get/user/notes?user_id=${this.user?.value?.id}`)
                         .then(res => res.json());
@@ -113,7 +113,7 @@ class InitDB {
         }
     }
 
-    private async init_cloud_tags (): Promise<void> 
+    public async init_cloud_tags (): Promise<void> 
     {
         const data = await fetch(`${api_url}/api/db/get/user/tags?user_id=${this.user?.value?.id}`)
                         .then(res => res.json());
