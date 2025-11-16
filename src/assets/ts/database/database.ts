@@ -135,7 +135,7 @@ class Database {
             await fetch(`${api_url}/api/db/delete/a/note?uuid=${uuid}`, {
                 method: 'POST',
                 headers: {
-                'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
                 },
                 credentials: 'include',
             })
