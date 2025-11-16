@@ -27,7 +27,6 @@
 
             <label
                 class="cursor-pointer w-full flex justify-between items-center"
-                :class="hitbox ? 'bg-red-600' : ''"
             >
 
               <span>Theme</span>
@@ -44,6 +43,20 @@
                 <option value="default">Automatique</option>
               </select>
               
+            </label>
+
+            <label
+                v-tooltip="'Cacher le contenu des notes sur l\'accueil'"
+                class="cursor-pointer w-full flex justify-between items-center"
+                v-if="IsPrivate !== undefined"
+            >
+
+              <span>Mode privée</span>
+              <Switch 
+                :value="IsPrivate"
+                @update="setPrivate(!IsPrivate)"
+              />
+
             </label>
 
             <hr
@@ -79,6 +92,7 @@
             </h1>
 
             <label
+                v-tooltip="'Télécharger toutes vos notes et tout tags sous forme d\'un fichier'"
                 class="cursor-pointer w-full flex justify-between items-center"
                 :class="hitbox ? 'bg-red-600' : ''"
             >
@@ -93,6 +107,7 @@
 
 
             <label
+                v-tooltip="'Importer des notes et des tags avec fichier snote'"
                 class="cursor-pointer w-full flex justify-between items-center"
                 :class="hitbox ? 'bg-red-600' : ''"
             >
@@ -107,6 +122,7 @@
             </label>
 
             <label
+                v-tooltip="'Suprimer toutes vos notes et tout vos tags.'"
                 class="cursor-pointer w-full flex justify-between items-center"
                 :class="hitbox ? 'bg-red-600' : ''"
             >
@@ -143,27 +159,24 @@
 
 <script lang="ts" setup>
 
-import { onMounted, reactive, watch, ref } from 'vue';
+import { watch, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 
 import { version } from '../../../package.json';
-import { SettingsDB, settings as settingsObj  } from '@/assets/ts/settings';
-import type { Settings } from '@/assets/ts/type';
-import { hitbox as if_hitbox } from '@/assets/ts/settings';
 import indexed_db from '@/assets/ts/database/database';
 import utils from '@/assets/ts/utils';
-// import Switch from '@/components/Switch.vue';
+import Switch from '@/components/SwitchProps.vue';
 import { setThemePreference } from '@/assets/ts/theme';
 import Success from '@/components/alert/Success.vue';
 import Danger from '@/components/alert/Danger.vue';
 import { api_url } from '@/assets/ts/backend_link';
 import NavBar from './NavBar.vue';
 import BackBtn from '@/components/backBtn.vue';
+import { IsPrivate, setPrivate } from '@/assets/ts/settings/privatMode';
 
 let hitbox: boolean;
-onMounted(async () => { hitbox = await if_hitbox() })
 
 const danger = ref<{ text: string, value: boolean }>({ text: "", value: false });
 const success = ref<{ text: string, value: boolean }>({ text: "", value: false });
@@ -178,13 +191,8 @@ watch(() => color.value, () => {
   document.documentElement.style.setProperty('--btn', color.value);
 })
 
-const db = new SettingsDB(settingsObj);
 const router = useRouter();
-const settings = reactive<Settings>({
-  généraux: [],
-  avancé: [],
-  dev_mode: []
-});
+
 
 const open_input = () => file_input.value?.click();
 
@@ -356,15 +364,6 @@ const reset_db = async (step: number): Promise<void> => {
   }
 
 }
-
-onMounted(async () => {
-    Object.assign(settings, await db.get());
-});
-
-watch(settings, async () => {
-    await db.save(JSON.parse(JSON.stringify(settings)));
-    console.log('Parametre modifier : ', Object.values(settings));
-}, { deep: true });
 
 </script>
 

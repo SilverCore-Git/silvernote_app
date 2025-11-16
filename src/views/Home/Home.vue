@@ -114,7 +114,7 @@
                     v-for="tag in all_tags"
                 >
 
-                    <div v-if="list_notes && list_notes.find(note => note.tags.includes(tag.id))">
+                    <div v-if="list_notes && list_notes.find(note => Array.isArray(note.tags) && note.tags.includes(tag.id))">
 
                         <div 
                             class="font-bold text-lg p-2 rounded-[var(--br-btn)]
@@ -584,7 +584,11 @@
 
     }
 
-    const reload_list = async (a?: 'just_view') => {
+    const reload_list = async (a?: 'just_view' | 'local') => { // fonction complexe ne pas toucher
+
+        if (isRotating.value) return;
+        
+        isRotating.value = true;
         
         if (a == 'just_view') {
             view_notes.value = false;
@@ -593,26 +597,48 @@
             return;
         }
 
-        if (isRotating.value) return;
-
-        isRotating.value = true;
         view_notes.value = false;
 
-        list_notes.value = [];
-        all_tags.value = [];
-        shared_notes.value = [];
+        if (a == 'local')
+        {
+            await nextTick();
 
-        await nextTick();
+            await InitDB.init_local_tags();
+            await InitDB.init_local_notes();
+            await InitDB.init_shared_notes();
 
-        await InitDB.init_local_tags();
-        await InitDB.init_local_notes();
-        await InitDB.init_shared_notes();
+            console.log('Reload local db');
+        }
 
-        console.log('Rechargement des db...')
 
-        await nextTick();
+        if (!a)
+        {
+            await nextTick();
 
-        view_notes.value = true;
+            async function fetchCloud()
+            {
+                await db.reset().then(async () => {
+                    await InitDB.init_cloud_tags();
+                    await InitDB.init_cloud_notes();
+                });
+                await InitDB.init_shared_notes();
+            }
+
+            await fetchCloud().then(async () => {
+
+                await InitDB.init_local_tags();
+                await InitDB.init_local_notes();
+
+                console.log('Reload db');
+
+            })
+
+        }
+
+        setTimeout(async () => {
+            await nextTick();
+            view_notes.value = true;
+        }, 100)
 
         setTimeout(() => {
             isRotating.value = false;
@@ -623,7 +649,7 @@
 
     onMounted(async () => {
 
-        reload_list()
+        reload_list('local');
 
         if_danger_card.value = isOnline.value ? await back.info_message() ? true : false : false; 
         Danger_card_props.value = isOnline.value ? await back.info_message() : undefined;
@@ -631,10 +657,12 @@
     });
 
     watch(all_tags, async (newVal: Tag[], oldVal: Tag[]) => {
+        if (isRotating) return;
+        if (!oldVal || oldVal.length === 0) return;
 
-        const hasActiveChanged = newVal?.some((newTag: Tag, index) => {
-            const oldTag = oldVal ? oldVal[index] : undefined;
-            return oldTag && newTag.active !== oldTag.active;
+        const hasActiveChanged = newVal.some(newTag => {
+            const oldTag = oldVal.find(t => t.id === newTag.id);
+            return oldTag && oldTag.active !== newTag.active;
         });
 
         const db_tags = await db.getAll('tags');
