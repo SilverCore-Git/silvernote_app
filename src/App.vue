@@ -25,7 +25,7 @@
         </div>
 
         <div 
-          v-if="route.name !== 'silveria'"
+          v-if="route.name !== 'silveria' && loaded"
           class=" z-50 relative"
         >
           <Chatbot v-if="open_chatbot" />
@@ -101,6 +101,7 @@ onMounted(async () => {
   const interval = setInterval(async () => {
 
     if (isLoaded.value) {
+      clearInterval(interval);
 
       if (!isSignedIn.value) {
         router.push({
@@ -118,8 +119,6 @@ onMounted(async () => {
 
         InitDB.init(user);
         await InitDB.main();
-
-        clearInterval(interval);
 
       }
 

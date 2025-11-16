@@ -12,13 +12,12 @@
             box-shadow: 0 0 15px #36363681;
         " 
         class="
-                fixed 
+                fixed inset-x-0 top-0 
                 lg:inset-y-0 lg:left-0 
-                inset-x-0 top-0 
                 text-2xl font-bold lg:w-60
                 bg-[var(--bg2)] z-50 
                 lg:p-4 py-1 p-0 mt-4 lg:mt-6 mx-6
-                flex items-start justify-center dropdown
+                lg:flex hidden items-start justify-center dropdown
             "
     >
 
