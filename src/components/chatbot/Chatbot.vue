@@ -14,7 +14,7 @@
         :class="[
             !open ? 'bottom-6 right-6' : '-bottom-9 -right-9'
         ]"
-        class="fixed w-12 h-12 p-2 rounded-full cursor-pointer hover"
+        class="fixed w-14 h-14 p-2 rounded-full cursor-pointer hover"
         style="background: linear-gradient(135deg, #ff5e62 0%, var(--btn) 100%);"
     >
 
