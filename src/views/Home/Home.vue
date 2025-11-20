@@ -102,7 +102,7 @@
 
         <div 
             class="flex-1 overflow-y-auto overflow-x-hidden h-full
-                    p-2 pt-0 pb-60 max-w-5xl shadow-inner rounded-2xl" 
+                    p-2 pt-0 pb-60 shadow-inner rounded-2xl" 
         >
 
             <div 

@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <!-- <div v-if="is_offline" class="fixed inset-0 bg-[var(--bg)] z-50">
+      <div v-if="is_offline" class="fixed inset-0 bg-[var(--bg)] z-50">
         <div class="flex justify-center items-center flex-col w-screen h-screen">
 
             <div class="w-30 h-30">
@@ -62,7 +62,7 @@
             </button>
           
         </div>
-      </div> -->
+      </div>
 
   </div>
 
@@ -74,12 +74,13 @@ import { ref, onMounted, watch, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Loader from "./components/Loader.vue";
 import Chatbot from "./components/chatbot/Chatbot.vue";
-import { Session } from "./assets/ts/backend_link";
+import { api_url, Session } from "./assets/ts/backend_link";
 import { init_theme } from "./assets/ts/theme";
 import { useAuth, useUser } from "@clerk/vue";
 import { loaded } from "./assets/ts/utils";
 import InitDB from "./assets/ts/database/init";
 import mobile_config from "@/configs/mobile.json";
+import waitFor from "./assets/ts/utils/waitFor";
 
 const loader = ref<boolean>(true);
 const open_chatbot = ref<boolean>(true);
@@ -91,60 +92,123 @@ const { isSignedIn } = useAuth()
 
 const is_offline = ref<boolean>(false);
 
-
-onMounted(async () => {
+// last v for onmunted func
+// onMounted(async () => {
   
+//   init_theme();
+
+//   let trys = 0;
+
+//   const interval = setInterval(async () => {
+
+//     if (isLoaded.value) {
+
+//       clearInterval(interval);
+
+//       if (!isSignedIn.value) {
+//         router.push({
+//           query: route.query,
+//           path: "/auth/sign"
+//         });
+//         open_chatbot.value = false;
+//         loader.value = false;
+//         return;
+//       }
+
+//       if (user.value) {
+
+//         InitDB.init(user);
+//         await InitDB.main();
+
+//       }
+
+//     }
+
+//     console.log('Try : ', trys);
+
+//     if (trys === 10) {
+//       console.log('offline')
+//       clearInterval(interval);
+//       is_offline.value = true;
+//       return;
+//     }
+
+//     trys++
+
+//   }, 1000);
+
+//   const stopLoader = setInterval(async () => {
+
+//     if (isLoaded.value && InitDB.isLoaded()) {
+//       clearInterval(stopLoader);
+
+//       loader.value = false;
+//       loaded.value = true;
+      
+//       await session.create(user.value);
+//     }
+
+//   }, 1000);
+
+// });
+
+//new on munted func
+onMounted(async () => {
+
   init_theme();
 
-  let tries = 0;
+  let online = false;
+  try {
+    const res = await fetch(api_url + '/version');
+    const data = await res.json();
+    online = !!data.v;
+  } catch (err) {
+    online = false;
+  }
 
-  const interval = setInterval(async () => {
+  await waitFor(
+    () => isLoaded.value,
+    5_000
+  );
 
-    if (isLoaded.value) {
-      clearInterval(interval);
+  if (!online) {
+    console.warn("offline");
+    is_offline.value = true;
+    return;
+  }
 
-      if (!isSignedIn.value) {
-        router.push({
-          query: route.query,
-          path: "/auth/sign"
-        });
-        open_chatbot.value = false;
-        loader.value = false;
-        return;
-      }
+  if (!isSignedIn.value) {
+    router.push({
+      query: route.query,
+      path: "/auth/sign"
+    });
+    open_chatbot.value = false;
+    loader.value = false;
+    return;
+  }
 
-      if (user.value) {
+  if (user.value) {
+    InitDB.init(user);
+    await InitDB.main();
+  }
 
-        await session.create(user.value);
+  const dbReady = await waitFor(
+    () => InitDB.isLoaded(),
+    10_000
+  );
 
-        InitDB.init(user);
-        await InitDB.main();
+  if (!dbReady) {
+    console.error("InitDB not loaded.");
+    return;
+  }
 
-      }
+  loader.value = false;
+  loaded.value = true;
 
-    }
-
-    if (tries >= 5) {
-      is_offline.value = true;
-      clearInterval(interval);
-      return;
-    }
-
-    tries++
-
-  }, 1000);
-
-  const stopLoader = setInterval(() => {
-
-    if (isLoaded.value && InitDB.isLoaded()) {
-      loader.value = false;
-      loaded.value = true;
-      clearInterval(stopLoader);
-    }
-
-  }, 1000);
+  await session.create(user.value);
 
 });
+
 
 const screen_w = ref(window.innerWidth);
 const body = document.body;
@@ -158,6 +222,10 @@ window.addEventListener("resize", updateSize);
 onUnmounted(() => {
   window.removeEventListener("resize", updateSize);
 });
+
+const reload = () => {
+  window.location.reload();
+}
 
 const updateBodyClass = () => {
   body.classList.remove("lgdesktop", "xldesktop", "xsdesktop", "xxsdesktop", "phone");

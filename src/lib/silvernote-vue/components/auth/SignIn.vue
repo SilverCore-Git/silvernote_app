@@ -30,7 +30,9 @@ const handleSubmit = async () => {
         if (result?.status === 'complete' && setActive.value) {
             await setActive.value({ session: result.createdSessionId });
             await nextTick();
-            window.location.href = String(route.query.redirectUrl) || '/'
+            const url = String(route.query.redirectUrl || '/');
+            console.log('redirect url = ', url)
+            window.location.href = url;
         } else {
             console.log('Statut de connexion:', result?.status);
         }

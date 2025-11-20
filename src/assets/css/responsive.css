@@ -38,7 +38,7 @@ body.xsdesktop {
 
 body.lgdesktop {
   --mrl: 18%;
-  --mlr: 18%;
+  --mlr: 0;
   --mt: 0;
 }
 

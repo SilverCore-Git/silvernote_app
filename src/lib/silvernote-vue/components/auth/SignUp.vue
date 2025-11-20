@@ -62,7 +62,9 @@ const handleVerification = async () => {
         if (completeSignUp?.status === 'complete' && setActive.value) {
             await setActive.value({ session: completeSignUp.createdSessionId });
             await nextTick();
-            window.location.href = String(route.query.redirectUrl) || '/'
+            const url = String(route.query.redirectUrl || '/');
+            console.log('redirect url = ', url)
+            window.location.href = url;
         } else {
             console.log('Statut d\'inscription:', completeSignUp?.status);
         }
