@@ -22,14 +22,14 @@ export default function parseNotionHTML
 
         if (emoji_icon_span)
         {
-            res.icon = utils.emojiToBase64(emoji_icon_span.textContent);
+            res.icon = utils.emojiToBase64(emoji_icon_span.textContent as string);
         }
 
         const title = doc.querySelector('h1.page-title');
 
         if (title)
         {
-            res.title = title.textContent;
+            res.title = title.textContent as string;
         }
 
         const content = doc.querySelector('div.page-body');

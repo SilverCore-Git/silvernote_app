@@ -405,7 +405,7 @@ import Tags_manager from '@/components/tags/tags_manager.vue';
 import BackBtn from '@/components/backBtn.vue';
 import { number } from 'mathjs';
 
-import getArrayFromNotionHTML from '@/assets/ts/utils/getArrayFromNotionHtml';
+import getArrayFromNotionHTML from '@/assets/ts/utils/getArrayFromNotionHTML';
 const props = defineProps<{ id: number | 'new' }>()
 const { user } = useUser();
 
