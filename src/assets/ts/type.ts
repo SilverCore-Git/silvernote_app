@@ -42,6 +42,7 @@ export interface Note {
     date: string;
     tags: Number[];
     selected?: boolean;
+    updated_at?: number;
 };
 
 export interface Tag {

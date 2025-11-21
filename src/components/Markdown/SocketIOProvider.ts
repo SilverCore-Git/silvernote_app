@@ -10,6 +10,9 @@ export class SocketIOProvider {
   private room: string;
   private userId: string;
   private onAICommand?: (command: string, content: any) => void;
+  private synced: boolean = false;
+  private updateHandler: ((update: Uint8Array, origin: any) => void) | null = null;
+  private awarenessUpdateHandler: ((changes: any) => void) | null = null;
 
   constructor(
     serverUrl: string,
@@ -37,7 +40,7 @@ export class SocketIOProvider {
   private setupListeners() {
     // Connexion établie
     this.socket.on('connect', () => {
-      console.log('✅ Connected to collaboration server');
+      console.log('Connected to collaboration server');
       this.socket.emit('join-room', { 
         room: this.room, 
         userId: this.userId 
@@ -46,20 +49,49 @@ export class SocketIOProvider {
 
     // Réception de l'état initial
     this.socket.on('sync', (state: Uint8Array) => {
-      console.log('📥 Received initial sync');
-      Y.applyUpdate(this.doc, state);
+      try {
+        console.log('Received initial sync, state length:', state.length);
+        
+        const uint8State = state instanceof Uint8Array 
+          ? state 
+          : new Uint8Array(Object.values(state));
+        
+        // Appliquer seulement si le document est vide
+        if (uint8State.length > 0) {
+          Y.applyUpdate(this.doc, uint8State);
+          console.log('Initial state applied successfully');
+        } else {
+          console.warn('Empty initial state received');
+        }
+        
+        this.synced = true;
+        
+        this.enableLocalUpdates();
+        
+      } catch (err) {
+        console.error('Error applying initial sync:', err);
+        this.synced = true;
+        this.enableLocalUpdates();
+      }
     });
 
     // Réception des updates Yjs
-    this.socket.on('y-update', (update: Uint8Array) => {
-      console.log('📩 Received y-update from server');
-      Y.applyUpdate(this.doc, update);
+    this.socket.on('y-update', (update: Uint8Array | any) => {
+      try {
+        console.log('Received y-update from server');
+        const uint8Update = update instanceof Uint8Array 
+          ? update 
+          : new Uint8Array(Object.values(update));
+        
+        Y.applyUpdate(this.doc, uint8Update);
+      } catch (err) {
+        console.error('Error applying y-update:', err);
+      }
     });
 
     // Réception des updates de titre
     this.socket.on('title-update', (newTitle: string) => {
-      console.log('📝 Title updated:', newTitle);
-      // Émettre un événement personnalisé pour le composant parent
+      console.log('Title updated:', newTitle);
       window.dispatchEvent(new CustomEvent('note-title-update', { 
         detail: { title: newTitle } 
       }));
@@ -67,59 +99,81 @@ export class SocketIOProvider {
 
     // Réception des updates d'icône
     this.socket.on('icon-update', (newIcon: string) => {
-      console.log('🎨 Icon updated');
+      console.log('Icon updated');
       window.dispatchEvent(new CustomEvent('note-icon-update', { 
         detail: { icon: newIcon } 
       }));
     });
 
-    // 🆕 Commandes de l'IA
+    // Commandes de l'IA
     this.socket.on('ai-command', (data: { command: string; content: any }) => {
-      console.log('🤖 Received AI command:', data.command);
-      
+      console.log('Received AI command:', data.command);
       if (this.onAICommand) {
         this.onAICommand(data.command, data.content);
-      }
-
-      // Gérer les commandes directement ici si nécessaire
-      if (data.command === 'insertContent') {
-        // La commande sera gérée par le callback onAICommand
-        // qui appelle editor.commands.setContent() ou insertContent()
       }
     });
 
     // Awareness (curseurs collaboratifs)
-    this.socket.on('awareness-update', (update: Uint8Array) => {
-      awarenessProtocol.applyAwarenessUpdate(this.awareness, update, 'remote');
+    this.socket.on('awareness-update', (update: Uint8Array | any) => {
+      const uint8Update = update instanceof Uint8Array 
+        ? update 
+        : new Uint8Array(Object.values(update));
+      awarenessProtocol.applyAwarenessUpdate(this.awareness, uint8Update, 'remote');
     });
+
+    // Gestion des erreurs
+    this.socket.on('connect_error', (error) => {
+      console.error('Connection error:', error);
+    });
+
+    this.socket.on('disconnect', () => {
+      console.log('Disconnected from collaboration server');
+      this.disableLocalUpdates();
+    });
+  }
+
+  private enableLocalUpdates() {
+    if (this.updateHandler || this.awarenessUpdateHandler) {
+      return;
+    }
 
     // Envoyer les updates locaux
-    this.doc.on('update', (update: Uint8Array) => {
-      this.socket.emit('y-update', update);
-    });
+    this.updateHandler = (update: Uint8Array, origin: any) => {
+      if (origin !== 'remote' && this.synced) {
+        this.socket.emit('y-update', update);
+      }
+    };
+    this.doc.on('update', this.updateHandler);
 
     // Envoyer les updates d'awareness
-    this.awareness.on('update', ({ added, updated, removed }: any) => {
+    this.awarenessUpdateHandler = ({ added, updated, removed }: any) => {
       const changedClients = added.concat(updated).concat(removed);
       const update = awarenessProtocol.encodeAwarenessUpdate(
         this.awareness,
         changedClients
       );
       this.socket.emit('awareness-update', update);
-    });
+    };
+    this.awareness.on('update', this.awarenessUpdateHandler);
 
-    // Gestion des erreurs
-    this.socket.on('connect_error', (error) => {
-      console.error('❌ Connection error:', error);
-    });
+    console.log('Local updates enabled');
+  }
 
-    this.socket.on('disconnect', () => {
-      console.log('🔌 Disconnected from collaboration server');
-    });
+  // Désactiver l'envoi des updates
+  private disableLocalUpdates() {
+    if (this.updateHandler) {
+      this.doc.off('update', this.updateHandler);
+      this.updateHandler = null;
+    }
+    if (this.awarenessUpdateHandler) {
+      this.awareness.off('update', this.awarenessUpdateHandler);
+      this.awarenessUpdateHandler = null;
+    }
   }
 
   destroy() {
-    console.log('🧹 Destroying SocketIO provider');
+    console.log('Destroying SocketIO provider');
+    this.disableLocalUpdates();
     this.awareness.destroy();
     this.socket.disconnect();
   }

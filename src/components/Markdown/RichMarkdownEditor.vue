@@ -20,6 +20,8 @@
     v-model:visible="_searchBar"
   />
 
+  <SaveIndicator />
+
 </template>
 
 <script setup lang="ts">
@@ -66,6 +68,7 @@ import Highlight from '@tiptap/extension-highlight'
 
 import { editor, isLoaded } from './Editor';
 import { saveNote } from './Function/saveNote.js';
+import SaveIndicator from './SaveIndicator.vue';
 
 const props = defineProps<{
   id: number
@@ -146,6 +149,7 @@ const handleSaveShortcut = (e: KeyboardEvent) => {
 const initEditor = async () => {
   
   const ydoc = new Y.Doc();
+
   provider = new SocketIOProvider(
     api_url == 'http://localhost:3000'
       ? 'http://localhost:3434'
@@ -159,6 +163,30 @@ const initEditor = async () => {
       }
     }
   );
+
+  await new Promise<void>((resolve) => {
+    if (provider?.socket.connected) {
+      // Déjà connecté, attendre le sync
+      provider.socket.once('sync', () => {
+        console.log('Initial sync completed');
+        resolve();
+      });
+    } else {
+      // Attendre la connexion puis le sync
+      provider?.socket.once('connect', () => {
+        provider?.socket.once('sync', () => {
+          console.log('Initial sync completed');
+          resolve();
+        });
+      });
+    }
+    
+    // Timeout de sécurité après 5 secondes
+    setTimeout(() => {
+      console.warn('Sync timeout, proceeding anyway');
+      resolve();
+    }, 5000);
+  });
 
   const color = await getColorByImage();
 
@@ -216,12 +244,23 @@ const initEditor = async () => {
 
   await nextTick();
 
+  const fragment = ydoc.getXmlFragment('prosemirror');
+  
+  if (fragment.length === 0 && props.data.content && props.data.content.trim() !== '') 
+  {
+    console.log('Loading HTML content from database (document is empty)');
+    editor.value?.commands.setContent(props.data.content);
+  } 
+  else if (fragment.length > 0) 
+  {
+    console.log('Document already has collaborative content, skipping HTML load');
+  } else 
+  {
+    console.log('New empty document');
+  }
+
   isLoaded.value = true;
   loader.value = false;
-
-  await nextTick();
-
-  editor.value?.commands.setContent(props.data.content);
 
 };
 
@@ -255,6 +294,10 @@ onBeforeUnmount(() => {
   if (provider) provider.destroy();
   if (autosaveInterval) clearInterval(autosaveInterval);
   saveNote(props.data.id);
+});
+
+window.addEventListener('beforeunload', () => {
+  provider?.destroy();
 });
 
 </script>

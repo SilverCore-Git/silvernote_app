@@ -88,7 +88,11 @@
 
             <hr />
 
+            <li @click="import_menu = true">Importer</li>
             <li @click="export_menu = true">Exporter</li>
+
+            <hr />
+
             <li @click="share_menu = true">Partager</li>
             <li class="text-red-600" @click="delete_note(1)">Supprimer</li>
 
@@ -147,7 +151,7 @@
     @click="if_open_dropdown = false"
     class="
             flex flex-col justify-start items-center
-            mt-18 overflow-y-scroll max-w-3xl mx-auto
+            mt-22 overflow-y-scroll max-w-3xl mx-auto
           "
   >
 
@@ -318,6 +322,59 @@
 
   </Popup>
 
+  <Popup v-model:visible="import_menu">
+
+    <div class="w-full max-w-md flex flex-col gap-6">
+
+      <div class="flex flex-col gap-2">
+        <h2 class="text-2xl font-bold">Importer du contenu</h2>
+        <p class="text-gray-600 text-sm">Cette fonctionnalité remplace la note actuelle.</p>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-base font-medium" for="import-type">Importer depuis :</label>
+        <select
+          id="import-type"
+          v-model="selected_import_type"
+          class="px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[var(--btn)] focus:border-[var(--btn)] transition-all duration-200"
+        >
+          <option value="notion">Notion</option>
+        </select>
+      </div>
+
+      <button class="primary cursor-pointer">
+        <label>
+          <span>Importer un fichier HTML</span>
+          <input
+            type="file"
+            accept="text/html"
+            class="hidden"
+            @change="import_file = $event"
+          />
+        </label>
+      </button>
+
+      <div class="flex justify-end gap-4 mt-4">
+        <button
+          class="primary danger"
+          @click="import_menu = false"
+          :class="export_loading ? 'loader' : ''"
+        >
+          Annuler
+        </button>
+
+        <button
+          class="primary"
+          :class="export_loading ? 'loader' : ''"
+          @click="importFile()"
+        >
+          Confirmer
+        </button>
+      </div>
+
+    </div>
+  </Popup>
+
 </template>
 
 <script lang="ts" setup>
@@ -348,6 +405,7 @@ import Tags_manager from '@/components/tags/tags_manager.vue';
 import BackBtn from '@/components/backBtn.vue';
 import { number } from 'mathjs';
 
+import getArrayFromNotionHTML from '@/assets/ts/utils/getArrayFromNotionHTML';
 const props = defineProps<{ id: number | 'new' }>()
 const { user } = useUser();
 
@@ -368,8 +426,11 @@ const hide8moreTags = ref<boolean>(true);
 const if_pin_active = ref<boolean>(note.value.pinned);
 const if_open_dropdown = ref<boolean>(false);
 const export_menu = ref<boolean>(false);
+const import_menu = ref<boolean>(false);
 const export_loading = ref<boolean>(false);
 const selected_ext = ref<string>('pdf');
+const selected_import_type = ref<string>('notion');
+const import_file = ref<Event | undefined>(undefined);
 const share_menu = ref<boolean>(false);
 const showDialog = ref<boolean>(false);
 const emojiBtn = ref<HTMLButtonElement | null>(null);
@@ -395,6 +456,57 @@ const export_note = async (ext: string): Promise<void> => {
     export_loading.value = false;
     export_menu.value = false;
   })
+}
+
+const importFile = async (): Promise<void> => {
+
+  const event = import_file.value;
+  if (!event) return;
+  
+  export_loading.value = true;
+
+  try {
+
+    const input = event.target as HTMLInputElement;
+
+    if (input.files) 
+    {
+      
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = async (e: ProgressEvent<FileReader>) => {
+
+        const html = e.target?.result;
+        if (!html) return;
+        const { title, icon, content } = getArrayFromNotionHTML(html as string);
+        
+        await nextTick();
+
+        note.value = {
+          ...note.value,
+          content,
+          title,
+          icon
+        }
+
+        editor.value?.commands.setContent(content);
+
+      }
+
+      reader.readAsText(file);
+
+    }
+
+  }
+  catch(err) {
+    console.error(err);
+  }
+  finally {
+    import_menu.value = false;
+    export_loading.value = false;
+  }
+
 }
 
 const getUserByUUID = async (user_id: string, type: 'owner' | 'visitor'): Promise<User> => {
