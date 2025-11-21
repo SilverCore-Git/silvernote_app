@@ -132,15 +132,13 @@ export class SocketIOProvider {
     });
   }
 
-  // ✅ Activer l'envoi des updates locaux uniquement après la sync initiale
   private enableLocalUpdates() {
     if (this.updateHandler || this.awarenessUpdateHandler) {
-      return; // Déjà activé
+      return;
     }
 
     // Envoyer les updates locaux
     this.updateHandler = (update: Uint8Array, origin: any) => {
-      // Ne pas renvoyer les updates qui viennent du serveur
       if (origin !== 'remote' && this.synced) {
         this.socket.emit('y-update', update);
       }
@@ -161,7 +159,7 @@ export class SocketIOProvider {
     console.log('Local updates enabled');
   }
 
-  // ✅ Désactiver l'envoi des updates
+  // Désactiver l'envoi des updates
   private disableLocalUpdates() {
     if (this.updateHandler) {
       this.doc.off('update', this.updateHandler);
