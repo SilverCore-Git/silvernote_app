@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import isMobile from "@/assets/ts/utils/isMobile";
 
 const error = ref<string>('');
 const isLoading = ref<undefined | 'discord' | 'google' | 'snote'>(undefined);
@@ -23,16 +24,6 @@ const handleOAuth = async (provider: 'google' | 'discord', isLoaded: boolean, si
         const height = 600;
         const left = (window.screen.width - width) / 2;
         const top = (window.screen.height - height) / 2;
-
-        const popup = window.open(
-            '',
-            `OAuth ${provider}`,
-            `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
-        );
-        
-        if (!popup) {
-            throw new Error('La popup a été bloquée. Veuillez autoriser les popups pour ce site.');
-        }
         
         const origin = window.location.origin;
         const redirectUrl = `${origin}/auth/sso-callback`;
@@ -43,12 +34,34 @@ const handleOAuth = async (provider: 'google' | 'discord', isLoaded: boolean, si
             redirectUrlComplete
         });
         
-        await sign.authenticateWithPopup({
-            popup,
-            strategy: `oauth_${provider}`,
-            redirectUrl,
-            redirectUrlComplete,
-        });
+        if (!isMobile)
+        {
+            const popup = window.open(
+                '',
+                `OAuth ${provider}`,
+                `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
+            );
+            
+            if (!popup) {
+                throw new Error('La popup a été bloquée. Veuillez autoriser les popups pour ce site.');
+            }
+
+            await sign.authenticateWithPopup({
+                popup,
+                strategy: `oauth_${provider}`,
+                redirectUrl,
+                redirectUrlComplete,
+            });
+        }
+        else
+        {
+            await sign.authenticateWithRedirect({
+                strategy: `oauth_${provider}`,
+                redirectUrl,
+                redirectUrlComplete,
+            });
+        }
+        
         
         console.log('OAuth authentication completed');
         
