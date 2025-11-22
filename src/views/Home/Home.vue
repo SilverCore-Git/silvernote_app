@@ -327,13 +327,15 @@
     </div>
 
     <div 
-        class="
-            fixed inset-x-0 bottom-6 flex
-            justify-center items-center z-50
-             pointer-events-none
-        "
+        :class="[
+            `flex justify-center items-center
+            pointer-events-none z-50`,
+            isMobile 
+                ? 'fixed right-6 bottom-6' 
+                : 'fixed inset-x-0 bottom-6'
+        ]"
     >
-        <div 
+    <div 
             @click="create_new_note()" 
             class="w-16 h-16 pointer-events-auto"
         >
@@ -455,6 +457,7 @@
     import { usePlan } from '@/assets/ts/user/UserPlan';
     import { salert } from '@/assets/ts/salert';
     import New_note_btn from './New_note_btn.vue';
+import isMobile from '@/assets/ts/utils/isMobile';
     
     const router = useRouter();
     const { plan } = usePlan();

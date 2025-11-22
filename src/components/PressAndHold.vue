@@ -1,43 +1,50 @@
 <template>
-  <div
+  <div 
+    ref="pressEl" 
     v-bind="$attrs"
-    @contextmenu.prevent="onLongPress"
-    @touchstart="startPress"
-    @touchend="cancelPress"
-    @touchcancel="cancelPress"
-    @mousedown="startPress"
-    @mouseup="cancelPress"
-    @mouseleave="cancelPress"
+    @contextmenu.prevent="emitLongPress"
   >
     <slot />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import Hammer from "hammerjs";
 
 const emit = defineEmits<{
-  (e: 'long-press'): void
-}>()
+  (e: "long-press"): void;
+}>();
 
-const pressTimer = ref<number | null>(null)
-const delay = 500
+const pressEl = ref<HTMLElement | null>(null);
+let hammer: HammerManager | null = null;
 
-function onLongPress() {
-  emit('long-press')
+let emiting: boolean;
+function emitLongPress() {
+  if (emiting) return;
+  emiting = true;
+  emit("long-press");
+  setTimeout(() => {
+    emiting = false;
+  }, 500);
 }
 
-function startPress() {
-  cancelPress()
-  pressTimer.value = window.setTimeout(() => {
-    onLongPress()
-  }, delay)
-}
+onMounted(() => {
+  if (!pressEl.value) return;
 
-function cancelPress() {
-  if (pressTimer.value !== null) {
-    clearTimeout(pressTimer.value)
-    pressTimer.value = null
+  hammer = new Hammer(pressEl.value);
+
+  hammer.get("press").set({ time: 500 });
+
+  hammer.on("press", emitLongPress);
+});
+
+onBeforeUnmount(() => {
+  if (hammer) {
+    hammer.destroy();
+    hammer = null;
   }
-}
+});
+
 </script>

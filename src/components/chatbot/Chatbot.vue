@@ -12,7 +12,9 @@
         v-tooltip="'SilverIA'"
         @click="open = !open" 
         :class="[
-            !open ? 'bottom-6 right-6' : '-bottom-9 -right-9'
+            isMobile
+                ? !open ? 'bottom-6 left-6' : '-bottom-9 -left-9'
+                : !open ? 'bottom-6 right-6' : '-bottom-9 -right-9'
         ]"
         class="fixed w-14 h-14 p-2 rounded-full cursor-pointer hover"
         style="background: linear-gradient(135deg, #ff5e62 0%, var(--btn) 100%);"
@@ -218,6 +220,7 @@ import { api_url } from '@/assets/ts/backend_link';
 import type { Note } from '@/assets/ts/type';
 import { silveria_version } from '@/../package.json'
 import BackBtn from '../backBtn.vue';
+import isMobile from '@/assets/ts/utils/isMobile';
 
 const props = defineProps<{
     visible?: boolean;

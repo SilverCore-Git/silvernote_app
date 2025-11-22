@@ -1,11 +1,5 @@
 <template>
 
-    <div 
-        class="fixed inset-0 z-50"
-        @click="if_open_dropdown = false"
-        v-if="if_open_dropdown"
-    ></div>
-
     <header 
         style="
             font-family: 'InterTight', sans-serif; 
@@ -19,7 +13,7 @@
                 lg:inset-y-0 lg:left-0 inset-x-0
                 text-2xl font-bold lg:w-60
                 bg-[var(--bg2)] z-50 
-                lg:p-4 py-1 p-0 mt-4 lg:mt-6 mx-6
+                lg:p-4 py-1 p-0 my-4 lg:my-6 mx-6
                 flex items-start justify-center dropdown
             "
     >
@@ -157,7 +151,6 @@
 <script lang="ts" setup>
 
 import { UserButton } from '@clerk/vue';
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { version, dev } from '../../../package.json';
 import { notes_views_mode, toggle_notes_views_mode, notes_filter, type Notes_filter } from '@/assets/ts/Notes_views';
@@ -165,11 +158,6 @@ import New_note_btn from './New_note_btn.vue';
 import mobile from  '@/configs/mobile.json';
 
 const router = useRouter();
-const if_open_dropdown = ref<boolean>(false);
-
-// const openAccount = () => {
-//     window.open('https://www.silvernote.fr/user/profile');
-// }
 
 const setFilter = (a: Notes_filter): void => {
     notes_filter.value = a;
