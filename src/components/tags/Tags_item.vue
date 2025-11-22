@@ -1,22 +1,18 @@
 <template>
-    <div
-      v-bind="$attrs"
-      @contextmenu.prevent="onLongPress"
-      @touchstart="startPress"
-      @touchend="cancelPress"
-      @touchcancel="cancelPress"
+    <PressAndHold
+      @long-press="onPress"
       :class="active 
         ? 'border-3 px-1.5 py-0.5 border-[#F28C28] cursor-pointer' 
         : 'border-1 px-2 py-1 cursor-pointer'"
       class="inline-flex items-center justify-center 
             text-md uppercase text-center rounded-xl
-            whitespace-nowrap select-none"
+            whitespace-nowrap select-none min-w-14"
       :style="{ backgroundColor: tag_color, color: text_color }"
     >
       <span class="md:text-sm">
         {{ name }}
       </span>
-    </div>
+    </PressAndHold>
 
     <teleport to="body">
 
@@ -77,6 +73,7 @@ import utils from '@/assets/ts/utils';
 import db from '@/assets/ts/database/database';
 import type { Tag } from '@/assets/ts/type'
 import ConfirmDialog from '../popup/ConfirmDialog.vue';
+import PressAndHold from '../PressAndHold.vue';
 
 const props = defineProps<{
   name: string,
@@ -118,10 +115,7 @@ const save_tag_color = async () => {
   await db.save_tag_color(tag?.id || -1, tag_color.value)
 }
 
-const pressTimer = ref<number | null>(null);
-const delay = 1000; 
-
-function onLongPress() {
+function onPress() {
   document.addEventListener('contextmenu', (e) => {
 
     e.preventDefault();
@@ -131,20 +125,6 @@ function onLongPress() {
 
   })
   menu.value = !menu.value;
-}
-
-function startPress() {
-  cancelPress()
-  pressTimer.value = window.setTimeout(() => {
-    onLongPress()
-  }, delay)
-}
-
-function cancelPress() {
-  if (pressTimer.value !== null) {
-    clearTimeout(pressTimer.value)
-    pressTimer.value = null
-  }
 }
 
 onMounted(() => {
