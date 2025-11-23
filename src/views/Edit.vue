@@ -273,7 +273,7 @@
   <Tags_manager
     v-if="note"
     v-model:active="tagManager"
-    :tags="note.tags.map((tag: any) => number(tag))"
+    :tags="note.tags.map((tag: any) => Number(tag))"
     :loader="onUpdateTags"
     @update:tags="onTagsUpdate"
   />
@@ -403,7 +403,6 @@ import { showSearchBar } from '@/components/Markdown/tiptap-extensions/searchAnd
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import Tags_manager from '@/components/tags/tags_manager.vue';
 import BackBtn from '@/components/backBtn.vue';
-import { compareNatural, number } from 'mathjs';
 
 import getArrayFromNotionHTML from '@/assets/ts/utils/getArrayFromNotionHTML';
 const props = defineProps<{ id: number | 'new' }>()
