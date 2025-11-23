@@ -21,6 +21,23 @@
                     <ul>
 
                         <li
+                            @click="openNewTab()"
+                        >
+
+                            <div
+                                class="open-in-new-svg
+                                        mr-2
+                                        w-7
+                                        h-7
+                                    "
+                            ></div>
+
+                            Ouvrir dans un nouvelle onglet
+                        </li>
+
+                        <hr />
+
+                        <li
                             @click="change_pin_state()"
                         >
 
@@ -51,23 +68,6 @@
 
                             Modifier les tags
 
-                        </li>
-
-                        <hr />
-
-                        <li
-                            @click="openNewTab()"
-                        >
-
-                            <div
-                                class="open-in-new-svg
-                                        mr-2
-                                        w-7
-                                        h-7
-                                    "
-                            ></div>
-
-                            Ouvrir dans un nouvelle onglet
                         </li>
 
                         <li
@@ -101,6 +101,16 @@
                             ></div>
 
                             Supprimer
+
+                        </li>
+
+                        <li
+                            @click="copyUUID"
+                        >
+
+                            <i class="bi bi-copy mr-2 text-(--btn) font-extrabold text-xl" />
+
+                            Copier l'uuid
 
                         </li>
 
@@ -221,6 +231,10 @@ const onTagsUpdate = (newTags: number[]) => {
 
     db.saveTags(newTags, props.id);
 };
+
+const copyUUID = () => {
+    navigator.clipboard.writeText(note.value!.uuid);
+}
 
 onMounted(async () => {
 
