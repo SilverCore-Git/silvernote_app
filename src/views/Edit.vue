@@ -379,7 +379,7 @@
 
 <script lang="ts" setup>
 
-import { ref, onMounted, useAttrs, watch, onBeforeUnmount, nextTick } from 'vue';
+import { ref, onMounted, useAttrs, watch, onBeforeUnmount, nextTick, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { io, Socket } from 'socket.io-client';
 import { EmojiButton } from '@joeattardi/emoji-button';
@@ -387,7 +387,7 @@ import { useUser } from '@clerk/vue';
 
 import db from '@/assets/ts/database/database';
 import utils from '@/assets/ts/utils';
-import { Tags as all_tags } from '@/assets/ts/database/Var'; 
+import { Tags as all_tags, Notes } from '@/assets/ts/database/Var'; 
 import type { Note, Tag, User } from '@/assets/ts/type';
 import { stats, isLoaded } from '@/components/Markdown/Function/Stats';
 import { editor } from '@/components/Markdown/Editor';
@@ -403,7 +403,7 @@ import { showSearchBar } from '@/components/Markdown/tiptap-extensions/searchAnd
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import Tags_manager from '@/components/tags/tags_manager.vue';
 import BackBtn from '@/components/backBtn.vue';
-import { number } from 'mathjs';
+import { compareNatural, number } from 'mathjs';
 
 import getArrayFromNotionHTML from '@/assets/ts/utils/getArrayFromNotionHTML';
 const props = defineProps<{ id: number | 'new' }>()
@@ -413,8 +413,8 @@ const { user } = useUser();
 const note = ref<Note>({
     title: '',
     content: '',
+    icon: '',
     pinned: false,
-    simply_edit: false,
     date: '',
     id: -1,
     uuid: '',
@@ -592,6 +592,12 @@ const fixTags = async () => {
   };
 }
 
+const quit = () => {
+  const _note = Notes.value.find(_note => _note.id === note.value.id);
+  if (!_note) return console.log('note doesnt find on quit edit');
+
+  Object.assign(_note, note.value);
+}
 
 const wSocket = () => {
 
@@ -683,6 +689,7 @@ const create_new_note = async () => {
         simply_edit: false,
         title: note.value.title,
         content: note.value.content,
+        icon: note.value.icon,
         date: utils.date(),
         tags: []
       },
@@ -698,6 +705,8 @@ const create_new_note = async () => {
 
     await nextTick();
     setTimeout(() => title.value?.focus(), 200);
+
+    Notes.value.push(note.value);
 
 }
 
@@ -846,9 +855,11 @@ onBeforeUnmount(async () => {
   }
   else
   {
-    socket.emit('title-update', note.value?.title);
+    socket.emit('title-update', note.value.title);
   }
 });
+
+onUnmounted(() => quit());
 
 
 watch(() => note.value.title, () => {

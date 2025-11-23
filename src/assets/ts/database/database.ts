@@ -125,6 +125,7 @@ class Database {
         if (note) {
             note.pinned = !note.pinned;
             await db.put('notes', note);
+            await this.push_note(note);
         }
     }
 

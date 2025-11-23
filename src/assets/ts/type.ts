@@ -34,9 +34,9 @@ export interface Benefits {
 export interface Note {
     id: number;
     uuid: string;
-    icon?: string;
+    icon: string;
     pinned: boolean;
-    simply_edit: boolean;
+    simply_edit?: boolean;
     title: string;
     content: string;
     date: string;

@@ -104,7 +104,7 @@
 
         <div 
             class="flex-1 overflow-y-auto overflow-x-hidden h-full
-                    p-2 pt-0 pb-60 shadow-inner rounded-2xl" 
+                    p-2 pb-60 shadow-inner rounded-2xl" 
         >
 
             <div 
@@ -599,7 +599,6 @@ import isMobile from '@/assets/ts/utils/isMobile';
             view_notes.value = false;
             await nextTick();
             view_notes.value = true;
-            return;
         }
 
         view_notes.value = false;
@@ -654,7 +653,10 @@ import isMobile from '@/assets/ts/utils/isMobile';
 
     onMounted(async () => {
 
-        reload_list('local');
+        //reload_list('local');
+
+        await nextTick();
+        view_notes.value = true;
 
         if_danger_card.value = isOnline.value ? await back.info_message() ? true : false : false; 
         Danger_card_props.value = isOnline.value ? await back.info_message() : undefined;
