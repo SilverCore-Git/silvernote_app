@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang='ts'>
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 
 const props = withDefaults(defineProps<{
@@ -37,5 +37,12 @@ const handleClick = (): void => {
   }
 };
 
-    
+watch(() => hidden.value, (newVal) => {
+  localStorage.setItem('hiddenNews', JSON.stringify(newVal))
+})
+
+onMounted(() => {
+  hidden.value = localStorage.getItem('hiddenNews') == 'true' ? true : false;
+})
+
 </script>
