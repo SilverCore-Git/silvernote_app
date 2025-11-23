@@ -1,14 +1,6 @@
 <template>
 
   <div
-
-    v-if="origin === 'ai' && text.length < 1"
-    class="loader"
-
-  ></div>
-
-  <div 
-    v-else
     :class="[
       ' break-normal max-w-[85%] p-4 rounded-2xl',
       origin === 'ai' ? 'ai-message' : origin === 'error' ? 'error-message' : 'user-message max-w-[75%]'
@@ -16,240 +8,174 @@
     style="animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);"
   >
 
-    <div v-if="origin === 'ai'" class="ai-content">
+    <div v-if="props.origin === 'ai'" class="ai-content space-y-4">
 
-      <TransitionGroup 
-        name="tool-list" 
-        tag="div" 
-        class="tools-timeline"
-      >
+      <div class="timeline flex flex-col gap-2">
 
-        <div 
-          v-for="(action, index) in toolActions" 
-          :key="`tool-${index}`"
-        >
+        <TransitionGroup name="list">
 
-          <div class="tool-card-header">
-            <div class="tool-badge" :class="`badge-${action.status}`">
-              <i class="badge-icon" :class="getToolIcon(action.status)" />
-              <span class="badge-text">{{ 
-                formatToolName(action.name) 
-              }}</span>
-            </div>
+          <div v-for="(item, index) in timelineItems" :key="`timeline-${index}`" class="timeline-item">
             
-            <div class="tool-timestamp">
-              {{ action.timestamp }}
+            <div v-if="item.type === 'text'" class="ai-text markdown-body leading-relaxed">
+              <div v-html="item.content"></div>
             </div>
+
+            <div v-else-if="item.type === 'tool'" class="tool-item my-2">
+              <div 
+                class="tool-toggle flex items-center gap-2 cursor-pointer font-bold select-none" 
+                @click="item.isOpen = !item.isOpen"
+              >
+                <i :class="['bi transition-transform duration-200', item.isOpen ? 'bi-chevron-down' : 'bi-chevron-right']"></i>
+                <span class="text-sm">
+                  {{ item.status === 'loading' ? 'Exécution en cours...' : `${item.results?.length || 0} étapes exécutées` }}
+                </span>
+                <span v-if="item.status === 'loading'" class="flex h-2 w-2 relative ml-1">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                </span>
+              </div>
+
+              <Transition name="expand">
+                <div v-if="item.isOpen" class="tool-details ml-6 mt-2 text-sm border-l-2 pl-3">
+
+                  <!-- <div v-if="item.toolNames?.length" class="mb-1 text-xs uppercase tracking-wider opacity-70">
+                    Actions : {{ item.toolNames.join(', ') }}
+                  </div> -->
+
+                  <div v-for="(res, i) in item.results" :key="i" class="tool-result italic mb-1">
+                    <i class="bi bi-check2 text-green-600 mr-1"></i> {{ res }}
+                  </div>
+
+                  <div v-if="item.status === 'loading'" class="loading-bar mt-2">
+                    <div class="loading-progress"></div>
+                  </div>
+                </div>
+              </Transition>
+            </div>
+
           </div>
-
-          <div class="tool-card-header" v-if="action.result">
-            <div class="tool-badge" :class="`badge-${action.status}`">
-            <i class="badge-icon" :class="getToolIcon(action.status)" />
-              <span class="badge-text">{{ 
-                formatToolName(action.result) 
-              }}</span>
-            </div>
-          </div>
-
-          <Transition name="fade">
-            <div v-if="action.status === 'loading'" class="loading-bar">
-              <div class="loading-progress"></div>
-            </div>
-          </Transition>
-          
-        </div>
-
-      </TransitionGroup>
-
-      <div v-if="cleanedText" class="ai-text">
-        <div 
-          v-for="(chunk, index) in renderedChunks"
-          :key="index"
-          class="text-chunk"
-          v-html="chunk.replace('[DONE]', '').replace('#34', ' ')"
-        ></div>
+        </TransitionGroup>
       </div>
 
-      <div v-if="isTyping" class="typing-wrapper">
+      <div v-if="isTyping" class="typing-wrapper flex items-center gap-2 mt-2">
         <div class="typing-indicator">
-          <span></span>
-          <span></span>
-          <span></span>
+          <span></span><span></span><span></span>
         </div>
-        <span class="typing-text">SilverIA réfléchit...</span>
-      </div>
-      
-    </div>
-
-    <div 
-      v-else-if="origin === 'user'" 
-      class="user-content"
-    >
-      <div>{{ text }}</div>
-    </div>
-
-    <div v-else class="error-content">
-      <div class="error-icon">⚠️</div>
-      <div class="error-details">
-        <div class="error-title">Erreur</div>
-        <div class="error-text">{{ text }}</div>
+        <span class="typing-text text-sm font-medium">SilverIA réfléchit...</span>
       </div>
     </div>
 
+    <div v-else-if="props.origin === 'user'" class="user-content text-sm">
+      {{ props.text }}
+    </div>
+
+    <div v-else class="error-content flex items-start gap-3 text-red-600">
+      <div class="text-xl">⚠️</div>
+      <div>
+        <div class="font-bold text-sm">Erreur</div>
+        <div class="text-xs opacity-90">{{ props.text.replace('[GoogleGenerativeAI Error]', '') }}</div>
+      </div>
+    </div>
   </div>
-
 </template>
 
 <script setup lang="ts">
-
-import { ref, watch, nextTick, onMounted } from 'vue';
+import { ref, watch, nextTick } from 'vue';
 import { marked } from 'marked';
 
-const props = defineProps<{
-  origin: 'ai' | 'user' | 'error' | 'tool';
-  text: string;
-}>();
+const _props = defineProps<{ origin: 'ai' | 'user' | 'error'; text: string }>();
+const props = ref({ origin: _props.origin, text: _props.text });
+watch(_props, () => props.value = _props);
 
-const emit = defineEmits<{
-  (e: 'scroll-to-bottom'): void;
-}>();
-
-interface ToolAction {
-  name: string;
-  status: 'loading' | 'success' | 'error';
-  result?: string;
-  args?: Record<string, any>;
-  timestamp: string;
+interface TimelineItem {
+  type: 'text' | 'tool';
+  content?: string;
+  toolNames?: string[];
+  results?: string[];
+  status?: 'loading' | 'success';
+  isOpen?: boolean;
 }
 
-const toolActions = ref<ToolAction[]>([]);
-const cleanedText = ref<string>('');
-const isTyping = ref<boolean>(false);
-const renderedChunks = ref<string[]>([]);
+const timelineItems = ref<TimelineItem[]>([]);
+const isTyping = ref<boolean>(true);
 
-function scrollToBottom() {
-  nextTick(() => {
-    emit('scroll-to-bottom');
-  });
-}
+const emit = defineEmits<{ (e: 'scroll-to-bottom'): void }>();
 
+marked.setOptions({ breaks: true, gfm: true });
 
-watch(() => props.text, (newText, oldText) => {
-
-  if (props.origin !== 'ai') {
-    if (newText !== oldText) {
-      scrollToBottom();
-    }
-    return;
-  }
-
-  let processedText = newText;
-  const newToolActions: ToolAction[] = [...toolActions.value];
-  let hasChanges = false;
-
-  // Extraire les appels de tools
-  const toolsMatch = processedText.match(/\[TOOLS:(.*?)\]/g);
-  if (toolsMatch) {
-    toolsMatch.forEach(match => {
-      const toolNames = match.replace('[TOOLS:', '').replace(']', '').split(',');
-      toolNames.forEach(name => {
-        if (name.trim() && !newToolActions.find(a => a.name === name.trim())) {
-          newToolActions.push({
-            name: name.trim(),
-            status: 'loading',
-            timestamp: new Date().toLocaleTimeString('fr-FR', { 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            }),
-          });
-          hasChanges = true;
-        }
-      });
-      processedText = processedText.replace(match, '');
-    });
-  }
-
-  // Extraire les résultats
-  const resultsMatch = processedText.match(/\[TOOL_RESULT:(.*?)\]/g);
-  if (resultsMatch) {
-    let resultIndex = 0;
-    resultsMatch.forEach(match => {
-      const result = match.replace('[TOOL_RESULT:', '').replace(']', '');
-      
-      // Trouver le prochain tool en loading
-      for (let i = resultIndex; i < newToolActions.length; i++) {
-        if (newToolActions[i].status === 'loading') {
-          newToolActions[i].status = 'success';
-          newToolActions[i].result = result;
-          resultIndex = i + 1;
-          hasChanges = true;
-          break;
-        }
-      }
-      
-      processedText = processedText.replace(match, '');
-    });
-  }
-
-  const textChanged = cleanedText.value !== processedText.trim();
-
-  toolActions.value = newToolActions;
-  cleanedText.value = processedText.trim();
-  
-  // Diviser le texte en chunks pour animation
-  if (cleanedText.value) {
-    const paragraphs = cleanedText.value.split('\n\n');
-    renderedChunks.value = paragraphs.map(p => renderMarkdown(p));
-  }
-  
-  isTyping.value = cleanedText.value.length > 0 && 
-                   !cleanedText.value.match(/[.!?]$/) &&
-                   !cleanedText.value.includes('[DONE]');
-
-  // Scroll si changements
-  if (hasChanges || textChanged) {
-    scrollToBottom();
-  }
+watch(() => props.value.text, (newText) => {
+  parseStream(newText);
 }, { immediate: true });
 
-onMounted(() => {
-  scrollToBottom();
-});
-
-function formatToolName(name: string): string {
-  const names: Record<string, string> = {
-    'edit_note_content': 'édition de la note',
-    'edit_note_title': 'édition du titre',
-    'edit_note_icon': 'édition de l\'icône',
-  };
+function parseStream(fullText: string) {
+  const items: TimelineItem[] = [];
+  // Regex qui capture les outils, les résultats, et le tag de fin
+  const regex = /(\[TOOLS:[^\]]+\]|\[TOOL_RESULT:[^\]]+\]|\[DONE\])/g;
   
-  return names[name] || name
-    .split('_')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
+  let lastIndex = 0;
+  let match;
 
-function getToolIcon(status: string): string {
-  switch (status) {
-    case 'loading': return 'bi bi-hourglass-split text-amber-500';
-    case 'success': return 'bi bi-check-circle-fill text-emerald-500';
-    case 'error': return 'bi bi-x-circle-fill text-rose-500';
-    default: return 'bi bi-wrench-adjustable-circle-fill text-indigo-500';
+  while ((match = regex.exec(fullText)) !== null) {
+    // 1. Texte avant le tag
+    const textSegment = fullText.slice(lastIndex, match.index).trim();
+    if (textSegment) {
+      items.push({ 
+        type: 'text', 
+        content: marked.parse(textSegment) as string 
+      });
+    }
+
+    const token = match[0];
+
+    // 2. Gestion des tags
+    if (token.startsWith('[TOOLS:')) {
+      const names = token.replace('[TOOLS:', '').replace(']', '').split(',');
+      items.push({
+        type: 'tool',
+        toolNames: names,
+        results: [],
+        status: 'loading',
+        isOpen: false
+      });
+    } 
+    else if (token.startsWith('[TOOL_RESULT:')) {
+      const resultText = token.replace('[TOOL_RESULT:', '').replace(']', '');
+      // Ajout au dernier tool trouvé
+      const lastTool = items.filter(i => i.type === 'tool').pop();
+      if (lastTool) {
+        lastTool.results?.push(resultText);
+      }
+    }
+    else if (token === '[DONE]') {
+      isTyping.value = false;
+    }
+
+    lastIndex = regex.lastIndex;
   }
-}
 
-function renderMarkdown(text: string): string {
-  if (!text) return '';
-  
-  marked.setOptions({
-    breaks: true,
-    gfm: true,
+  // 3. Texte restant après le dernier tag
+  const remainingText = fullText.slice(lastIndex).trim();
+  if (remainingText) {
+    items.push({ 
+      type: 'text', 
+      content: marked.parse(remainingText) as string 
+    });
+  }
+
+  // Mise à jour des statuts : tout ce qui n'est pas le dernier élément est considéré comme fini
+  items.forEach((item, idx) => {
+    if (item.type === 'tool') {
+      const isLastItem = idx === items.length - 1;
+      item.status = isLastItem && isTyping.value ? 'loading' : 'success';
+    }
   });
-  
-  return marked.parse(text) as string;
+
+  timelineItems.value = items;
+  isTyping.value = !fullText.includes('[DONE]');
+  nextTick(() => emit('scroll-to-bottom'));
 }
 </script>
 
-<style lang="css" scoped>
+<style scoped>
 @import './MessageDubble.css';
 </style>
