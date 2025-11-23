@@ -276,7 +276,7 @@
 .error-message {
   background: linear-gradient(135deg, #f44336 0%, #e91e63 100%);
   color: white;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .error-content {

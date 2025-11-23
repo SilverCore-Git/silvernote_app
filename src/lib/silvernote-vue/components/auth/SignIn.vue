@@ -51,9 +51,10 @@ const handleSubmit = async () => {
     
             <div 
                 class="
-                    relative z-10 bg-[var(--bg2)] rounded-2xl shadow-lg 
-                    p-8 w-full max-w-md
+                    relative z-10 bg-[var(--bg2)]/70 rounded-2xl 
+                    p-8 md:w-full max-w-md shadow-lg mx-4
                 "
+                style="backdrop-filter: blur(40px);"
             >
 
                 <header class="text-center mb-6">

@@ -32,6 +32,7 @@ const dev_db: { notes: Note[], tags: Tag[] } = {
       simply_edit,
       title,
       content,
+      icon: '',
       date,
       tags
     } as Note;

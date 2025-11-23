@@ -92,70 +92,12 @@ const { isSignedIn } = useAuth()
 
 const is_offline = ref<boolean>(false);
 
-// last v for onmunted func
-// onMounted(async () => {
-  
-//   init_theme();
 
-//   let trys = 0;
-
-//   const interval = setInterval(async () => {
-
-//     if (isLoaded.value) {
-
-//       clearInterval(interval);
-
-//       if (!isSignedIn.value) {
-//         router.push({
-//           query: route.query,
-//           path: "/auth/sign"
-//         });
-//         open_chatbot.value = false;
-//         loader.value = false;
-//         return;
-//       }
-
-//       if (user.value) {
-
-//         InitDB.init(user);
-//         await InitDB.main();
-
-//       }
-
-//     }
-
-//     console.log('Try : ', trys);
-
-//     if (trys === 10) {
-//       console.log('offline')
-//       clearInterval(interval);
-//       is_offline.value = true;
-//       return;
-//     }
-
-//     trys++
-
-//   }, 1000);
-
-//   const stopLoader = setInterval(async () => {
-
-//     if (isLoaded.value && InitDB.isLoaded()) {
-//       clearInterval(stopLoader);
-
-//       loader.value = false;
-//       loaded.value = true;
-      
-//       await session.create(user.value);
-//     }
-
-//   }, 1000);
-
-// });
-
-//new on munted func
 onMounted(async () => {
 
   init_theme();
+  
+  localStorage.removeItem('hiddenNews');
 
   let online = false;
   try {

@@ -53,22 +53,6 @@
 
                         </li>
 
-                        <li
-                            @click="delete_note(1)"
-                        >
-
-                            <div
-                                class="bin-svg
-                                        mr-2
-                                        w-7
-                                        h-7
-                                    "
-                            ></div>
-
-                            Supprimer
-
-                        </li>
-
                         <hr />
 
                         <li
@@ -102,6 +86,24 @@
 
                         </li>
 
+                        <hr />
+
+                        <li
+                            @click="delete_note(1)"
+                        >
+
+                            <div
+                                class="bin-svg
+                                        mr-2
+                                        w-7
+                                        h-7
+                                    "
+                            ></div>
+
+                            Supprimer
+
+                        </li>
+
 
                     </ul>
                 
@@ -114,7 +116,7 @@
                 :active="manage_tags"
                 :tags="note.tags.map(tag => Number(tag))"
                 @update:tags="onTagsUpdate"
-                @update:active="manage_tags = $event; function_reload()"
+                @update:active="manage_tags = $event;"
             />
 
             <Share_menu
@@ -156,7 +158,7 @@ const props = defineProps<{
     visible: boolean;
     top: number;
     left: number;
-    function_reload: () => Promise<any>;
+    function_reload: (e?: string) => Promise<any>;
 }>();
 
 const emit = defineEmits(['update:visible']);
@@ -200,13 +202,24 @@ const openNewTab = () => {
 
 const change_pin_state = async () => {
     if_pin_active.value = !if_pin_active.value;
+
+    const _note = Notes.value.find(_note => _note.uuid === note.value!.uuid);
+
+    if (!_note || !note.value) return;
+    _note.pinned = !note.value.pinned;
+    
+    props.function_reload('just_view');
     await db.togle_pinned(props.id);
-    props.function_reload();
 };
 
 const onTagsUpdate = (newTags: number[]) => {
-  db.saveTags(newTags, props.id);
-  props.function_reload();
+
+    const _note = Notes.value.find(_note => _note.uuid === note.value!.uuid);
+
+    if (!_note) return;
+    _note.tags =  newTags;
+
+    db.saveTags(newTags, props.id);
 };
 
 onMounted(async () => {

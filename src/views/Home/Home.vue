@@ -46,10 +46,10 @@
                             v-for="(tag, index) in all_tags"
                             :key="index"
                             class="!w-auto"
+                            @click.stop="add_tag_filter(tag.id)" 
                         >
 
                             <Tags_item 
-                                @click.stop="add_tag_filter(tag.id)" 
                                 @reload="reload_list"
                                 :id="tag.id" :name="tag.name" 
                                 :tag="tag.name" 
@@ -61,10 +61,12 @@
                             
                     </Swiper>
 
-                    <div v-tooltip.bottom="'Créer un tag'">
+                    <div 
+                        v-tooltip.bottom="'Créer un tag'" 
+                        @click="openTagCreator"
+                    >
 
                         <Tags_item 
-                            @click="openTagCreator" 
                             :id="null"
                             name="+"
                             :tag="''"
@@ -91,7 +93,7 @@
             <Danger_card 
                 v-if="if_danger_card" 
                 style="box-shadow: 0 0 15px #3636364f;" 
-                class="mt-4 lg:w-2/3"
+                class="mt-4 w-full"
                 :title="Danger_card_props?.title"
                 :btn="Danger_card_props?.btn"
                 :href="Danger_card_props?.href"
@@ -102,7 +104,7 @@
 
         <div 
             class="flex-1 overflow-y-auto overflow-x-hidden h-full
-                    p-2 pt-0 pb-60 shadow-inner rounded-2xl" 
+                    p-2 pb-60 shadow-inner rounded-2xl" 
         >
 
             <div 
@@ -597,7 +599,6 @@ import isMobile from '@/assets/ts/utils/isMobile';
             view_notes.value = false;
             await nextTick();
             view_notes.value = true;
-            return;
         }
 
         view_notes.value = false;
@@ -652,7 +653,10 @@ import isMobile from '@/assets/ts/utils/isMobile';
 
     onMounted(async () => {
 
-        reload_list('local');
+        //reload_list('local');
+
+        await nextTick();
+        view_notes.value = true;
 
         if_danger_card.value = isOnline.value ? await back.info_message() ? true : false : false; 
         Danger_card_props.value = isOnline.value ? await back.info_message() : undefined;
