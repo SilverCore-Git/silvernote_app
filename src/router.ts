@@ -62,7 +62,7 @@ const routes = [
     path: '/auth/sign',
     name: 'sign',
     component: signPage,
-    meta: { title: 'auth - Silvernote' }
+    meta: { title: 'Se connecter - Silvernote' }
   },
   { 
     path: '/auth/sso-callback',
