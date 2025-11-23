@@ -91,7 +91,7 @@
             <Danger_card 
                 v-if="if_danger_card" 
                 style="box-shadow: 0 0 15px #3636364f;" 
-                class="mt-4 lg:w-2/3"
+                class="mt-4 w-full"
                 :title="Danger_card_props?.title"
                 :btn="Danger_card_props?.btn"
                 :href="Danger_card_props?.href"

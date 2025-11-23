@@ -1,12 +1,14 @@
 <template>
 
     <div 
+        v-if="!hidden"
         :class="btn ? 'cursor-pointer' : ''" 
-        class="bg-[#fff2d0] text-[var(--btn)] p-3 border-[var(--text)] 
-              border-2 relative pl-4" 
+        class="bg-[#fff2d0] text-[var(--btn)] p-3
+              border-2 border-[var(--text)]  relative" 
         style="border-radius: 15px; font-family: 'Montserrat';"
         @click="handleClick"
     >
+        <i @click="hidden = true" class="bi bi-x absolute top-1 right-1 text-4xl cursor-pointer" />
         <h1 class="font-bold text-xl md:text-xl">{{ title }}</h1>
         <p class="text-md md:text-md">{{ content }}</p>
     </div>
@@ -14,6 +16,8 @@
 </template>
 
 <script setup lang='ts'>
+import { ref } from 'vue';
+
 
 const props = withDefaults(defineProps<{
   title?: string,
@@ -24,6 +28,8 @@ const props = withDefaults(defineProps<{
   href: '',
   btn: false
 });
+
+const hidden = ref<boolean>(false);
 
 const handleClick = (): void => {
   if (props.btn && props.href) {
