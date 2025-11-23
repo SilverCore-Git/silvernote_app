@@ -111,12 +111,11 @@
                 class="space-y-5"
                 v-if="notes_views_mode == 'tag'"
             >
-
                 <div 
                     v-for="tag in all_tags"
+                    :key="tag.id"
                 >
-
-                    <div v-if="list_notes && list_notes.find(note => Array.isArray(note.tags) && note.tags.includes(tag.id))">
+                    <div class="h-full" v-if="list_notes && list_notes.find(note => Array.isArray(note.tags) && note.tags.includes(tag.id))">
 
                         <div 
                             class="font-bold text-lg p-2 rounded-[var(--br-btn)]
@@ -126,41 +125,32 @@
                             {{ tag.name }}
                         </div>
 
-                        <MasonryWrapper 
-                            class="space-y-4 mt-2
-                            columns-2 md:columns-3 lg:columns-4  "
+                        <div 
+                            class="grid gap-4 mt-2
+                            grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                         >
-
-                            <MasonryItem 
+                            <Note_card
                                 v-if="list_notes && list_notes.length"
                                 v-for="(note, index) in list_notes.filter(note => note.tags.includes(tag.id))" 
-                                :key="index"
-                            >
-
-                                <Note_card
-                                    @pin="withdraw"
-                                    :id="note.id"
-                                    :icon="note.icon"
-                                    :uuid="note.uuid"
-                                    :pinned="note.pinned"
-                                    :title="note.title" 
-                                    :content="note.content" 
-                                    :date="note.date"
-                                    :tags="note.tags.map(tag => Number(tag))"
-                                    :function_reload="reload_list"
-                                />
-
-                            </MasonryItem>
-                        
-                        </MasonryWrapper>
+                                :key="note.id"
+                                @pin="withdraw"
+                                :id="note.id"
+                                :icon="note.icon"
+                                :uuid="note.uuid"
+                                :pinned="note.pinned"
+                                :title="note.title" 
+                                :content="note.content" 
+                                :date="note.date"
+                                :tags="note.tags.map(tag => Number(tag))"
+                                :function_reload="reload_list"
+                            />
+                        </div>
 
                     </div>
-
                 </div>
-
             </div>
 
-            <ul
+            <div
                 v-if="notes_views_mode == 'default'"
             >
 
@@ -322,7 +312,7 @@
                     </ul>
                 </li>
 
-            </ul>
+            </div>
 
         </div>
 
