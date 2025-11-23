@@ -46,10 +46,10 @@
                             v-for="(tag, index) in all_tags"
                             :key="index"
                             class="!w-auto"
+                            @click.stop="add_tag_filter(tag.id)" 
                         >
 
                             <Tags_item 
-                                @click.stop="add_tag_filter(tag.id)" 
                                 @reload="reload_list"
                                 :id="tag.id" :name="tag.name" 
                                 :tag="tag.name" 
@@ -61,10 +61,12 @@
                             
                     </Swiper>
 
-                    <div v-tooltip.bottom="'Créer un tag'">
+                    <div 
+                        v-tooltip.bottom="'Créer un tag'" 
+                        @click="openTagCreator"
+                    >
 
                         <Tags_item 
-                            @click="openTagCreator" 
                             :id="null"
                             name="+"
                             :tag="''"
