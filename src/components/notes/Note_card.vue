@@ -29,8 +29,7 @@
       />
 
       <span
-        class="overflow-hidden text-ellipsis uppercase"
-        :class="note_settings ? 'whitespace-normal' : 'whitespace-nowrap'"
+        class="overflow-hidden text-ellipsis uppercase whitespace-nowrap"
         v-html="utils.clean_html(title)"
       ></span>
 
@@ -38,16 +37,12 @@
 
     <p
       v-if="cleanHTML === false && IsPrivate"
-      class="text-xs my-2"
-      :class="note_settings && !isMobile ? 'multiline-14' : 'multiline-8'"
-      :style="{ maxHeight: note_settings && !isMobile ? '16em' : '' }"
+      class="text-xs my-2 multiline-8"
     >{{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 600) }}</p>
 
     <p
       v-else
-      class="text-xs my-2"
-      :class="note_settings && !isMobile ? 'multiline-14' : 'multiline-8'"
-      :style="{ maxHeight: note_settings && !isMobile ? '16em' : '' }"
+      class="text-xs my-2 multiline-8"
       v-html="utils.clean_html(content).slice(0, 600)"
     ></p>
 
@@ -106,7 +101,6 @@ import { IsPrivate } from '@/assets/ts/settings/privatMode';
 
 import PressAndHold from '../PressAndHold.vue';
 import Note_settings from './Note_Settings.vue';
-import isMobile from '@/assets/ts/utils/isMobile';
 
 
 const props = defineProps<{
@@ -224,7 +218,7 @@ watch(theme, () => {
   transform: scale(1.05);
 }
 
-.note-card:hover p {
+/* .note-card:hover p {
   max-height: 16em;
 }
 
@@ -234,7 +228,7 @@ watch(theme, () => {
 
 .note-card:hover .multiline-8 {
   -webkit-line-clamp: 14;
-}
+} */
 
 .folder-svg {
   background-image: url('../assets/svgs/folder.svg');

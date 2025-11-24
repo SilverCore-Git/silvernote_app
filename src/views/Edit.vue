@@ -72,8 +72,7 @@
       >
 
         <div 
-          class="dropdown absolute right-0 "
-          :style="{ top: `calc(3.4rem + env(safe-area-inset-top))` }"
+          class="dropdown absolute right-0 top-14"
         >
 
           <ul>
@@ -94,6 +93,7 @@
             <hr />
 
             <li @click="share_menu = true">Partager</li>
+            <li @click="saveNote(Number(props.id))">Sauvegarder</li>
             <li class="text-red-600" @click="delete_note(1)">Supprimer</li>
 
             <hr />
@@ -405,6 +405,7 @@ import Tags_manager from '@/components/tags/tags_manager.vue';
 import BackBtn from '@/components/backBtn.vue';
 
 import getArrayFromNotionHTML from '@/assets/ts/utils/getArrayFromNotionHTML';
+import { saveNote } from '@/components/Markdown/Function/saveNote';
 const props = defineProps<{ id: number | 'new' }>()
 const { user } = useUser();
 

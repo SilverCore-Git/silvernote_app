@@ -131,7 +131,7 @@
                         >
                             <Note_card
                                 v-if="list_notes && list_notes.length"
-                                v-for="(note, index) in list_notes.filter(note => note.tags.includes(tag.id))" 
+                                v-for="note in list_notes.filter(note => note.tags.includes(tag.id))" 
                                 :key="note.id"
                                 @pin="withdraw"
                                 :id="note.id"
