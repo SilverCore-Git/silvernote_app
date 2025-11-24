@@ -69,7 +69,7 @@ import Highlight from '@tiptap/extension-highlight'
 import { editor, isLoaded } from './Editor';
 import { saveNote } from './Function/saveNote.js';
 import SaveIndicator from './SaveIndicator.vue';
-//import { SelectionRectangle } from './tiptap-extensions/SelectionRectangle.js';
+import { SelectionRectangle } from './tiptap-extensions/SelectionRectangle.js';
 
 const props = defineProps<{
   id: number
@@ -208,7 +208,7 @@ const initEditor = async () => {
       Youtube.configure({ HTMLAttributes: { class: 'ytb-viewer' } }),
       UndoRedo,
       Color,
-      //SelectionRectangle.configure({ dragHandle: DragHandle }), => a voir / a fix
+      SelectionRectangle.configure({ dragHandle: DragHandle }),
       TextStyle,
       Highlight.configure({
         multicolor: true

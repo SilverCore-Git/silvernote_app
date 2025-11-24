@@ -152,11 +152,12 @@
 
             <div
                 v-if="notes_views_mode == 'default'"
+                class="dragDown"
             >
 
                 <MasonryWrapper 
                     v-if="view_notes && list_notes && shared_notes && list_notes.length > 0"
-                    class="w-full "
+                    class="w-full"
                 >
 
                     <MasonryHr 
@@ -424,6 +425,7 @@
     import { onMounted, ref, watch, onUnmounted, nextTick } from 'vue';
     import { Swiper, SwiperSlide } from 'swiper/vue';
     import 'swiper/css';
+    import Hammer from 'hammerjs';
 
     import db from '@/assets/ts/database/database';
     import back from '@/assets/ts/backend_link';
@@ -449,7 +451,7 @@
     import { usePlan } from '@/assets/ts/user/UserPlan';
     import { salert } from '@/assets/ts/salert';
     import New_note_btn from './New_note_btn.vue';
-import isMobile from '@/assets/ts/utils/isMobile';
+    import isMobile from '@/assets/ts/utils/isMobile';
     
     const router = useRouter();
     const { plan } = usePlan();
@@ -465,7 +467,7 @@ import isMobile from '@/assets/ts/utils/isMobile';
     const if_danger_card = ref<boolean>(false); 
     const Danger_card_props = ref<{ message: string, title: string, btn: boolean, href: string } | undefined>(undefined);
 
-    const isRotating = ref(false);
+    const isRotating = ref<boolean>(false);
     const if_open_create_tag = ref<boolean>(false);
     const inputRef = ref<HTMLInputElement | null>(null);
 
@@ -640,16 +642,34 @@ import isMobile from '@/assets/ts/utils/isMobile';
 
     }
 
+    const initHammer = () => {
+
+        const dragDownElement: HTMLElement | null = document.querySelector('.dragDown');
+        if (!dragDownElement) return;
+
+        const hammer = new Hammer(dragDownElement);
+
+        hammer.get('pan').set({ direction: Hammer.DIRECTION_DOWN });
+
+        hammer.on('pan', (ev) => {
+            if (ev.deltaY > 160) { // seuil pour déclencher le pull
+                reload_list();
+            }
+        });
+
+    }
+
 
     onMounted(async () => {
-
-        //reload_list('local');
 
         await nextTick();
         view_notes.value = true;
 
         if_danger_card.value = isOnline.value ? await back.info_message() ? true : false : false; 
         Danger_card_props.value = isOnline.value ? await back.info_message() : undefined;
+
+        await nextTick();
+        initHammer();
 
     });
 
