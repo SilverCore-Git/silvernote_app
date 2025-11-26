@@ -1,6 +1,9 @@
 import { ref } from 'vue';
 import DOMPurify from 'dompurify';
 import { api_url } from './backend_link';
+import type { Note } from './type';
+import { version } from '@/../package.json';
+import downloadSnoteWithJSON from './utils/downloadSnoteWithJSON';
 
 
 class utils {
@@ -134,6 +137,40 @@ class utils {
         a.download = fileName;
         a.click();
         window.URL.revokeObjectURL(url);
+
+    }
+
+    public async downloadHtmlToSnote(note: Note, fileName = "document.snote")
+    {
+
+        const userId = localStorage.getItem('user_id');
+
+        interface SnoteFile {
+            snote_file_type: 'note';
+            note: Note;
+            hash: string;
+            fileInfo: {
+                date: Date,
+                senderId: string;
+                senderVersion: string;
+            },
+        }
+        
+        const snoteFile: SnoteFile = {
+            snote_file_type: 'note',
+            note,
+            hash: await this.hash(note),
+            fileInfo: {
+                date: new Date(),
+                senderId: userId!,
+                senderVersion: version
+            }
+        }
+
+        downloadSnoteWithJSON({
+            json: snoteFile,
+            fileName
+        });
 
     }
 

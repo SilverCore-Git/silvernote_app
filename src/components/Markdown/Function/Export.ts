@@ -11,17 +11,17 @@ export const download = async ({
     format,
     id
 }: {
-    format: 'pdf' | 'html',
+    format: 'pdf' | 'html' | 'snote',
     id: number;
 }): Promise<void> => 
 
 {
 
-    const note = await db.getNote(id);
+    const note: Note | undefined = await db.getNote(id);
     const html = editor.value?.getHTML();
     if (!note || !html) return;
 
-    const fileName = note.title.replace(' ', '_') + '.' + format;    
+    const fileName = note.title.replace(/ /g, '_') + '.' + format;
     const htmlContent = HtmlFileModel({ ...note, content: html });
 
     if (format == 'html') 
@@ -29,14 +29,21 @@ export const download = async ({
         utils.downloadHtmlFile(
             htmlContent,
             fileName
-        )
+        );
     }
     else if (format == 'pdf')
     {
         utils.downloadHtmlToPdf(
             htmlContent,
             fileName
-        )
+        );
+    }
+    else if (format == 'snote')
+    {
+        utils.downloadHtmlToSnote(
+            note, 
+            fileName
+        );
     }
 
 }

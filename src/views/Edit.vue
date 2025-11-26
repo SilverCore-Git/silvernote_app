@@ -78,22 +78,25 @@
           <ul>
 
             <li @click="tagManager = true">Gérer les tags</li>
+            <li v-if="editor" @click="showSearchBar">Rechercher</li>
 
             <hr />
 
             <li v-if="editor" @click="()=> editor?.chain().focus().undo().run()">Annuler</li>
             <li v-if="editor" @click="()=> editor?.chain().focus().redo().run()">Rétablir</li>
-            <li v-if="editor" @click="showSearchBar">Rechercher</li>
 
             <hr />
 
-            <li @click="import_menu = true">Importer</li>
             <li @click="export_menu = true">Exporter</li>
+            <li @click="import_menu = true">Importer</li>
 
             <hr />
 
             <li @click="share_menu = true">Partager</li>
             <li @click="saveNote(Number(props.id))">Sauvegarder</li>
+
+            <hr />
+
             <li class="text-red-600" @click="delete_note(1)">Supprimer</li>
 
             <hr />
@@ -295,6 +298,7 @@
         >
           <option value="pdf">pdf</option>
           <option value="html">html</option>
+          <option value="snote">snote</option>
         </select>
 
       </div>
@@ -450,7 +454,7 @@ let socket: Socket;
 const export_note = async (ext: string): Promise<void> => {
   export_loading.value = true;
   await download({
-    format: ext as 'html' | 'pdf',
+    format: ext as 'html' | 'pdf' | 'snote',
     id: note.value.id
   }).then(() => {
     export_loading.value = false;

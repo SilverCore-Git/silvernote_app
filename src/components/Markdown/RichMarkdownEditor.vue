@@ -395,8 +395,8 @@ window.addEventListener('beforeunload', () => {
 
 /* SelectionRectangle */
 .selection-rectangle {
-  border: 2px dashed #3399FF;
-  background-color: rgba(51, 153, 255, 0.2);
+  border: 2px dashed var(--btn);
+  background-color: rgba(255, 116, 51, 0.2);
   position: absolute;
   pointer-events: none;
   z-index: 9999;

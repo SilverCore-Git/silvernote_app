@@ -29,8 +29,8 @@ export const SelectionRectangle = Extension.create({
       div.style.top = `${top}px`;
       div.style.width = `${width}px`;
       div.style.height = `${height}px`;
-      div.style.border = '2px dashed #3399FF';
-      div.style.backgroundColor = 'rgba(51, 153, 255, 0.2)';
+      div.style.border = '2px dashed var(--btn)';
+      div.style.backgroundColor = 'rgba(255, 116, 51, 0.2)';
       div.style.pointerEvents = 'none';
       div.style.zIndex = '9999';
 

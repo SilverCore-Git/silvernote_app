@@ -144,6 +144,9 @@ onMounted(async () => {
     return;
   }
 
+  if (!user.value?.id) return;
+  localStorage.setItem('user_id', user.value?.id);
+
   loader.value = false;
   loaded.value = true;
 
