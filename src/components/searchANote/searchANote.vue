@@ -76,7 +76,7 @@ import utils from '@/assets/ts/utils';
 
 const searchQuery = ref<string>('');
 
-const emit = defineEmits<{
+defineEmits<{
     (e: 'note', value: number): void;
 }>()
 
