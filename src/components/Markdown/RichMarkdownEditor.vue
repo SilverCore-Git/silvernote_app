@@ -22,6 +22,8 @@
 
   <SaveIndicator />
 
+  <MdInputBtn v-if="isMobile" />
+
 </template>
 
 <script setup lang="ts">
@@ -69,6 +71,9 @@ import Highlight from '@tiptap/extension-highlight'
 import { editor, isLoaded } from './Editor';
 import { saveNote } from './Function/saveNote.js';
 import SaveIndicator from './SaveIndicator.vue';
+import MdInputBtn from './MdInputBtn.vue';
+import isMobile from '@/assets/ts/utils/isMobile.js';
+//import { SelectionRectangle } from './tiptap-extensions/SelectionRectangle.js';
 
 const props = defineProps<{
   id: number
@@ -207,6 +212,7 @@ const initEditor = async () => {
       Youtube.configure({ HTMLAttributes: { class: 'ytb-viewer' } }),
       UndoRedo,
       Color,
+      //SelectionRectangle.configure({ dragHandle: DragHandle }),
       TextStyle,
       Highlight.configure({
         multicolor: true
@@ -390,5 +396,15 @@ window.addEventListener('beforeunload', () => {
   cursor: pointer;
   background-image: url('../assets/svgs/color.svg');
 }
+
+/* SelectionRectangle */
+.selection-rectangle {
+  border: 2px dashed var(--btn);
+  background-color: rgba(255, 116, 51, 0.2);
+  position: absolute;
+  pointer-events: none;
+  z-index: 9999;
+}
+
 
 </style>

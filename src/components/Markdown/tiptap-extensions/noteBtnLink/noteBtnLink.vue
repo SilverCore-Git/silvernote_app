@@ -1,5 +1,10 @@
 <template>
 
+    <SearchANote
+        v-if="note?.id == -3"
+        @note="setNote"
+    />
+
     <NodeViewWrapper class="note-btn-link">
         
         <button
@@ -21,22 +26,24 @@
 <script setup lang="ts">
 
 import database from '@/assets/ts/database/database'
+import SearchANote from '@/components/searchANote/searchANote.vue'
 import { NodeViewWrapper, nodeViewProps } from '@tiptap/vue-3'
 import { onMounted, ref } from 'vue'
 import {  useRouter } from 'vue-router'
+import { saveNote } from '../../Function/saveNote'
 
 const props = defineProps({
     ...nodeViewProps,
 })
 
 const router = useRouter();
-const note = ref<{ title: string; icon?: string, id: number } | null>(null)
+const note = ref<{ title: string; icon?: string, id: number } | null>(null);
 
 onMounted(async () => {
     note.value = { title: '', id: -1, icon: '' }
 
     if (props.node.attrs.noteId === -3) {
-        note.value.title = 'Titre'
+        note.value.id = -3;
     } else {
         try {
             note.value = await database.getNote(props.node.attrs.noteId) as { title: string, icon?: string, id: number }
@@ -46,9 +53,15 @@ onMounted(async () => {
     }
 })
 
+const setNote = async (noteId: number) => {
+    note.value = await database.getNote(noteId) as { title: string, icon?: string, id: number };
+    props.updateAttributes({ noteId });
+    await saveNote(noteId);
+}
+
 const handleClick = async () => {
     if (!note.value) return;
-    router.push(`/edit/${props.node.attrs.noteId}?from=${note.value.id}`)
+    router.push(`/edit/${note.value.id}`)
 }
 
 </script>

@@ -120,6 +120,10 @@ onMounted(async () => {
   }
 
   if (!isSignedIn.value) {
+    if (!route.query.redirectUrl)
+    {
+      route.query.redirectUrl = route.fullPath;
+    }
     router.push({
       query: route.query,
       path: "/auth/sign"
@@ -143,6 +147,9 @@ onMounted(async () => {
     console.error("InitDB not loaded.");
     return;
   }
+
+  if (!user.value?.id) return;
+  localStorage.setItem('user_id', user.value?.id);
 
   loader.value = false;
   loaded.value = true;

@@ -8,7 +8,7 @@
         style="border-radius: 15px; font-family: 'Montserrat';"
         @click="handleClick"
     >
-        <i @click="hidden = true" class="bi bi-x absolute top-1 right-1 text-4xl cursor-pointer" />
+        <i @click.stop="hidden = true" class="bi bi-x absolute top-1 right-1 text-4xl cursor-pointer" />
         <h1 class="font-bold text-xl md:text-xl">{{ title }}</h1>
         <p class="text-md md:text-md">{{ content }}</p>
     </div>

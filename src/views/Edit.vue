@@ -72,28 +72,31 @@
       >
 
         <div 
-          class="dropdown absolute right-0 "
-          :style="{ top: `calc(3.4rem + env(safe-area-inset-top))` }"
+          class="dropdown absolute right-0 top-14"
         >
 
           <ul>
 
             <li @click="tagManager = true">Gérer les tags</li>
+            <li v-if="editor" @click="showSearchBar">Rechercher</li>
 
             <hr />
 
             <li v-if="editor" @click="()=> editor?.chain().focus().undo().run()">Annuler</li>
             <li v-if="editor" @click="()=> editor?.chain().focus().redo().run()">Rétablir</li>
-            <li v-if="editor" @click="showSearchBar">Rechercher</li>
 
             <hr />
 
-            <li @click="import_menu = true">Importer</li>
             <li @click="export_menu = true">Exporter</li>
+            <li @click="import_menu = true">Importer</li>
 
             <hr />
 
             <li @click="share_menu = true">Partager</li>
+            <li @click="saveNote(Number(props.id))">Sauvegarder</li>
+
+            <hr />
+
             <li class="text-red-600" @click="delete_note(1)">Supprimer</li>
 
             <hr />
@@ -295,6 +298,7 @@
         >
           <option value="pdf">pdf</option>
           <option value="html">html</option>
+          <option value="snote">snote</option>
         </select>
 
       </div>
@@ -339,15 +343,25 @@
           class="px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[var(--btn)] focus:border-[var(--btn)] transition-all duration-200"
         >
           <option value="notion">Notion</option>
+          <option value="snote">Silvernote</option>
         </select>
       </div>
 
       <button class="primary cursor-pointer">
         <label>
-          <span>Importer un fichier HTML</span>
+          <h3>
+            Importer un fichier 
+            <span class=" uppercase">
+              .{{
+                selected_import_type == 'notion' 
+                  ? 'HTML' 
+                  :  selected_import_type
+              }}
+            </span>
+          </h3>
           <input
             type="file"
-            accept="text/html"
+            :accept="selected_import_type == 'notion' ? 'text/html' : `.${selected_import_type}`"
             class="hidden"
             @change="import_file = $event"
           />
@@ -405,6 +419,8 @@ import Tags_manager from '@/components/tags/tags_manager.vue';
 import BackBtn from '@/components/backBtn.vue';
 
 import getArrayFromNotionHTML from '@/assets/ts/utils/getArrayFromNotionHTML';
+import { saveNote } from '@/components/Markdown/Function/saveNote';
+import { salert } from '@/assets/ts/salert';
 const props = defineProps<{ id: number | 'new' }>()
 const { user } = useUser();
 
@@ -428,7 +444,7 @@ const export_menu = ref<boolean>(false);
 const import_menu = ref<boolean>(false);
 const export_loading = ref<boolean>(false);
 const selected_ext = ref<string>('pdf');
-const selected_import_type = ref<string>('notion');
+const selected_import_type = ref<'notion' | 'snote'>('snote');
 const import_file = ref<Event | undefined>(undefined);
 const share_menu = ref<boolean>(false);
 const showDialog = ref<boolean>(false);
@@ -449,7 +465,7 @@ let socket: Socket;
 const export_note = async (ext: string): Promise<void> => {
   export_loading.value = true;
   await download({
-    format: ext as 'html' | 'pdf',
+    format: ext as 'html' | 'pdf' | 'snote',
     id: note.value.id
   }).then(() => {
     export_loading.value = false;
@@ -476,20 +492,51 @@ const importFile = async (): Promise<void> => {
 
       reader.onload = async (e: ProgressEvent<FileReader>) => {
 
-        const html = e.target?.result;
-        if (!html) return;
-        const { title, icon, content } = getArrayFromNotionHTML(html as string);
-        
-        await nextTick();
+        if (selected_import_type.value == 'notion')
+        {
 
-        note.value = {
-          ...note.value,
-          content,
-          title,
-          icon
+          const html = e.target?.result;
+          if (!html) return;
+          const { title, icon, content } = getArrayFromNotionHTML(html as string);
+          
+          await nextTick();
+
+          note.value = {
+            ...note.value,
+            content,
+            title,
+            icon
+          }
+
+          editor.value?.commands.setContent(content);
+
+        }
+        else if (selected_import_type.value == 'snote')
+        {
+
+          const json = JSON.parse(e.target?.result as string);
+
+          const _note: Note = json.note;
+          const noteHash: string = json.hash;
+
+          const newHash: string = await utils.hash(_note);
+
+          if (noteHash !== newHash)
+          {
+            new salert('Fichier corrompu ou modifier.', 'error')
+          }
+
+          note.value = {
+            ...note.value,
+            content: _note.content,
+            title: _note.title,
+            icon: _note.icon
+          }
+
+          editor.value?.commands.setContent(_note.content);
+
         }
 
-        editor.value?.commands.setContent(content);
 
       }
 

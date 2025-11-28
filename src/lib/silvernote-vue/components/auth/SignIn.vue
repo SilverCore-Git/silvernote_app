@@ -146,7 +146,7 @@ const handleSubmit = async () => {
                 <div class="space-y-3">
 
                     <button
-                        @click="handleOAuth('google', isLoaded, signIn, clerk)"
+                        @click="handleOAuth('google', isLoaded, { sign: signIn, clerk, route, router })"
                         :disabled="isLoading !== undefined || !isLoaded"
                         class="second w-full"
                         :class="isLoading == 'google' ? 'loader' : ''"
@@ -159,7 +159,7 @@ const handleSubmit = async () => {
                     </button>
 
                     <button
-                        @click="handleOAuth('discord', isLoaded, signIn, clerk)"
+                        @click="handleOAuth('discord', isLoaded, { sign: signIn, clerk, route, router })"
                         :disabled="isLoading !== undefined || !isLoaded"
                         class="second w-full"
                         :class="isLoading == 'discord' ? 'loader' : ''"

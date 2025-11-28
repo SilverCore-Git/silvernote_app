@@ -219,6 +219,7 @@ const download_db = async () => {
   }
 
   const json_file = {
+    snote_file_type: 'db',
     tags,
     notes,
     sender_info,

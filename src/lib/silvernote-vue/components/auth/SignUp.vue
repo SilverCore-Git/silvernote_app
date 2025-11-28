@@ -220,7 +220,7 @@ const handleVerification = async () => {
                     <div class="space-y-3">
 
                         <button
-                            @click="handleOAuth('google', isLoaded, signUp, clerk)"
+                            @click="handleOAuth('google', isLoaded, { sign: signUp, clerk, route, router })"
                             :disabled="isLoading !== undefined || !isLoaded"
                             class="second w-full"
                             :class="isLoading == 'google' ? 'loader' : ''"
@@ -234,7 +234,7 @@ const handleVerification = async () => {
                         </button>
 
                         <button
-                            @click="handleOAuth('discord', isLoaded, signUp, clerk)"
+                            @click="handleOAuth('discord', isLoaded, { sign: signUp, clerk, route, router })"
                             :disabled="isLoading !== undefined || !isLoaded"
                             class="second w-full"
                             :class="isLoading == 'discord' ? 'loader' : ''"

@@ -1,13 +1,21 @@
 import { ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
 import isMobile from "@/assets/ts/utils/isMobile";
 
 const error = ref<string>('');
 const isLoading = ref<undefined | 'discord' | 'google' | 'snote'>(undefined);
-const route = useRoute();
-const router = useRouter();
 
-const handleOAuth = async (provider: 'google' | 'discord', isLoaded: boolean, sign: any, clerk: any) => {
+const handleOAuth = async (
+    provider: 'google' | 'discord',
+    isLoaded: boolean, 
+    c: {
+        sign: any, 
+        clerk: any,
+        route: any,
+        router: any
+    }
+) => {
+
+    const { sign, clerk, route, router } = c;
 
     if (!isLoaded) {
         console.warn('Clerk not loaded yet');
@@ -27,7 +35,7 @@ const handleOAuth = async (provider: 'google' | 'discord', isLoaded: boolean, si
         
         const origin = window.location.origin;
         const redirectUrl = `${origin}/auth/sso-callback`;
-        const redirectUrlComplete = route?.query?.redirectUrl || '/';
+        const redirectUrlComplete = route.query.redirectUrl || '/';
         
         console.log('Redirect URLs:', {
             redirectUrl,
@@ -74,7 +82,7 @@ const handleOAuth = async (provider: 'google' | 'discord', isLoaded: boolean, si
                 });
             }
                 
-            const redirectUrl = route.query.redirectUrl as string;
+            const redirectUrl = route.query?.redirectUrl as string;
 
             if (!redirectUrl) {
                 router.push('/');

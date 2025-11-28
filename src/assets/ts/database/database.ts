@@ -170,7 +170,7 @@ class Database {
             arg.note.uuid = await utils.UUID();
         }
 
-        arg.note.tags = [];
+        if (!arg.note.tags) arg.note.tags = [];
 
         await db.add('notes', arg.note);
 
