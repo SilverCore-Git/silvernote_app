@@ -120,6 +120,10 @@ onMounted(async () => {
   }
 
   if (!isSignedIn.value) {
+    if (!route.query.redirectUrl)
+    {
+      route.query.redirectUrl = route.fullPath;
+    }
     router.push({
       query: route.query,
       path: "/auth/sign"
