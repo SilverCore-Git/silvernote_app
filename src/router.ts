@@ -7,6 +7,7 @@ import Dev from './views/Dev.vue';
 import Share from './views/Share.vue';
 import Chatbot from './components/chatbot/Chatbot.vue';
 import { signPage, ssoCallback } from './lib/silvernote-vue/index.ts';
+import SearchANote from './components/searchANote/searchANote.vue';
 
 
 const routes = [
@@ -69,6 +70,12 @@ const routes = [
     name: 'ssoCallback',
     component: ssoCallback,
     meta: { title: 'auth - Silvernote' }
+  },
+
+  {
+    path: '/dd',
+    
+    component: SearchANote
   }
 ]
 

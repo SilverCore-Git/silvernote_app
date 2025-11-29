@@ -26,7 +26,7 @@
         >
 
             <div
-                class="flex flex-col gap-2 w-full"
+                class="flex flex-col gap-2 w-full z-20"
             >
 
                 <Search_bar />
@@ -38,14 +38,14 @@
                     <Swiper
                         :slides-per-view="'auto'"
                         :space-between="8"
-                        class="w-full lg:w-500 pr-1.5 pl-1.5 rounded-xl"
+                        class="w-full lg:w-500 pr-1.5 pl-1.5 rounded-xl z-20"
                         v-if="all_tags && all_tags.length" 
                     >
 
                         <SwiperSlide 
                             v-for="(tag, index) in all_tags"
                             :key="index"
-                            class="!w-auto"
+                            class="!w-auto z-20"
                             @click.stop="add_tag_filter(tag.id)" 
                         >
 
@@ -322,7 +322,7 @@
     <div 
         :class="[
             `flex justify-center items-center
-            pointer-events-none z-50`,
+            pointer-events-none z-40`,
             isMobile 
                 ? 'fixed right-6 bottom-6' 
                 : 'fixed inset-x-0 bottom-6'
