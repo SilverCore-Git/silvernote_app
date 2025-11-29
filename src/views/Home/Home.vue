@@ -425,7 +425,6 @@
     import { onMounted, ref, watch, onUnmounted, nextTick } from 'vue';
     import { Swiper, SwiperSlide } from 'swiper/vue';
     import 'swiper/css';
-    import Hammer from 'hammerjs';
 
     import db from '@/assets/ts/database/database';
     import back from '@/assets/ts/backend_link';
@@ -644,18 +643,18 @@
 
     const initHammer = () => {
 
-        const dragDownElement: HTMLElement | null = document.querySelector('.dragDown');
-        if (!dragDownElement) return;
+        // const dragDownElement: HTMLElement | null = document.querySelector('.dragDown');
+        // if (!dragDownElement) return;
 
-        const hammer = new Hammer(dragDownElement);
+        // const hammer = new Hammer(dragDownElement);
 
-        hammer.get('pan').set({ direction: Hammer.DIRECTION_DOWN });
+        // hammer.get('pan').set({ direction: Hammer.DIRECTION_DOWN });
 
-        hammer.on('pan', (ev) => {
-            if (ev.deltaY > 160) { // seuil pour déclencher le pull
-                reload_list();
-            }
-        });
+        // hammer.on('pan', (ev) => {
+        //     if (ev.deltaY > 160) { // seuil pour déclencher le pull
+        //         reload_list();
+        //     }
+        // });
 
     }
 
