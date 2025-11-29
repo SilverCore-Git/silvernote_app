@@ -26,7 +26,7 @@
 <script setup lang="ts">
 
 import database from '@/assets/ts/database/database'
-import SearchANote from '@/components/searchANote/searchANote.vue'
+import SearchANote from '@/components/notes/searchANote.vue'
 import { NodeViewWrapper, nodeViewProps } from '@tiptap/vue-3'
 import { onMounted, ref } from 'vue'
 import {  useRouter } from 'vue-router'

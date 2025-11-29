@@ -7,7 +7,7 @@ import Dev from './views/Dev.vue';
 import Share from './views/Share.vue';
 import Chatbot from './components/chatbot/Chatbot.vue';
 import { signPage, ssoCallback } from './lib/silvernote-vue/index.ts';
-import SearchANote from './components/searchANote/searchANote.vue';
+import SearchANote from './components/notes/searchANote.vue';
 
 
 const routes = [
@@ -74,7 +74,7 @@ const routes = [
 
   {
     path: '/dd',
-    
+
     component: SearchANote
   }
 ]

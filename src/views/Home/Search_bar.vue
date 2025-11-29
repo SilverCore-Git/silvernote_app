@@ -40,7 +40,7 @@
 
 import { ref } from 'vue';
 
-import SearchANote from '@/components/searchANote/searchANote.vue';
+import SearchANote from '@/components/notes/searchANote.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();

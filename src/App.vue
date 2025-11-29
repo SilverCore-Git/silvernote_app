@@ -1,5 +1,7 @@
 <template>
 
+  <ShortsCut />
+
   <div
     :style="{
       marginTop: mobile_config.active ? mobile_config.margin.top : 0,
@@ -81,6 +83,7 @@ import { loaded } from "./assets/ts/utils";
 import InitDB from "./assets/ts/database/init";
 import mobile_config from "@/configs/mobile.json";
 import waitFor from "./assets/ts/utils/waitFor";
+import ShortsCut from "./components/shortsCut.vue";
 
 const loader = ref<boolean>(true);
 const open_chatbot = ref<boolean>(true);
