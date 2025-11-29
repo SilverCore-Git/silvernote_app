@@ -154,7 +154,7 @@
     @click="if_open_dropdown = false"
     class="
             flex flex-col justify-start items-center
-            mt-22 overflow-y-scroll max-w-3xl mx-auto
+            mt-22 overflow-y-scroll max-w-3xl 
           "
   >
 
@@ -519,11 +519,12 @@ const importFile = async (): Promise<void> => {
           const _note: Note = json.note;
           const noteHash: string = json.hash;
 
-          const newHash: string = await utils.hash(_note);
+          const newHash: string = await utils.hash(JSON.stringify(_note));
 
           if (noteHash !== newHash)
           {
-            new salert('Fichier corrompu ou modifier.', 'error')
+            new salert('Fichier corrompu ou modifier.', 'error');
+            return;
           }
 
           note.value = {
