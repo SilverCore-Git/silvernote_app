@@ -46,9 +46,10 @@ import SlashCommand from '@/components/Markdown/tiptap-extensions/SlachCommand.j
 import { IndentExtension } from './tiptap-extensions/IndentExtension.js';
 import FileHandler from '@tiptap/extension-file-handler';
 import { noteBtnLink } from './tiptap-extensions/noteBtnLink';
-//import { CollapsibleExtension } from './tiptap-extensions/CollapsibleExtension.js';
+import imageUploadNode from './tiptap-extensions/image-upload-node/image-upload-node-extension.js';
 import DragHandle from './tiptap-extensions/dragHandle';
 import './css/DragHandler.scss';
+import { handleImageUpload, MAX_FILE_SIZE } from './lib/tiptap-utils.js';
 import { _searchBar, SearchBar, SearchAndReplace } from './tiptap-extensions/searchAndReplace';
 import FileHandler_configure from './tiptap-extensions/FileHandler_configure.js';
 import { Markdown } from 'tiptap-markdown';
@@ -212,7 +213,13 @@ const initEditor = async () => {
       Youtube.configure({ HTMLAttributes: { class: 'ytb-viewer' } }),
       UndoRedo,
       Color,
-      //SelectionRectangle.configure({ dragHandle: DragHandle }),
+      imageUploadNode.configure({
+        accept: 'image/*',
+        maxSize: MAX_FILE_SIZE,
+        limit: 3,
+        upload: handleImageUpload,
+        onError: (error: any) => console.error('Upload failed:', error),
+      }),
       TextStyle,
       Highlight.configure({
         multicolor: true

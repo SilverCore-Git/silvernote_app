@@ -119,24 +119,16 @@ watch(() => props.show, async (val) => {
 })
 
 const insertImageFromFile = (editor: any) => {
-  
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = "image/*";
+    
+  editor.value.chain().focus().insertContent({
+    type: 'imageUpload',
+    attrs: {
+      accept: 'image/*',
+      limit: 3,
+      maxSize: 10 * 1024 * 1024, // 10 MB
+    },
+  }).run()
 
-  input.onchange = () => {
-    const file = input.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const url = reader.result as string;
-      editor.chain().focus().setImage({ src: url }).run();
-    };
-    reader.readAsDataURL(file);
-  };
-
-  input.click();
 };
 
 </script>
