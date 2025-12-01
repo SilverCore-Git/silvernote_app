@@ -10,7 +10,7 @@
     <div
         v-if="!fullscreen && first_loaded"
         v-tooltip="'SilverIA'"
-        @click="open = !open" 
+        @click="isMobile ? router.push('/silveria') : open = !open" 
         :class="[
             isMobile
                 ? !open ? 'bottom-6 left-6' : '-bottom-9 -left-9'

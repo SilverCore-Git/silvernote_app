@@ -154,7 +154,7 @@
     @click="if_open_dropdown = false"
     class="
             flex flex-col justify-start items-center
-            mt-22 overflow-y-scroll max-w-3xl 
+            mt-22 overflow-y-scroll max-w-4xl mx-auto
           "
   >
 
