@@ -46,10 +46,9 @@ import SlashCommand from '@/components/Markdown/tiptap-extensions/SlachCommand.j
 import { IndentExtension } from './tiptap-extensions/IndentExtension.js';
 import FileHandler from '@tiptap/extension-file-handler';
 import { noteBtnLink } from './tiptap-extensions/noteBtnLink';
-import imageUploadNode from './tiptap-extensions/image-upload-node/image-upload-node-extension.js';
+import { handleImageUpload, MAX_FILE_SIZE, imageUploadNode } from './tiptap-extensions/image-upload-node/';
 import DragHandle from './tiptap-extensions/dragHandle';
 import './css/DragHandler.scss';
-import { handleImageUpload, MAX_FILE_SIZE } from './lib/tiptap-utils.js';
 import { _searchBar, SearchBar, SearchAndReplace } from './tiptap-extensions/searchAndReplace';
 import FileHandler_configure from './tiptap-extensions/FileHandler_configure.js';
 import { Markdown } from 'tiptap-markdown';
