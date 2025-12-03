@@ -150,17 +150,17 @@ function handleDrop(e: DragEvent) { e.preventDefault(); e.stopPropagation(); isD
          @dragleave="handleDragLeave"
          @dragover="handleDragOver"
          @drop="handleDrop">
-      <div class="tiptap-image-upload-dropzone">
-        <p>Click to upload or drag & drop</p>
-        <small>Max {{props.node.attrs.limit}} file(s), {{props.node.attrs.maxSize / 1024 / 1024}}MB each</small>
+      <div class="tiptap-image-upload-dropzone ">
+        <p>Cliquez ou glisser déposer pour téléverser</p>
+        <small class="text-center">Max {{props.node.attrs.limit}} fichier(s), {{props.node.attrs.maxSize / 1024 / 1024}}MB chacun</small>
       </div>
     </div>
 
     <div v-else class="tiptap-image-upload-previews">
-      <div v-for="item in fileItems" :key="item.id" class="tiptap-image-upload-preview">
+      <div v-for="item in fileItems" :key="item.id" class="tiptap-image-upload-preview flex flex-col">
         <span>{{ item.file.name }} ({{ formatFileSize(item.file.size) }})</span>
         <span v-if="item.status === 'uploading'">{{ item.progress }}%</span>
-        <button @click.stop="removeFileItem(item.id)">Remove</button>
+        <button class="primary danger" @click.stop="removeFileItem(item.id)">Supprimer</button>
       </div>
       <button v-if="fileItems.length > 1" @click.stop="clearAllFiles">Clear All</button>
     </div>
