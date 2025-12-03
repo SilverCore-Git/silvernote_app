@@ -160,7 +160,7 @@ function handleDrop(e: DragEvent) { e.preventDefault(); e.stopPropagation(); isD
       <div v-for="item in fileItems" :key="item.id" class="tiptap-image-upload-preview flex flex-col">
         <span>{{ item.file.name }} ({{ formatFileSize(item.file.size) }})</span>
         <span v-if="item.status === 'uploading'">{{ item.progress }}%</span>
-        <button class="primary danger" @click.stop="removeFileItem(item.id)">Supprimer</button>
+        <button class="primary danger max-w-40" @click.stop="removeFileItem(item.id)">Supprimer</button>
       </div>
       <button v-if="fileItems.length > 1" @click.stop="clearAllFiles">Clear All</button>
     </div>
