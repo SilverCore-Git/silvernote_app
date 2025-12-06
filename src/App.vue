@@ -15,13 +15,12 @@
           v-if="route.name == 'sign' || route.name == 'ssoCallback' || !loader && InitDB.isLoaded()"
           class="flex-1 relative "
           :class="
-                  [ 'Edit', 'Share' ].includes(route.name as string) && route.query.chatbot == 'relative' ? 
-                    'mx-4'
-                    : route.name == 'Home' 
-                        ? 'mt-(--mt) mr-(--mlr) ml-(--mrl) ' 
-                        : route.name == 'sign' 
-                            ? ''
-                            : 'mr-(--mlr) ml-(--mrl)'"
+                  route.name === 'Home'
+                    ? 'mt-(--mt) mr-(--mlr) ml-(--mrl) ' 
+                    : route.name == 'sign' || route.name == 'Edit' || route.name == 'Share'
+                        ? ''
+                        : 'mr-(--mlr) ml-(--mrl)'
+          "
         >
           <router-view />
         </div>
