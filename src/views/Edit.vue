@@ -8,7 +8,7 @@
   <header 
     class="
             flex flex-row fixed inset-x-0 
-            pt-4 z-50 m-4 lg:m-0 lg:mx-[20%]
+            pt-4 z-50 m-4 lg:m-0 lg:mx-[10%] xl:mx-[20%]
           "
   >
 
@@ -134,128 +134,124 @@
 
   </header>
 
-  <section 
-    v-if="!loaded && !note.title" 
-    class="flex flex-col justify-start items-center h-full mt-18 overflow-x-hidden"
-  >
-
-    <div 
-      class="text-3xl mb-3 font-bold animate-pulse bg-gray-300 h-10 w-full rounded-2xl" 
-    ></div>
-
-    
-    <div class="animate-pulse bg-gray-300 h-50 w-full rounded-2xl"></div>
-
-
-  </section>
-
-  <section 
-    v-if="loaded" 
+  <section
     @click="if_open_dropdown = false"
     class="
-            flex flex-col justify-start items-center
-            mt-22 overflow-y-scroll max-w-4xl mx-auto
+            flex flex-col justify-start items-center w-screen mt-22
           "
   >
 
-    <div 
-      class="flex w-[90%] mb-2 items-end"
-      :class="
-        note.icon && all_tags.filter((tag: Tag) => note.tags.includes(tag.id))[0] 
-          ? 'justify-between' 
-          : 'justify-start gap-2'
-      "  
+    <div
+      class="
+          flex flex-col justify-start items-center max-w-2xl w-full
+      "
     >
 
-      <button ref="emojiBtn"><a>
+      <div 
+        class="flex w-[90%] mb-2 items-end"
+        :class="
+          note.icon && all_tags.filter((tag: Tag) => note.tags.includes(tag.id))[0] 
+            ? 'justify-between' 
+            : 'justify-start gap-2'
+        "  
+      >
 
-        <img
-          v-if="note.icon" 
-          class="w-[80px] h-[80px] p-2 cursor-pointer" 
-          :src="note.icon" 
-        />
+        <button ref="emojiBtn"><a>
 
-        <a 
+          <img
+            v-if="note.icon" 
+            class="w-[80px] h-[80px] p-2 cursor-pointer" 
+            :src="note.icon" 
+          />
+
+          <a 
+            v-else
+            class="px-1"
+          >
+            Ajouter une icon
+          </a>
+
+        </a></button>
+
+        <div
+          v-if="note.tags.length > 0"
+          class="flex flex-col items-center max-w-80 w-full"
+        >
+
+          <span class="text-lg font-semibold tracking-wide mb-1">Tags</span>
+
+          <ul class="flex flex-wrap justify-center gap-2 max-w-80">
+            <li
+              v-for="
+                tag in hide8moreTags
+                  ? all_tags.filter((t: any) => note.tags.includes(t.id)).slice(0, 7)
+                  : all_tags.filter((t: any) => note.tags.includes(t.id))
+              "
+              :key="tag.id"
+              :style="{ backgroundColor: tag.color }"
+              class="px-2.5 py-1 rounded-lg text-white border text-sm shadow-sm"
+            >
+              {{ tag.name }}
+            </li>
+
+            <li
+              v-if="hide8moreTags && note.tags.length > 7"
+              class="px-2.5 py-1 rounded-lg text-sm font-bold bg-(--bg2)"
+            >
+              ...
+            </li>
+          </ul>
+
+          <button
+            v-if="note.tags.length > 7"
+            @click="hide8moreTags = !hide8moreTags"
+            class="mt-1 text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium"
+          >
+            {{ hide8moreTags ? 'Voir plus' : 'Voir moins' }}
+          </button>
+
+        </div>
+
+        <div
           v-else
-          class="px-1"
+          @click="tagManager = true"
         >
-          Ajouter une icon
-        </a>
-
-      </a></button>
-
-      <div
-        v-if="note.tags.length > 0"
-        class="flex flex-col items-center max-w-80 w-full"
-      >
-
-        <span class="text-lg font-semibold tracking-wide mb-1">Tags</span>
-
-        <ul class="flex flex-wrap justify-center gap-2 max-w-80">
-          <li
-            v-for="
-              tag in hide8moreTags
-                ? all_tags.filter((t: any) => note.tags.includes(t.id)).slice(0, 7)
-                : all_tags.filter((t: any) => note.tags.includes(t.id))
-            "
-            :key="tag.id"
-            :style="{ backgroundColor: tag.color }"
-            class="px-2.5 py-1 rounded-lg text-white border text-sm shadow-sm"
-          >
-            {{ tag.name }}
-          </li>
-
-          <li
-            v-if="hide8moreTags && note.tags.length > 7"
-            class="px-2.5 py-1 rounded-lg text-sm font-bold bg-(--bg2)"
-          >
-            ...
-          </li>
-        </ul>
-
-        <button
-          v-if="note.tags.length > 7"
-          @click="hide8moreTags = !hide8moreTags"
-          class="mt-1 text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium"
-        >
-          {{ hide8moreTags ? 'Voir plus' : 'Voir moins' }}
-        </button>
-
+          <a class="px-1">Ajouter un tag</a>
+        </div>
+      
       </div>
 
-      <div
+      <input 
+        v-if="loaded"
+        class="text-4xl font-extrabold mb-4 text-[var(--text-strong)]" 
+        type="text" 
+        placeholder="Titre..." 
+        ref="title"
+        v-model="note.title"
+        @keydown.enter="editor?.commands.focus()"
+      />
+
+      <div 
         v-else
-        @click="tagManager = true"
-      >
-        <a class="px-1">Ajouter un tag</a>
-      </div>
-    
+        class="mb-4 animate-pulse bg-gray-300 h-10 w-full rounded-xl" 
+      ></div>
+
+      
+      <RichMarkdownEditor
+        v-if="loaded"
+        v-bind="attrs" 
+        :editable="true"
+        :id="-2" 
+        :uuid="note.uuid"
+        :data="note"
+      />
+
+      <div 
+        v-else
+        class="animate-pulse bg-gray-300 h-40 w-full rounded-xl" 
+      ></div>
+
     </div>
-
-    <input 
-      v-if="loaded"
-      class="text-4xl font-extrabold mb-4 text-[var(--text-strong)]" 
-      type="text" 
-      placeholder="Titre..." 
-      ref="title"
-      v-model="note.title"
-      @keydown.enter="editor?.commands.focus()"
-    />
-
-    <div 
-      v-else
-      class="text-3xl mb-3 font-bold animate-pulse bg-gray-300 h-10 w-[90%] rounded-xl" 
-    ></div>
-
-    
-    <RichMarkdownEditor 
-      v-if="loaded"
-      v-bind="attrs" 
-      :editable="true"
-      :id="-2" 
-      :uuid="note.uuid"
-      :data="note"
-    />
     
   </section>
 
@@ -751,7 +747,6 @@ const create_new_note = async () => {
     });
 
     await nextTick();
-    setTimeout(() => title.value?.focus(), 200);
 
     Notes.value.push(note.value);
 
@@ -850,8 +845,11 @@ const init_emoji_picker = () => {
 const initNote = async () => {
   try {
 
+    let isNew: boolean = false;
+
     // création d'une nouvelle note
     if (props.id === 'new') {
+      isNew = true;
       await create_new_note();
     }
 
@@ -868,6 +866,7 @@ const initNote = async () => {
 
     init_emoji_picker();
     update_title();
+    if (isNew) title.value?.focus();
 
   } catch (err) {
     console.error("Erreur lors de l'initialisation :", err);
