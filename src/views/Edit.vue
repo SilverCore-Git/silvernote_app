@@ -601,6 +601,9 @@ const delete_note = async (state: number): Promise<void> => {
 const save_title = () => {
   if (note.value.title) {
     db.saveTitle(note.value.title, Number(props.id));
+    const __note = Notes.value.find(_note => _note.uuid == note.value.uuid);
+    if (!__note) return;
+    __note.title = note.value.title;
   }
 }
 
