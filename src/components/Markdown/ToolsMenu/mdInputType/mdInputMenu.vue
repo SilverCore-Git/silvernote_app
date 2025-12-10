@@ -17,6 +17,7 @@
         </span>
 
         <input 
+          v-if="searchType !== 'props'"
           v-model="search"
           ref="searchInput"
           placeholder="Rechercher..."
@@ -56,7 +57,7 @@
 
 <script lang="ts" setup>
 
-import { defineProps, defineEmits, ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, watch, nextTick, onMounted } from 'vue';
 import config from './mdInputMenu.json';
 import { editor } from '../../Editor';
 
@@ -65,6 +66,8 @@ const props = defineProps<{
   left: number;
   show: boolean;
   type?: 'insert' | 'all';
+  searchType?: 'props';
+  query?: string;
 }>();
 
 defineEmits<{
@@ -130,5 +133,17 @@ const insertImageFromFile = (editor: any) => {
   }).run()
 
 };
+
+onMounted(() => {
+  if (props.searchType == 'props')
+  {
+    if (props.query)
+    {
+      watch(() => props.query, () => {
+        search.value = props.query!;
+      })
+    }
+  }
+})
 
 </script>

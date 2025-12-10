@@ -26,8 +26,10 @@ export const SlashCommand = Extension.create<SlashCommandOptions>({
             onStart: (props: any) => {
               component = new VueRenderer(mdinputMenu, {
                 props: {
-                    show: { type: Boolean, required: true },
-                    type: { type: String, default: 'insert' }
+                    show: true,
+                    type: 'insert',
+                    searchType: 'props',
+                    query: 'test'
                 },
                 editor: props.editor,
               });
