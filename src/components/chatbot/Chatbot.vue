@@ -569,7 +569,15 @@ onUnmounted(() => {
 
 onUnmounted(() => close());
 onMounted(() => {
-    Open();
+    if (user.value?.id) return Open();
+    const interval = setInterval(() => {
+        if (user.value?.id)
+        {
+            Open();
+            clearInterval(interval);
+            return;
+        }
+    }, 1000)
 });
 
 
