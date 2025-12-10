@@ -24,12 +24,12 @@
 
       <img
         v-if="icon" 
-        class="w-[32px] h-[32px] cursor-pointer" 
+        class="w-[34px] h-[34px] cursor-pointer" 
         :src="icon" 
       />
 
       <span
-        class="overflow-hidden text-ellipsis uppercase whitespace-nowrap"
+        class="overflow-hidden uppercase line-clamp-2"
         v-html="utils.clean_html(title)"
       ></span>
 
@@ -37,13 +37,13 @@
 
     <p
       v-if="cleanHTML === false && IsPrivate"
-      class="text-xs my-2 multiline-8"
-    >{{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 600) }}</p>
+      class="text-xs my-2 multiline-6"
+    >{{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 400) }}</p>
 
     <p
       v-else
-      class="text-xs my-2 multiline-8"
-      v-html="utils.clean_html(content).slice(0, 600)"
+      class="text-xs my-2 multiline-6"
+      v-html="utils.clean_html(content).slice(0, 400)"
     ></p>
 
     <div
@@ -245,9 +245,9 @@ watch(theme, () => {
   transform: translateY(4px);
 }
 
-.multiline-8 {
+.multiline-6 {
   display: -webkit-box;
-  -webkit-line-clamp: 8;
+  -webkit-line-clamp: 6;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
