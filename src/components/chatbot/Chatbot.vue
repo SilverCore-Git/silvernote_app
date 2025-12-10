@@ -120,8 +120,6 @@
                         <span class="font-bold text-xl">SilverIA</span>
                         <div class="round" :class="silverIA_active ? 'green' : 'red'"></div>
                     </div>
-                    <span>v{{ silveria_version }}</span>
-
                     <div
                         v-if="!fullscreen"
                         class="flex justify-center items-center gap-2"
@@ -218,7 +216,6 @@ import { useUser } from '@clerk/vue';
 import db from '@/assets/ts/database/database';
 import { api_url } from '@/assets/ts/backend_link';
 import type { Note } from '@/assets/ts/type';
-import { silveria_version } from '@/../package.json'
 import BackBtn from '../backBtn.vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 

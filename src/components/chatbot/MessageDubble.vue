@@ -69,7 +69,7 @@
       {{ props.text }}
     </div>
 
-    <div v-else class="error-content flex items-start gap-3 text-red-600">
+    <div v-else class="error-content flex items-start gap-3">
       <div class="text-xl">⚠️</div>
       <div>
         <div class="font-bold text-sm">Erreur</div>
