@@ -568,13 +568,14 @@
 
     const create_new_note = () => {
 
-        const notesLength = list_notes.value.length;
-        if (!plan.value || !plan.value.benefits) return new salert('Plan et benefits ne sont pas définit.', 'error');
+        // for future price & plan
+        // const notesLength = list_notes.value.length;
+        // if (!plan.value || !plan.value.benefits) return new salert('Plan et benefits ne sont pas définit.', 'error');
 
-        if (notesLength > plan.value.benefits.notesLength) // si le plan est épuisé en note
-        {
-            return new salert('Nombre de note maximal autorisé par le plan atteint.', 'error');
-        }
+        // if (notesLength > plan.value.benefits.notesLength) // si le plan est épuisé en note
+        // {
+        //     return new salert('Nombre de note maximal autorisé par le plan atteint.', 'error');
+        // }
 
         router.push(`/edit/new?pinned=false`);
 
