@@ -47,9 +47,11 @@
 
             <div 
                 v-if="selectedNote !== '' && isMobile"
-                class="flex flex-row justify-between items-center w-full px-4"
+                class="flex flex-row justify-between items-center w-full px-4 text-3xl"
             >
-                Params for note settings
+                <Navbar_note_settings
+                    :note-uuid="selectedNote"
+                />
             </div>
 
             <div 
@@ -166,6 +168,7 @@ import New_note_btn from './New_note_btn.vue';
 import mobile from  '@/configs/mobile.json';
 import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
+import Navbar_note_settings from '@/components/notes/Navbar_note_settings.vue';
 
 const router = useRouter();
 const route = useRoute();
