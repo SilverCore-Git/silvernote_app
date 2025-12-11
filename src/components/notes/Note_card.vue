@@ -9,8 +9,8 @@
     class="note-card md:min-w-50 bg-[var(--bg2)] text-[var(--text)] p-3
             border-2 relative cursor-pointer h-full min-h-40 select-none
             text-lg"
-    :class="note_settings ? 'border-[var(--btn)]' : 'border-[var(--text)]'"
-    :style="note_settings ? { 
+    :class="note_selected ? 'border-[var(--btn)]' : 'border-[var(--text)]'"
+    :style="note_selected ? { 
       transform: 'scale(1.05)',
       zIndex: 49
     } : {}"
@@ -89,7 +89,7 @@
 
 <script setup lang="ts">
 
-import { onMounted, ref, watch, defineProps } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import ConfirmDialog from '../popup/ConfirmDialog.vue';
@@ -101,6 +101,7 @@ import { IsPrivate } from '@/assets/ts/settings/privatMode';
 
 import PressAndHold from '../PressAndHold.vue';
 import Note_settings from './Note_Settings.vue';
+import isMobile from '@/assets/ts/utils/isMobile';
 
 
 const props = defineProps<{
@@ -123,6 +124,7 @@ const router = useRouter();
 const note_settings = ref<boolean>(false);
 const note_settings_top = ref<number>(0);
 const note_settings_left = ref<number>(0);
+const note_selected = ref<boolean>(false);
 const showDialog = ref<boolean>(false);
 const if_pin_active = ref<boolean>(props.pinned)
 const press_and_hold = ref<boolean>(false);
@@ -164,17 +166,34 @@ watch(() => props.pinned, (newVal) => {
 const select_note = () => {
 
     press_and_hold.value = true;
+    note_selected.value = !note_selected.value;
 
-    document.addEventListener('contextmenu', (e) => {
+    if (isMobile)
+    {
 
-      e.preventDefault();
+      router.push({ 
+        query: {
+          selectedNote: note_selected.value ? props.uuid : undefined
+        } 
+      });
 
-      note_settings_left.value = e.clientX;
-      note_settings_top.value = e.clientY;
+    }
+    else
+    {
 
-    })
-        
-    note_settings.value = !note_settings.value;
+      document.addEventListener('contextmenu', (e) => {
+
+        e.preventDefault();
+
+        note_settings_left.value = e.clientX;
+        note_settings_top.value = e.clientY;
+
+      })
+          
+      note_settings.value = !note_settings.value;
+
+    }
+
 
     setTimeout(() => press_and_hold.value = false, 3000);
 

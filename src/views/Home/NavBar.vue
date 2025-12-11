@@ -46,6 +46,14 @@
             </li>
 
             <div 
+                v-if="selectedNote !== '' && isMobile"
+                class="flex flex-row justify-between items-center w-full px-4"
+            >
+                Params for note settings
+            </div>
+
+            <div 
+                v-else
                 class="flex flex-row justify-between items-center w-full px-4"
             >
 
@@ -151,13 +159,17 @@
 <script lang="ts" setup>
 
 import { UserButton } from '@clerk/vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { version, dev } from '../../../package.json';
 import { notes_views_mode, toggle_notes_views_mode, notes_filter, type Notes_filter } from '@/assets/ts/Notes_views';
 import New_note_btn from './New_note_btn.vue';
 import mobile from  '@/configs/mobile.json';
+import { ref, watch } from 'vue';
+import isMobile from '@/assets/ts/utils/isMobile';
 
 const router = useRouter();
+const route = useRoute();
+const selectedNote = ref<string>('');
 
 const setFilter = (a: Notes_filter): void => {
     notes_filter.value = a;
@@ -166,6 +178,11 @@ const setFilter = (a: Notes_filter): void => {
 const newNote = () => {
     router.push('/edit/new');
 }
+
+watch(() => route.query.selectedNote, () => {
+    if (!route.query.selectedNote) return selectedNote.value = '';
+    selectedNote.value = String(route.query.selectedNote);
+})
 
 </script>
 
