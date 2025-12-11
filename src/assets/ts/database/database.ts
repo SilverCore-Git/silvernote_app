@@ -211,6 +211,11 @@ class Database {
         const db = await this.dbPromise;
         return await db.get('notes', id);
     }
+
+    public async getNoteByUUID(uuid: string): Promise<Note | undefined> {
+        const all_notes = this.getAll('notes');
+        return (await all_notes).find(note => note.uuid === uuid);
+    }
     
     public async getTag(id: number): Promise<Tag | undefined> {
         const db = await this.dbPromise;
