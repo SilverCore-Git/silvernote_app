@@ -89,6 +89,7 @@ const insertName: string[] = [
   'Titre h1',
   'Titre h2',
   'Titre h3',
+  'Tableau'
 ]
 
 const search = ref<string>('');
