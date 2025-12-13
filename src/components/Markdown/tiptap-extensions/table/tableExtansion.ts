@@ -24,7 +24,10 @@ export const Table = Node.create({
   
   addCommands() {
     return {
-      insertTable: ({ rows = 3, cols = 3 }: { rows: number, cols: number }) => ({ commands }) => {
+      insertTable: (options?: { rows?: number; cols?: number; withHeaderRow?: boolean }) => ({ commands }) => {
+        const rows = options?.rows ?? 3;
+        const cols = options?.cols ?? 3;
+        
         const table = {
           type: this.name,
           content: Array.from({ length: rows }, () => ({
@@ -40,7 +43,7 @@ export const Table = Node.create({
       
       deleteTable: () => ({ tr, dispatch }) => {
         const { $anchor } = tr.selection;
-        let tablePos = null;
+        let tablePos: number | null = null;
         
         for (let d = $anchor.depth; d > 0; d--) {
           if ($anchor.node(d).type.name === 'table') {
@@ -69,7 +72,7 @@ export const Table = Node.create({
         props: {
           decorations(state) {
             const { doc, selection } = state;
-            const decorations = [];
+            const decorations: Decoration[] = [];
             const { $anchor } = selection;
             
             for (let d = $anchor.depth; d > 0; d--) {
@@ -104,13 +107,11 @@ export const Table = Node.create({
           document.body.appendChild(addColumnBtn);
           document.body.appendChild(addRowBtn);
           
-          let currentTable = null;
-          
           const updateButtonPositions = () => {
             const { state } = editorView;
             const { $anchor } = state.selection;
             let tableNode = null;
-            let tablePos = null;
+            let tablePos: number | null = null;
             
             for (let d = $anchor.depth; d > 0; d--) {
               if ($anchor.node(d).type.name === 'table') {
@@ -121,13 +122,12 @@ export const Table = Node.create({
             }
             
             if (tableNode && tablePos !== null) {
-              const tableDom = editorView.nodeDOM(tablePos);
+              const tableDom = editorView.nodeDOM(tablePos) as HTMLElement | null;
               const tableWrapper = tableDom?.querySelector?.('.table-wrapper') || tableDom?.closest?.('.table-wrapper');
-              const tableContainer = tableDom?.querySelector?.('.table-container') || tableDom?.closest?.('.table-container');
+              const tableContainer = tableDom?.querySelector?.('. -container') || tableDom?.closest?.('.table-container');
               
               if (tableWrapper && tableContainer) {
-                currentTable = tableWrapper;
-                const containerRect = tableContainer.getBoundingClientRect();
+                const containerRect = (tableContainer as HTMLElement).getBoundingClientRect();
                 
                 // Bouton colonne à droite - hauteur du tableau
                 addColumnBtn.style.left = `${containerRect.right + 4}px`;
@@ -143,12 +143,10 @@ export const Table = Node.create({
               } else {
                 addColumnBtn.style.display = 'none';
                 addRowBtn.style.display = 'none';
-                currentTable = null;
               }
             } else {
               addColumnBtn.style.display = 'none';
               addRowBtn.style.display = 'none';
-              currentTable = null;
             }
           };
           
@@ -161,7 +159,7 @@ export const Table = Node.create({
               if ($anchor.node(d).type.name === 'table') {
                 editorView.focus();
                 
-                let tableDepth = null;
+                let tableDepth: number | null = null;
                 let cellIndex = 0;
                 
                 for (let depth = $anchor.depth; depth > 0; depth--) {
@@ -231,7 +229,7 @@ export const Table = Node.create({
           editorView.dom.addEventListener('mousemove', updateButtonPositions, true);
           
           return {
-            update(_view) {
+            update() {
               updateButtonPositions();
             },
             destroy() {
@@ -263,7 +261,7 @@ export const TableRow = Node.create({
     return {
       addRowBefore: () => ({ tr, dispatch, state }) => {
         const { $anchor } = state.selection;
-        let rowDepth = null;
+        let rowDepth: number | null = null;
         
         for (let d = $anchor.depth; d > 0; d--) {
           if ($anchor.node(d).type.name === 'tableRow') {
@@ -293,7 +291,7 @@ export const TableRow = Node.create({
       
       addRowAfter: () => ({ tr, dispatch, state }) => {
         const { $anchor } = state.selection;
-        let rowDepth = null;
+        let rowDepth: number | null = null;
         
         for (let d = $anchor.depth; d > 0; d--) {
           if ($anchor.node(d).type.name === 'tableRow') {
@@ -323,7 +321,7 @@ export const TableRow = Node.create({
       
       deleteRow: () => ({ tr, dispatch, state }) => {
         const { $anchor } = state.selection;
-        let rowDepth = null;
+        let rowDepth: number | null = null;
         
         for (let d = $anchor.depth; d > 0; d--) {
           if ($anchor.node(d).type.name === 'tableRow') {
@@ -366,7 +364,7 @@ export const TableCell = Node.create({
     return {
       addColumnBefore: () => ({ tr, dispatch, state }) => {
         const { $anchor } = state.selection;
-        let tableDepth = null;
+        let tableDepth: number | null = null;
         let cellIndex = 0;
         
         for (let d = $anchor.depth; d > 0; d--) {
@@ -406,7 +404,7 @@ export const TableCell = Node.create({
       
       addColumnAfter: () => ({ tr, dispatch, state }) => {
         const { $anchor } = state.selection;
-        let tableDepth = null;
+        let tableDepth: number | null = null;
         let cellIndex = 0;
         
         for (let d = $anchor.depth; d > 0; d--) {
@@ -446,7 +444,7 @@ export const TableCell = Node.create({
       
       deleteColumn: () => ({ tr, dispatch, state }) => {
         const { $anchor } = state.selection;
-        let tableDepth = null;
+        let tableDepth: number | null = null;
         let cellIndex = 0;
         
         for (let d = $anchor.depth; d > 0; d--) {
