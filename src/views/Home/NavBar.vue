@@ -54,6 +54,7 @@
                 >
                     <Navbar_note_settings
                         @close="closeNoteSettings"
+                        :reload_func="reload_func"
                         :note-uuid="selectedNote"
                     />
                 </div>
@@ -178,6 +179,10 @@ import mobile from  '@/configs/mobile.json';
 import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 import Navbar_note_settings from '@/components/notes/Navbar_note_settings.vue';
+
+defineProps<{
+    reload_func: (a?: 'just_view' | 'local') => Promise<void>;
+}>()
 
 const router = useRouter();
 const route = useRoute();

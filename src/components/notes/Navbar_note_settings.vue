@@ -83,6 +83,7 @@ import ConfirmDialog from '../popup/ConfirmDialog.vue';
 
 const props = defineProps<{
     noteUuid: string;
+    reload_func: (a?: 'just_view' | 'local') => Promise<void>;
 }>();
 
 const emit = defineEmits([
@@ -119,6 +120,7 @@ const togglePin = async () => {
     _note.pinned = !note.value.pinned;
 
     await database.togle_pinned(note.value.id);
+    await props.reload_func('just_view')
 };
 
 

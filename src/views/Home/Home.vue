@@ -1,7 +1,7 @@
 
 <template>
 
-    <Navbar >
+    <Navbar :reload_func="reload_list">
 
         <a class="p-1.5" v-tooltip.bottom="'Recharger'">
             <div
