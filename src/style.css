@@ -56,6 +56,10 @@ a {
   transition: all .2s;
 }
 
+a.p-1 {
+  @apply px-2 py-1
+}
+
 a.px-1 {
   @apply px-1
 }

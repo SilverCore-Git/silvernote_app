@@ -1,20 +1,42 @@
 <template>
 
     <a>
-        <i class=" bi bi-x" />
+        <i class="text-3xl bi bi-x p-1" />
     </a>
 
-    <div>
-
+    <div 
+        class="
+                flex gap-4 justify-center items-center
+                text-2xl 
+            "
+    >
                     
-        <div
-            class="pin w-7 h-7 md:w-6 md:h-6"
-            :style="{
-            backgroundImage: if_pin_active
-                ? `url(${pinFull})`
-                : `url(${pinEmpty})`,
-            }"
-        ></div>
+        <a
+            class="bi p-1"
+            :class="
+                    if_pin_active 
+                        ? 'bi-pin-angle-fill'
+                        : 'bi-pin-angle'
+            "
+        ></a>
+
+        <a
+            class="
+                   bi bi-tag-fill p-1
+            "
+        ></a>
+
+        <a
+            class="
+                   bi bi-share-fill p-1
+            "
+        ></a>
+
+        <a
+            class="
+                   bi bi-trash-fill p-1
+            "
+        ></a>
 
     </div>
 
@@ -23,8 +45,6 @@
 <script lang="ts" setup>
 
 import { onMounted, ref } from 'vue';
-import pinFull from '/assets/webp/pin_plein.webp?url';
-import pinEmpty from '/assets/webp/pin_vide.webp?url';
 import type { Note } from '@/assets/ts/type';
 import database from '@/assets/ts/database/database';
 
@@ -42,13 +62,3 @@ onMounted(async () => {
 })
 
 </script>
-
-<style scoped>
-
-.pin {
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-</style>

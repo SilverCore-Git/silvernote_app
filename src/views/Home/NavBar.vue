@@ -45,46 +45,54 @@
 
             </li>
 
-            <div 
-                v-if="selectedNote !== '' && isMobile"
-                class="flex flex-row justify-between items-center w-full px-4 text-3xl"
-            >
-                <Navbar_note_settings
-                    :note-uuid="selectedNote"
-                />
-            </div>
+            <Transition name="fade-slide">
+                <div
+                    v-if="selectedNote !== '' && isMobile"
+                    class="
+                            flex flex-row justify-between items-center rounded-2xl
+                            w-full px-4 text-3xl absolute bg-(--bg2) z-35"
+                >
+                    <Navbar_note_settings
+                        :note-uuid="selectedNote"
+                    />
+                </div>
+            </Transition>
 
-            <div 
-                v-else
-                class="flex flex-row justify-between items-center w-full px-4"
-            >
+            <Transition name="fade-slide">
+                <div
+                    class="
+                            flex flex-row justify-between items-center
+                            w-full px-4 z-30
+                        "
+                >
 
-                <a class="p-1.5" v-tooltip.bottom="'Paramètres'">
-                    <div
-                        class="gear-svg
-                                w-7
-                                h-7
-                            "
-                        @click="router.push('/settings')"
-                    ></div>
-                </a>
+                    <a class="p-1.5" v-tooltip.bottom="'Paramètres'">
+                        <div
+                            class="gear-svg
+                                    w-7
+                                    h-7
+                                "
+                            @click="router.push('/settings')"
+                        ></div>
+                    </a>
 
-                <slot></slot>
+                    <slot></slot>
 
-                <a class="p-1.5 flex items-center justify-center ">
-                    <UserButton 
-                        :appearance="{
-                            elements: {
-                                userButtonAvatarBox: {
-                                    width: '24px',
-                                    height: '24px'
+                    <a class="p-1.5 flex items-center justify-center ">
+                        <UserButton 
+                            :appearance="{
+                                elements: {
+                                    userButtonAvatarBox: {
+                                        width: '24px',
+                                        height: '24px'
+                                    }
                                 }
-                            }
-                        }" 
-                        />
-                </a>
+                            }" 
+                            />
+                    </a>
 
-            </div>
+                </div>
+            </Transition>
 
             <div class="phone-hidden-flex flex-col gap-2">
 
