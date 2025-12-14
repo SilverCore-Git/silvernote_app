@@ -29,12 +29,14 @@
         ></a>
 
         <a
+            @click="share_menu_opened = !share_menu_opened"  
             class="
                    bi bi-share-fill p-1
             "
         ></a>
 
         <a
+            @click="delete_note(1)"
             class="
                    bi bi-trash-fill p-1
             "
@@ -51,6 +53,20 @@
             @update:tags="updateNoteTags"
         />
 
+        <Share_menu
+            v-if="note"
+            :uuid="note.uuid"
+            :title="note.title"
+            v-model="share_menu_opened"
+        />
+
+        <ConfirmDialog
+            :visible="dialogue.visible"
+            :message="dialogue.message"
+            @confirm="delete_note(2)"
+            @cancel="dialogue.visible = false"
+        />
+
     </Teleport>
 
 </template>
@@ -62,6 +78,8 @@ import type { Note } from '@/assets/ts/type';
 import database from '@/assets/ts/database/database';
 import { Notes } from '@/assets/ts/database/Var';
 import Tags_manager from '../tags/tags_manager.vue';
+import Share_menu from '../popup/share_menu.vue';
+import ConfirmDialog from '../popup/ConfirmDialog.vue';
 
 const props = defineProps<{
     noteUuid: string;
@@ -75,6 +93,14 @@ const note = ref<Note | undefined>(undefined);
 const if_pin_active = ref<boolean>(false);
 
 const tags_manager_opened = ref<boolean>(false);
+const share_menu_opened = ref<boolean>(false);
+const dialogue = ref<{
+    visible: boolean,
+    message: string
+}>({
+    visible: false,
+    message: ''
+})
 
 onMounted(async () => {
     note.value = await database.getNoteByUUID(props.noteUuid);
@@ -106,5 +132,21 @@ const updateNoteTags = (newTags: number[]) => {
     database.saveTags(newTags, note.value!.id);
 
 };
+
+const delete_note = async (state: number): Promise<void> => {
+    if (!note.value) return;
+    if (state == 1) {
+        dialogue.value.message = `Êtes vous sur de vouloir supprimer la note : ${note.value?.title}`;
+        dialogue.value.visible = true;
+    }
+    else if (state == 2) {
+        dialogue.value.visible = false;
+        await database.delete(note.value.id, false);
+
+        Notes.value = Notes.value.filter(_note => _note.id !== note.value?.id);
+        emit('close');
+    }
+    return;
+}
 
 </script>
