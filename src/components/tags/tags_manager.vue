@@ -3,7 +3,8 @@
     <teleport to="body">
         
         <Popup
-            v-model:visible="props.active"
+            :visible="props.active"
+            @update:visible="emit('update:active', $event)"
             @click.self="close"
         >
             
@@ -124,7 +125,7 @@
 
 <script setup lang="ts">
 
-import { onMounted, ref, watch, defineEmits, defineProps } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import db from '@/assets/ts/database/database';
 import type { Tag } from '@/assets/ts/type';

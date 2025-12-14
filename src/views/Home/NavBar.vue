@@ -53,6 +53,7 @@
                             w-full px-4 text-3xl absolute bg-(--bg2) z-35"
                 >
                     <Navbar_note_settings
+                        @close="closeNoteSettings"
                         :note-uuid="selectedNote"
                     />
                 </div>
@@ -194,6 +195,15 @@ watch(() => route.query.selectedNote, () => {
     if (!route.query.selectedNote) return selectedNote.value = '';
     selectedNote.value = String(route.query.selectedNote);
 })
+
+const closeNoteSettings = () => {
+    router.push({
+        query: {
+            ...route.query,
+            selectedNote: undefined
+        }
+    });
+}
 
 </script>
 
