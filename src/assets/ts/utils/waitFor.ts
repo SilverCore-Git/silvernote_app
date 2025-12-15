@@ -1,15 +1,27 @@
 export default function waitFor
-(conditionFn: () => boolean, timeout = 5000, interval = 300): Promise<boolean>
+(
+    conditionFn: () => boolean,
+    timeout: number = 5_000,
+    interval: number = 100
+): Promise<boolean>
 {
-  return new Promise(resolve => {
-    const start = Date.now();
+    return new Promise((resolve) => {
+        const start = Date.now();
 
-    const check = () => {
-      if (conditionFn()) return resolve(true);
-      if (Date.now() - start >= timeout) return resolve(false);
-      setTimeout(check, interval);
-    };
+        const check = () => {
+            if (conditionFn()) {
+                resolve(true);
+                return;
+            }
 
-    check();
-  });
+            if (Date.now() - start >= timeout) {
+                resolve(false);
+                return;
+            }
+
+            setTimeout(check, interval);
+        };
+
+        check();
+    });
 }
