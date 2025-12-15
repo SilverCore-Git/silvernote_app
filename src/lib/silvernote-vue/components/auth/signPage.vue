@@ -26,7 +26,7 @@ onMounted(() => {
             return;
           }
 
-          const url = new URL(redirectUrl);
+          const url = new URL(redirectUrl, window.location.origin);
           url.searchParams.set('utm_source', 'silvernote-auth');
           window.location.href = url.toString();
         }
