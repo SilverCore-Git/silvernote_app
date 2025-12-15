@@ -1,7 +1,7 @@
 
 <template>
 
-    <Navbar >
+    <Navbar :reload_func="reload_list">
 
         <a class="p-1.5" v-tooltip.bottom="'Recharger'">
             <div
@@ -26,7 +26,7 @@
         >
 
             <div
-                class="flex flex-col gap-2 w-full"
+                class="flex flex-col gap-2 w-full z-20"
             >
 
                 <Search_bar />
@@ -38,14 +38,14 @@
                     <Swiper
                         :slides-per-view="'auto'"
                         :space-between="8"
-                        class="w-full lg:w-500 pr-1.5 pl-1.5 rounded-xl"
+                        class="w-full lg:w-500 pr-1.5 pl-1.5 rounded-xl z-20"
                         v-if="all_tags && all_tags.length" 
                     >
 
                         <SwiperSlide 
                             v-for="(tag, index) in all_tags"
                             :key="index"
-                            class="!w-auto"
+                            class="!w-auto z-20"
                             @click.stop="add_tag_filter(tag.id)" 
                         >
 
@@ -322,7 +322,7 @@
     <div 
         :class="[
             `flex justify-center items-center
-            pointer-events-none z-50`,
+            pointer-events-none z-40`,
             isMobile 
                 ? 'fixed right-6 bottom-6' 
                 : 'fixed inset-x-0 bottom-6'
@@ -425,7 +425,6 @@
     import { onMounted, ref, watch, onUnmounted, nextTick } from 'vue';
     import { Swiper, SwiperSlide } from 'swiper/vue';
     import 'swiper/css';
-    import Hammer from 'hammerjs';
 
     import db from '@/assets/ts/database/database';
     import back from '@/assets/ts/backend_link';
@@ -569,13 +568,14 @@
 
     const create_new_note = () => {
 
-        const notesLength = list_notes.value.length;
-        if (!plan.value || !plan.value.benefits) return new salert('Plan et benefits ne sont pas définit.', 'error');
+        // for future price & plan
+        // const notesLength = list_notes.value.length;
+        // if (!plan.value || !plan.value.benefits) return new salert('Plan et benefits ne sont pas définit.', 'error');
 
-        if (notesLength > plan.value.benefits.notesLength) // si le plan est épuisé en note
-        {
-            return new salert('Nombre de note maximal autorisé par le plan atteint.', 'error');
-        }
+        // if (notesLength > plan.value.benefits.notesLength) // si le plan est épuisé en note
+        // {
+        //     return new salert('Nombre de note maximal autorisé par le plan atteint.', 'error');
+        // }
 
         router.push(`/edit/new?pinned=false`);
 
@@ -644,18 +644,18 @@
 
     const initHammer = () => {
 
-        const dragDownElement: HTMLElement | null = document.querySelector('.dragDown');
-        if (!dragDownElement) return;
+        // const dragDownElement: HTMLElement | null = document.querySelector('.dragDown');
+        // if (!dragDownElement) return;
 
-        const hammer = new Hammer(dragDownElement);
+        // const hammer = new Hammer(dragDownElement);
 
-        hammer.get('pan').set({ direction: Hammer.DIRECTION_DOWN });
+        // hammer.get('pan').set({ direction: Hammer.DIRECTION_DOWN });
 
-        hammer.on('pan', (ev) => {
-            if (ev.deltaY > 160) { // seuil pour déclencher le pull
-                reload_list();
-            }
-        });
+        // hammer.on('pan', (ev) => {
+        //     if (ev.deltaY > 160) { // seuil pour déclencher le pull
+        //         reload_list();
+        //     }
+        // });
 
     }
 

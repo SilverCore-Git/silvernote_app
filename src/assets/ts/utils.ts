@@ -159,7 +159,7 @@ class utils {
         const snoteFile: SnoteFile = {
             snote_file_type: 'note',
             note,
-            hash: await this.hash(note),
+            hash: await this.hash(JSON.stringify(note)),
             fileInfo: {
                 date: new Date(),
                 senderId: userId!,

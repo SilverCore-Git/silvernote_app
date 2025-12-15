@@ -45,36 +45,56 @@
 
             </li>
 
-            <div 
-                class="flex flex-row justify-between items-center w-full px-4"
-            >
+            <Transition name="fade-slide">
+                <div
+                    v-if="selectedNote !== '' && isMobile"
+                    class="
+                            flex flex-row justify-between items-center rounded-2xl
+                            w-full px-4 text-3xl absolute bg-(--bg2) z-35"
+                >
+                    <Navbar_note_settings
+                        @close="closeNoteSettings"
+                        :reload_func="reload_func"
+                        :note-uuid="selectedNote"
+                    />
+                </div>
+            </Transition>
 
-                <a class="p-1.5" v-tooltip.bottom="'Paramètres'">
-                    <div
-                        class="gear-svg
-                                w-7
-                                h-7
-                            "
-                        @click="router.push('/settings')"
-                    ></div>
-                </a>
+            <Transition name="fade-slide">
+                <div
+                    class="
+                            flex flex-row justify-between items-center
+                            w-full px-4 z-30
+                        "
+                >
 
-                <slot></slot>
+                    <a class="p-1.5" v-tooltip.bottom="'Paramètres'">
+                        <div
+                            class="gear-svg
+                                    w-7
+                                    h-7
+                                "
+                            @click="router.push('/settings')"
+                        ></div>
+                    </a>
 
-                <a class="p-1.5 flex items-center justify-center ">
-                    <UserButton 
-                        :appearance="{
-                            elements: {
-                                userButtonAvatarBox: {
-                                    width: '24px',
-                                    height: '24px'
+                    <slot></slot>
+
+                    <a class="p-1.5 flex items-center justify-center ">
+                        <UserButton 
+                            :appearance="{
+                                elements: {
+                                    userButtonAvatarBox: {
+                                        width: '24px',
+                                        height: '24px'
+                                    }
                                 }
-                            }
-                        }" 
-                        />
-                </a>
+                            }" 
+                            />
+                    </a>
 
-            </div>
+                </div>
+            </Transition>
 
             <div class="phone-hidden-flex flex-col gap-2">
 
@@ -151,13 +171,22 @@
 <script lang="ts" setup>
 
 import { UserButton } from '@clerk/vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { version, dev } from '../../../package.json';
 import { notes_views_mode, toggle_notes_views_mode, notes_filter, type Notes_filter } from '@/assets/ts/Notes_views';
 import New_note_btn from './New_note_btn.vue';
 import mobile from  '@/configs/mobile.json';
+import { ref, watch } from 'vue';
+import isMobile from '@/assets/ts/utils/isMobile';
+import Navbar_note_settings from '@/components/notes/Navbar_note_settings.vue';
+
+defineProps<{
+    reload_func: (a?: 'just_view' | 'local') => Promise<void>;
+}>()
 
 const router = useRouter();
+const route = useRoute();
+const selectedNote = ref<string>('');
 
 const setFilter = (a: Notes_filter): void => {
     notes_filter.value = a;
@@ -165,6 +194,20 @@ const setFilter = (a: Notes_filter): void => {
 
 const newNote = () => {
     router.push('/edit/new');
+}
+
+watch(() => route.query.selectedNote, () => {
+    if (!route.query.selectedNote) return selectedNote.value = '';
+    selectedNote.value = String(route.query.selectedNote);
+})
+
+const closeNoteSettings = () => {
+    router.push({
+        query: {
+            ...route.query,
+            selectedNote: undefined
+        }
+    });
 }
 
 </script>

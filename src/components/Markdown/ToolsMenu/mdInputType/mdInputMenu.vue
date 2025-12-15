@@ -17,6 +17,7 @@
         </span>
 
         <input 
+          v-if="searchType !== 'props'"
           v-model="search"
           ref="searchInput"
           placeholder="Rechercher..."
@@ -56,7 +57,7 @@
 
 <script lang="ts" setup>
 
-import { defineProps, defineEmits, ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, watch, nextTick, onMounted } from 'vue';
 import config from './mdInputMenu.json';
 import { editor } from '../../Editor';
 
@@ -65,6 +66,8 @@ const props = defineProps<{
   left: number;
   show: boolean;
   type?: 'insert' | 'all';
+  searchType?: 'props';
+  query?: string;
 }>();
 
 defineEmits<{
@@ -86,6 +89,7 @@ const insertName: string[] = [
   'Titre h1',
   'Titre h2',
   'Titre h3',
+  'Tableau'
 ]
 
 const search = ref<string>('');
@@ -119,24 +123,28 @@ watch(() => props.show, async (val) => {
 })
 
 const insertImageFromFile = (editor: any) => {
-  
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = "image/*";
+    
+  editor.value.chain().focus().insertContent({
+    type: 'imageUpload',
+    attrs: {
+      accept: 'image/*',
+      limit: 3,
+      maxSize: 10 * 1024 * 1024, // 10 MB
+    },
+  }).run()
 
-  input.onchange = () => {
-    const file = input.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const url = reader.result as string;
-      editor.chain().focus().setImage({ src: url }).run();
-    };
-    reader.readAsDataURL(file);
-  };
-
-  input.click();
 };
+
+onMounted(() => {
+  if (props.searchType == 'props')
+  {
+    if (props.query)
+    {
+      watch(() => props.query, () => {
+        search.value = props.query!;
+      })
+    }
+  }
+})
 
 </script>

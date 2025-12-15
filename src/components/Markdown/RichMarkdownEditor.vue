@@ -38,7 +38,6 @@ import Link from '@tiptap/extension-link';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 import Image from '@tiptap/extension-image';
-import { TableKit } from '@tiptap/extension-table';
 import { CharacterCount, UndoRedo } from '@tiptap/extensions';
 import Youtube from '@tiptap/extension-youtube';
 import { Extension, InputRule } from '@tiptap/core';
@@ -46,7 +45,7 @@ import SlashCommand from '@/components/Markdown/tiptap-extensions/SlachCommand.j
 import { IndentExtension } from './tiptap-extensions/IndentExtension.js';
 import FileHandler from '@tiptap/extension-file-handler';
 import { noteBtnLink } from './tiptap-extensions/noteBtnLink';
-//import { CollapsibleExtension } from './tiptap-extensions/CollapsibleExtension.js';
+import { handleImageUpload, MAX_FILE_SIZE, imageUploadNode } from './tiptap-extensions/image-upload-node/';
 import DragHandle from './tiptap-extensions/dragHandle';
 import './css/DragHandler.scss';
 import { _searchBar, SearchBar, SearchAndReplace } from './tiptap-extensions/searchAndReplace';
@@ -67,6 +66,7 @@ import ToolsMenu from '@/components/Markdown/ToolsMenu/toolsBar/ToolsMenu.vue';
 import Color from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import Highlight from '@tiptap/extension-highlight'
+import { Table, TableCell, TableRow } from './tiptap-extensions/table/tableExtansion.js';
 
 import { editor, isLoaded } from './Editor';
 import { saveNote } from './Function/saveNote.js';
@@ -212,15 +212,21 @@ const initEditor = async () => {
       Youtube.configure({ HTMLAttributes: { class: 'ytb-viewer' } }),
       UndoRedo,
       Color,
-      //SelectionRectangle.configure({ dragHandle: DragHandle }),
+      imageUploadNode.configure({
+        accept: 'image/*',
+        maxSize: MAX_FILE_SIZE,
+        limit: 3,
+        upload: handleImageUpload,
+        onError: (error: any) => console.error('Upload failed:', error),
+      }),
       TextStyle,
       Highlight.configure({
         multicolor: true
       }),
       CharacterCount,
-      TableKit.configure({
-        table: { resizable: true },
-      }),
+      Table,
+      TableCell,
+      TableRow,
       IndentExtension,
       Markdown.configure({ html: true }),
       Placeholder.configure({ placeholder: 'Commencez à écrire ici...' }),
@@ -311,8 +317,8 @@ window.addEventListener('beforeunload', () => {
 
 <style>
 
+@import './tiptap-extensions/table/table-styles.css';
 @import './css/basic.css';
-@import './css/Table.css';
 @import './css/ToDoList.css';
 @import './css/tiptap_carets.css';
 @import './tiptap-extensions/dragHandle/drag-icon.css';

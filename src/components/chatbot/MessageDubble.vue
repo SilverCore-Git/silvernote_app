@@ -2,8 +2,9 @@
 
   <div
     :class="[
-      ' break-normal max-w-[85%] p-4 rounded-2xl',
-      origin === 'ai' ? 'ai-message' : origin === 'error' ? 'error-message' : 'user-message max-w-[75%]'
+      ' break-normal p-4 rounded-2xl',
+      isMobile ? '' : 'max-w-[85%]',
+      origin === 'ai' ? 'ai-message' : origin === 'error' ? 'error-message' : 'user-message'
     ]"
     style="animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);"
   >
@@ -16,7 +17,10 @@
 
           <div v-for="(item, index) in timelineItems" :key="`timeline-${index}`" class="timeline-item">
             
-            <div v-if="item.type === 'text'" class="ai-text markdown-body leading-relaxed">
+            <div 
+              v-if="item.type === 'text'" 
+              class="ai-text markdown-body leading-relaxed max-w-[75%]"
+            >
               <div v-html="item.content"></div>
             </div>
 
@@ -59,7 +63,7 @@
 
       <div v-if="isTyping" class="typing-wrapper flex items-center gap-2 mt-2">
         <div class="typing-indicator">
-          <span></span><span></span><span></span>
+          <span v-for="i in 3" :key="i"></span>
         </div>
         <span class="typing-text text-sm font-medium">SilverIA réfléchit...</span>
       </div>
@@ -69,7 +73,7 @@
       {{ props.text }}
     </div>
 
-    <div v-else class="error-content flex items-start gap-3 text-red-600">
+    <div v-else class="error-content flex items-start gap-3">
       <div class="text-xl">⚠️</div>
       <div>
         <div class="font-bold text-sm">Erreur</div>
@@ -82,10 +86,11 @@
 <script setup lang="ts">
 import { ref, watch, nextTick } from 'vue';
 import { marked } from 'marked';
+import isMobile from '@/assets/ts/utils/isMobile';
 
 const _props = defineProps<{ origin: 'ai' | 'user' | 'error'; text: string }>();
 const props = ref({ origin: _props.origin, text: _props.text });
-watch(_props, () => props.value = _props);
+watch(_props, () => { props.value = _props }, { deep: true });
 
 interface TimelineItem {
   type: 'text' | 'tool';

@@ -88,9 +88,9 @@ class InitDB {
 
             Notes.value.sort((a: Note, b: Note) => {
                 if (a.pinned === b.pinned) {
-                const dateA = parseFrenchDate(a.date);
-                const dateB = parseFrenchDate(b.date);
-                return dateB.getTime() - dateA.getTime();
+                    const dateA = parseFrenchDate(a.date);
+                    const dateB = parseFrenchDate(b.date);
+                    return dateB.getTime() - dateA.getTime();
                 }
                 return a.pinned ? -1 : 1;
             });

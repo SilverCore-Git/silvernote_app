@@ -11,23 +11,17 @@ import Masonry from "masonry-layout";
 let msnry: Masonry | null = null;
 
 onMounted(async () => {
+  await nextTick();
+  
+  const grid = document.querySelector<HTMLDivElement>('.masonry-grid');
+  if (!grid) return;
 
-  setTimeout(async () => { 
-    
-    await nextTick(); 
-
-    const grid = document.querySelector<HTMLDivElement>('.masonry-grid');
-    if (!grid) return;
-
-    msnry = new Masonry(grid, {
-      itemSelector: ".masonry-item",
-      columnWidth: ".masonry-item-style",
-      percentPosition: true,      
-      transitionDuration: "0.2s"
-    });
-
-  }, 1500);
-
+  msnry = new Masonry(grid, {
+    itemSelector: ".masonry-item",
+    columnWidth: ".masonry-item-style",
+    percentPosition: true,
+    transitionDuration: "0.2s",
+  });
 });
 
 onBeforeUnmount(() => {

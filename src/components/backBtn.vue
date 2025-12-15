@@ -16,6 +16,7 @@ defineProps<{
 }>();
 
 const goBack = () => {
+  return router.push({ name: 'Home' });
   if (window.history.length > 1) {
     router.back();
   } else {

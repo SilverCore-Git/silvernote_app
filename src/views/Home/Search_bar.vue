@@ -1,71 +1,32 @@
 <template>
 
+  <SearchANote
+    v-if="search"
+    @close="search = false"
+    @note="openNote"
+  />
+
   <div
     class=" 
             bg-[var(--bg2)] text-[var(--text)] 
-            border z-30 rounded-xl
+            border rounded-xl
             w-full flex flex-col py-2 px-3
     "
-    :class="isFocus ? 'border-[var(--btn)]' : 'border-[var(--text-little)]'"
     style="box-shadow: 0 0 5px #3636364f;"
     
   >
 
     <div class="flex flex-row justify-center items-center">
 
-      <button @click="search_input?.focus()" class="search-btn absolute left-0"></button>
+      <button class="search-btn absolute left-0"></button>
 
       <input 
         ref="search_input"
-        @focus="isFocus = true"
-        @blur="isFocus = false"
-        v-model="searchQuery"
         type="text"
         class="w-full border-none outline-none text-md ml-2" 
         placeholder="Recherche..."
+        @click="search = true"
       >
-
-    </div>
-
-    <div 
-      v-if="searchQuery !== '' && !filteredNotes.length" 
-      class="text-sm "
-    >
-        Aucune note trouvée.
-    </div>
-
-    <div class="absolute top-2 inset-x-0 z-50">
-
-      <div 
-          v-if="filteredNotes.length && searchQuery != '' && isFocus" 
-          class="space-y-2 w-full overflow-x-auto p-3 absolute top-10 h-[90vh]
-                  bg-[var(--bg2)] rounded-xl border border-[var(--text-little)]"
-      >
-
-        <MasonryWrapper class="w-full">
-        
-          <MasonryItem
-            v-for="note in filteredNotes" 
-          >
-
-            <Note_card 
-              :key="note.id"
-              :id="note.id"
-              :icon="note.icon"
-              :uuid="note.uuid"
-              :pinned="note.pinned"
-              :title="highlightMatch(utils.htmlToText(note.title), searchQuery)" 
-              :content="highlightMatch(utils.htmlToText(note.content), searchQuery)"
-              :clean-HTML="false" 
-              :date="note.date"
-              :tags="note.tags.map(tag => Number(tag))"
-            />
-
-          </MasonryItem>
-
-        </MasonryWrapper>
-
-      </div>
 
     </div>
 
@@ -77,59 +38,18 @@
 
 <script lang="ts" setup>
 
-import { computed, onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
-import db from '@/assets/ts/database/database';
-import type { Note, Tag } from '@/assets/ts/type';
-import utils from '@/assets/ts/utils';
-import Note_card from '@/components/notes/Note_card.vue';
-import MasonryWrapper from '@/components/Masonry/MasonryWrapper.vue';
-import MasonryItem from '@/components/Masonry/MasonryItem.vue';
+import SearchANote from '@/components/notes/searchANote.vue';
+import { useRouter } from 'vue-router';
 
-const search_input = ref<HTMLInputElement | null>(null);
-const isFocus = ref<boolean>(false);
+const router = useRouter();
+const search = ref<boolean>(false);
 
-const searchQuery = ref('');
-const list_notes = ref<Note[]>([]);
-const all_tags = ref<Tag[]>([]);
-
-onMounted(async () => {
-  all_tags.value = await db.getAll('tags');
-})
-
-const init_notes = async () => {
-    list_notes.value = await db.getAll('notes');
-    list_notes.value.sort( (a, b) => { return b.id - a.id } );
+const openNote = (id: number) => {
+  router.push('/edit/' + id);
+  search.value = false;
 }
-
-const filteredNotes = computed(() =>
-
-  list_notes.value.filter(note => {
-    const tagNames = all_tags.value
-      .filter(tag => note.tags.includes(tag.id))
-      .map(tag => tag.name)
-      .join(' ');
-
-    const searchableText = [note.title, note.content, tagNames, ...(note.tags || [])]
-      .join(' ')
-      .toLowerCase();
-
-    return searchableText.includes(searchQuery.value.toLowerCase());
-  })
-
-);
-
-
-const highlightMatch = (text: string, query: string) => {
-  if (!query) return text;
-  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // échappe les regex
-  const regex = new RegExp(`(${escapedQuery})`, 'gi');
-  return text.replace(regex, '<mark class="bg-yellow-300">$1</mark>');
-};
-
-onMounted(async () => {
-  await init_notes();
-});
 
 </script>
 

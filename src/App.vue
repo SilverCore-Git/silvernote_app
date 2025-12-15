@@ -1,5 +1,9 @@
 <template>
 
+  <ErrorOverlay />
+
+  <ShortsCut />
+
   <div
     :style="{
       marginTop: mobile_config.active ? mobile_config.margin.top : 0,
@@ -13,13 +17,12 @@
           v-if="route.name == 'sign' || route.name == 'ssoCallback' || !loader && InitDB.isLoaded()"
           class="flex-1 relative "
           :class="
-                  [ 'Edit', 'Share' ].includes(route.name as string) && route.query.chatbot == 'relative' ? 
-                    'mx-4'
-                    : route.name == 'Home' 
-                        ? 'mt-(--mt) mr-(--mlr) ml-(--mrl) ' 
-                        : route.name == 'sign' 
-                            ? ''
-                            : 'mr-(--mlr) ml-(--mrl)'"
+                  route.name === 'Home'
+                    ? 'mt-(--mt) mr-(--mlr) ml-(--mrl) ' 
+                    : route.name == 'sign' || route.name == 'Edit' || route.name == 'Share'
+                        ? ''
+                        : 'mr-(--mlr) ml-(--mrl)'
+          "
         >
           <router-view />
         </div>
@@ -37,6 +40,9 @@
       <div v-if="loader" class="fixed inset-0 bg-[var(--bg)] z-50">
         <div class="flex justify-center items-center w-screen h-screen">
           <Loader :icon="false" />
+          <span class="absolute bottom-6 inset-x-0 z-500 flex justify-center items-center">
+            {{ status }}
+          </span>
         </div>
       </div>
 
@@ -81,24 +87,30 @@ import { loaded } from "./assets/ts/utils";
 import InitDB from "./assets/ts/database/init";
 import mobile_config from "@/configs/mobile.json";
 import waitFor from "./assets/ts/utils/waitFor";
+import ShortsCut from "./components/shortsCut.vue";
+import ErrorOverlay from "./components/errorOverlay/errorOverlay.vue";
+import postError from "./components/errorOverlay/postError";
 
 const loader = ref<boolean>(true);
+const status = ref<string>('Chargement de l\'app...');
 const open_chatbot = ref<boolean>(true);
 const session = new Session();
 const route = useRoute();
 const router = useRouter();
 const { user, isLoaded } = useUser();
-const { isSignedIn } = useAuth()
+const { isSignedIn } = useAuth();
 
 const is_offline = ref<boolean>(false);
 
 
 onMounted(async () => {
 
-  init_theme();
+  status.value = 'Initialisation des thèmes...';
+  init_theme(); // initialisation du theme dark / light => no timeout 
   
-  localStorage.removeItem('hiddenNews');
+  localStorage.removeItem('hiddenNews'); 
 
+  // check si online => voir si cela ne fraine pas le proc
   let online = false;
   try {
     const res = await fetch(api_url + '/version');
@@ -108,18 +120,23 @@ onMounted(async () => {
     online = false;
   }
 
+  // on attend que clerk soit chargé => si chargement > 5s alors on pass
+  status.value = 'Authentification...';
   await waitFor(
     () => isLoaded.value,
     5_000
   );
 
+  // affichage si pas online (enlever ??)
   if (!online) {
     console.warn("offline");
     is_offline.value = true;
     return;
   }
 
+  // si non connecté => redirection sur la page de sign
   if (!isSignedIn.value) {
+    status.value = 'Redirection vers la page de connection...';
     if (!route.query.redirectUrl)
     {
       route.query.redirectUrl = route.fullPath;
@@ -133,21 +150,33 @@ onMounted(async () => {
     return;
   }
 
-  if (user.value) {
+  // si le user est connecté => init db
+  if (user.value && user.value.id) {
+    status.value = 'Lancement du chargement des notes...';
     InitDB.init(user);
     await InitDB.main();
   }
 
+  // attendre le chargement de la db
+  status.value = 'Attente du chargement des notes...';
   const dbReady = await waitFor(
     () => InitDB.isLoaded(),
     10_000
   );
 
+  // catch
   if (!dbReady) {
+    postError({ 
+      place: "Initialisation de la db : app.vue",
+      message: "InitDB not loaded",
+      error: "500"
+    })
     console.error("InitDB not loaded.");
     return;
   }
 
+  // fin du chargement
+  status.value = "Finalisation...";
   if (!user.value?.id) return;
   localStorage.setItem('user_id', user.value?.id);
 
