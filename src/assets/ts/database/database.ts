@@ -280,15 +280,28 @@ class Database {
 
     public async reset({ localANDcloud }: { localANDcloud?: boolean } = {}): Promise<void> {
 
-        const notes = await this.getAll('notes');
-        const tags = await this.getAll('tags');
+        if (localANDcloud)
+        {
 
-        for (const tag of tags) {
-            await this.delete_tag(tag.id, localANDcloud == true ? false : true);
+            const notes = await this.getAll('notes');
+            const tags = await this.getAll('tags');
+
+            for (const tag of tags) {
+                await this.delete_tag(tag.id, localANDcloud == true ? false : true);
+            }
+
+            for (const note of notes) {
+                await this.delete(note.id, localANDcloud == true ? false : true);
+            }
+
         }
+        else
+        {
 
-        for (const note of notes) {
-            await this.delete(note.id, localANDcloud == true ? false : true);
+            const db = await this.dbPromise;
+            await db.clear('notes');
+            await db.clear('tags');
+
         }
 
     }
