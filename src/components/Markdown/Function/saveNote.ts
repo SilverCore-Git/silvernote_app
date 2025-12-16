@@ -57,7 +57,10 @@ export const saveNote = async (id: number) =>
 
         const response = await fetch(`${api_url}/api/db/update/a/note`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+            },
             credentials: 'include',
             body: JSON.stringify({ note: newNote })
         });
