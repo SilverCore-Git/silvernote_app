@@ -20,8 +20,11 @@ interface NotesDB extends DBSchema {
 class Database {
 
     private dbPromise: Promise<IDBPDatabase<NotesDB>>;
+    private clerkToken: string;
 
     constructor(initialNotes?: Note[], initialTags?: Tag[]) {
+        this.clerkToken = '';
+
         this.dbPromise = openDB<NotesDB>('silvernote-db', 2, {
             upgrade(db) {
                 if (!db.objectStoreNames.contains('notes')) {
@@ -45,6 +48,11 @@ class Database {
         });
     }
 
+    public async init ()
+    {
+        this.clerkToken = `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+    }
+
     private async push_note(note: Note, socket?: Socket) {
 
         if (socket) {
@@ -62,7 +70,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+                    'Authorization': this.clerkToken
                 },
                 credentials: 'include',
                 body: JSON.stringify({ note }),
@@ -138,7 +146,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+                    'Authorization': this.clerkToken
                 },
                 credentials: 'include',
             })
@@ -155,7 +163,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+                    'Authorization': this.clerkToken
                 },
                 credentials: 'include',
             })
@@ -182,7 +190,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+                    'Authorization': this.clerkToken
                 },
                 credentials: 'include',
                 body: JSON.stringify({ note: arg.note }),
@@ -203,7 +211,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+                    'Authorization': this.clerkToken
                 },
                 credentials: 'include',
                 body: JSON.stringify({ tag }),
@@ -272,7 +280,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+                    'Authorization': this.clerkToken
                 },
                 credentials: 'include',
                 body: JSON.stringify({ tag }),

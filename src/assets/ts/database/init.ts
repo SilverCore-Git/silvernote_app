@@ -24,7 +24,8 @@ class InitDB {
 
     public async init (user: Ref<any>): Promise<void> {
         this.user = user;
-        this.clerkToken = `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+        this.clerkToken = `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`;
+        await db.init();
     }
 
     public async main (): Promise<void> 
