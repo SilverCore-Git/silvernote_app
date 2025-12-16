@@ -152,16 +152,16 @@ onMounted(async () => {
 
   // si le user est connecté => init db
   if (user.value && user.value.id) {
-    status.value = 'Lancement du chargement des notes...';
+    status.value = 'Chargement des notes...';
     InitDB.init(user);
     await InitDB.main();
   }
 
   // attendre le chargement de la db
-  status.value = 'Attente du chargement des notes...';
+  status.value = 'Finalisation du chargement des notes...';
   const dbReady = await waitFor(
     () => InitDB.isLoaded(),
-    10_000
+    5_000
   );
 
   // catch

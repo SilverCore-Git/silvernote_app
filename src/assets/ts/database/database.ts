@@ -62,6 +62,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
                 },
                 credentials: 'include',
                 body: JSON.stringify({ note }),
@@ -137,6 +138,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
                 },
                 credentials: 'include',
             })
@@ -153,6 +155,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
                 },
                 credentials: 'include',
             })
@@ -179,6 +182,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
                 },
                 credentials: 'include',
                 body: JSON.stringify({ note: arg.note }),
@@ -198,7 +202,8 @@ class Database {
             await fetch(`${api_url}/api/db/new/tag`, {
                 method: 'POST',
                 headers: {
-                'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
                 },
                 credentials: 'include',
                 body: JSON.stringify({ tag }),
@@ -267,6 +272,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
                 },
                 credentials: 'include',
                 body: JSON.stringify({ tag }),
