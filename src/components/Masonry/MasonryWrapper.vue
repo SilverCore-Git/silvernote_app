@@ -46,7 +46,7 @@ onBeforeUnmount(() => {
   margin-bottom: 16px;
 }
 
-@media (max-width: 1028px) {
+@media (max-width: 1128px) {
   .masonry-sizer,
   .masonry-item-style {
     width: 33.333%;
