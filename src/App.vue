@@ -37,7 +37,7 @@
       </div>
 
 
-      <div v-if="loader" class="fixed inset-0 bg-[var(--bg)] z-50">
+      <div v-if="loader" class="fixed inset-0 bg-(--bg) z-50">
         <div class="flex justify-center items-center w-screen h-screen">
           <Loader :icon="false" />
           <span class="absolute bottom-6 inset-x-0 z-500 flex justify-center items-center">
@@ -46,7 +46,7 @@
         </div>
       </div>
 
-      <div v-if="is_offline" class="fixed inset-0 bg-[var(--bg)] z-50">
+      <div v-if="is_offline" class="fixed inset-0 bg-(--bg) z-50">
         <div class="flex justify-center items-center flex-col w-screen h-screen">
 
             <div class="w-30 h-30">
@@ -152,13 +152,18 @@ onMounted(async () => {
 
   // si le user est connecté => init db
   if (user.value && user.value.id) {
+
+    status.value = 'Enregistrement des données utilisateur...';
+    localStorage.setItem('user_id', user.value?.id);
+    await InitDB.init(user);
+
     status.value = 'Chargement des notes...';
-    InitDB.init(user);
     await InitDB.main();
+
   }
 
   // attendre le chargement de la db
-  status.value = 'Finalisation du chargement des notes...';
+  status.value = 'Vérification du chargement des notes...';
   const dbReady = await waitFor(
     () => InitDB.isLoaded(),
     5_000
@@ -177,8 +182,6 @@ onMounted(async () => {
 
   // fin du chargement
   status.value = "Finalisation...";
-  if (!user.value?.id) return;
-  localStorage.setItem('user_id', user.value?.id);
 
   loader.value = false;
   loaded.value = true;

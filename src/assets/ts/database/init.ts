@@ -1,8 +1,8 @@
 
 import db from '@/assets/ts/database/database';
 
-import { nextTick, type Ref } from "vue";
-import type { Note } from "../type";
+import { type Ref } from "vue";
+import type { Note, Tag } from "../type";
 import { Notes, Tags, SharedNotes } from "./Var";
 import { api_url } from '../backend_link';
 import utils from '../utils';
@@ -11,43 +11,59 @@ import utils from '../utils';
 class InitDB {
 
     private user: Ref<any> | undefined;
+    private clerkToken: string | undefined;
     private loaded: boolean;
+    private notes: Note[] | undefined;
+    private tags: Tag[] | undefined;
 
     constructor () {
 
-        this.user = undefined;
         this.loaded = false;
 
     }
 
-    public init (user: Ref<any>): void {
+    public async init (user: Ref<any>): Promise<void> {
         this.user = user;
+        this.clerkToken = `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
     }
 
     public async main (): Promise<void> 
     {
 
+        if (!this.user || !this.clerkToken) {
+            throw new Error('InitDB.init() must be called before main()');
+        }
+
         try {
+
+            [this.notes, this.tags] = await Promise.all([
+                db.getAll('notes'),
+                db.getAll('tags')
+            ])
 
             if (!await this.verify_cloud_db()) 
             {
                 
-                await db.reset().then(async () => {
+                await db.reset();
 
-                    await this.init_cloud_tags();
-                    await this.init_cloud_notes();
+                await Promise.all([
+                    this.init_cloud_tags(),
+                    this.init_cloud_notes()
+                ]);
 
-                });
+                [this.notes, this.tags] = await Promise.all([
+                    db.getAll('notes'),
+                    db.getAll('tags')
+                ])
 
             }
 
-            await nextTick();
+            await Promise.all([
+                this.init_shared_notes(),
+                this.init_local_notes(),
+                this.init_local_tags()
+            ]);
 
-            await this.init_shared_notes();
-            await this.init_local_notes();
-            await this.init_local_tags();
-
-            await nextTick();
             this.loaded = true;
 
         }
@@ -62,8 +78,8 @@ class InitDB {
     public async init_local_notes ()
     {
 
-            const notes = await db.getAll('notes');
-            Notes.value = notes;
+            if (!this.notes) return;
+            Notes.value = this.notes;
 
             const monthMap: Record<string, number> = {
                 janvier: 0,
@@ -99,7 +115,8 @@ class InitDB {
 
     public async init_local_tags() 
     {
-        Tags.value = await db.getAll('tags');
+        if (!this.tags) return;
+        Tags.value = this.tags;
     }
 
 
@@ -109,7 +126,7 @@ class InitDB {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+                'Authorization': this.clerkToken || ''
             }
         }).then(res => res.json());
         if (data) {
@@ -124,7 +141,7 @@ class InitDB {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+                'Authorization': this.clerkToken || ''
             }
         }).then(res => res.json());
         if (data) {
@@ -138,7 +155,7 @@ class InitDB {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+                'Authorization': this.clerkToken || ''
             }
         }).then(res => res.json());
 
@@ -147,7 +164,7 @@ class InitDB {
             return;
         }
 
-        if (res.length < 1) {
+        if (res.length < 1) { // .lenght est dans la rep json
             SharedNotes.value = [];
             return;
         }
@@ -161,15 +178,16 @@ class InitDB {
     private async verify_cloud_db (): Promise<boolean> 
     {
 
-        const notes_hash: string = await utils.hash(await db.getAll('notes'));
-        const tags_hash: string = await utils.hash(await db.getAll('tags'));
+        if (!this.notes || !this.tags) return false;
+        const notes_hash: string = await utils.hash(this.notes);
+        const tags_hash: string = await utils.hash(this.tags);
 
         const res = await fetch(`${api_url}/api/db/verify/data`, {
             method: "POST",
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`
+                'Authorization': this.clerkToken || ''
             },
             body: JSON.stringify({ 
                 notes: notes_hash, 
