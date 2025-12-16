@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import type { AppError } from "./types";
+import sentErrorToDiscord from "./sentErrorToDiscord";
 
 const errors = ref<AppError[]>([]);
 
@@ -16,6 +17,8 @@ const postError = (err: Omit<AppError, "id" | "timestamp" | "show">) => {
 
     errors.value.push(newError);
     activeErrorIndex.value = errors.value.length - 1;
+
+    sentErrorToDiscord(newError);
 };
 
 const closeError = (index: number) => {
