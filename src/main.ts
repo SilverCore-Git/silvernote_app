@@ -26,8 +26,8 @@ app.config.errorHandler = (err, instance, info) => {
     raw: err,
     place: info,
     error: "500",
-    more: instance?.type?.name
-      ? `Component: ${instance.type.name}`
+    more: (instance as any)?.type?.name
+      ? `Component: ${(instance as any).type.name}`
       : "Unknown component",
   });
 };

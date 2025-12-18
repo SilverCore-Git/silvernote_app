@@ -20,7 +20,7 @@ export default async function
                         fields: [
                             {
                                 name: "Message",
-                                value: error.message ?? "—",
+                                value: `\`\`\`${error.message ?? "—"}\`\`\``,
                             },
                             {
                                 name: "Code",
