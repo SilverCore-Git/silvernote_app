@@ -664,7 +664,7 @@ const wSocket = () => {
 
     socket.on('new_user', async (userId: string) => {
 
-        if (!shared.value) return;
+        if (!shared.value || !userId) return;
 
         const user_visitor = await getUserByUUID(userId, 'visitor');
         const user_owner = await getUserByUUID(userId, 'owner');
@@ -779,12 +779,14 @@ const get_existing_note = async () => {
           if (_share.success) {
             shared.value = true;
 
+            if (!_share.user_id) return;
+
             // Ajoute owner
             users.value.push(await getUserByUUID(_share.user_id, 'owner'));
 
             // Ajoute les visiteurs
             for (const userId of _share.visitor) {
-              if (userId !== _share.user_id) {
+              if (userId && userId !== _share.user_id) {
                 users.value.push(await getUserByUUID(userId, 'visitor'));
               }
             }

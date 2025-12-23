@@ -1,7 +1,7 @@
 <template>
 
   <div 
-    :style="{ top: `${top + 50}px`, left: `${left + 518}px` }" 
+    :style="{ top: `${top ? top + 50 : undefined}px`, left: `${left ? left + 518 : undefined}px` }" 
     class="absolute"
   >
 
@@ -62,8 +62,8 @@ import config from './mdInputMenu.json';
 import { editor } from '../../Editor';
 
 const props = defineProps<{
-  top: number;
-  left: number;
+  top?: number;
+  left?: number;
   show: boolean;
   type?: 'insert' | 'all';
   searchType?: 'props';

@@ -35,7 +35,7 @@
 
                         </div>
 
-                        <p class="mb-2 text-gray-800">
+                        <p class="mb-2 text-gray-800 p-2 bg-gray-400/20 border-gray-400 border rounded-xl">
                             {{ err.message ?? getDefaultMessage(err.error) }}
                         </p>
 

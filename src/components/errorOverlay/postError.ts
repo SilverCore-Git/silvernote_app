@@ -1,21 +1,58 @@
 import { ref } from "vue";
 import type { AppError } from "./types";
+import sentErrorToDiscord from "./sentErrorToDiscord";
+import { dev } from "@/../package.json";
 
 const errors = ref<AppError[]>([]);
-
 const activeErrorIndex = ref<number | null>(null);
 
-const postError = (err: Omit<AppError, "id" | "timestamp" | "show">) => {
-    const newError: AppError = {
-        id: crypto.randomUUID(),
-        timestamp: new Date(),
-        show: true,
-        little: false,
-        ...err,
-    };
+function extractMessage(err: unknown): string {
+  if (err instanceof DOMException) {
+    return `${err.name}: ${err.message}`;
+  }
 
-    errors.value.push(newError);
-    activeErrorIndex.value = errors.value.length - 1;
+  if (err instanceof Error) {
+    return err.message;
+  }
+
+  if (typeof err === "string") {
+    return err;
+  }
+
+  try {
+    return JSON.stringify(err);
+  } catch {
+    return "Erreur inconnue";
+  }
+}
+
+const postError = (params: {
+  message?: string;
+  place?: string;
+  error?: "400" | "500" | "unknow";
+  more?: string;
+  raw?: unknown;
+}) => {
+  const finalMessage = params.message ?? extractMessage(params.raw);
+
+  const newError: AppError = {
+    id: crypto.randomUUID(),
+    timestamp: new Date(),
+    show: true,
+    little: false,
+
+    message: finalMessage,
+    place: params.place,
+    error: params.error ?? "unknow",
+    more: params.more,
+  };
+
+  errors.value.push(newError);
+  activeErrorIndex.value = errors.value.length - 1;
+
+  if (!dev) {
+    sentErrorToDiscord(newError);
+  }
 };
 
 const closeError = (index: number) => {
@@ -24,7 +61,6 @@ const closeError = (index: number) => {
   }
 };
 
-
-export { closeError, errors, activeErrorIndex, postError }
+export { closeError, errors, activeErrorIndex, postError };
 export type { AppError };
 export default postError;

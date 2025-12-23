@@ -401,6 +401,9 @@ const _fetch = async () => {
         const owner_user: User | undefined = await getUserByUUID(_share.user_id, 'owner');
         if (owner_user) users.value.push(owner_user);
 
+        loaded.value = true;
+        wSocket();
+
         if (_share.visitor.length > 0) {
 
             for (const userId of _share.visitor) {
@@ -415,8 +418,6 @@ const _fetch = async () => {
 
         }
 
-        loaded.value = true;
-        wSocket();
         return;
 
     }

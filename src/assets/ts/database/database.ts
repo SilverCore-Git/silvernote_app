@@ -4,6 +4,7 @@ import type { Note, Tag } from '../type';
 import { api_url } from '../backend_link';
 import utils from '../utils';
 import type { Socket } from 'socket.io-client';
+import sessionToken from '../user/SessionToken';
 
 
 interface NotesDB extends DBSchema {
@@ -22,6 +23,7 @@ class Database {
     private dbPromise: Promise<IDBPDatabase<NotesDB>>;
 
     constructor(initialNotes?: Note[], initialTags?: Tag[]) {
+
         this.dbPromise = openDB<NotesDB>('silvernote-db', 2, {
             upgrade(db) {
                 if (!db.objectStoreNames.contains('notes')) {
@@ -45,6 +47,11 @@ class Database {
         });
     }
 
+    public async init ()
+    {
+        return;
+    }
+
     private async push_note(note: Note, socket?: Socket) {
 
         if (socket) {
@@ -62,6 +69,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionToken.value}`
                 },
                 credentials: 'include',
                 body: JSON.stringify({ note }),
@@ -137,6 +145,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionToken.value}`
                 },
                 credentials: 'include',
             })
@@ -153,6 +162,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionToken.value}`
                 },
                 credentials: 'include',
             })
@@ -166,19 +176,20 @@ class Database {
         const db = await this.dbPromise;
 
         if (!arg.idInTheProps) {
-            arg.note.id = Math.floor(Math.random() * (999999999999 - 1000000 + 1)) + 1000;
+            arg.note.id = Math.floor(Math.random() * 1e12);;
             arg.note.uuid = await utils.UUID();
         }
 
         if (!arg.note.tags) arg.note.tags = [];
 
-        await db.add('notes', arg.note);
+        await db.put('notes', arg.note);
 
         if (arg.cloud_post) {
             await fetch(`${api_url}/api/db/new/note`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionToken.value}`
                 },
                 credentials: 'include',
                 body: JSON.stringify({ note: arg.note }),
@@ -193,18 +204,19 @@ class Database {
         const db = await this.dbPromise;
         if (cloud_post) {
             tag.uuid = await utils.UUID();
-            tag.id = Math.floor(Math.random() * (999999999999 - 1000000 + 1)) + 1000
+            tag.id = Math.floor(Math.random() * 1e12);
 
             await fetch(`${api_url}/api/db/new/tag`, {
                 method: 'POST',
                 headers: {
-                'Content-Type': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionToken.value}`
                 },
                 credentials: 'include',
                 body: JSON.stringify({ tag }),
             })
         }
-        await db.add('tags', tag);
+        await db.put('tags', tag);
     }
 
     public async getNote(id: number): Promise<Note | undefined> {
@@ -267,6 +279,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionToken.value}`
                 },
                 credentials: 'include',
                 body: JSON.stringify({ tag }),

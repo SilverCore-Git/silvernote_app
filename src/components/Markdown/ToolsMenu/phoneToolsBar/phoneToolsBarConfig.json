@@ -1,0 +1,78 @@
+{
+
+  "text": [
+
+    {
+      "id": 6,
+      "name": "<strong>B</strong",
+      "action": "()=> editor.chain().focus().toggleBold().run()",
+      "tooltip": "Gras"
+    },
+    {
+      "id": 7,
+      "name": "<i>I</i>",
+      "action": "()=> editor.chain().focus().toggleItalic().run()",
+      "tooltip": "Italique"
+    },
+    {
+      "id": 8,
+      "name": "<u>U</u>",
+      "action": "()=> editor.chain().focus().toggleUnderline().run()",
+      "tooltip": "Souligner"
+    }
+
+  ],
+
+  "text2": [
+    {
+      "selected": true,
+      "id": 9,
+      "actions": [
+        {
+          "id": 91,
+          "name": "Titre 1",
+          "action": "()=> editor.chain().focus().toggleHeading({ level: 1 }).run()"
+        },
+        {
+          "id": 92,
+          "name": "Titre 2",
+          "action": "()=> editor.chain().focus().toggleHeading({ level: 2 }).run()"
+        },
+        {
+          "id": 93,
+          "name": "Titre 3",
+          "action": "()=> editor.chain().focus().toggleHeading({ level: 3 }).run()"
+        },
+        {
+          "id": 13455432543,
+          "name": "Paragraphe",
+          "action": "()=> editor.chain().focus().setParagraph().run()"
+        }
+      ]
+    },
+
+    {
+      "id": 764532,
+      "name": "<strong>A</sctrong> <i class=\"bi bi-arrow-down-short\" />",
+      "action": "openColorEditor"
+    }
+
+  ],
+
+  "plus": [
+    {
+      "id": 765435234,
+      "name": "image",
+      "action": "getImageFile",
+      "tooltip": "incerer une image"
+    }
+  ],
+  "MdInputMenu": [
+    {
+      "id": 12345435543,
+      "name": "+",
+      "action": "openMdInputMenu",
+      "tooltip": "Modifier le texte"
+    }
+  ]
+}

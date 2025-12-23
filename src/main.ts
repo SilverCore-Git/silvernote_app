@@ -8,6 +8,7 @@ import pkg from '../package.json' assert { type: 'json' };
 
 import './style.css';
 import 'bootstrap-icons/font/bootstrap-icons.css'
+import postError from './components/errorOverlay/postError.ts';
 
 const PUBLISHABLE_KEY = pkg.dev
   ? import.meta.env.VITE_CLERK_TEST_PUBLISHABLE_KEY
@@ -18,6 +19,18 @@ if (!PUBLISHABLE_KEY) {
 }
 
 const app = createApp(App)
+
+
+app.config.errorHandler = (err, instance, info) => {
+  postError({
+    raw: err,
+    place: info,
+    error: "500",
+    more: (instance as any)?.type?.name
+      ? `Component: ${(instance as any).type.name}`
+      : "Unknown component",
+  });
+};
 
 app.use(clerkPlugin, { publishableKey: PUBLISHABLE_KEY });
 app.use(FloatingVue);
