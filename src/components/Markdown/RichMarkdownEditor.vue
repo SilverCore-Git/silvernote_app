@@ -1,5 +1,7 @@
 <template>
 
+  <PhoneToolsBar />
+
   <ToolsMenu
       class="editor-container h-full overflow-hidden" 
       @click="focusEditor"
@@ -22,7 +24,7 @@
 
   <SaveIndicator />
 
-  <MdInputBtn v-if="isMobile" />
+  <MdInputBtn v-if="false && isMobile" />
 
 </template>
 
@@ -73,6 +75,7 @@ import { saveNote } from './Function/saveNote.js';
 import SaveIndicator from './SaveIndicator.vue';
 import MdInputBtn from './MdInputBtn.vue';
 import isMobile from '@/assets/ts/utils/isMobile.js';
+import PhoneToolsBar from './ToolsMenu/phoneToolsBar/phoneToolsBar.vue';
 //import { SelectionRectangle } from './tiptap-extensions/SelectionRectangle.js';
 
 const props = defineProps<{

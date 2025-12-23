@@ -1,7 +1,7 @@
 <template>
 
   <div 
-    :style="{ top: `${top + 50}px`, left: `${left + 455}px` }" 
+    :style="{ top: `${top ? top + 50 : undefined}px`, left: `${left ? left + 455 : undefined}px` }" 
     class="absolute"
   >
 
@@ -80,7 +80,6 @@
 
 <script lang="ts" setup>
 
-import { defineProps, defineEmits } from 'vue';
 import { editor } from '../../Editor';
 
 const colors: { color: string, name: string }[] = [
@@ -101,8 +100,8 @@ const colors: { color: string, name: string }[] = [
 
 
 defineProps<{
-  top: number;
-  left: number;
+  top?: number;
+  left?: number;
   show: boolean;
 }>();
 

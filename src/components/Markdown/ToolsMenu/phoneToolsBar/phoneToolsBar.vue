@@ -2,22 +2,28 @@
 
   <div>
 
-    <slot />
-
     <teleport to="body">
 
+      <div 
+        v-if="isMobile && mdInputeMenu || IfcolorEditor"
+        class="fixed inset-0 z-10"
+        @click="closeAll"
+      ></div>
+
       <div
-        v-if="!isMobile"
-        v-show="showMenu"
-        class="context-menu dropdown h-10 flex flex-row bg-[var(--bg2)] overflow-auto "
-        :style="{ top: `${posY}px`, left: `${posX}px` }"
+        v-if="isMobile"
+        class="
+                h-10 flex flex-row justify-between items-center
+                fixed bottom-0 inset-x-0 z-100 overflow-hidden
+                bg-(--bg2) dropdown text-lg
+              "
       >
 
         <ul
           v-for="(list, cat) in actions"
           :key="cat"
           class="flex flex-row"
-          :class="cat == 'MdInputMenu' ? '' : 'pr-1 border-r'"
+          :class="cat == 'MdInputMenu' ? '' : ''"
         >
 
           <li
@@ -66,14 +72,13 @@
 
       <MdInputeMenu 
         v-model:show="mdInputeMenu"
-        :top="posY"
-        :left="posX"
+        class="fixed bottom-10 right-0 z-20"
+        search-type="props"
       />
 
       <colorEditor 
         v-model:show="IfcolorEditor"
-        :top="posY"
-        :left="posX"
+        class="fixed bottom-10 right-35 z-20"
       />
       
     </teleport>
@@ -86,75 +91,26 @@
 <script setup lang="ts">
 
 import { Editor } from '@tiptap/vue-3';
-import { nextTick, ref, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ref } from 'vue';
 
 import type { Categories, SimpleAction } from '../ToolsMenuTypes';
-import config from './ToolsMenuConfig.json';
+import config from './phoneToolsBarConfig.json';
 import { editor } from '../../Editor';
-import { onDragIconLoaded } from '../../tiptap-extensions/dragHandle';
 import MdInputeMenu from '../mdInputType/mdInputMenu.vue';
 import colorEditor from '../colorEditor/colorEditor.vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 const _config: any = config; // i can't assign categories type
 
-const route = useRoute();
-const router = useRouter();
-
 const IfcolorEditor = ref<boolean>(false);
 const mdInputeMenu = ref<boolean>(false);
 const actions = ref<Categories>(_config);
-const showMenu = ref<boolean> (false);
-const posX = ref<number>(0);
-const posY = ref<number>(0);
 
-const openSelectionMenu = (withEditorSelect: boolean) => {
-
-  if (withEditorSelect) {
-
-    if (!editor.value) return;
-
-    const { from, to } = editor.value.state.selection;
-    if (from === to) {
-      showMenu.value = false;
-      mdInputeMenu.value = false;
-      IfcolorEditor.value = false;
-      return;
-    }
-
-    const middle = from;
-    const coords = editor.value.view.coordsAtPos(middle);
-
-    posX.value = coords.left + window.scrollX;
-    posY.value = coords.top + window.scrollY - 40;
-
-  }
-  else {
-
-
-  }
-
-  setTimeout(() => {
-    showMenu.value = true;
-  }, 500)
-
-}
 
 const exec = (action: string) => {
 
   if (action.startsWith('getImageFile')) return insertImageFromFile(editor.value as Editor);
   if (action.startsWith('openMdInputMenu')) return openMdInputMenu();
   if (action.startsWith('openColorEditor')) return openColorEditor();
-  if (action.startsWith('AskToAI')) {
-    AskToAI(
-        action.replace('AskToAI', '').startsWith('(') 
-          ? action
-              .replace(/AskToAI/g, '')
-              .replace(/[()']/g, '')
-              .trim()
-          : undefined
-      );
-  }
 
   const fn = new Function("editor", `return (${action})()`);
   fn(editor.value);
@@ -169,10 +125,17 @@ const onSelectAction = (event: Event, actionsList: SimpleAction[]) => {
 
 const openMdInputMenu = () => {
   mdInputeMenu.value = !mdInputeMenu.value;
+  IfcolorEditor.value = false;
 }
 
 const openColorEditor = () => {
   IfcolorEditor.value = !IfcolorEditor.value;
+  mdInputeMenu.value = false;
+}
+
+const closeAll = () => {
+  mdInputeMenu.value = false;
+  IfcolorEditor.value = false;
 }
 
 const insertImageFromFile = (editor: Editor) => {
@@ -196,66 +159,9 @@ const insertImageFromFile = (editor: Editor) => {
   input.click();
 };
 
-
-const AskToAI = (prompt?: string) => {
-
-  router.push({
-    query: {
-      ...route.query,
-      aiquery: undefined,
-      chatbot: undefined
-    }
-  });
-
-  setTimeout(() => {
-
-    if (!editor.value) return;
-
-    const { from, to } = editor.value.state.selection;
-    router.push({
-      query: {
-        ...route.query,
-        aiquery: prompt?.replace('undefined', '').trim() + editor.value.state.doc.textBetween(from, to, ' '),
-        chatbot: 'fixed'
-      }
-    });
-
-    showMenu.value = false;
-    mdInputeMenu.value = false;
-    IfcolorEditor.value = false;
-
-  }, 100);
-
-}
-
-
-watch(
-  () => editor.value?.state.selection,
-  async () => {
-    await nextTick()
-    openSelectionMenu(true)
-  }
-)
-
-onDragIconLoaded(() => {
-  const doc = document.querySelector('.drag-icon');
-  if (!doc) return;
-  doc.addEventListener('click', () => {
-    openSelectionMenu(false);
-  })
-})
-
 </script>
 
 <style scoped>
-
-.context-menu {
-  position: absolute;
-  min-width: 30em;
-  z-index: 1000;
-  border: 1px solid var(--btn);
-  transition: all 0.3s;
-}
 
 .category-section {
   margin-bottom: 12px;
