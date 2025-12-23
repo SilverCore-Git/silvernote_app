@@ -70,6 +70,7 @@ class InitDB {
         }
         catch (err) {
             console.error('Une erreur est survenue lors de l\'init de la db :', err);
+            throw new Error('Une erreur est survenue lors de l\'init de la db : ' + err);
         }
 
     }
