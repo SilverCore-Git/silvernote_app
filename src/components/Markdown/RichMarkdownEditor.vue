@@ -69,6 +69,7 @@ import Color from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import Highlight from '@tiptap/extension-highlight'
 import { Table, TableCell, TableRow } from './tiptap-extensions/table/tableExtansion.js';
+//import { Table, TableCell, TableRow } from '@tiptap/extension-table';
 
 import { editor, isLoaded } from './Editor';
 import { saveNote } from './Function/saveNote.js';
