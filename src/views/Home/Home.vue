@@ -104,7 +104,7 @@
 
         <div 
             class="flex-1 overflow-y-auto overflow-x-hidden h-full
-                    p-2 pb-60 shadow-inner rounded-2xl" 
+                    p-2 pb-80 shadow-inner rounded-2xl" 
         >
 
             <div 
@@ -304,11 +304,11 @@
                 </li>
 
                 <li v-else class="pt-4 w-full">
-                    <ul class="flex gap-4 flex-wrap">
+                    <ul class="grid gap-4 w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
                         <li 
-                            v-for="i in 4"
+                            v-for="i in 16"
                             :key="i"
-                            class="animate-pulse bg-gray-300 h-60 w-50 rounded-xl"
+                            class="animate-pulse bg-gray-300 h-40 md:h-50 rounded-xl"
                         ></li>
                     </ul>
                 </li>
