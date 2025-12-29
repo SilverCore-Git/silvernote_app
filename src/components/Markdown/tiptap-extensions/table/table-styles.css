@@ -4,7 +4,7 @@
   width: 100%;
 }
 
-.tiptap-table {
+.tiptap {
   border-collapse: collapse;
   width: 100%;
   background: white;
@@ -13,7 +13,7 @@
   overflow: auto;
 }
 
-.tiptap-table td {
+.tiptap td {
   border: 1px solid #e5e5e5;
   padding: 8px 12px;
   min-width: 120px;
@@ -22,11 +22,11 @@
   transition: background 0.1s ease;
 }
 
-.tiptap-table td:hover {
+.tiptap td:hover {
   background: #f7f6f3;
 }
 
-.tiptap-table td p {
+.tiptap td p {
   margin: 0;
   min-height: 20px;
 }
@@ -68,7 +68,7 @@
 }
 
 @media (max-width: 768px) {
-  .tiptap-table td {
+  .tiptap td {
     min-width: 100px;
     padding: 6px 8px;
     font-size: 14px;

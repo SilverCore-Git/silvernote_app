@@ -20,7 +20,8 @@ import { IndentExtension } from './tiptap-extensions/IndentExtension.js';
 import { handleImageUpload, MAX_FILE_SIZE, imageUploadNode } from './tiptap-extensions/image-upload-node/';
 import DragHandle from './tiptap-extensions/dragHandle';
 import FileHandler_configure from './tiptap-extensions/FileHandler_configure.js';
-import { Table, TableCell, TableRow } from './tiptap-extensions/table/tableExtansion.js';
+// import { Table, TableCell, TableRow } from './tiptap-extensions/table/tableExtansion.js'; => brocked extansion
+import { Table, TableCell, TableRow, TableHeader } from '@tiptap/extension-table';
 import { SearchAndReplace } from './tiptap-extensions/searchAndReplace';
 import { createMathExtension } from './tiptap-extensions/mathExtension';
 import { createTodoInputExtension } from './tiptap-extensions/todoExtension';
@@ -80,6 +81,7 @@ export function buildEditorExtensions(params: EditorConfigParams) {
     Table,
     TableCell,
     TableRow,
+    TableHeader,
     IndentExtension,
     Markdown.configure({ html: true }),
     Placeholder.configure({ placeholder: 'Commencez à écrire ici...' }),
