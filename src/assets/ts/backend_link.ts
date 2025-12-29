@@ -58,7 +58,7 @@ export class Session {
         'Content-Type': 'application/json',
       },
       credentials: 'include'
-    })
+    }).catch(err => console.log(err));
     await fetch(`${api_url}/user/session/create`, {
       method: 'POST',
       body: JSON.stringify({ platform: 'web', userId: user.id }),

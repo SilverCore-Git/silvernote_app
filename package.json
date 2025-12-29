@@ -1,7 +1,8 @@
 {
   "name": "silvernote_front",
   "private": true,
-  "version": "0.3.2-beta",
+  "version": "0.3.3-beta.1",
+  "description": "A simple note taking app",
   "dev": true,
   "type": "module",
   "scripts": {
