@@ -6,9 +6,10 @@
 >
 
   <div
-    class="note-card md:min-w-50 bg-[var(--bg2)] text-[var(--text)] p-3
-            border-2 relative cursor-pointer h-full min-h-40 select-none
-            text-lg"
+    class="
+            note-card md:min-w-50 bg-[var(--bg2)] text-[var(--text)] p-3
+            border-2 relative cursor-pointer h-full min-h-40 select-none text-lg
+          "
     :class="note_selected ? 'border-[var(--btn)]' : 'border-[var(--text)]'"
     :style="note_selected ? { 
       transform: 'scale(1.05)',
@@ -116,7 +117,7 @@ const props = defineProps<{
     cleanHTML?: boolean;
     function_reload?: () => Promise<any>;
     click?: () => void;
-}>()
+}>();
 
 const emit = defineEmits(['pin']);
 const router = useRouter();
@@ -233,7 +234,7 @@ watch(theme, () => {
 
 .note-card:hover {
   box-shadow: 0 0 10px color-mix(in srgb, var(--btn) 50%, transparent);
-  z-index: 49;
+  z-index: 30;
   transform: scale(1.05);
 }
 

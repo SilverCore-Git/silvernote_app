@@ -328,9 +328,9 @@
                 : 'fixed inset-x-0 bottom-6'
         ]"
     >
-    <div 
+        <div 
             @click="create_new_note()" 
-            class="w-16 h-16 pointer-events-auto"
+            class="w-18 h-18 pointer-events-auto"
         >
             <New_note_btn />
         </div>
