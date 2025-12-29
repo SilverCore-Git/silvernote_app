@@ -404,19 +404,19 @@ const _fetch = async () => {
         loaded.value = true;
         wSocket();
 
+
         if (_share.visitor.length > 0) {
+            const usersFetched = await Promise.all(
+                _share.visitor
+                .filter((id: string) => id != _share.user_id)
+                .map((id: string) => getUserByUUID(id, 'visitor'))
+            );
 
-            for (const userId of _share.visitor) {
-
-                if (userId == _share.user_id) continue;
-
-                const user: User | undefined = await getUserByUUID(userId, 'visitor');
-                if (!user) continue;
-                users.value.push(user);
-
-            }
-
+            users.value.push(
+                ...usersFetched.filter((u): u is User => Boolean(u))
+            );
         }
+
 
         return;
 
@@ -478,6 +478,8 @@ const wSocket = () => {
     });
 
     socket.on('new_user', async (userId: string) => {
+
+        if (userId == user.value?.id) return;
 
         const user_visitor = await getUserByUUID(userId, 'visitor');
         const user_owner = await getUserByUUID(userId, 'owner');
