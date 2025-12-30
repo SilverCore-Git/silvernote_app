@@ -91,13 +91,13 @@
             />
 
             <Danger_card 
-                v-if="if_danger_card" 
+                v-if="news_loaded && news.active" 
                 style="box-shadow: 0 0 15px #3636364f;" 
                 class="mt-4 w-full"
-                :title="Danger_card_props?.title"
-                :btn="Danger_card_props?.btn"
-                :href="Danger_card_props?.href"
-                :content="Danger_card_props?.message" 
+                :title="news.title"
+                :btn="news.btn"
+                :href="news.href"
+                :content="news.message" 
             />
 
         </div>
@@ -427,11 +427,11 @@
     import 'swiper/css';
 
     import db from '@/assets/ts/database/database';
-    import back from '@/assets/ts/backend_link';
     import utils from '@/assets/ts/utils';
     import type { Note, Tag } from '@/assets/ts/type';
     import { notes_filter, notes_views_mode } from '@/assets/ts/Notes_views';
     import InitDB from '@/assets/ts/database/init';
+    import { useNews } from '@/const/News';
 
     import Danger_card from '@/components/Danger_card.vue';
     import Note_card from '@/components/notes/Note_card.vue';
@@ -455,17 +455,12 @@
     const router = useRouter();
     const { plan } = usePlan();
 
-
-    const isOnline = ref<boolean>(localStorage.getItem('online') == "true");
-    //const online_btn = ref<HTMLDivElement | null>(null);
-
     const tip: boolean = false;
     const tag_name = ref<string>('');
     const tag_color = ref<string>('');
     const view_notes = ref<boolean>(false);
-    const if_danger_card = ref<boolean>(false); 
-    const Danger_card_props = ref<{ message: string, title: string, btn: boolean, href: string } | undefined>(undefined);
-
+    const { news, news_loaded } = useNews();
+        
     const isRotating = ref<boolean>(false);
     const if_open_create_tag = ref<boolean>(false);
     const inputRef = ref<HTMLInputElement | null>(null);
@@ -664,11 +659,6 @@
 
         await nextTick();
         view_notes.value = true;
-
-        if_danger_card.value = isOnline.value ? await back.info_message() ? true : false : false; 
-        Danger_card_props.value = isOnline.value ? await back.info_message() : undefined;
-
-        await nextTick();
         initHammer();
 
     });
