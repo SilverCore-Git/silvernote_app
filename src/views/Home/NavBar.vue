@@ -27,7 +27,7 @@
                     <img src="/favicon.svg" class="w-8 rounded-md" />
 
                     <div class="flex flex-col items-start">
-                        <span class="text-base">SilverNote app</span>
+                        <span class="text-base">Silvernote</span>
                         <span class="text-[var(--text-little)] text-[10px] -mt-1">
                             version {{ version }}
                         </span>
@@ -81,7 +81,7 @@
                     <slot></slot>
 
                     <a class="p-1.5 flex items-center justify-center ">
-                        <UserButton 
+                        <!-- <UserButton 
                             :appearance="{
                                 elements: {
                                     userButtonAvatarBox: {
@@ -90,7 +90,8 @@
                                     }
                                 }
                             }" 
-                            />
+                        /> -->
+                        <UserAvatarButton />
                     </a>
 
                 </div>
@@ -170,7 +171,6 @@
 
 <script lang="ts" setup>
 
-import { UserButton } from '@clerk/vue';
 import { useRoute, useRouter } from 'vue-router';
 import { version, dev } from '../../../package.json';
 import { notes_views_mode, toggle_notes_views_mode, notes_filter, type Notes_filter } from '@/assets/ts/Notes_views';
@@ -179,6 +179,7 @@ import mobile from  '@/configs/mobile.json';
 import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 import Navbar_note_settings from '@/components/notes/Navbar_note_settings.vue';
+import UserAvatarButton from '@/components/user/UserAvatarButton.vue';
 
 defineProps<{
     reload_func: (a?: 'just_view' | 'local') => Promise<void>;

@@ -40,14 +40,6 @@ const dev_db: { notes: Note[], tags: Tag[] } = {
 };
 
 
-
-
-const info_message = async (): Promise<{ message: string, title: string, btn: boolean, href: string } | undefined> => {
-    const res = await fetch(`${api_url}/api/get_news`).then(res => res.json());
-    return res == false ? undefined : res;
-};
-
-
 export class Session {
 
   async create (user: any): Promise<void> {
@@ -58,7 +50,7 @@ export class Session {
         'Content-Type': 'application/json',
       },
       credentials: 'include'
-    })
+    }).catch(err => console.log(err));
     await fetch(`${api_url}/user/session/create`, {
       method: 'POST',
       body: JSON.stringify({ platform: 'web', userId: user.id }),
@@ -113,6 +105,5 @@ const save_all = async (notes: Note[], tags: Tag[]): Promise<any> => {
 
 export default {
     dev_db,
-    info_message,
     save_all
 }

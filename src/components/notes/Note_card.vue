@@ -6,9 +6,10 @@
 >
 
   <div
-    class="note-card md:min-w-50 bg-[var(--bg2)] text-[var(--text)] p-3
-            border-2 relative cursor-pointer h-full min-h-40 select-none
-            text-lg"
+    class="
+            note-card md:min-w-50 bg-[var(--bg2)] text-[var(--text)] p-3
+            border-2 relative cursor-pointer h-full min-h-40 select-none text-lg
+          "
     :class="note_selected ? 'border-[var(--btn)]' : 'border-[var(--text)]'"
     :style="note_selected ? { 
       transform: 'scale(1.05)',
@@ -90,7 +91,7 @@
 <script setup lang="ts">
 
 import { onMounted, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import ConfirmDialog from '../popup/ConfirmDialog.vue';
 
@@ -116,10 +117,11 @@ const props = defineProps<{
     cleanHTML?: boolean;
     function_reload?: () => Promise<any>;
     click?: () => void;
-}>()
+}>();
 
 const emit = defineEmits(['pin']);
 const router = useRouter();
+const route = useRoute();
 
 const note_settings = ref<boolean>(false);
 const note_settings_top = ref<number>(0);
@@ -168,55 +170,44 @@ const select_note = () => {
     press_and_hold.value = true;
     note_selected.value = !note_selected.value;
 
-    if (isMobile)
-    {
 
-      router.push({ 
-        query: {
-          selectedNote: note_selected.value ? props.uuid : undefined
-        } 
-      });
+    router.push({ 
+      query: {
+        selectedNote: note_selected.value ? props.uuid : undefined
+      } 
+    });
 
-    }
-    else
-    {
-
-      document.addEventListener('contextmenu', (e) => {
-
-        e.preventDefault();
-
-        note_settings_left.value = e.clientX;
-        note_settings_top.value = e.clientY;
-
-      })
-          
-      note_settings.value = !note_settings.value;
-
-    }
+    if (!isMobile) note_settings.value = !note_settings.value;
 
 
     setTimeout(() => press_and_hold.value = false, 3000);
 
 }
 
+watch(() => note_settings.value, () => {
+  if (note_settings.value == false) {
+    router.push({ 
+      query: {
+        selectedNote: undefined
+      } 
+    });
+  }
+})
+
+watch(() => route.query.selectedNote, () => {
+  if (route.query.selectedNote == props.uuid) {
+    note_selected.value = true;
+  }
+  else {
+    note_selected.value = false;
+  }
+})
+
 
 watch(Tags, async() => {
   all_tags.value = await db.getAll('tags');
   Tags.value = all_tags.value.filter(tag => props.tags.includes(tag.id));
 })
-
-const theme = ref<string | null>(localStorage.getItem('theme'));
-
-watch(theme, () => {
-  if (theme.value == 'dark') {
-    const elements = document.getElementsByClassName('folder-svg');
-
-    Array.from(elements).forEach((el) => {
-      el.classList.add('dark');
-    });
-  }
-})
-
 
 </script>
 
@@ -233,7 +224,7 @@ watch(theme, () => {
 
 .note-card:hover {
   box-shadow: 0 0 10px color-mix(in srgb, var(--btn) 50%, transparent);
-  z-index: 49;
+  z-index: 30;
   transform: scale(1.05);
 }
 

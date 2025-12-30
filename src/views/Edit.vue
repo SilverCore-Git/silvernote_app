@@ -137,7 +137,8 @@
   <section
     @click="if_open_dropdown = false"
     class="
-            flex flex-col justify-start items-center w-screen mt-22
+            flex flex-col justify-start items-center 
+            overflow-hidden w-screen mt-22
           "
   >
 

@@ -6,12 +6,12 @@ import type { Note, Tag } from "../type";
 import { Notes, Tags, SharedNotes } from "./Var";
 import { api_url } from '../backend_link';
 import utils from '../utils';
+import { useToken } from '@/composables/useToken';
 
 
 class InitDB {
 
     private user: Ref<any> | undefined;
-    private clerkToken: string | undefined;
     private loaded: boolean;
     private notes: Note[] | undefined;
     private tags: Tag[] | undefined;
@@ -24,14 +24,13 @@ class InitDB {
 
     public async init (user: Ref<any>): Promise<void> {
         this.user = user;
-        this.clerkToken = `Bearer ${await window.Clerk?.session?.getToken() ?? ''}`;
         await db.init();
     }
 
     public async main (): Promise<void> 
     {
 
-        if (!this.user || !this.clerkToken) {
+        if (!this.user) {
             throw new Error('InitDB.init() must be called before main()');
         }
 
@@ -128,7 +127,7 @@ class InitDB {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': this.clerkToken || ''
+                'Authorization': (await useToken()).token.value
             }
         }).then(res => res.json());
         if (data) {
@@ -143,7 +142,7 @@ class InitDB {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': this.clerkToken || ''
+                'Authorization': (await useToken()).token.value
             }
         }).then(res => res.json());
         if (data) {
@@ -157,7 +156,7 @@ class InitDB {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': this.clerkToken || ''
+                'Authorization': (await useToken()).token.value
             }
         }).then(res => res.json());
 
@@ -189,7 +188,7 @@ class InitDB {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': this.clerkToken || ''
+                'Authorization': (await useToken()).token.value
             },
             body: JSON.stringify({ 
                 notes: notes_hash, 

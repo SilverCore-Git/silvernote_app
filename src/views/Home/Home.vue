@@ -49,8 +49,7 @@
                             @click.stop="add_tag_filter(tag.id)" 
                         >
 
-                            <Tags_item 
-                                @reload="reload_list"
+                            <Tags_item
                                 :id="tag.id" :name="tag.name" 
                                 :tag="tag.name" 
                                 :active="tag.active"
@@ -91,20 +90,20 @@
             />
 
             <Danger_card 
-                v-if="if_danger_card" 
+                v-if="news_loaded && news.active" 
                 style="box-shadow: 0 0 15px #3636364f;" 
                 class="mt-4 w-full"
-                :title="Danger_card_props?.title"
-                :btn="Danger_card_props?.btn"
-                :href="Danger_card_props?.href"
-                :content="Danger_card_props?.message" 
+                :title="news.title"
+                :btn="news.btn"
+                :href="news.href"
+                :content="news.message" 
             />
 
         </div>
 
         <div 
             class="flex-1 overflow-y-auto overflow-x-hidden h-full
-                    p-2 pb-60 shadow-inner rounded-2xl" 
+                    p-2 pb-80 shadow-inner rounded-2xl" 
         >
 
             <div 
@@ -304,11 +303,11 @@
                 </li>
 
                 <li v-else class="pt-4 w-full">
-                    <ul class="flex gap-4 flex-wrap">
+                    <ul class="grid gap-4 w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
                         <li 
-                            v-for="i in 4"
+                            v-for="i in 16"
                             :key="i"
-                            class="animate-pulse bg-gray-300 h-60 w-50 rounded-xl"
+                            class="animate-pulse bg-gray-300 h-40 md:h-50 rounded-xl"
                         ></li>
                     </ul>
                 </li>
@@ -328,9 +327,9 @@
                 : 'fixed inset-x-0 bottom-6'
         ]"
     >
-    <div 
+        <div 
             @click="create_new_note()" 
-            class="w-16 h-16 pointer-events-auto"
+            class="w-18 h-18 pointer-events-auto"
         >
             <New_note_btn />
         </div>
@@ -427,11 +426,11 @@
     import 'swiper/css';
 
     import db from '@/assets/ts/database/database';
-    import back from '@/assets/ts/backend_link';
     import utils from '@/assets/ts/utils';
     import type { Note, Tag } from '@/assets/ts/type';
     import { notes_filter, notes_views_mode } from '@/assets/ts/Notes_views';
     import InitDB from '@/assets/ts/database/init';
+    import { useNews } from '@/composables/useNews';
 
     import Danger_card from '@/components/Danger_card.vue';
     import Note_card from '@/components/notes/Note_card.vue';
@@ -447,25 +446,17 @@
         SharedNotes as shared_notes 
     } from '@/assets/ts/database/Var';
     import Popup from '@/components/popup/Popup.vue';
-    import { usePlan } from '@/assets/ts/user/UserPlan';
-    import { salert } from '@/assets/ts/salert';
     import New_note_btn from './New_note_btn.vue';
     import isMobile from '@/assets/ts/utils/isMobile';
     
     const router = useRouter();
-    const { plan } = usePlan();
-
-
-    const isOnline = ref<boolean>(localStorage.getItem('online') == "true");
-    //const online_btn = ref<HTMLDivElement | null>(null);
 
     const tip: boolean = false;
     const tag_name = ref<string>('');
     const tag_color = ref<string>('');
     const view_notes = ref<boolean>(false);
-    const if_danger_card = ref<boolean>(false); 
-    const Danger_card_props = ref<{ message: string, title: string, btn: boolean, href: string } | undefined>(undefined);
-
+    const { news, news_loaded } = useNews();
+        
     const isRotating = ref<boolean>(false);
     const if_open_create_tag = ref<boolean>(false);
     const inputRef = ref<HTMLInputElement | null>(null);
@@ -508,17 +499,15 @@
         const tag = all_tags.value?.find(tag => tag.id === id);
         if (!tag) return;
 
-        
         tag.active = !tag.active;
 
-        
         const activeTags = all_tags.value
             ?.filter(tag => tag.active)
             .map(tag => tag.id);
 
             
         if (!activeTags || activeTags.length === 0) {
-            list_notes.value = await db.getAll('notes');
+            reload_list('local');
             return;
         }
 
@@ -527,25 +516,27 @@
             note.tags.some(tag => activeTags.includes(Number(tag)))
         );
 
+        reload_list('just_view');
+
     };
 
 
     const create_tag = async (): Promise<void> => {
 
         if (!tag_name.value) return;
-        if (!plan.value || !plan.value.benefits) {
-            new salert('Plan et benefits ne sont pas définit.', 'error');
-            return;
-        }
+        // if (!plan.value || !plan.value.benefits) {
+        //     new salert('Plan et benefits ne sont pas définit.', 'error');
+        //     return;
+        // }
 
-        const tagLength = all_tags.value.length;
+        // const tagLength = all_tags.value.length;
 
-        if (tagLength > plan.value!.benefits!.tagsLength) // si le plan est epuisé en tag
-        {
-            new salert('Nombre de tag maximal autorisé par le plan atteint.', 'error');
-            if_open_create_tag.value = false;
-            return
-        }
+        // if (tagLength > plan.value!.benefits!.tagsLength) // si le plan est epuisé en tag
+        // {
+        //     new salert('Nombre de tag maximal autorisé par le plan atteint.', 'error');
+        //     if_open_create_tag.value = false;
+        //     return
+        // }
 
         console.log('création du tag :', tag_name.value, '\n avec la couleur :', tag_color.value);
 
@@ -664,11 +655,6 @@
 
         await nextTick();
         view_notes.value = true;
-
-        if_danger_card.value = isOnline.value ? await back.info_message() ? true : false : false; 
-        Danger_card_props.value = isOnline.value ? await back.info_message() : undefined;
-
-        await nextTick();
         initHammer();
 
     });

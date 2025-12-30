@@ -1,218 +1,220 @@
-<!-- projet initialisé avec silverbatch => https://www.silvercore.fr -->
-
-<!-- silvercore / silvernone, tous droits réservés -->
-
 <!doctype html>
-
 <html lang="fr">
+<head>
 
-  <head>
+  <!-- ========================= -->
+  <!-- Basics -->
+  <!-- ========================= -->
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-    <!-- divers -->
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Silvernote – Application de prise de notes</title>
 
-    <meta name="hostname" content="app.silvernote.fr" />
-    <meta name="copyright" content="2025 | SilverCore - SilverNote" />
-    <meta name="author" content="SilverCore - SilverNote" />
+  <!-- ========================= -->
+  <!-- SEO -->
+  <!-- ========================= -->
+  <meta name="description"
+        content="Silvernote est une application de prise de notes simple, rapide et sécurisée, accessible sur le web, mobile et ordinateur." />
 
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="theme-color" content="#F28C28" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="SilverCore" />
+  <meta name="publisher" content="SilverCore" />
+  <meta name="copyright" content="© 2025 SilverCore" />
+  <meta name="language" content="fr" />
+  <meta name="rating" content="general" />
+  <meta name="format-detection" content="telephone=no" />
 
+  <link rel="canonical" href="https://app.silvernote.fr/" />
 
-    <!-- meta SEO -->
-    <meta name="keywords" content="silvernote" />
-    <meta name="description" content=" SilverNote est une application simple de prise de notes, compatible avec les appareils mobiles, les ordinateurs et le web. " />
-    <meta name="language" content="fr" />
-    <meta name="geo.region" content="FR" />
-    <meta name="googlebot" content="index, follow" />
-    <meta name="rating" content="general" />
-    <meta name="format-detection" content="telephone=no" />
+  <!-- ========================= -->
+  <!-- Open Graph -->
+  <!-- ========================= -->
+  <meta property="og:title" content="Silvernote – Application de prise de notes" />
+  <meta property="og:description"
+        content="Application de prise de notes moderne, rapide et synchronisée sur tous vos appareils." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Silvernote" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:url" content="https://app.silvernote.fr/" />
+  <meta property="og:image" content="https://app.silvernote.fr/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
 
+  <!-- ========================= -->
+  <!-- Twitter Card -->
+  <!-- ========================= -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Silvernote – Application de prise de notes" />
+  <meta name="twitter:description"
+        content="Prenez, organisez et synchronisez vos notes simplement avec Silvernote." />
+  <meta name="twitter:image" content="https://app.silvernote.fr/og-image.png" />
 
-    <!-- meta open graph -->
-    <meta property="og:title" content="" /> <!-- rempli par vue-router -->
-    <meta property="og:description" content=" SilverNote est une application simple de prise de notes, compatible avec les appareils mobiles, les ordinateurs et le web. " />
-    <meta property="og:image" content="https://app.silvernote.fr/favicon.png" />
-    <meta property="og:site_name" content="SilverNote" /> 
-    <meta property="og:locale" content="fr_FR" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://app.silvernote.fr/" /> 
+  <!-- ========================= -->
+  <!-- PWA / App feel -->
+  <!-- ========================= -->
+  <meta name="theme-color" content="#F28C28" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Silvernote" />
 
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <link rel="icon" type="image/svg" href="/favicon.svg" />
+  <!-- ========================= -->
+  <!-- Performance -->
+  <!-- ========================= -->
+  <link rel="preconnect" href="https://api.silvernote.fr" crossorigin />
 
-    <!-- preload -->
-    <link rel="preload" as="image" href="/assets/webp/pin_plein.webp" />
-    <link rel="preload" as="image" href="/assets/webp/pin_vide.webp" />
-    <link rel="preload" as="image" href="/assets/webp/SilverIA.webp" />
+  <link rel="preload" as="image" href="/assets/webp/pin_plein.webp" />
+  <link rel="preload" as="image" href="/assets/webp/pin_vide.webp" />
+  <link rel="preload" as="image" href="/assets/webp/SilverIA.webp" />
 
-    <link rel="preload" as="image" href="/assets/svgs/ellipsis.svg" />
-    <link rel="preload" as="image" href="/assets/svgs/moon.svg" />
-    <link rel="preload" as="image" href="/assets/svgs/sun.svg" />
-    <link rel="preload" as="image" href="/assets/svgs/wifi_on.svg" />
-    <link rel="preload" as="image" href="/assets/svgs/wifi_off.svg" />
-    <link rel="preload" as="image" href="/assets/svgs/open-in-new.svg" />
-    <link rel="preload" as="image" href="/assets/svgs/tag.svg" />
+  <link rel="preload" as="image" href="/assets/svgs/ellipsis.svg" />
+  <link rel="preload" as="image" href="/assets/svgs/moon.svg" />
+  <link rel="preload" as="image" href="/assets/svgs/sun.svg" />
+  <link rel="preload" as="image" href="/assets/svgs/wifi_on.svg" />
+  <link rel="preload" as="image" href="/assets/svgs/wifi_off.svg" />
+  <link rel="preload" as="image" href="/assets/svgs/open-in-new.svg" />
+  <link rel="preload" as="image" href="/assets/svgs/tag.svg" />
 
-    <script>
+  <!-- ========================= -->
+  <!-- Session cleanup -->
+  <!-- ========================= -->
+  <script>
+    const handleClose = () => {
+      navigator.sendBeacon?.(
+        'https://api.silvernote.fr/user/session/close'
+      ) || fetch('https://api.silvernote.fr/user/session/close', {
+        method: 'POST',
+        credentials: 'include'
+      });
+    };
+    window.addEventListener('beforeunload', handleClose);
+  </script>
 
-      const handleClose = (event) => {
-        fetch('https://api.silvernote.fr/user/session/close', {
-          method: 'POST',
-          credentials: "include"
-        });
-        //event.returnValue = "Êtes-vous sûr de vouloir quitter ?";
-      };
-      window.addEventListener('beforeunload', handleClose);
+  <!-- ========================= -->
+  <!-- Loading styles -->
+  <!-- ========================= -->
+  <style>
+    * {
+      scrollbar-color: var(--btn) var(--bg2);
+    }
 
-    </script>
+    *::-webkit-scrollbar-thumb {
+      background: var(--btn);
+      border-radius: 10px;
+    }
 
-    <style>
+    body {
+      margin: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      transition: background-color 900ms;
+    }
 
-      * {
-        scrollbar-color: var(--btn) var(--bg2);
+    .centered-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      gap: 1rem;
+    }
+
+    ._spinner {
+      position: relative;
+      width: 90px;
+      height: 90px;
+    }
+
+    .spiner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      border: 4px solid transparent;
+    }
+
+    .spiner1 {
+      width: 40px;
+      height: 40px;
+      border-right-color: #F28C28;
+      animation: spinner-rotate 0.6s linear infinite;
+    }
+
+    .spiner2 {
+      width: 60px;
+      height: 60px;
+      border-right-color: #F28C28;
+      opacity: 0.9;
+      animation: spinner-rotate 1s linear infinite;
+      animation-delay: 0.3s;
+    }
+
+    .spiner3 {
+      width: 77px;
+      height: 77px;
+      border: 6px solid #F28C28;
+      border-right-color: transparent;
+      border-top-color: transparent;
+      opacity: 0.6;
+      animation: spinner-reverse 1.5s linear infinite;
+    }
+
+    .spiner4 {
+      border: 6px solid #F28C28;
+      animation: spinner-flash 3s ease-in-out infinite;
+    }
+
+    @keyframes spinner-rotate {
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
       }
+    }
 
-      *::-webkit-scrollbar-thumb {
-        background: var(--btn);
-        border-radius: 10px;
+    @keyframes spinner-reverse {
+      to {
+        transform: translate(-50%, -50%) rotate(-360deg);
       }
+    }
 
-      body {
-        background-color: var(--bg);
-        color: var(--text);
-        font-family: 'Inter', sans-serif;
-        transition: background-color 900ms;
-      }
+    @keyframes spinner-flash {
+      0% { width: 70px; height: 70px; opacity: 0; }
+      15% { width: 97px; height: 97px; opacity: 1; }
+      30% { width: 70px; height: 70px; opacity: 0.1; }
+      100% { opacity: 0; }
+    }
 
-      ._spinner {
-        position: relative;
-        width: 90px;
-        height: 90px;
-      }
+    .loading-text {
+      font-size: 0.9rem;
+      opacity: 0.75;
+    }
+  </style>
 
-      .spiner {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        border: 4px solid transparent;
-      }
+</head>
 
-      .spiner1 {
-        width: 40px;
-        height: 40px;
-        border-right-color: #F28C28;
-        animation: spinner-rotate 0.6s linear infinite;
-      }
+<body>
 
-      .spiner2 {
-        width: 60px;
-        height: 60px;
-        border-right-color: #F28C28;
-        opacity: 0.9;
-        animation: spinner-rotate 1s linear infinite;
-        animation-delay: 0.3s;
-      }
+  <noscript>
+    Silvernote nécessite JavaScript pour fonctionner correctement.
+  </noscript>
 
-      .spiner3 {
-        width: 77px;
-        height: 77px;
-        border: 6px solid #F28C28;
-        border-right-color: transparent;
-        border-top-color: transparent;
-        opacity: 0.6;
-        animation: spinner-reverse 1.5s linear infinite;
-      }
-
-      .spiner4 {
-        border: 6px solid #F28C28;
-        animation: spinner-flash 3s ease-in-out infinite;
-      }
-
-      @keyframes spinner-rotate {
-        100% {
-          transform: translate(-50%, -50%) rotate(360deg);
-        }
-      }
-
-      @keyframes spinner-reverse {
-        100% {
-          transform: translate(-50%, -50%) rotate(-360deg);
-        }
-      }
-
-      @keyframes spinner-flash {
-        0% {
-          width: 70px;
-          height: 70px;
-          opacity: 0;
-        }
-        5% {
-          opacity: 0;
-        }
-        15% {
-          width: 97px;
-          height: 97px;
-          opacity: 1;
-        }
-        30% {
-          width: 70px;
-          height: 70px;
-          opacity: 0.1;
-        }
-        100% {
-          width: 70px;
-          height: 70px;
-          opacity: 0;
-        }
-      }
-
-      .centered-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-      }
-
-    </style>
-
-
-  </head>
-
-  <body>
-
-    <div id="app">
-      <div class="centered-container">
-        <div class="_spinner">
-          <div class="spiner spiner1"></div>
-          <div class="spiner spiner2"></div>
-          <div class="spiner spiner3"></div>
-          <div class="spiner spiner4"></div>
-        </div>
+  <div id="app" role="application" aria-label="Application Silvernote">
+    <div class="centered-container">
+      <div class="_spinner" aria-hidden="true">
+        <div class="spiner spiner1"></div>
+        <div class="spiner spiner2"></div>
+        <div class="spiner spiner3"></div>
+        <div class="spiner spiner4"></div>
       </div>
-      <span
-        style="
-          position: absolute;
-          bottom: 1.5rem;
-          left: 0;
-          right: 0;
-          z-index: 500;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        "
-      >
-        Chargement de vue...
-      </span>
+      <span class="loading-text">Chargement de l’application…</span>
     </div>
+  </div>
 
-    <script type="module" src="/src/main.ts"></script>
+  <script type="module" src="/src/main.ts"></script>
 
-  </body>
-
-
+</body>
 </html>
