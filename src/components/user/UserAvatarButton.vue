@@ -18,7 +18,7 @@ const openProfile = ref<boolean>(false);
             <div class="fixed inset-0 z-100 flex justify-center items-center">
                 <UserProfile />
             </div>
-            <BackdropOverlay @emit-click="openProfile = false" />
+            <BackdropOverlay @click="openProfile = false" />
         </div>
     </Teleport>
 
