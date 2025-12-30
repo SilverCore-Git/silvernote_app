@@ -446,13 +446,10 @@
         SharedNotes as shared_notes 
     } from '@/assets/ts/database/Var';
     import Popup from '@/components/popup/Popup.vue';
-    import { usePlan } from '@/assets/ts/user/UserPlan';
-    import { salert } from '@/assets/ts/salert';
     import New_note_btn from './New_note_btn.vue';
     import isMobile from '@/assets/ts/utils/isMobile';
     
     const router = useRouter();
-    const { plan } = usePlan();
 
     const tip: boolean = false;
     const tag_name = ref<string>('');
