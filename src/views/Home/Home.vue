@@ -430,7 +430,7 @@
     import type { Note, Tag } from '@/assets/ts/type';
     import { notes_filter, notes_views_mode } from '@/assets/ts/Notes_views';
     import InitDB from '@/assets/ts/database/init';
-    import { useNews } from '@/const/News';
+    import { useNews } from '@/composables/useNews';
 
     import Danger_card from '@/components/Danger_card.vue';
     import Note_card from '@/components/notes/Note_card.vue';
@@ -527,19 +527,19 @@
     const create_tag = async (): Promise<void> => {
 
         if (!tag_name.value) return;
-        if (!plan.value || !plan.value.benefits) {
-            new salert('Plan et benefits ne sont pas définit.', 'error');
-            return;
-        }
+        // if (!plan.value || !plan.value.benefits) {
+        //     new salert('Plan et benefits ne sont pas définit.', 'error');
+        //     return;
+        // }
 
-        const tagLength = all_tags.value.length;
+        // const tagLength = all_tags.value.length;
 
-        if (tagLength > plan.value!.benefits!.tagsLength) // si le plan est epuisé en tag
-        {
-            new salert('Nombre de tag maximal autorisé par le plan atteint.', 'error');
-            if_open_create_tag.value = false;
-            return
-        }
+        // if (tagLength > plan.value!.benefits!.tagsLength) // si le plan est epuisé en tag
+        // {
+        //     new salert('Nombre de tag maximal autorisé par le plan atteint.', 'error');
+        //     if_open_create_tag.value = false;
+        //     return
+        // }
 
         console.log('création du tag :', tag_name.value, '\n avec la couleur :', tag_color.value);
 

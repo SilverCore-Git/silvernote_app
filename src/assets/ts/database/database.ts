@@ -4,7 +4,7 @@ import type { Note, Tag } from '../type';
 import { api_url } from '../backend_link';
 import utils from '../utils';
 import type { Socket } from 'socket.io-client';
-import sessionToken from '../user/SessionToken';
+import { useToken } from '@/composables/useToken';
 
 
 interface NotesDB extends DBSchema {
@@ -69,7 +69,7 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionToken.value}`
+                    'Authorization': `Bearer ${(await useToken()).token.value}`
                 },
                 credentials: 'include',
                 body: JSON.stringify({ note }),
@@ -145,7 +145,8 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionToken.value}`
+                    'Authorization': `Bearer ${(await useToken()).token.value}
+                    `
                 },
                 credentials: 'include',
             })
@@ -162,7 +163,8 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionToken.value}`
+                    'Authorization': `Bearer ${(await useToken()).token.value}
+                    `
                 },
                 credentials: 'include',
             })
@@ -189,7 +191,8 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionToken.value}`
+                    'Authorization': `Bearer ${(await useToken()).token.value}
+                    `
                 },
                 credentials: 'include',
                 body: JSON.stringify({ note: arg.note }),
@@ -210,7 +213,8 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionToken.value}`
+                    'Authorization': `Bearer ${(await useToken()).token.value}
+                    `
                 },
                 credentials: 'include',
                 body: JSON.stringify({ tag }),
@@ -279,7 +283,8 @@ class Database {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionToken.value}`
+                    'Authorization': `Bearer ${(await useToken()).token.value}
+                    `
                 },
                 credentials: 'include',
                 body: JSON.stringify({ tag }),
