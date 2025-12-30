@@ -49,8 +49,7 @@
                             @click.stop="add_tag_filter(tag.id)" 
                         >
 
-                            <Tags_item 
-                                @reload="reload_list"
+                            <Tags_item
                                 :id="tag.id" :name="tag.name" 
                                 :tag="tag.name" 
                                 :active="tag.active"
@@ -503,17 +502,15 @@
         const tag = all_tags.value?.find(tag => tag.id === id);
         if (!tag) return;
 
-        
         tag.active = !tag.active;
 
-        
         const activeTags = all_tags.value
             ?.filter(tag => tag.active)
             .map(tag => tag.id);
 
             
         if (!activeTags || activeTags.length === 0) {
-            list_notes.value = await db.getAll('notes');
+            reload_list('local');
             return;
         }
 
@@ -521,6 +518,8 @@
         list_notes.value = notes.filter(note =>
             note.tags.some(tag => activeTags.includes(Number(tag)))
         );
+
+        reload_list('just_view');
 
     };
 
