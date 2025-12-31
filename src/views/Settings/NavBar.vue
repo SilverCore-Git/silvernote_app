@@ -30,7 +30,7 @@
                     <img src="/favicon.svg" class="w-8 rounded-md" />
 
                     <div class="flex flex-col items-start">
-                        <span class="text-base">SilverNote app</span>
+                        <span class="text-base">Silvernote</span>
                         <span class="text-[var(--text-little)] text-[10px] -mt-1">
                             version {{ version }}
                         </span>
