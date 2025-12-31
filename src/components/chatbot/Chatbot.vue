@@ -20,8 +20,7 @@
                     : '-bottom-9 -left-9'
                 : !open ? 'bottom-6 right-6' : '-bottom-9 -right-9'
         ]"
-        class="fixed w-16 h-16 p-2 rounded-full cursor-pointer hover"
-        style="background: linear-gradient(135deg, #ff5e62 0%, var(--btn) 100%);"
+        class="fixed w-16 h-16 p-2 rounded-full cursor-pointer hover bg-shadow"
     >
 
         <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
@@ -629,6 +628,21 @@ watch(screen_w, () => {
 </script>
 
 <style scoped>
+
+.bg-shadow {
+  background: linear-gradient(135deg, #ff5e62 0%, var(--btn) 100%);
+}
+
+.bg-shadow::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, #ff5e62 0%, var(--btn) 100%);
+  filter: blur(25px);
+  opacity: 0.6;
+  z-index: -1;
+}
+
 
 .svg {
   background-size: contain;

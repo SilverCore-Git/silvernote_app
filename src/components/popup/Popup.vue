@@ -4,10 +4,18 @@
 
         <transition name="fade-slide">
             
+            <backdrop-overlay 
+                v-if="visible"
+                @emit-click="emitClose"
+            />
+
+        </transition>
+
+        <transition name="fade-slide">
+            
             <div
                 v-if="visible"
-                class="fixed inset-0 z-50 flex items-center justify-center
-                bg-black/70 backdrop-blur-sm"
+                class="fixed inset-0 z-100 flex items-center justify-center"
                 @click.self="emitClose"
             >
             
@@ -39,6 +47,8 @@
 </template>
 
 <script setup lang="ts">
+import BackdropOverlay from '../common/BackdropOverlay.vue';
+
 
 defineProps({
   visible: {
