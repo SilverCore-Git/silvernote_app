@@ -2,7 +2,7 @@
     <button 
         v-tooltip="'Créer une note'"
         @click="emit('btn_click')"
-        style="box-shadow: 0 0 30px var(--btn);"
+        style="box-shadow: 0 0 20px var(--btn);"
         class="
                 add-note-btn cursor-pointer rounded-full w-full
                 flex items-center justify-center h-full scale

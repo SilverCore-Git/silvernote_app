@@ -636,10 +636,10 @@ watch(screen_w, () => {
 .bg-shadow::before {
   content: "";
   position: absolute;
-  inset: -5px;
+  inset: -2px;
   background: linear-gradient(135deg, #ff5e62 0%, var(--btn) 100%);
   filter: blur(25px);
-  opacity: 0.7;
+  opacity: 0.6;
   z-index: -1;
 }
 
