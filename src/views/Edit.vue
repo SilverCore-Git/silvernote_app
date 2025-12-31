@@ -78,7 +78,7 @@
           <ul>
 
             <li @click="tagManager = true">Gérer les tags</li>
-            <li v-if="editor" @click="showSearchBar">Rechercher</li>
+            <!-- <li v-if="editor" @click="showSearchBar">Rechercher</li> -->
 
             <hr />
 
@@ -410,7 +410,7 @@ import Popup from '@/components/popup/Popup.vue';
 import Share_menu from '@/components/popup/share_menu.vue';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
 import { download } from '@/components/Markdown/Function/Export';
-import { showSearchBar } from '@/components/Markdown/tiptap-extensions/searchAndReplace';
+// import { showSearchBar } from '@/components/Markdown/tiptap-extensions/searchAndReplace';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import Tags_manager from '@/components/tags/tags_manager.vue';
 import BackBtn from '@/components/backBtn.vue';
@@ -564,6 +564,7 @@ const getUserByUUID = async (user_id: string, type: 'owner' | 'visitor'): Promis
 
 
 const onTagsUpdate = async (newTags: number[]) => {
+  
   if (onUpdateTags.value) return;
   onUpdateTags.value = true;
 
