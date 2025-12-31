@@ -81,7 +81,7 @@
                     <slot></slot>
 
                     <a class="p-1.5 flex items-center justify-center ">
-                        <!-- <UserButton 
+                        <UserButton
                             :appearance="{
                                 elements: {
                                     userButtonAvatarBox: {
@@ -90,8 +90,8 @@
                                     }
                                 }
                             }" 
-                        /> -->
-                        <UserAvatarButton />
+                        />
+                        <!-- <UserAvatarButton /> -->
                     </a>
 
                 </div>
@@ -101,7 +101,7 @@
 
                 <hr class="mt-3 mb-4" />
 
-                <span class="text-xs text-[var(--text-little)]">Trier par</span>
+                <span class="text-xs text-(--text-little)">Trier par</span>
 
                 <li 
                     class="li"
@@ -179,7 +179,7 @@ import mobile from  '@/configs/mobile.json';
 import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 import Navbar_note_settings from '@/components/notes/Navbar_note_settings.vue';
-import UserAvatarButton from '@/components/user/UserAvatarButton.vue';
+import { UserButton } from '@clerk/vue';
 
 defineProps<{
     reload_func: (a?: 'just_view' | 'local') => Promise<void>;
