@@ -2,7 +2,7 @@ const { BrowserWindow, globalShortcut } = require("electron");
 const path = require("path");
 const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
-const create_main_window = require("../main/mainWindow");
+const create_main_window = require("../main/mainWindow.js");
 
 module.exports = function create_update_window() {
 
