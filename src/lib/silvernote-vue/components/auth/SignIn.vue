@@ -158,7 +158,7 @@ const handleSubmit = async () => {
                         Se connecter avec Google
                     </button>
 
-                    <button
+                    <!-- <button
                         @click="handleOAuth('discord', isLoaded, { sign: signIn, clerk, route, router })"
                         :disabled="isLoading !== undefined || !isLoaded"
                         class="second w-full"
@@ -169,7 +169,7 @@ const handleSubmit = async () => {
                             class="w-5 h-5 mr-2"
                         />
                         Se connecter avec Discord
-                    </button>
+                    </button> -->
 
                 </div>
 

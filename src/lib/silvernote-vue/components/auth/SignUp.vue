@@ -233,7 +233,7 @@ const handleVerification = async () => {
                             S'enregistrer avec Google
                         </button>
 
-                        <button
+                        <!-- <button
                             @click="handleOAuth('discord', isLoaded, { sign: signUp, clerk, route, router })"
                             :disabled="isLoading !== undefined || !isLoaded"
                             class="second w-full"
@@ -245,7 +245,7 @@ const handleVerification = async () => {
                                 alt="Discord"
                             />
                             S'enregistrer avec Discord
-                        </button>
+                        </button> -->
 
                     </div>
 
