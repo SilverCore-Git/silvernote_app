@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+
+  <meta charset="UTF-8">
+
+  <style>
+
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+    .titlebar {
+      -webkit-app-region: drag;
+      height: 35px;
+      background-color: #f28c28;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-left: 10px;
+      color: white;
+      font-size: 14px;
+      position: relative;
+      z-index: 1000;
+    }
+    .titlebar img {
+      height: 20px;
+      width: 20px;
+    }
+    .titlebar button {
+      -webkit-app-region: no-drag;
+      background: none;
+      border: none;
+      cursor: pointer;
+      height: 100%;
+      width: 40px;
+      color: white;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+    .titlebar button.close:hover {
+      background-color: #dc3545;
+    }
+    .titlebar button:hover:not(.close) {
+      background-color: #ee7f0f;
+    }
+    .options-btn {
+      height: 100%;
+      display: flex;
+    }
+
+    #webview {
+      width: 100vw;
+      height: calc(100vh - 35px);
+    }
+
+    .loader-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .loader-container.active {
+      display: flex;
+    }
+
+    .loader-icon {
+      width: 80px;
+      height: 80px;
+      animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .titleWrap {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+      left: 0;
+      top: 0;
+    }
+
+    #page-title {
+      max-width: 60%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .version {
+      margin: 0;
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .titlebar-left {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      z-index: 10;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="titlebar">
+
+    <div class="titlebar-left">
+      <img 
+        id="page-icon"
+        src="../../../resources/icon.png"
+        alt="Silvernote"
+      />
+      <p class="version">v0.0.0</p>
+    </div>
+
+    <div class="titleWrap">
+      <span id="page-title">Silvernote</span>
+    </div>
+    
+    <div class="options-btn">
+      <button class="min btn" title="Réduire">—</button>
+      <button class="max btn" title="Agrandir">☐</button>
+      <button class="close btn" title="Fermer">✕</button>
+    </div>
+
+  </div>
+
+  <div class="loader-container active" id="loader">
+    <img class="loader-icon" src="../../../resources/icon.png" alt="Loading" />
+  </div>
+
+  <webview 
+    id="webview" 
+    src="https://app.silvernote.fr" 
+    partition="persist:silvernote"
+    allowpopups
+    style="border:0">
+  </webview>
+
+  <script>
+
+    const { ipcRenderer } = require('electron');
+    
+    const webview = document.getElementById('webview');
+    const titleElement = document.getElementById('page-title');
+    const loader = document.getElementById('loader');
+
+    ipcRenderer.invoke('get-version').then(version => {
+      document.querySelector('.version').textContent = `v${version}`;
+    }).catch(err => {
+      console.error('Erreur lors de la récupération de la version:', err);
+    });
+
+    document.querySelector('.min').addEventListener('click', () => {
+      ipcRenderer.send('window-minimize');
+    });
+    
+    document.querySelector('.max').addEventListener('click', () => {
+      ipcRenderer.send('window-maximize');
+    });
+    
+    document.querySelector('.close').addEventListener('click', () => {
+      ipcRenderer.send('window-close');
+    });
+
+    function hideLoader() {
+      loader.classList.remove('active');
+    }
+
+    function updateTitle() {
+      const title = webview.getTitle();
+      if (title && title.trim() !== '') {
+        titleElement.textContent = title;
+      } else {
+        titleElement.textContent = 'Silvernote';
+      }
+    }
+    
+    webview.addEventListener('dom-ready', () => {
+      console.log('Webview prête');
+      hideLoader();
+      updateTitle();
+    });
+
+    webview.addEventListener('page-title-updated', (e) => {
+      console.log('Titre mis à jour:', e.title);
+      if (e.title && e.title.trim() !== '') {
+        titleElement.textContent = e.title;
+      }
+    });
+
+    webview.addEventListener('did-navigate', () => {
+      setTimeout(updateTitle, 100);
+    });
+
+    webview.addEventListener('did-navigate-in-page', () => {
+      setTimeout(updateTitle, 100);
+    });
+
+    webview.addEventListener('new-window', (e) => {
+      console.log('Nouvelle fenêtre demandée:', e.url);
+      e.preventDefault();
+      ipcRenderer.send('open-popup', e.url);
+    });
+
+    webview.addEventListener('did-start-loading', () => {
+      loader.classList.add('active');
+    });
+
+    webview.addEventListener('did-stop-loading', () => {
+      hideLoader();
+    });
+
+    webview.addEventListener('did-fail-load', (e) => {
+      if (e.errorCode !== -3) {
+        console.error('Erreur de chargement:', e.errorDescription);
+        hideLoader();
+      }
+    });
+
+  </script>
+
+</body>
+
+</html>
