@@ -5,9 +5,9 @@ module.exports = function create_main_window() {
   return new Promise((resolve, reject) => {
     try {
       const window = new BrowserWindow({
-        width: 800,
-        height: 600,
-        frame: true,
+        width: 1200,
+        height: 675,
+        frame: false,
         webPreferences: {
           nodeIntegration: true,
           contextIsolation: true,
