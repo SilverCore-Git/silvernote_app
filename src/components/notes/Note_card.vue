@@ -8,7 +8,7 @@
   <div
     class="
             note-card md:min-w-50 bg-[var(--bg2)] text-[var(--text)] p-3 shadow-lg
-            border-2 relative cursor-pointer h-full min-h-40 select-none text-lg
+            border-2 relative cursor-pointer h-full min-h-40 select-none text-lg shadow-(--shadow)
           "
     :class="note_selected ? 'border-[var(--btn)]' : 'border-[var(--text)]'"
     :style="note_selected ? { 

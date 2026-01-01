@@ -82,7 +82,7 @@
 
         <div
             v-if="open"
-            class="dropdown flex flex-col justify-between"
+            class="dropdown flex flex-col justify-between shadow"
             :class="
                 fullscreen 
                     ? `fixed inset-x-(--mrl) inset-y-4
@@ -636,10 +636,9 @@ watch(screen_w, () => {
 .bg-shadow::before {
   content: "";
   position: absolute;
-  inset: -2px;
+  inset: 10px;
   background: linear-gradient(135deg, #ff5e62 0%, var(--btn) 100%);
   filter: blur(25px);
-  opacity: 0.6;
   z-index: -1;
 }
 
@@ -684,11 +683,6 @@ watch(screen_w, () => {
 .green {
     background-color: #39FF14;
     box-shadow: 0 0 15px #39FF14;
-}
-
-
-.shadow {
-    box-shadow: 0 0 8px var(--shadow);
 }
 
 footer {
