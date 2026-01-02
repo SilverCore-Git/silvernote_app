@@ -18,7 +18,7 @@ module.exports = function create_update_window() {
             title: 'Mise à jour - Silvernote',
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: true,
+                contextIsolation: false,
             },
         });
 
@@ -56,7 +56,12 @@ module.exports = function create_update_window() {
         });
 
         autoUpdater.once('update-downloaded', () => {
+            console.log('Update downloaded, installing...');
             autoUpdater.quitAndInstall();
+        });
+
+        win.once('ready-to-show', () => {
+            win.show();
         });
 
         setTimeout(() => {
