@@ -2,7 +2,7 @@ const { BrowserWindow, globalShortcut } = require("electron");
 const path = require("path");
 const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
-//const create_main_window = require("../main/mainWindow.js");
+const create_main_window = require("../main/mainWindow.js");
 
 module.exports = function create_update_window() {
   return new Promise((resolve) => {
@@ -73,8 +73,8 @@ module.exports = function create_update_window() {
     autoUpdater.on("update-not-available", () => {
       sendStatus("Aucune mise à jour. Lancement...");
       setTimeout(() => {
-        // if (!win.isDestroyed()) win.close();
-        // create_main_window().then(safeResolve);
+        if (!win.isDestroyed()) win.close();
+        create_main_window().then(safeResolve);
       }, 800);
     });
 
@@ -82,8 +82,8 @@ module.exports = function create_update_window() {
       log.error(err);
       sendStatus(`Erreur mise à jour : ${err}`);
       setTimeout(() => {
-        // if (!win.isDestroyed()) win.close();
-        // create_main_window().then(safeResolve);
+        if (!win.isDestroyed()) win.close();
+        create_main_window().then(safeResolve);
       }, 2000);
     });
 

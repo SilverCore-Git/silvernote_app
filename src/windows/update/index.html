@@ -173,7 +173,24 @@
       <div class="spiner spiner3"></div>
       <div class="spiner spiner4"></div>
     </div>
-    <p class="status">Vérification des mises à jour en cours...</p>
+    <p class="status">Démarage...</p>
   </div>
+
+  <script>
+    const statusEl = document.querySelector('.status');
+
+    if (window.updaterAPI) {
+      window.updaterAPI.onUpdateStatus((status) => {
+        console.log('[Updater]', status);
+        if (statusEl) {
+          if (status.startsWith('Erreur')) status = "Erreur mise à jour";
+          statusEl.textContent = status;
+        }
+      });
+    } else {
+      console.warn('updaterAPI non disponible');
+    }
+  </script>
+
 </body>
 </html>
