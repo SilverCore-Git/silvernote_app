@@ -69,14 +69,37 @@ jobs:
       - run: npm run build:win
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: List build files
+        
+      - name: List build files (before rename)
+        run: dir build
+        
+      - name: Rename Windows installer
+        run: |
+          $VERSION = "${{ needs.create-release.outputs.version }}"
+          
+          # Renommer le .exe
+          $oldExeName = "build\Silvernote.Setup.$VERSION.exe"
+          $newExeName = "build\Silvernote-Setup-$VERSION.exe"
+          if (Test-Path $oldExeName) {
+            Rename-Item -Path $oldExeName -NewName $newExeName
+            Write-Host "Renamed: $oldExeName -> $newExeName"
+          }
+          
+          # Renommer le .blockmap
+          $oldBlockmapName = "build\Silvernote.Setup.$VERSION.exe.blockmap"
+          $newBlockmapName = "build\Silvernote-Setup-$VERSION.exe.blockmap"
+          if (Test-Path $oldBlockmapName) {
+            Rename-Item -Path $oldBlockmapName -NewName $newBlockmapName
+            Write-Host "Renamed: $oldBlockmapName -> $newBlockmapName"
+          }
+        
+      - name: List build files (after rename)
         run: dir build
         
       - name: Upload to Release
         run: |
           $VERSION = "${{ needs.create-release.outputs.version }}"
-          gh release upload "v$VERSION" build/*.exe build/*.blockmap build/latest.yml --clobber
+          gh release upload "v$VERSION" build/Silvernote-Setup-$VERSION.exe build/Silvernote-Setup-$VERSION.exe.blockmap build/latest.yml --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
