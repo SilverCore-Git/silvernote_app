@@ -69,37 +69,45 @@ jobs:
       - run: npm run build:win
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
+      
       - name: List build files (before rename)
         run: dir build
-        
+      
       - name: Rename Windows installer
+        shell: pwsh
         run: |
           $VERSION = "${{ needs.create-release.outputs.version }}"
           
-          # Renommer le .exe
-          $oldExeName = "build\Silvernote.Setup.$VERSION.exe"
+          # Renommer le .exe (noter les espaces dans le nom original)
+          $oldExeName = "build\Silvernote Setup $VERSION.exe"
           $newExeName = "build\Silvernote-Setup-$VERSION.exe"
           if (Test-Path $oldExeName) {
             Rename-Item -Path $oldExeName -NewName $newExeName
             Write-Host "Renamed: $oldExeName -> $newExeName"
+          } else {
+            Write-Host "File not found: $oldExeName"
+            Get-ChildItem build\*.exe
           }
           
-          # Renommer le .blockmap
-          $oldBlockmapName = "build\Silvernote.Setup.$VERSION.exe.blockmap"
+          # Renommer le .blockmap (noter les espaces dans le nom original)
+          $oldBlockmapName = "build\Silvernote Setup $VERSION.exe.blockmap"
           $newBlockmapName = "build\Silvernote-Setup-$VERSION.exe.blockmap"
           if (Test-Path $oldBlockmapName) {
             Rename-Item -Path $oldBlockmapName -NewName $newBlockmapName
             Write-Host "Renamed: $oldBlockmapName -> $newBlockmapName"
+          } else {
+            Write-Host "File not found: $oldBlockmapName"
+            Get-ChildItem build\*.blockmap
           }
-        
+      
       - name: List build files (after rename)
         run: dir build
         
       - name: Upload to Release
+        shell: pwsh
         run: |
           $VERSION = "${{ needs.create-release.outputs.version }}"
-          gh release upload "v$VERSION" build/Silvernote-Setup-$VERSION.exe build/Silvernote-Setup-$VERSION.exe.blockmap build/latest.yml --clobber
+          gh release upload "v$VERSION" "build\Silvernote-Setup-$VERSION.exe" "build\Silvernote-Setup-$VERSION.exe.blockmap" "build\latest.yml" --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
