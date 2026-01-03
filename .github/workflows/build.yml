@@ -1,4 +1,4 @@
-name: Build Electron App
+name: Build and Release Electron App
 
 on:
   push:
@@ -11,24 +11,53 @@ permissions:
 
 jobs:
 
-  build-linux:
+  create-release:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+      release_created: ${{ steps.create_release.outputs.release_created }}
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      - run: npm install
-      - run: npm run maj:front
-      - run: npm run build:linux
+      
+      - name: Get version
+        id: get_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+          
+      - name: Check if release exists
+        id: check_release
+        run: |
+          if gh release view "v${{ steps.get_version.outputs.version }}" &> /dev/null; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v3
-        with:
-          name: electron-build-linux
-          path: build/
+          
+      - name: Create Release
+        id: create_release
+        if: steps.check_release.outputs.exists == 'false'
+        run: |
+          gh release create "v${{ steps.get_version.outputs.version }}" \
+            --title "Silvernote v${{ steps.get_version.outputs.version }}" \
+            --notes "## 🎉 Nouvelle version de Silvernote v${{ steps.get_version.outputs.version }}
+
+          ### 📦 Téléchargements
+          - **Windows**: Silvernote Setup ${{ steps.get_version.outputs.version }}.exe
+          - **macOS**: Silvernote-${{ steps.get_version.outputs.version }}-arm64.dmg
+          - **Linux**: Silvernote-${{ steps.get_version.outputs.version }}.AppImage
+
+          ### 🔄 Mise à jour automatique
+          Si vous avez déjà installé Silvernote, l'application se mettra à jour automatiquement."
+          echo "release_created=true" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-windows:
+    needs: create-release
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
@@ -40,12 +69,43 @@ jobs:
       - run: npm run build:win
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v3
+      
+      - name: List build files
+        run: dir build
+        
+      - name: Upload to Release
+        run: |
+          $VERSION = "${{ needs.create-release.outputs.version }}"
+          gh release upload "v$VERSION" build/*.exe build/*.blockmap build/latest.yml --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-linux:
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          name: electron-build-windows
-          path: build/
+          node-version: '20'
+      - run: npm install
+      - run: npm run maj:front
+      - run: npm run build:linux
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: List build files
+        run: ls -la build/
+        
+      - name: Upload to Release
+        run: |
+          VERSION="${{ needs.create-release.outputs.version }}"
+          gh release upload "v$VERSION" build/*.AppImage build/*.deb build/*.rpm build/latest-linux.yml --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-macos:
+    needs: create-release
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -57,76 +117,13 @@ jobs:
       - run: npm run build:mac
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v3
-        with:
-          name: electron-build-macos
-          path: build/
-
-  release:
-    runs-on: ubuntu-latest
-    needs: [build-linux, build-windows, build-macos]
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: electron-build-linux
-          path: linux/
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: electron-build-windows
-          path: windows/
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: electron-build-macos
-          path: macos/
-
-      - name: Get version from package.json
-        id: package-version
+      
+      - name: List build files
+        run: ls -la build/
+        
+      - name: Upload to Release
         run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: List downloaded files (debug)
-        run: |
-          echo "=== Linux files ==="
-          ls -la linux/
-          echo "=== Windows files ==="
-          ls -la windows/
-          echo "=== macOS files ==="
-          ls -la macos/
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ env.VERSION }}
-          name: Silvernote v${{ env.VERSION }}
-          body: |
-            ## 🎉 Nouvelle version de Silvernote v${{ env.VERSION }}
-            
-            ### 📦 Téléchargements
-            - **Windows**: `Silvernote Setup ${{ env.VERSION }}.exe`
-            - **macOS**: `Silvernote-${{ env.VERSION }}-arm64.dmg`
-            - **Linux**: `Silvernote-${{ env.VERSION }}.AppImage`
-            
-            ### 🔄 Mise à jour automatique
-            Si vous avez déjà installé Silvernote, l'application se mettra à jour automatiquement.
-          draft: false
-          prerelease: false
-          files: |
-            windows/*.exe
-            windows/*.blockmap
-            windows/latest.yml
-            linux/*.AppImage
-            linux/*.deb
-            linux/*.rpm
-            linux/latest-linux.yml
-            macos/*.dmg
-            macos/*.zip
-            macos/latest-mac.yml
+          VERSION="${{ needs.create-release.outputs.version }}"
+          gh release upload "v$VERSION" build/*.dmg build/*.zip build/latest-mac.yml --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
