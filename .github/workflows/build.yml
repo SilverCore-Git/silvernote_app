@@ -111,8 +111,6 @@ jobs:
           mv linux/latest-linux.yml release/latest-linux.yml
           mv macos/latest-mac.yml release/latest-mac.yml
 
-      # 🔥 PATCH DES YAML (CRUCIAL POUR ELECTRON-UPDATER)
-
       - name: Patch latest.yml (Windows)
         run: |
           sed -i "s|Silvernote Setup ${VERSION}.exe|silvernote-${VERSION}-win-setup.exe|g" release/latest.yml
@@ -133,8 +131,7 @@ jobs:
         with:
           tag_name: v${{ env.VERSION }}
           name: Silvernote (${{ env.VERSION }})
-          body: |
-            Nouvelle version de Silvernote.
+          body: Nouvelle version de Silvernote.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
