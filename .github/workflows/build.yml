@@ -89,42 +89,6 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Rename artifacts
-        run: |
-          mkdir release
-
-          # macOS
-          mv macos/Silvernote-${VERSION}-arm64.dmg release/silvernote-${VERSION}-macos.dmg
-          mv macos/Silvernote-${VERSION}-arm64-mac.zip release/silvernote-${VERSION}-macos.app.zip
-
-          # Linux
-          mv linux/Silvernote-${VERSION}.AppImage release/silvernote-${VERSION}-linux-setup.AppImage
-          mv linux/silvernote_${VERSION}_amd64.deb release/silvernote-${VERSION}-linux-setup.deb
-          mv linux/silvernote-${VERSION}.x86_64.rpm release/silvernote-${VERSION}-linux-setup.rpm
-
-          # Windows
-          mv "windows/Silvernote Setup ${VERSION}.exe" "release/silvernote-${VERSION}-win-setup.exe"
-          mv "windows/Silvernote Setup ${VERSION}.exe.blockmap" "release/silvernote-${VERSION}-win-setup.exe.blockmap"
-
-          # latest yml
-          mv windows/latest.yml release/latest.yml
-          mv linux/latest-linux.yml release/latest-linux.yml
-          mv macos/latest-mac.yml release/latest-mac.yml
-
-      - name: Patch latest.yml (Windows)
-        run: |
-          sed -i "s|Silvernote Setup ${VERSION}.exe|silvernote-${VERSION}-win-setup.exe|g" release/latest.yml
-
-      - name: Patch latest-linux.yml
-        run: |
-          sed -i "s|Silvernote-${VERSION}.AppImage|silvernote-${VERSION}-linux-setup.AppImage|g" release/latest-linux.yml
-          sed -i "s|silvernote_${VERSION}_amd64.deb|silvernote-${VERSION}-linux-setup.deb|g" release/latest-linux.yml
-          sed -i "s|silvernote-${VERSION}.x86_64.rpm|silvernote-${VERSION}-linux-setup.rpm|g" release/latest-linux.yml
-
-      - name: Patch latest-mac.yml
-        run: |
-          sed -i "s|Silvernote-${VERSION}-arm64-mac.zip|silvernote-${VERSION}-macos.app.zip|g" release/latest-mac.yml
-          sed -i "s|Silvernote-${VERSION}-arm64.dmg|silvernote-${VERSION}-macos.dmg|g" release/latest-mac.yml
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -140,18 +104,21 @@ jobs:
         with:
           tag_name: v${{ env.VERSION }}
           files: |
-            release/silvernote-${{ env.VERSION }}-linux-setup.rpm
-            release/silvernote-${{ env.VERSION }}-linux-setup.deb
-            release/silvernote-${{ env.VERSION }}-linux-setup.AppImage
 
-            release/silvernote-${{ env.VERSION }}-win-setup.exe
-            release/silvernote-${{ env.VERSION }}-win-setup.exe.blockmap
+            macos/Silvernote-${VERSION}-arm64.dmg
+            macos/Silvernote-${VERSION}-arm64-mac.zip
 
-            release/silvernote-${{ env.VERSION }}-macos.dmg
-            release/silvernote-${{ env.VERSION }}-macos.app.zip
 
-            release/latest.yml
-            release/latest-linux.yml
-            release/latest-mac.yml
+            linux/Silvernote-${VERSION}.AppImage
+            linux/silvernote_${VERSION}_amd64.deb
+            linux/silvernote-${VERSION}.x86_64.rpm
+
+            windows/Silvernote Setup ${VERSION}.exe 
+            windows/Silvernote Setup ${VERSION}.exe.blockmap
+
+            windows/latest.yml release/latest.yml
+            linux/latest-linux.yml release/latest-linux.yml
+            macos/latest-mac.yml release/latest-mac.yml
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
