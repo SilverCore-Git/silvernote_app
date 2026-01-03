@@ -85,40 +85,48 @@ jobs:
           path: macos/
 
       - name: Get version from package.json
+        id: package-version
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
+      - name: List downloaded files (debug)
+        run: |
+          echo "=== Linux files ==="
+          ls -la linux/
+          echo "=== Windows files ==="
+          ls -la windows/
+          echo "=== macOS files ==="
+          ls -la macos/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.VERSION }}
-          name: Silvernote (${{ env.VERSION }})
-          body: Nouvelle version de Silvernote.
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload release assets
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ env.VERSION }}
+          name: Silvernote v${{ env.VERSION }}
+          body: |
+            ## 🎉 Nouvelle version de Silvernote v${{ env.VERSION }}
+            
+            ### 📦 Téléchargements
+            - **Windows**: `Silvernote Setup ${{ env.VERSION }}.exe`
+            - **macOS**: `Silvernote-${{ env.VERSION }}-arm64.dmg`
+            - **Linux**: `Silvernote-${{ env.VERSION }}.AppImage`
+            
+            ### 🔄 Mise à jour automatique
+            Si vous avez déjà installé Silvernote, l'application se mettra à jour automatiquement.
+          draft: false
+          prerelease: false
           files: |
-
-            macos/Silvernote-${VERSION}-arm64.dmg
-            macos/Silvernote-${VERSION}-arm64-mac.zip
-
-
-            linux/Silvernote-${VERSION}.AppImage
-            linux/silvernote_${VERSION}_amd64.deb
-            linux/silvernote-${VERSION}.x86_64.rpm
-
-            windows/Silvernote Setup ${VERSION}.exe 
-            windows/Silvernote Setup ${VERSION}.exe.blockmap
-
-            windows/latest.yml release/latest.yml
-            linux/latest-linux.yml release/latest-linux.yml
-            macos/latest-mac.yml release/latest-mac.yml
-
+            windows/*.exe
+            windows/*.blockmap
+            windows/latest.yml
+            linux/*.AppImage
+            linux/*.deb
+            linux/*.rpm
+            linux/latest-linux.yml
+            macos/*.dmg
+            macos/*.zip
+            macos/latest-mac.yml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
