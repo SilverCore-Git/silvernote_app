@@ -80,7 +80,7 @@ jobs:
           
           # Renommer le .exe (noter les espaces dans le nom original)
           $oldExeName = "build\Silvernote Setup $VERSION.exe"
-          $newExeName = "build\Silvernote-Setup-$VERSION.exe"
+          $newExeName = "Silvernote-Setup-$VERSION.exe"
           if (Test-Path $oldExeName) {
             Rename-Item -Path $oldExeName -NewName $newExeName
             Write-Host "Renamed: $oldExeName -> $newExeName"
@@ -91,7 +91,7 @@ jobs:
           
           # Renommer le .blockmap (noter les espaces dans le nom original)
           $oldBlockmapName = "build\Silvernote Setup $VERSION.exe.blockmap"
-          $newBlockmapName = "build\Silvernote-Setup-$VERSION.exe.blockmap"
+          $newBlockmapName = "Silvernote-Setup-$VERSION.exe.blockmap"
           if (Test-Path $oldBlockmapName) {
             Rename-Item -Path $oldBlockmapName -NewName $newBlockmapName
             Write-Host "Renamed: $oldBlockmapName -> $newBlockmapName"
