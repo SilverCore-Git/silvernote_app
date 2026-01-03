@@ -33,9 +33,10 @@ module.exports = function create_main_window() {
           parent: window, // optionnel : fenêtre enfant
           modal: false,   // pas modal
           webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
+            nodeIntegration: false,
+            contextIsolation: true,
             webviewTag: true,
+            preload: path.join(__dirname, 'preload.js')
           },
         });
 

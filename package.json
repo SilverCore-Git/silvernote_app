@@ -1,7 +1,7 @@
 {
   "name": "silvernote",
   "productName": "Silvernote",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Silvernote",
   "main": "src/app.js",
   "repository": {
@@ -62,9 +62,9 @@
       "icon": "resources/icons/win/icon.ico"
     },
     "nsis": {
-      "oneClick": false,
+      "oneClick": true,
       "perMachine": false,
-      "allowToChangeInstallationDirectory": true,
+      "allowToChangeInstallationDirectory": false,
       "installerIcon": "resources/icons/win/icon.ico",
       "uninstallerIcon": "resources/icons/win/icon.ico",
       "installerHeaderIcon": "resources/icons/win/icon.ico",
