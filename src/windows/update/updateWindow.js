@@ -2,77 +2,104 @@ const { BrowserWindow, globalShortcut } = require("electron");
 const path = require("path");
 const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
-const create_main_window = require("../main/mainWindow.js");
+//const create_main_window = require("../main/mainWindow.js");
 
 module.exports = function create_update_window() {
+  return new Promise((resolve) => {
+    let resolved = false;
 
-    return new Promise((resolve, reject) => {
-
-        const win = new BrowserWindow({
-            width: 300,
-            height: 400,
-            frame: false,
-            resizable: false,
-            maximizable: false,
-            fullscreenable: false,
-            title: 'Mise à jour - Silvernote',
-            webPreferences: {
-                nodeIntegration: true,
-                contextIsolation: false,
-            },
-        });
-
-        globalShortcut.register('CommandOrControl+Shift+I+U', () => {
-            if (win) {
-                win.webContents.openDevTools({ mode: 'detach' });
-            }
-        });
-
-        win.loadFile(path.join(__dirname, './index.html'));
-
-        autoUpdater.logger = log;
-        autoUpdater.logger.transports.file.level = 'info';
-        autoUpdater.checkForUpdates();
-
-        let update = false;
-
-        autoUpdater.once('checking-for-update', () => console.log('Checking for update...'));
-        autoUpdater.once('update-available', () => {
-            console.log('Downloading update...');
-            update = true;
-        });
-
-        autoUpdater.once('update-not-available', () => {
-            win.close();
-            const mainWin = create_main_window();
-            resolve(mainWin);
-        });
-
-        autoUpdater.once('error', (err) => {
-            console.error('Update error:', err);
-            const mainWin = create_main_window();
-            win.close();
-            resolve(mainWin);
-        });
-
-        autoUpdater.once('update-downloaded', () => {
-            console.log('Update downloaded, installing...');
-            autoUpdater.quitAndInstall();
-        });
-
-        win.once('ready-to-show', () => {
-            win.show();
-        });
-
-        setTimeout(() => {
-            if (!update && win && !win.isDestroyed() && win.isVisible()) {
-                console.error('update timeout => close window');
-                win.close();
-                const mainWin = create_main_window();
-                resolve(mainWin);
-            }
-        }, 5 * 1000);
-
+    const win = new BrowserWindow({
+      width: 300,
+      height: 400,
+      frame: false,
+      resizable: false,
+      maximizable: false,
+      fullscreenable: false,
+      title: "Mise à jour - Silvernote",
+      show: false,
+      webPreferences: {
+        nodeIntegration: false,
+        contextIsolation: true,
+        preload: path.join(__dirname, "preload.js"),
+      },
     });
-    
+
+    const safeResolve = (window) => {
+      if (!resolved) {
+        resolved = true;
+        resolve(window);
+      }
+    };
+
+    win.loadFile(path.join(__dirname, "index.html"));
+    win.once("ready-to-show", () => win.show());
+
+    globalShortcut.register("CommandOrControl+Shift+I+U", () => {
+      if (!win.isDestroyed()) {
+        win.webContents.openDevTools({ mode: "detach" });
+      }
+    });
+
+    // Logger
+    autoUpdater.logger = log;
+    autoUpdater.logger.transports.file.level = "info";
+    log.info("Auto-updater started");
+
+    const sendStatus = (msg) => {
+      if (!win.isDestroyed()) {
+        win.webContents.send("update-status", msg);
+      }
+    };
+
+    sendStatus("Vérification des mises à jour...");
+
+    // EVENTS
+    autoUpdater.on("update-available", (info) => {
+      sendStatus(`Mise à jour ${info.version} disponible. Téléchargement...`);
+    });
+
+    autoUpdater.on("download-progress", (progress) => {
+      const percent = Math.round(progress.percent);
+      sendStatus(`Téléchargement : ${percent}%`);
+    });
+
+    autoUpdater.on("update-downloaded", () => {
+      sendStatus("Mise à jour téléchargée. Redémarrage...");
+      setTimeout(() => {
+        autoUpdater.quitAndInstall();
+      }, 1500);
+    });
+
+    autoUpdater.on("update-not-available", () => {
+      sendStatus("Aucune mise à jour. Lancement...");
+      setTimeout(() => {
+        // if (!win.isDestroyed()) win.close();
+        // create_main_window().then(safeResolve);
+      }, 800);
+    });
+
+    autoUpdater.on("error", (err) => {
+      log.error(err);
+      sendStatus(`Erreur mise à jour : ${err}`);
+      setTimeout(() => {
+        // if (!win.isDestroyed()) win.close();
+        // create_main_window().then(safeResolve);
+      }, 2000);
+    });
+
+    // Lancer la vérification
+    autoUpdater.checkForUpdates();
+
+    // Timeout sécurité (30s)
+    setTimeout(() => {
+      if (!resolved) {
+        log.warn("Auto-update timeout");
+        sendStatus("Timeout. Lancement de l'application...");
+        setTimeout(() => {
+          if (!win.isDestroyed()) win.close();
+          create_main_window().then(safeResolve);
+        }, 1000);
+      }
+    }, 30_000);
+  });
 };

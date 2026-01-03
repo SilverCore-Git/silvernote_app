@@ -1,4 +1,4 @@
-name: Build electron App
+name: Build Electron App
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  
+
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -63,12 +63,10 @@ jobs:
           path: build/
 
   release:
-
     runs-on: ubuntu-latest
     needs: [build-linux, build-windows, build-macos]
 
     steps:
-
       - uses: actions/checkout@v3
 
       - uses: actions/download-artifact@v4
@@ -91,27 +89,44 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Rename target files
+      - name: Rename artifacts
         run: |
           mkdir release
 
-          # macos .dmg
-          mv macos/Silvernote-${{ env.VERSION }}-arm64.dmg release/silvernote-${{ env.VERSION }}-macos.dmg
-          mv macos/Silvernote-${{ env.VERSION }}-arm64-mac.zip release/silvernote-${{ env.VERSION }}-macos.app.zip
+          # macOS
+          mv macos/Silvernote-${VERSION}-arm64.dmg release/silvernote-${VERSION}-macos.dmg
+          mv macos/Silvernote-${VERSION}-arm64-mac.zip release/silvernote-${VERSION}-macos.app.zip
 
-          # Linux .rpm and .deb
-          mv linux/silvernote-${{ env.VERSION }}.x86_64.rpm release/silvernote-${{ env.VERSION }}-linux-setup.rpm
-          mv linux/silvernote_${{ env.VERSION }}_amd64.deb release/silvernote-${{ env.VERSION }}-linux-setup.deb
-          mv linux/Silvernote-${{ env.VERSION }}.AppImage release/silvernote-${{ env.VERSION }}-linux-setup.AppImage
+          # Linux
+          mv linux/Silvernote-${VERSION}.AppImage release/silvernote-${VERSION}-linux-setup.AppImage
+          mv linux/silvernote_${VERSION}_amd64.deb release/silvernote-${VERSION}-linux-setup.deb
+          mv linux/silvernote-${VERSION}.x86_64.rpm release/silvernote-${VERSION}-linux-setup.rpm
 
-          # Windows .exe
-          mv "windows/Silvernote Setup ${{ env.VERSION }}.exe" "release/silvernote-${{ env.VERSION }}-win-setup.exe"
-          mv "windows/Silvernote Setup ${{ env.VERSION }}.exe.blockmap" "release/silvernote-${{ env.VERSION }}-win-setup.exe.blockmap"
-          
-          # All latest yml
+          # Windows
+          mv "windows/Silvernote Setup ${VERSION}.exe" "release/silvernote-${VERSION}-win-setup.exe"
+          mv "windows/Silvernote Setup ${VERSION}.exe.blockmap" "release/silvernote-${VERSION}-win-setup.exe.blockmap"
+
+          # latest yml
           mv windows/latest.yml release/latest.yml
           mv linux/latest-linux.yml release/latest-linux.yml
           mv macos/latest-mac.yml release/latest-mac.yml
+
+      # 🔥 PATCH DES YAML (CRUCIAL POUR ELECTRON-UPDATER)
+
+      - name: Patch latest.yml (Windows)
+        run: |
+          sed -i "s|Silvernote Setup ${VERSION}.exe|silvernote-${VERSION}-win-setup.exe|g" release/latest.yml
+
+      - name: Patch latest-linux.yml
+        run: |
+          sed -i "s|Silvernote-${VERSION}.AppImage|silvernote-${VERSION}-linux-setup.AppImage|g" release/latest-linux.yml
+          sed -i "s|silvernote_${VERSION}_amd64.deb|silvernote-${VERSION}-linux-setup.deb|g" release/latest-linux.yml
+          sed -i "s|silvernote-${VERSION}.x86_64.rpm|silvernote-${VERSION}-linux-setup.rpm|g" release/latest-linux.yml
+
+      - name: Patch latest-mac.yml
+        run: |
+          sed -i "s|Silvernote-${VERSION}-arm64-mac.zip|silvernote-${VERSION}-macos.app.zip|g" release/latest-mac.yml
+          sed -i "s|Silvernote-${VERSION}-arm64.dmg|silvernote-${VERSION}-macos.dmg|g" release/latest-mac.yml
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -128,7 +143,6 @@ jobs:
         with:
           tag_name: v${{ env.VERSION }}
           files: |
-
             release/silvernote-${{ env.VERSION }}-linux-setup.rpm
             release/silvernote-${{ env.VERSION }}-linux-setup.deb
             release/silvernote-${{ env.VERSION }}-linux-setup.AppImage
@@ -142,6 +156,5 @@ jobs:
             release/latest.yml
             release/latest-linux.yml
             release/latest-mac.yml
-
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
