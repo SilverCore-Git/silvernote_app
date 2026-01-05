@@ -9,7 +9,7 @@ app.whenReady().then(async () => {
   
   let mainWindow;
 
-  if (!dev && isOnline()) 
+  if (!pkg.dev && isOnline()) 
   {
     const { window } = await create_update_window();
     mainWindow = window;
