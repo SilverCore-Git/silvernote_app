@@ -3,12 +3,13 @@ const initializeDiscordRPC = require("./assets/dicord_rpc");
 const isOnline =  require('./assets/isOnline');
 const create_main_window = require('./windows/main/mainWindow.js');
 const create_update_window = require('./windows/update/updateWindow');
+const pkg = require('../package.json');
 
 app.whenReady().then(async () => {
   
   let mainWindow;
 
-  if (isOnline()) 
+  if (!dev && isOnline()) 
   {
     const { window } = await create_update_window();
     mainWindow = window;
