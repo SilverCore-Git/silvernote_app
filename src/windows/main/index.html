@@ -6,6 +6,18 @@
 
   <style>
 
+    :root {
+      --primary: #f28c28;
+      --primary-hover: #ee7f0f;
+      --bg: #FFF8F0; 
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #2A2420;
+      }
+    }
+
     body {
       margin: 0;
       font-family: sans-serif;
@@ -14,7 +26,7 @@
     .titlebar {
       -webkit-app-region: drag;
       height: 35px;
-      background-color: #f28c28;
+      background-color: var(--bg);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -38,12 +50,13 @@
       color: white;
       font-size: 14px;
       transition: background-color 0.2s;
+      border-radius: 5px;
     }
     .titlebar button.close:hover {
       background-color: #dc3545;
     }
     .titlebar button:hover:not(.close) {
-      background-color: #ee7f0f;
+      background-color: var(--primary);
     }
     .options-btn {
       height: 100%;
