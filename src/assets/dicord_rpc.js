@@ -2,8 +2,8 @@ const RPC = require("discord-rpc");
 const clientId = '1390336653125484555';
 
 
-module.exports = function initializeDiscordRPC() {
-
+module.exports = function initializeDiscordRPC(callback)
+{
     return new Promise((resolve, reject) => {
 
         console.log('Init RPC')
@@ -30,7 +30,8 @@ module.exports = function initializeDiscordRPC() {
             }
 
             console.log('RPC OK')
-            resolve({ rpc, setActivity })
+            if (callback) callback({ setActivity });
+            resolve({ setActivity })
         });
 
         rpc.login({ clientId }).catch((err) => {
@@ -38,6 +39,10 @@ module.exports = function initializeDiscordRPC() {
             reject(err);
         });
 
-    });
+        // Timeout de sécurité (10s)
+        setTimeout(() => {
+            reject(new Error("RPC connection timeout"));
+        }, 10000);
 
+    });
 }

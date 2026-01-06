@@ -3,9 +3,11 @@ const Console = require("../../assets/logger");
 const path = require("path");
 const packageJson = require("../../../package.json");
 
-module.exports = function create_main_window() {
-  return new Promise((resolve, reject) => {
+module.exports = function create_main_window()
+{
+  
     try {
+
       const window = new BrowserWindow({
         width: 1200,
         height: 675,
@@ -75,14 +77,16 @@ module.exports = function create_main_window() {
 
       window.once("ready-to-show", () => {
         window.show();
-        resolve({ window });
       });
 
       window.webContents.on("did-fail-load", (event, errorCode, errorDescription) => {
-        reject(new Error(`Erreur de chargement de la fenêtre : ${errorDescription} (${errorCode})`));
+        console.error(`Erreur de chargement de la fenêtre : ${errorDescription} (${errorCode})`);
       });
+
+      return window;
+      
     } catch (err) {
-      reject(err);
+      console.error(err);
     }
-  });
+    
 };

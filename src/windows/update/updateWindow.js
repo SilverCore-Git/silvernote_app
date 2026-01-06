@@ -3,10 +3,10 @@ const path = require("path");
 const { autoUpdater } = require("electron-updater");
 const log = require("electron-log");
 const create_main_window = require("../main/mainWindow.js");
+const { dialog } = require("electron");
 
-module.exports = function create_update_window() {
-  return new Promise((resolve) => {
-    let resolved = false;
+module.exports = function create_update_window()
+{
 
     const win = new BrowserWindow({
       width: 300,
@@ -24,14 +24,7 @@ module.exports = function create_update_window() {
       },
     });
 
-    const safeResolve = (window) => {
-      if (!resolved) {
-        resolved = true;
-        resolve(window);
-      }
-    };
-
-    win.loadFile(path.join(__dirname, "index.html"));
+    // win.loadFile(path.join(__dirname, "index.html"));
     win.once("ready-to-show", () => win.show());
 
     globalShortcut.register("CommandOrControl+Shift+I+U", () => {
@@ -65,26 +58,28 @@ module.exports = function create_update_window() {
 
     autoUpdater.on("update-downloaded", () => {
       sendStatus("Mise à jour téléchargée. Redémarrage...");
-      setTimeout(() => {
-        autoUpdater.quitAndInstall();
-      }, 1500);
+      dialog.showMessageBox(win, {
+        type: "info",
+        title: "Mise à jour Silvernote disponible",
+        message: "Une nouvelle version de Silvernote est disponible",
+        detail: "Voulez vous la télécherger ?",
+        buttons: ["Plus tard", "Installer"],
+      }).then((result) => {
+        if (result.response === 1) {
+          autoUpdater.quitAndInstall();
+        }
+      });
     });
 
     autoUpdater.on("update-not-available", () => {
       sendStatus("Aucune mise à jour. Lancement...");
-      setTimeout(() => {
-        if (!win.isDestroyed()) win.close();
-        create_main_window().then(safeResolve);
-      }, 800);
+      if (!win.isDestroyed()) win.close();
     });
 
     autoUpdater.on("error", (err) => {
       log.error(err);
       sendStatus(`Erreur mise à jour : ${err}`);
-      setTimeout(() => {
-        if (!win.isDestroyed()) win.close();
-        create_main_window().then(safeResolve);
-      }, 2000);
+      if (!win.isDestroyed()) win.close();
     });
 
     // Lancer la vérification
@@ -95,11 +90,8 @@ module.exports = function create_update_window() {
       if (!resolved) {
         log.warn("Auto-update timeout");
         sendStatus("Timeout. Lancement de l'application...");
-        setTimeout(() => {
-          if (!win.isDestroyed()) win.close();
-          create_main_window().then(safeResolve);
-        }, 1000);
+        if (!win.isDestroyed()) win.close();
       }
     }, 30_000);
-  });
+
 };

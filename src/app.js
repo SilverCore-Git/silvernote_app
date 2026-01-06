@@ -1,28 +1,20 @@
 const { app, BrowserWindow } = require("electron");
 const initializeDiscordRPC = require("./assets/dicord_rpc");
-const isOnline =  require('./assets/isOnline');
 const create_main_window = require('./windows/main/mainWindow.js');
 const create_update_window = require('./windows/update/updateWindow');
-const pkg = require('../package.json');
 
 app.whenReady().then(async () => {
-  
-  let mainWindow;
 
-  if (!pkg.dev && isOnline()) 
-  {
-    const { window } = await create_update_window();
-    mainWindow = window;
-  }
-  else 
-  {
-    const { window } = await create_main_window();
-    mainWindow = window;
-  }
+  let setActivity = () => {};
 
-  const { setActivity } = await initializeDiscordRPC();
+  create_update_window()
+  const mainWindow = create_main_window();
 
-  setActivity('Loading');
+  initializeDiscordRPC((activity) => {
+    setActivity = activity.setActivity;
+  }).catch((err) => {
+    console.warn("RPC non disponible :", err.message);
+  });
 
   mainWindow.on('page-title-updated', (event, title) => {
     setActivity(title);
