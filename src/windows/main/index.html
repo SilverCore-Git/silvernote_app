@@ -167,13 +167,13 @@
     <img class="loader-icon" src="../../icon.png" />
   </div>
 
-  <!-- <webview 
+  <webview 
     id="webview" 
     src="https://app.silvernote.fr" 
     partition="persist:silvernote"
     allowpopups
     style="border:0">
-  </webview> -->
+  </webview>
 
   <script>
 
@@ -209,6 +209,7 @@
       const title = webview.getTitle();
       if (title && title.trim() !== '') {
         titleElement.textContent = title;
+        document.title = title;
       } else {
         titleElement.textContent = 'Silvernote';
       }
