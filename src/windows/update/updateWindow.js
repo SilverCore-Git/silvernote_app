@@ -87,11 +87,9 @@ module.exports = function create_update_window()
 
     // Timeout sécurité (30s)
     setTimeout(() => {
-      if (!resolved) {
         log.warn("Auto-update timeout");
-        sendStatus("Timeout. Lancement de l'application...");
+        sendStatus("Update timeout passé.");
         if (!win.isDestroyed()) win.close();
-      }
     }, 30_000);
 
 };
