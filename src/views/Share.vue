@@ -248,7 +248,7 @@
 
 
     <div
-        v-if="error !== ''"
+        v-if="error !== '' && error !== 'Mot de passe incorect.'"
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
     >
 
@@ -374,6 +374,7 @@ const send_share = async (): Promise<void> => {
 
 }
 
+let req: number = 0;
 const _fetch = async () => {
 
     const _share = await fetch(`${api_url}/api/share/${props.uuid}?passwd=${passwd.value}`, { 
@@ -423,8 +424,10 @@ const _fetch = async () => {
     }
 
     if (_share.need == 'passwd') {
+        req++;
         need_passwd.value = true;
         loaded.value = true;
+        if (req > 1) error.value = 'Mot de passe incorect.';
         return;
     }
 

@@ -154,6 +154,7 @@ import { ref, watch } from 'vue';
 import Popup from './Popup.vue';
 import Switch from '../Switch.vue';
 import { api_url } from '@/assets/ts/backend_link';
+import { useToken } from '@/composables/useToken';
 
 const props = defineProps<{
   uuid: string;
@@ -176,13 +177,16 @@ watch(() => props.modelValue, v => visible.value = v);
 watch(visible, v => emit('update:modelValue', v));
 
 const create_share_link = async () => {
-  const res = await fetch(`${api_url}/api/share`, {
+  const res = await fetch(`${api_url}/api/share/create`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': (await useToken()).token.value
+    },
     credentials: 'include',
     body: JSON.stringify({
       note_uuid: props.uuid,
-      parms: {
+      params: {
         life: (j.value * 24 * 60 * 3600 * 100) + (h.value * 60 * 3600 * 100),
         passwd: password ? passwd.value : undefined,
         editable: editable.value
