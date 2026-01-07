@@ -4,26 +4,11 @@
 
   <ShortsCut />
 
-  <div
-    :style="{
-      marginTop: mobile_config.active ? mobile_config.margin.top : 0,
-      marginBottom: mobile_config.active ? mobile_config.margin.bottom : 0,
-    }"
-  >
+  <div>
 
-      <div :class="[ 'Edit', 'Share' ].includes(route.name as string) ? 'flex' : ''">
+      <div>
         
-        <div 
-          v-if="route.name == 'sign' || route.name == 'ssoCallback' || !loader && InitDB.isLoaded()"
-          class="flex-1 relative "
-          :class="
-                  route.name === 'Home'
-                    ? 'mt-(--mt) mr-(--mlr) ml-(--mrl) ' 
-                    : route.name == 'sign' || route.name == 'Edit' || route.name == 'Share'
-                        ? ''
-                        : 'mr-(--mlr) ml-(--mrl)'
-          "
-        >
+        <div>
           <router-view />
         </div>
 
@@ -85,7 +70,6 @@ import { init_theme } from "./assets/ts/theme";
 import { useAuth, useUser } from "@clerk/vue";
 import { loaded } from "./assets/ts/utils";
 import InitDB from "./assets/ts/database/init";
-import mobile_config from "@/configs/mobile.json";
 import waitFor from "./assets/ts/utils/waitFor";
 import ShortsCut from "./components/shortsCut.vue";
 import ErrorOverlay from "./components/errorOverlay/errorOverlay.vue";

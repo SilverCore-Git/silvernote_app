@@ -1,10 +1,21 @@
 <template>
 
-    <div
+    <header 
+        style="
+            font-family: 'InterTight', sans-serif; 
+            box-shadow: 0 0 15px #36363681;
+        " 
+        :style="{
+            top: mobile.active ? mobile.margin.top : 0
+        }"
         class="
-            h-screen bg-(--bg2) shadow-2xl
-            py-10 px-5 min-w-65
-        "
+                fixed 
+                lg:inset-y-0 lg:left-0 inset-x-0
+                text-2xl font-bold lg:w-60
+                bg-[var(--bg2)] z-50 
+                lg:p-4 py-1 p-0 my-4 lg:my-6 mx-6
+                flex items-start justify-center dropdown
+            "
     >
 
         <ul class="w-full">
@@ -16,7 +27,7 @@
                     <img src="/favicon.svg" class="w-8 rounded-md" />
 
                     <div class="flex flex-col items-start">
-                        <span class="text-base font-bold">Silvernote</span>
+                        <span class="text-base">Silvernote</span>
                         <span class="text-[var(--text-little)] text-[10px] -mt-1">
                             version {{ version }}
                         </span>
@@ -49,50 +60,53 @@
                 </div>
             </Transition>
 
-            <div
-                class="
-                        flex flex-row justify-between items-center
-                        w-full px-4 z-30 max-w-50 mx-auto
-                    "
-            >
+            <Transition name="fade-slide">
+                <div
+                    class="
+                            flex flex-row justify-between items-center
+                            w-full px-4 z-30
+                        "
+                >
 
-                <a class="p-1.5" v-tooltip.bottom="'Paramètres'">
-                    <div
-                        class="gear-svg
-                                w-7
-                                h-7
-                            "
-                        @click="router.push('/settings')"
-                    ></div>
-                </a>
+                    <a class="p-1.5" v-tooltip.bottom="'Paramètres'">
+                        <div
+                            class="gear-svg
+                                    w-7
+                                    h-7
+                                "
+                            @click="router.push('/settings')"
+                        ></div>
+                    </a>
 
-                <slot></slot>
+                    <slot></slot>
 
-                <a class="p-1.5 flex items-center justify-center ">
-                    <UserButton
-                        :appearance="{
-                            elements: {
-                                userButtonAvatarBox: {
-                                    width: '24px',
-                                    height: '24px'
+                    <a class="p-1.5 flex items-center justify-center ">
+                        <UserButton
+                            :appearance="{
+                                elements: {
+                                    userButtonAvatarBox: {
+                                        width: '24px',
+                                        height: '24px'
+                                    }
                                 }
-                            }
-                        }" 
-                    />
-                </a>
+                            }" 
+                        />
+                        <!-- <UserAvatarButton /> -->
+                    </a>
 
-            </div>
+                </div>
+            </Transition>
 
             <div class="phone-hidden-flex flex-col gap-2">
 
-                <hr class="mt-3 mb-4 text-gray-400" />
+                <hr class="mt-3 mb-4" />
 
-                <span class="text-xs text-(--text-little) uppercase font-semibold">Onglets</span>
+                <span class="text-xs text-(--text-little)">Trier par</span>
 
                 <li 
                     class="li"
                     @click="setFilter('all')"
-                    :class="notes_filter == 'all' ? 'bg-[var(--btn)] text-white' : ''"
+                    :class="notes_filter == 'all' ? 'bg-[var(--btn)]' : ''"
                 >
                     <i 
                         :class="notes_filter == 'all' ? '' : 'text-[var(--btn)]'"
@@ -104,7 +118,7 @@
                 <li 
                     class="li"
                     @click="setFilter('pinned')"
-                    :class="notes_filter == 'pinned' ? 'bg-[var(--btn)] text-white' : ''"
+                    :class="notes_filter == 'pinned' ? 'bg-[var(--btn)]' : ''"
                 >
                     <i 
                         :class="notes_filter == 'pinned' ? '' : 'text-[var(--btn)]'"
@@ -116,7 +130,7 @@
                 <li 
                     class="li"
                     @click="setFilter('shared')"
-                    :class="notes_filter == 'shared' ? 'bg-[var(--btn)] text-white' : ''"
+                    :class="notes_filter == 'shared' ? 'bg-[var(--btn)]' : ''"
                 >
                     <i 
                         :class="notes_filter == 'shared' ? '' : 'text-[var(--btn)]'"
@@ -127,7 +141,7 @@
 
                 <hr class="my-2 text-transparent" />
 
-                <span class="text-xs text-(--text-little) uppercase font-semibold">Affichage</span>
+                <span class="text-xs text-[var(--text-little)]">Affichage</span>
 
                 <li 
                     @click.stop="toggle_notes_views_mode()" 
@@ -151,10 +165,9 @@
 
         </ul>
 
-    </div>
+    </header>
 
 </template>
-
 
 <script lang="ts" setup>
 
@@ -168,6 +181,9 @@ import isMobile from '@/assets/ts/utils/isMobile';
 import Navbar_note_settings from '@/components/notes/Navbar_note_settings.vue';
 import { UserButton } from '@clerk/vue';
 
+defineProps<{
+    reload_func: (a?: 'just_view' | 'local') => Promise<void>;
+}>()
 
 const router = useRouter();
 const route = useRoute();
@@ -256,21 +272,5 @@ const closeNoteSettings = () => {
     background-image: url('../../assets/svgs/grid2.svg');
 }
 
-ul li {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 0.5rem;
-  border-radius: 6px;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-ul hr {
-    opacity: 50%;
-}
-
-ul li:not(.nohover):hover {
-  background-color: rgba(131, 131, 131, 0.15);
-}
 
 </style>
