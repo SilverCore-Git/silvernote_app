@@ -26,6 +26,10 @@ h1, h2, h3, h4, h5, h6 {
   -ms-overflow-style: none;
 }
 
+.shadow {
+    box-shadow: 0 0 10px var(--shadow);
+}
+
 
 .left-arrow {
   width: 30px;
