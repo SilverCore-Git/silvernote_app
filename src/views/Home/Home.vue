@@ -12,40 +12,41 @@
     <!-- conteneur alignement x -->
     <div
         class="
-            flex flex-row
+            flex flex-row gap-8
         "
     >
 
         <!-- navbar -->
         <nav>
+
             <NavBar>
 
                 <a class="p-1.5" v-tooltip.bottom="'Recharger'">
                     <div
-                        class="reload-svg
-                                w-6
-                                h-6
+                        class="bi bi-arrow-clockwise text-(--btn) text-2xl 
+                                w-7 h-7 flex justify-center items-center
                             " 
                         :class="[
                             { rotating: isRotating }
                         ]"
-                        @click="reload_list()"
+                        @click="reload_list('cloud')"
                     ></div>
                 </a>
 
             </NavBar>
+
         </nav>
 
         <!-- conteneur allignement y -->
         <div
             class="
-                flex flex-col
+                flex flex-col gap-10 pt-8 pr-8
             "
         >
 
             <!-- search + tags -->
             <div>
-
+                <SearchAndTag />
             </div>
 
             <!-- notes -->
@@ -63,9 +64,28 @@
 
 
 <script lang="ts" setup>
-import NavBar from './NavBar.vue';
+import NavBar from './components/layout/Navbar.vue';
+import SearchAndTag from './components/layout/SearchAndTag.vue';
+import { isRotating, reload_list } from './composables/Reload';
 
 
 
 
 </script>
+
+<style scoped>
+
+.rotating {
+    animation: rotate 0.6s linear infinite;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+</style>

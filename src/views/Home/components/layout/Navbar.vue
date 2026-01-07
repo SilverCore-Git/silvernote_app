@@ -3,7 +3,7 @@
     <div
         class="
             h-screen bg-(--bg2) shadow-2xl
-            py-10 px-5 min-w-65
+            p-4 min-w-65
         "
     >
 
@@ -43,7 +43,6 @@
                 >
                     <Navbar_note_settings
                         @close="closeNoteSettings"
-                        :reload_func="reload_func"
                         :note-uuid="selectedNote"
                     />
                 </div>
@@ -58,10 +57,10 @@
 
                 <a class="p-1.5" v-tooltip.bottom="'Paramètres'">
                     <div
-                        class="gear-svg
-                                w-7
-                                h-7
-                            "
+                        class="
+                                bi bi-gear text-(--btn) text-2xl 
+                                w-7 h-7 flex justify-center items-center
+                        "
                         @click="router.push('/settings')"
                     ></div>
                 </a>
@@ -85,7 +84,7 @@
 
             <div class="phone-hidden-flex flex-col gap-2">
 
-                <hr class="mt-3 mb-4 text-gray-400" />
+                <hr class="mt-3 mb-4 text-gray-400 -mx-5" />
 
                 <span class="text-xs text-(--text-little) uppercase font-semibold">Onglets</span>
 
@@ -142,13 +141,6 @@
 
             </div>
 
-            <div 
-                v-if="false"
-                class="absolute bottom-3.5 inset-x-5 phone-hidden"
-            >
-                <New_note_btn @btn_click="newNote"  />
-            </div>
-
         </ul>
 
     </div>
@@ -159,10 +151,8 @@
 <script lang="ts" setup>
 
 import { useRoute, useRouter } from 'vue-router';
-import { version, dev } from '../../../package.json';
+import { version, dev } from '../../../../../package.json';
 import { notes_views_mode, toggle_notes_views_mode, notes_filter, type Notes_filter } from '@/assets/ts/Notes_views';
-import New_note_btn from './New_note_btn.vue';
-import mobile from  '@/configs/mobile.json';
 import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 import Navbar_note_settings from '@/components/notes/Navbar_note_settings.vue';
@@ -199,15 +189,6 @@ const closeNoteSettings = () => {
 
 <style scoped>
 
-.ellipsis-svg {
-    cursor: pointer;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url('/assets/svgs/ellipsis.svg');
-    transition: all 0.3s ease;
-}
-
 .li {
     font-size: 16px;
     line-height: 1.5;
@@ -222,38 +203,6 @@ const closeNoteSettings = () => {
 
 .li:not(.nohover2):hover {
     padding-left: 1.5em;
-}
-
-.nav-svg {
-    width: 3vw;
-    height: 3vw;
-    cursor: pointer;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    margin-right: 10px;
-}
-
-.gear-svg {
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url('../../assets/svgs/gear.svg');
-    filter: brightness(0) saturate(100%) invert(61%) sepia(43%) saturate(1182%) hue-rotate(343deg) brightness(99%) contrast(92%);
-}
-
-.grid-svg {
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url('../../assets/svgs/grid.svg');
-}
-
-.grid2-svg {
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url('../../assets/svgs/grid2.svg');
 }
 
 ul li {

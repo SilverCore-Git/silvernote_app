@@ -3,6 +3,7 @@
 
     --bg: black;
     --bg2: black;
+    --white: #FFF;
     --text: black;
     --text-strong: black;
     --text-little: black;
@@ -32,7 +33,8 @@ body.dark {
 
 body.light {
     --bg: #FFF8F0;
-    --bg2: #fff5e8;
+    --bg2: #FFF3E0;
+    --white: #FFF;
     --text: #3B3B3B;
     --text-strong: rgb(51, 51, 51);
     --text-little: #3b3b3ba2;
