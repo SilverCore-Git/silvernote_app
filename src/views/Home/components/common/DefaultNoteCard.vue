@@ -38,39 +38,33 @@
             <div class="text-xs sm:text-sm text-[var(--text)]/80 leading-relaxed break-words">
                 <p
                     v-if="IsPrivate"
-                    class="line-clamp-3 font-mono text-[10px] tracking-widest opacity-50"
+                    class=" font-mono text-[10px] tracking-widest opacity-50"
+                    :class="lines ? `line-clamp-${lines}` : 'line-clamp-3'"
                 >
                     {{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 150) }}
                 </p>
 
                 <div
                     v-else
-                    class="line-clamp-3 content-html"
+                    class=" content-html"
+                    :class="lines ? `line-clamp-${lines}` : 'line-clamp-3'"
                     v-html="utils.clean_html(content)"
                 ></div>
             </div>
 
-            <div v-if="Tags.length > 1" class="mt-2 flex gap-1">
-                <div 
-                    v-for="i in (Tags.length - 1)" 
-                    :key="i" 
-                    class="w-1.5 h-1.5 rounded-full"
-                    :style="{ backgroundColor: Tags[i].color }"
-                ></div>
-            </div>
-
-            <div v-if="Tags.length > 0" class="shrink-0">
-                <span 
+            <div v-if="Tags.length > 0" class="shrink-0 flex flex-wrap gap-1 mt-2">
+                <span
+                    v-for="tag in Tags"
                     class="
-                        px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide
-                        flex items-center justify-center
+                        px-2 py-1 rounded-md text-[10px] font-bold uppercase
+                        flex items-center justify-center tracking-wide
                     "
                     :style="{ 
-                        backgroundColor: Tags[0].color + '20', /* 20 = ~12% opacité pour le fond pastel */
-                        color: Tags[0].color 
+                        backgroundColor: tag.color + '20', /* 20 = ~12% opacité pour le fond pastel */
+                        color: tag.color 
                     }"
                 >
-                    {{ Tags[0].name }}
+                    {{ tag.name }}
                 </span>
             </div>
             
@@ -97,12 +91,13 @@ import PressAndHold from '@/components/PressAndHold.vue';
 import NoteParamsOverlay from '@/components/common/NoteParamsOverlay.vue';
 
 const props = defineProps<{
-  id: number;
-  title: string;
-  content: string;
-  icon: string;
-  tags: number[]; // Liste des IDs des tags
-  click?: () => void;
+    id: number;
+    title: string;
+    content: string;
+    icon: string;
+    tags: number[]; // Liste des IDs des tags
+    click?: () => void;
+    lines?: 3 | 4 | 5 | 6 | 7 | 8;
 }>();
 
 const router = useRouter();
@@ -140,9 +135,7 @@ watch(() => props.tags, () => {
 </script>
 
 <style scoped>
-/* Optimisation pour le rendu du HTML nettoyé 
-   Permet d'éviter que des gros titres h1/h2 dans le contenu ne cassent la petite carte
-*/
+
 .content-html :deep(h1), 
 .content-html :deep(h2), 
 .content-html :deep(h3) {
@@ -155,10 +148,45 @@ watch(() => props.tags, () => {
   display: inline;
 }
 
-/* Gestion de l'ellipsis propre */
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+
+.line-clamp-4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-5 {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-6 {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-7 {
+  display: -webkit-box;
+  -webkit-line-clamp: 7;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-8 {
+  display: -webkit-box;
+  -webkit-line-clamp: 8;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

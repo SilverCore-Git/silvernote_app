@@ -52,16 +52,14 @@
             <div class="text-xs sm:text-sm text-[var(--text)]/80 leading-relaxed break-words">
                 <p
                     v-if="IsPrivate"
-                    class=" font-mono text-[10px] tracking-widest opacity-50"
-                    :class="lines ? `line-clamp-${lines}` : 'line-clamp-3'"
+                    class="line-clamp-3 font-mono text-[10px] tracking-widest opacity-50"
                 >
                     {{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 150) }}
                 </p>
 
                 <div
                     v-else
-                    class=" content-html"
-                    :class="lines ? `line-clamp-${lines}` : 'line-clamp-3'"
+                    class="line-clamp-3 content-html"
                     v-html="utils.clean_html(content)"
                 ></div>
             </div>
@@ -98,13 +96,12 @@ import PressAndHold from '@/components/PressAndHold.vue';
 import NoteParamsOverlay from '@/components/common/NoteParamsOverlay.vue';
 
 const props = defineProps<{
-  id: number;
-  title: string;
-  content: string;
-  icon: string;
-  tags: number[]; // Liste des IDs des tags
-  click?: () => void;
-  lines?: 3 | 4 | 5 | 6 | 7 | 8;
+    id: number;
+    title: string;
+    content: string;
+    icon: string;
+    tags: number[]; // Liste des IDs des tags
+    click?: () => void;
 }>();
 
 const router = useRouter();
@@ -162,40 +159,6 @@ watch(() => props.tags, () => {
   overflow: hidden;
 }
 
-.line-clamp-4 {
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.line-clamp-5 {
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.line-clamp-6 {
-  display: -webkit-box;
-  -webkit-line-clamp: 6;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.line-clamp-7 {
-  display: -webkit-box;
-  -webkit-line-clamp: 7;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.line-clamp-8 {
-  display: -webkit-box;
-  -webkit-line-clamp: 8;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
 
 
 </style>
