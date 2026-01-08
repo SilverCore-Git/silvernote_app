@@ -132,3 +132,22 @@ a:hover {
     transform: translateY(0px);
   }
 }
+
+
+@keyframes bbounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.bounce {
+  animation: bbounce 0.8s ease-in-out infinite;
+}
+
+
+.bounce-hover:hover {
+  animation: bbounce 0.3s ease-in-out;
+}

@@ -16,7 +16,8 @@
           v-if="route.name !== 'silveria' && loaded"
           class=" z-50 relative"
         >
-          <Chatbot v-if="open_chatbot" />
+          <BtnOverlay />
+          <!-- <Chatbot v-if="open_chatbot" /> -->
         </div>
 
       </div>
@@ -74,6 +75,7 @@ import waitFor from "./assets/ts/utils/waitFor";
 import ShortsCut from "./components/shortsCut.vue";
 import ErrorOverlay from "./components/errorOverlay/errorOverlay.vue";
 import postError from "./components/errorOverlay/postError";
+import BtnOverlay from "./components/common/BtnOverlay.vue";
 
 const loader = ref<boolean>(true);
 const status = ref<string>('Chargement de l\'app...');

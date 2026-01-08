@@ -4,7 +4,7 @@
         class="
             flex justify-center items-center flex-row gap-[10px]
             border border-gray-300 rounded-2xl bg-(--white)
-            py-3 px-3.5 w-[657px]
+            py-3 px-3.5 max-w-[657px]
         "
     >
 

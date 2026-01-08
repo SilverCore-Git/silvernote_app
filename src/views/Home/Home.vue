@@ -4,15 +4,15 @@
 <!-- div général de la page -->
 <div
     class="
-        overflow-hidden
-        w-screen h-screen
+        overflow-y-auto fixed
+        inset-0 flex
     "
 >
 
     <!-- conteneur alignement x -->
     <div
         class="
-            flex flex-row
+            flex flex-row w-full h-full
         "
     >
 
@@ -40,7 +40,7 @@
         <!-- conteneur allignement y -->
         <div
             class="
-                flex flex-col gap-8 p-8
+                flex-1 flex flex-col p-8 gap-8 overflow-hidden
             "
         >
 
@@ -50,7 +50,7 @@
             </div>
 
             <!-- notes -->
-            <div>
+            <div class="flex-1 overflow-y-auto">
                 <AllNotes />
             </div>
 
@@ -68,8 +68,6 @@ import AllNotes from './components/layout/AllNotes.vue';
 import NavBar from './components/layout/Navbar.vue';
 import SearchAndTag from './components/layout/SearchAndTag.vue';
 import { isRotating, reload_list } from './composables/Reload';
-
-
 
 
 </script>

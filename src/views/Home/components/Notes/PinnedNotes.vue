@@ -1,24 +1,44 @@
 <script setup lang="ts">
-import PinnedNote from '../common/PinnedNote.vue';
+
+import { useRouter } from 'vue-router';
+import { Notes } from '@/assets/ts/database/Var';
+import { computed } from 'vue';
+import PinnedNoteCard from '../common/PinnedNoteCard.vue';
+
+const pinned_notes = computed(() =>
+    Notes.value.filter(note => note.pinned)
+)
+const router = useRouter();
 
 </script>
 
 <template>
 
-    <div>
+    <div 
+        class="flex flex-col gap-4 "
+    >
 
-        <span class=" uppercase text-md">
+        <span class=" uppercase text-md font-semibold text-gray-500 ">
             <i class="bi bi-pin mr-1" />
             Notes épinglés
         </span>
 
-        <ul>
-            <li v-for="value in 3">
-                <PinnedNote 
-                    title="f sdjkfj sdqlkjf sdl"
-                    content="Lorem ipsum fkgds plo jlkdfsj glkfjlkfgd jkldfsg"
-                    icon=""
-                    :tags="[1, 2, 3]"
+        <ul
+            class="
+                grid grid-cols-3 gap-4
+            "
+        >
+            <li
+                v-for="note in pinned_notes"
+                :key="note.id"
+                @click="router.push('/edit/'+note.id)"
+            >
+                <PinnedNoteCard
+                    :id="note.id"
+                    :title="note.title"
+                    :content="note.content"
+                    :icon="note.icon"
+                    :tags="note.tags"
                 />
             </li>
         </ul>

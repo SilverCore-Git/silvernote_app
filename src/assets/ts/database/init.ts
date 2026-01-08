@@ -156,7 +156,7 @@ class InitDB {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': (await useToken()).token.value
+                'Authorization': 'Bearer ' + (await useToken()).token.value
             }
         }).then(res => res.json());
 

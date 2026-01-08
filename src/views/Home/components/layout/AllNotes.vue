@@ -8,8 +8,8 @@ import PinnedNotes from '../Notes/PinnedNotes.vue';
 
     <div
         class="
-             overflow-y-auto overflow-x-hidden
-             
+            flex-1 overflow-y-auto
+            flex flex-col gap-8 pb-10
         "
     >
 
