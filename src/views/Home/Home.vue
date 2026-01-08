@@ -12,7 +12,7 @@
     <!-- conteneur alignement x -->
     <div
         class="
-            flex flex-row gap-8
+            flex flex-row
         "
     >
 
@@ -40,7 +40,7 @@
         <!-- conteneur allignement y -->
         <div
             class="
-                flex flex-col gap-10 pt-8 pr-8
+                flex flex-col gap-8 p-8
             "
         >
 
@@ -51,7 +51,7 @@
 
             <!-- notes -->
             <div>
-
+                <AllNotes />
             </div>
 
         </div>
@@ -64,6 +64,7 @@
 
 
 <script lang="ts" setup>
+import AllNotes from './components/layout/AllNotes.vue';
 import NavBar from './components/layout/Navbar.vue';
 import SearchAndTag from './components/layout/SearchAndTag.vue';
 import { isRotating, reload_list } from './composables/Reload';
