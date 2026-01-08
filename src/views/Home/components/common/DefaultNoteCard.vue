@@ -1,7 +1,7 @@
 <template>
 
     <PressAndHold
-        @long-press="select_note()"
+        @long-press="select_note"
         @click.stop="open_note(id, true)"
         class="h-full"
     >
@@ -78,6 +78,11 @@
 
     </PressAndHold>
 
+    <NoteParamsOverlay
+        v-model:visible="note_selected"
+        :id="id"
+    />
+
 </template>
 
 <script lang="ts" setup>
@@ -89,6 +94,7 @@ import utils from '@/assets/ts/utils';
 import type { Tag } from '@/assets/ts/type';
 import { IsPrivate } from '@/assets/ts/settings/privatMode';
 import PressAndHold from '@/components/PressAndHold.vue';
+import NoteParamsOverlay from '@/components/common/NoteParamsOverlay.vue';
 
 const props = defineProps<{
   id: number;
@@ -101,7 +107,8 @@ const props = defineProps<{
 
 const router = useRouter();
 const Tags = ref<Tag[]>([]);
-const note_selected = ref<boolean>(false); // Pour gérer l'état visuel de sélection
+const note_selected = ref<boolean>(false);
+
 
 // --- Logique identique à NoteCard ---
 
@@ -111,9 +118,7 @@ const open_note = (id: number, pinned: boolean) => {
 };
 
 const select_note = () => {
-  // Logique de sélection (à adapter selon ton store ou event bus)
   note_selected.value = !note_selected.value;
-  console.log("Note sélectionnée:", props.id);
 };
 
 // Chargement des tags depuis la DB (IndexDB)

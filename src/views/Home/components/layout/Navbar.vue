@@ -84,7 +84,7 @@
 
             <div class="phone-hidden-flex flex-col gap-2">
 
-                <hr class="mt-3 mb-4 text-gray-400 -mx-5" />
+                <hr class="mt-3 mb-4 text-gray-400 -mx-4" />
 
                 <span class="text-xs text-(--text-little) uppercase font-semibold">Onglets</span>
 
@@ -98,18 +98,6 @@
                         class="bi bi-journal-text text-xl"
                     />
                     <span>Toutes les notes</span>
-                </li>
-
-                <li 
-                    class="li"
-                    @click="setFilter('pinned')"
-                    :class="notes_filter == 'pinned' ? 'bg-[var(--btn)] text-white' : ''"
-                >
-                    <i 
-                        :class="notes_filter == 'pinned' ? '' : 'text-[var(--btn)]'"
-                        class="bi bi-pin-angle-fill text-xl"
-                    />
-                    <span>Notes epinglé</span>
                 </li>
 
                 <li 
