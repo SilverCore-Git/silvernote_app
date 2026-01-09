@@ -31,13 +31,13 @@ const pageQuery = computed(() => (route.query.page ? String(route.query.page).tr
 
         <template v-else>
 
-            <template v-if="selectedFilter === 0">
-                <PinnedNotes />
-                <OtherNotes />
+            <template v-if="selectedFilter && selectedFilter !== 0">
+                <FilteredNotes />
             </template>
 
             <template v-else>
-                <FilteredNotes />
+                <PinnedNotes />
+                <OtherNotes />
             </template>
 
         </template>
