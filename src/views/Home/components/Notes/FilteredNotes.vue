@@ -49,13 +49,10 @@ const router = useRouter();
 
         <div
             v-else
-            class="
-                flex flex-col justify-center items-center
-                absolute inset-0 text-2xl font-bold
-                -translate-y-50
-            "
+            class="flex flex-col justify-center items-center absolute inset-0 -translate-y-20"
         >
-            <h3>Aucun résultat trouvé</h3>
+            <i class="bi bi-search text-6xl mb-4 opacity-20"></i>
+            <h3 class="text-2xl font-bold">Aucun résultat trouvé</h3>
         </div>
 
     </div>

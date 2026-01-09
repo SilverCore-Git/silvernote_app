@@ -90,11 +90,11 @@
 
                 <li 
                     class="li"
-                    @click="setFilter('all')"
-                    :class="notes_filter == 'all' ? 'bg-[var(--btn)] text-white' : ''"
+                    @click="setPage('all')"
+                    :class="route.query.page !== 'shared' ? 'bg-[var(--btn)] text-white' : ''"
                 >
                     <i 
-                        :class="notes_filter == 'all' ? '' : 'text-[var(--btn)]'"
+                        :class="route.query.page !== 'shared' ? '' : 'text-[var(--btn)]'"
                         class="bi bi-journal-text text-xl"
                     />
                     <span>Toutes les notes</span>
@@ -102,29 +102,14 @@
 
                 <li 
                     class="li"
-                    @click="setFilter('shared')"
-                    :class="notes_filter == 'shared' ? 'bg-[var(--btn)] text-white' : ''"
+                    @click="setPage('shared')"
+                    :class="route.query.page == 'shared' ? 'bg-[var(--btn)] text-white' : ''"
                 >
                     <i 
-                        :class="notes_filter == 'shared' ? '' : 'text-[var(--btn)]'"
+                        :class="route.query.page == 'shared' ? '' : 'text-[var(--btn)]'"
                         class="bi bi-people-fill text-xl"
                     />
                     <span>Notes partagées</span>
-                </li>
-
-                <hr class="my-2 text-transparent" />
-
-                <span class="text-xs text-(--text-little) uppercase font-semibold">Affichage</span>
-
-                <li 
-                    @click.stop="toggle_notes_views_mode()" 
-                    class="li nohover2"
-                >
-                    <i 
-                        class="bi text-[var(--btn)] text-xl"
-                        :class="notes_views_mode === 'default' ? 'bi-grid' : 'bi-grid-3x3-gap-fill'"
-                    />
-                    <span>Organiser par {{ notes_views_mode == "default" ? 'tags' : 'épinglé' }} </span>
                 </li>
 
             </div>
@@ -140,7 +125,6 @@
 
 import { useRoute, useRouter } from 'vue-router';
 import { version, dev } from '../../../../../package.json';
-import { notes_views_mode, toggle_notes_views_mode, notes_filter, type Notes_filter } from '@/assets/ts/Notes_views';
 import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 import Navbar_note_settings from '@/components/notes/Navbar_note_settings.vue';
@@ -151,8 +135,13 @@ const router = useRouter();
 const route = useRoute();
 const selectedNote = ref<string>('');
 
-const setFilter = (a: Notes_filter): void => {
-    notes_filter.value = a;
+const setPage = (a: 'shared' | 'all'): void => {
+    router.push({
+        query: {
+            ...route.query,
+            page: a
+        }
+    });
 }
 
 const newNote = () => {
