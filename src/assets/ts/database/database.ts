@@ -173,6 +173,20 @@ class Database {
         await db.delete('tags', id);
     }
 
+    public async update (note: Note)
+    {
+        this.save(note);
+        await fetch(`${api_url}/api/db/update/a/note`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${(await useToken()).token.value}`
+            },
+            credentials: 'include',
+            body: JSON.stringify({ note }),
+        })
+    }
+
     public async create(arg: { note: Note, cloud_post?: boolean, idInTheProps?: boolean }): Promise<{ id: number }> {
 
         const db = await this.dbPromise;

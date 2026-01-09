@@ -93,7 +93,7 @@ import utils from '@/assets/ts/utils';
 import type { Tag } from '@/assets/ts/type';
 import { IsPrivate } from '@/assets/ts/settings/privatMode';
 import PressAndHold from '@/components/PressAndHold.vue';
-import NoteParamsOverlay from '@/components/common/NoteParamsOverlay.vue';
+import NoteParamsOverlay from './NoteParamsOverlay.vue';
 
 const props = defineProps<{
     id: number;

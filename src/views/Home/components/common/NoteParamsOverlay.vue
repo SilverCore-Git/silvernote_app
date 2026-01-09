@@ -247,11 +247,12 @@
 
 <script setup lang="ts">
 
-import BackdropOverlay from '../common/BackdropOverlay.vue';
+import BackdropOverlay from '@/components/common/BackdropOverlay.vue';
 import type { Note } from '@/assets/ts/type';
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 import { Notes, Tags } from '@/assets/ts/database/Var';
 import DefaultNoteCard from '@/views/Home/components/common/DefaultNoteCard.vue';
+import database from '@/assets/ts/database/database';
 
 
 const props = defineProps<{
@@ -276,6 +277,8 @@ const save = () => {
     if (index !== -1) {
         Notes.value[index] = { ...note.value };
     }
+
+    database.update(note.value);
 
     emitClose();
 };

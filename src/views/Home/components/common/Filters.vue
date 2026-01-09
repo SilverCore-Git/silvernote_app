@@ -4,11 +4,14 @@ import FilterCard from './FilterCard.vue';
 import { Tags } from '@/assets/ts/database/Var';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { FreeMode } from 'swiper/modules';
+import { ref } from 'vue';
 
 import 'swiper/css';
 import useFilter from '../../composables/useFilter';
+import NewTagPopup from './NewTagPopup.vue';
 
 const { toggleFilter, isSelected } = useFilter();
+const ShowNewTagPopup = ref<boolean>(false);
 
 </script>
 
@@ -58,6 +61,7 @@ const { toggleFilter, isSelected } = useFilter();
                         px-3 py-1.5 text-(--btn) rounded-2xl cursor-pointer
                         min-w-18
                     "
+                    @click="ShowNewTagPopup = true"
                 >
                     
                     <span  class=" text-xs">
@@ -70,5 +74,18 @@ const { toggleFilter, isSelected } = useFilter();
         </ul>
 
     </div>
+
+    <Teleport to="body">
+
+        <Transition name="fade-slide">
+
+            <NewTagPopup 
+                v-if="ShowNewTagPopup"
+                @close="ShowNewTagPopup = false"
+            />
+
+        </Transition>
+
+    </Teleport>
 
 </template>
