@@ -3,9 +3,11 @@
     <search
         class="
             flex justify-center items-center flex-row gap-[10px]
-            border border-gray-300 rounded-2xl bg-(--white)
+            border rounded-2xl bg-(--white)
             py-3 px-3.5 w-full
+            transition-all duration-300 ease-in-out
         "
+        :class="isFocus ? 'border-(--btn) text-(--btn)' : 'border-gray-300'"
     >
 
         <i class="bi bi-search opacity-50" />
@@ -14,8 +16,31 @@
             type="search"
             placeholder="Rechercher vôtre note..."
             class="w-full outline-none"
+            v-model="query"
+            @focus="isFocus = true"
+            @blur="isFocus = false"
         />
 
     </search>
 
 </template>
+
+
+<script lang="ts" setup>
+import { ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+const query = ref<string>('');
+const isFocus = ref<boolean>(false);
+
+
+watch(() => query.value, () => {
+    router.push({
+        query: {
+            q: query.value
+        }
+    });
+});
+
+</script>
