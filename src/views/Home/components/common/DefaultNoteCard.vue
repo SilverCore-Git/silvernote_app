@@ -10,7 +10,7 @@
             class="
                 group relative flex flex-col
                 bg-[var(--white)]
-                rounded-2xl p-4 shadow-lg
+                rounded-2xl p-4 
                 cursor-pointer overflow-hidden h-full
                 border border-gray-200
                 hover:border-(--btn)

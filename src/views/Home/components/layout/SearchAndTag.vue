@@ -9,6 +9,7 @@ import SearchBar from '../common/SearchBar.vue';
     <div
         class="
             flex gap-4 flex-col
+            max-w-200
         "
     >
 

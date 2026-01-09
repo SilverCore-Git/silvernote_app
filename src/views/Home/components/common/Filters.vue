@@ -1,6 +1,15 @@
 <script setup lang="ts">
+
 import FilterCard from './FilterCard.vue';
 import { Tags } from '@/assets/ts/database/Var';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+import { FreeMode } from 'swiper/modules';
+
+import 'swiper/css';
+import useFilter from '../../composables/useFilter';
+
+const { toggleFilter, isSelected } = useFilter();
+
 </script>
 
 <template>
@@ -8,27 +17,38 @@ import { Tags } from '@/assets/ts/database/Var';
     <div
         class="
             flex flex-row justify-start items-center
-            pl-1 gap-4
+            pl-1 gap-4 w-full
         "
     >
 
-        <span class=" uppercase opacity-60 text-sm">Filtres :</span>
+        <span class=" uppercase opacity-60 text-sm whitespace-nowrap">Filtres :</span>
 
         <ul
-            class="flex flex-row justify-center items-center gap-4 overflow-x-auto max-w-200"
+            class="flex flex-row justify-center items-center gap-4 overflow-x-auto "
         >
-            <ul
-                class="flex flex-row justify-center items-center gap-2 overflow-x-auto max-w-200"
+            <Swiper
+                :slides-per-view="'auto'"
+                :space-between="8"
+                :free-mode="true"
+                :modules="[FreeMode]"
+                v-if="Tags && Tags.length"
+                class="
+                    w-full cursor-grab
+                "
             >
-                <li
-                    v-for="tag in Tags"
+                <SwiperSlide
+                    v-for="(tag, index) in Tags"
+                    :key="index"
+                    class="!w-auto"
                 >
                     <FilterCard
                         :color="tag.color"
                         :name="tag.name"
+                        :active="isSelected(tag.id)"
+                        @click.stop="toggleFilter(tag.id)"
                     />
-                </li>
-            </ul>
+                </SwiperSlide>
+            </Swiper>
             
             <li>
                 <div

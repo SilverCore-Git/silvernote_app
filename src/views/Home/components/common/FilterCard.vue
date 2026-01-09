@@ -2,10 +2,11 @@
 
     <div 
         class="
-            bg-(--white) border border-gray-200 rounded-2xl 
+            bg-(--white) border rounded-2xl 
             flex justify-center items-center gap-1 flex-row
             px-3 py-1.5 cursor-pointer
         "
+        :class="active ? 'border-(--btn)' : 'border-gray-200'"
     >
 
         <div
@@ -30,6 +31,7 @@
 defineProps<{
     color: string;
     name: string;
+    active: boolean;
 }>();
 
 </script>
