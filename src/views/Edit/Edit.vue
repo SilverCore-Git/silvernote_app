@@ -3,15 +3,56 @@ import { Notes } from '@/assets/ts/database/Var';
 import BackBtn from '@/components/backBtn.vue';
 import { editor } from '@/components/Markdown/Editor';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import Dropdown from './Dropdown.vue';
+import type { User } from '@/assets/ts/type';
+import useWSocket from './composable/useWSocket';
+import { useUser } from '@clerk/vue';
+import { useRouter } from 'vue-router';
+import { api_url } from '@/assets/ts/backend_link';
+import { useToken } from '@/composables/useToken';
+import waitFor from '@/assets/ts/utils/waitFor';
 
 const props = defineProps<{
-  id: number;
+  id: string;
 }>();
 
+const router = useRouter();
+const { user } = useUser();
 const ShowDropdown = ref<boolean>(false);
-const note = computed(() => Notes.value.find(note => note.id == props.id));
+const users = ref<User[]>([]);
+const shared = ref<boolean>(false);
+const note = computed(() => Notes.value.find(note => note.id === Number(props.id)));
+
+onMounted(async () => {
+
+  await waitFor(() => note.value !== undefined, 5_000);
+
+  try {
+
+    const _fetch = await fetch(`${api_url}/api/share/${note.value?.uuid}/info`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${(await useToken()).token.value}`
+      }
+    })
+
+    shared.value = (await _fetch.json() as any).share.uuid === note.value?.uuid
+
+    useWSocket({
+      note,
+      users,
+      shared,
+      user
+    });
+
+  } catch (err) {
+    throw new Error(`Erreur lors de la récupération des informations de partage : ${err}`);
+  }
+
+
+})
 
 </script>
 
@@ -44,6 +85,26 @@ const note = computed(() => Notes.value.find(note => note.id == props.id));
         class="flex flex-row gap-4 absolute right-0"
         v-if="note"
       >
+        
+        <div
+          v-if="shared"
+          class="flex justify-center items-center flex-row gap-4"
+        >
+
+          <div
+            class="flex -space-x-3"
+          >
+
+            <img
+                v-for="(user, index) in users"
+                :key="index"
+                class="w-8 h-8 rounded-full border border-gray-200"
+                :src="user.imageUrl"
+            />
+
+          </div>
+
+        </div>
 
       
         <div

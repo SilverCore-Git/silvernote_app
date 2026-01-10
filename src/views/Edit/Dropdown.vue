@@ -62,7 +62,7 @@
     />
 
 
-    <ConfirmDialog
+    <confirm-dialog
         :visible="showDialog"
         title="Confirmation"
         message="Voulez-vous vraiment supprimer cette note ?"
@@ -100,6 +100,7 @@ import Export from './common/Export.vue';
 import NoteParamsOverlay from '../Home/components/common/NoteParamsOverlay.vue';
 import { saveNote } from '@/components/Markdown/Function/saveNote';
 import Share_menu from '@/components/popup/share_menu.vue';
+import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 
 defineProps<{
   visible: boolean;
