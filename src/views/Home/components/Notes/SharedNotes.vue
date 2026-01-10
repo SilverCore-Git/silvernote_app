@@ -13,13 +13,17 @@ const router = useRouter();
 const ShareByMe = ref<Note[]>([]);
 
 onMounted(async() => {
+    const { token, waitUntilReady } = useToken();
+    await waitUntilReady();
+
     ShareByMe.value = (await fetch(`${api_url}/api/share/by/me`, {
         method: 'GET',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${(await useToken()).token.value}`
+            'Authorization': `Bearer ${token.value}`
         }
-    }).then(res => res.json())).share as Note[];
+    }).then(res => res.json())).notes as Note[];
 })
 
 </script>
@@ -30,10 +34,13 @@ onMounted(async() => {
 
         <div 
             class="flex flex-col gap-4 h-full "
-            v-if="SharedNotes.length && ShareByMe.length"
+            v-if="SharedNotes || ShareByMe"
         >
 
-            <span class=" uppercase text-md font-semibold text-gray-500 ">
+            <span 
+                v-if="SharedNotes.length"
+                class=" uppercase text-md font-semibold text-gray-500 "
+            >
                 Notes partagées
             </span>
 
@@ -59,7 +66,10 @@ onMounted(async() => {
                 </li>
             </ul>
 
-            <span class=" uppercase text-md font-semibold text-gray-500 ">
+            <span 
+                v-if="ShareByMe.length"
+                class=" uppercase text-md font-semibold text-gray-500 "
+            >
                 Mes notes partagées
             </span>
 
