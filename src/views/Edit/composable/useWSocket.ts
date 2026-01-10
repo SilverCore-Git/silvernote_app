@@ -31,14 +31,18 @@ export default function
 }): { socket?: Socket }
 {
 
-    socket.on('connect', () => {
-        console.log('WebSocket connecté !');
-        socket.emit("join-room", { 
-          room: note.value?.uuid, 
-          userId: user.value?.id
-        });
-    });
+    const join = () => {
+        if (note.value?.uuid) {
+            socket.emit("join-room", { 
+                room: note.value.uuid, 
+                userId: user.value?.id
+            });
+        }
+    }
 
+    if (socket.connected) join();
+    socket.on('connect', join);
+    
     socket.on('new_user', async (userId: string) => {
 
         if (!shared.value || !userId) return;
@@ -59,28 +63,30 @@ export default function
 
     let ignoreNextUpdate: boolean = false;
     socket.on('title-update', (update: string) => {
-      ignoreNextUpdate = true;
-      if (note.value) note.value.title = update;
+    if (note.value && note.value.title !== update) {
+        ignoreNextUpdate = true;
+        note.value.title = update;
+    }
     });
 
     socket.on('icon-update', async (update: string) => {
-        note.value!.icon = update;
+        if (note.value && note.value.icon !== update) {
+            note.value.icon = update;
+        }
     })
 
     socket.on('disconnect', () => {
         console.log('WebSocket déconnecté !');
     });
 
-    watch(
-      () => note.value?.title,
-      (newTitle: string) => {
+    watch(() => note.value?.title, () => {
 
         if (ignoreNextUpdate) {
           ignoreNextUpdate = false;
           return;
         }
 
-        debounceEmit(newTitle);
+        debounceEmit(note.value?.title);
 
       }
     );

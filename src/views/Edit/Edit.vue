@@ -1,28 +1,42 @@
 <script setup lang="ts">
-import { Notes } from '@/assets/ts/database/Var';
+import { Notes, Tags } from '@/assets/ts/database/Var';
 import BackBtn from '@/components/backBtn.vue';
 import { editor } from '@/components/Markdown/Editor';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch, type VNodeRef } from 'vue';
 import Dropdown from './Dropdown.vue';
-import type { User } from '@/assets/ts/type';
+import type { Tag, User } from '@/assets/ts/type';
 import useWSocket from './composable/useWSocket';
 import { useUser } from '@clerk/vue';
-import { useRouter } from 'vue-router';
 import { api_url } from '@/assets/ts/backend_link';
 import { useToken } from '@/composables/useToken';
 import waitFor from '@/assets/ts/utils/waitFor';
+import useEmoji from './composable/useEmoji';
 
 const props = defineProps<{
   id: string;
 }>();
 
-const router = useRouter();
 const { user } = useUser();
+const { init_emoji_picker } = useEmoji();
+
+const emojiBtn = ref<HTMLElement | null>(null);
 const ShowDropdown = ref<boolean>(false);
 const users = ref<User[]>([]);
 const shared = ref<boolean>(false);
+const hide8moreTags = ref<boolean>(true);
 const note = computed(() => Notes.value.find(note => note.id === Number(props.id)));
+
+
+const update_title = () => {
+  if (!note.value) return;
+  document.title = `${note.value?.title} - Silvernote edit`;
+
+}
+
+
+watch(() => note.value?.title, update_title)
+
 
 onMounted(async () => {
 
@@ -36,9 +50,9 @@ onMounted(async () => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${(await useToken()).token.value}`
       }
-    })
+    }).then(res => res.json())
 
-    shared.value = (await _fetch.json() as any).share.uuid === note.value?.uuid
+    shared.value = await _fetch.share.uuid === note.value?.uuid
 
     useWSocket({
       note,
@@ -51,8 +65,15 @@ onMounted(async () => {
     throw new Error(`Erreur lors de la récupération des informations de partage : ${err}`);
   }
 
+  init_emoji_picker({
+    note,
+    ref: emojiBtn,
+  });
+  update_title();
 
 })
+
+
 
 </script>
 
@@ -129,7 +150,7 @@ onMounted(async () => {
           <Dropdown
             v-model:visible="ShowDropdown"
             :note="note"
-            :id="props.id"
+            :id="Number(props.id)"
           />
           <Teleport to="body">
             <div 
@@ -164,7 +185,82 @@ onMounted(async () => {
 
       <div
         class="w-full h-full flex justify-center items-center"
+        v-if="note && note.tags"
       >
+
+        <div 
+          class="flex w-[90%] mb-2 items-end"
+          :class="
+            note?.icon && Tags.filter((tag: Tag) => note?.tags.includes(tag.id))[0] 
+              ? 'justify-between' 
+              : 'justify-start gap-2'
+          "  
+        >
+
+          <button ref="emojiBtn"><a>
+
+            <img
+              v-if="note.icon" 
+              class="w-20 h-20 p-2 cursor-pointer" 
+              :src="note.icon" 
+            />
+
+            <a 
+              v-else
+              class="px-1"
+            >
+              Ajouter une icon
+            </a>
+
+          </a></button>
+
+          <div
+            v-if="note.tags.length > 0"
+            class="flex flex-col items-center max-w-80 w-full"
+          >
+
+            <span class="text-lg font-semibold tracking-wide mb-1">Tags</span>
+
+            <ul class="flex flex-wrap justify-center gap-2 max-w-80">
+              <li
+                v-for="
+                  tag in hide8moreTags
+                    ? Tags.filter((t: any) => note?.tags.includes(t.id)).slice(0, 7)
+                    : Tags.filter((t: any) => note?.tags.includes(t.id))
+                "
+                :key="tag.id"
+                :style="{ backgroundColor: tag.color }"
+                class="px-2.5 py-1 rounded-lg text-white border text-sm shadow-sm"
+              >
+                {{ tag.name }}
+              </li>
+
+              <li
+                v-if="hide8moreTags && note.tags.length > 7"
+                class="px-2.5 py-1 rounded-lg text-sm font-bold bg-(--bg2)"
+              >
+                ...
+              </li>
+            </ul>
+
+            <button
+              v-if="note.tags.length > 7"
+              @click="hide8moreTags = !hide8moreTags"
+              class="mt-1 text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium"
+            >
+              {{ hide8moreTags ? 'Voir plus' : 'Voir moins' }}
+            </button>
+
+          </div>
+
+          <div
+            v-else
+            @click="tagManager = true"
+          >
+            <a class="px-1">Ajouter un tag</a>
+          </div>
+        
+        </div>
 
       </div>
 
