@@ -1,0 +1,16 @@
+app-id: fr.silvercore.Silvernote
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: silvernote
+modules:
+  - name: silvernote
+    buildsystem: simple
+    build-commands:
+      - cp -r build/linux-unpacked/* /app/
+    sources: []
+finish-args:
+  - --share=network
+  - --socket=x11
+  - --socket=wayland
+  - --filesystem=home

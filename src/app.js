@@ -1,13 +1,11 @@
 const { app, BrowserWindow } = require("electron");
 const initializeDiscordRPC = require("./assets/dicord_rpc");
 const create_main_window = require('./windows/main/mainWindow.js');
-const create_update_window = require('./windows/update/updateWindow');
 
 app.whenReady().then(async () => {
 
   let setActivity = () => {};
 
-  create_update_window()
   const mainWindow = create_main_window();
 
   initializeDiscordRPC((activity) => {

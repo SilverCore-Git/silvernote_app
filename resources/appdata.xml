@@ -1,0 +1,9 @@
+<component type="desktop">
+  <id>fr.silvercore.Silvernote</id>
+  <name>Silvernote</name>
+  <summary>Application de prise de note simple et intuitive</summary>
+  <developer_name>Silvercore Inc.</developer_name>
+  <license>Proprietary</license>
+  <project_license>Proprietary</project_license>
+  <url>https://github.com/SilverCore-Git/silvernote_app</url>
+</component>

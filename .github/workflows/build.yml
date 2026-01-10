@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - front_desktop
-      - main
+      - desktop-app
+      - desktop-app-flathub
 
 permissions:
   contents: write

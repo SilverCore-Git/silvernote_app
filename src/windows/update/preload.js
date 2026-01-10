@@ -1,5 +1,4 @@
-const { contextBridge, ipcRenderer } = require('electron');
+// Auto-update disabled: no APIs exposed for updater
+// Keep an empty preload to avoid breaking preload path usage.
 
-contextBridge.exposeInMainWorld('updaterAPI', {
-  onUpdateStatus: (callback) => ipcRenderer.on('update-status', (_event, value) => callback(value))
-});
+// Intentionally left blank.

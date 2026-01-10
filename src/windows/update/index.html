@@ -166,31 +166,10 @@
 </head>
 <body>
   <div class="update-card">
-    <h1>Mise à jour de Silvernote...</h1>
-    <div class="_spinner">
-      <div class="spiner spiner1"></div>
-      <div class="spiner spiner2"></div>
-      <div class="spiner spiner3"></div>
-      <div class="spiner spiner4"></div>
-    </div>
-    <p class="status">Démarage...</p>
+    <h1>Mises à jour désactivées</h1>
+    <p class="status">Le système d'auto-update a été retiré.</p>
   </div>
 
-  <script>
-    const statusEl = document.querySelector('.status');
-
-    if (window.updaterAPI) {
-      window.updaterAPI.onUpdateStatus((status) => {
-        console.log('[Updater]', status);
-        if (statusEl) {
-          if (status.startsWith('Erreur')) status = "Erreur mise à jour";
-          statusEl.textContent = status;
-        }
-      });
-    } else {
-      console.warn('updaterAPI non disponible');
-    }
-  </script>
 
 </body>
 </html>
