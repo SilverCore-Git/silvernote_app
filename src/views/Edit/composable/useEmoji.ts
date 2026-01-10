@@ -27,11 +27,13 @@ export default function
             return console.error("Emoji picker non chargé.");
         }
 
+        const theme = window.localStorage.getItem('theme');
+
         const picker = new EmojiButton({
             position: 'bottom-start',
             autoHide: true,
             showPreview: true,
-            theme: window.localStorage.getItem('theme') === 'dark' ? 'dark' : 'light',
+            theme: theme == 'dark' ? 'dark' : theme == 'light' ?  'light' : 'auto',
             i18n: {
                 search: 'Rechercher...',
                 categories: {
@@ -61,7 +63,7 @@ export default function
         });
 
         ref.value.addEventListener('click', () => {
-        picker.togglePicker(ref.value!);
+            picker.togglePicker(ref.value!);
         });
 
     }

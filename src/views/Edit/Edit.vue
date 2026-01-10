@@ -3,7 +3,7 @@ import { Notes, Tags } from '@/assets/ts/database/Var';
 import BackBtn from '@/components/backBtn.vue';
 import { editor } from '@/components/Markdown/Editor';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
-import { computed, onMounted, ref, watch, type VNodeRef } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import Dropdown from './Dropdown.vue';
 import type { Tag, User } from '@/assets/ts/type';
 import useWSocket from './composable/useWSocket';
@@ -42,13 +42,11 @@ onMounted(async () => {
 
   await waitFor(() => note.value !== undefined, 5_000);
 
-  try {
-
     const _fetch = await fetch(`${api_url}/api/share/${note.value?.uuid}/info`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${(await useToken()).token.value}`
+        'Authorization': `Bearer ${(useToken()).token.value}`
       }
     }).then(res => res.json())
 
@@ -61,9 +59,6 @@ onMounted(async () => {
       user
     });
 
-  } catch (err) {
-    throw new Error(`Erreur lors de la récupération des informations de partage : ${err}`);
-  }
 
   init_emoji_picker({
     note,
