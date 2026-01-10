@@ -67,6 +67,8 @@ const note = computed(() => Notes.value.find(note => note.id == props.id));
         <div>
           <Dropdown
             v-model:visible="ShowDropdown"
+            :note="note"
+            :id="props.id"
           />
           <Teleport to="body">
             <div 

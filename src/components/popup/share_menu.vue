@@ -6,7 +6,7 @@
 
       <div @click.stop class="relative flex flex-col gap-6 ">
 
-        <h2 class="text-center text-xl font-semibold drop-shadow-sm">
+        <h2 class="text-start text-xl font-semibold drop-shadow-sm">
           Partager la note : <span class="text-[#F28C28]">{{ title }}</span>
         </h2>
 

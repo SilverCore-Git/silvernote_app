@@ -15,19 +15,21 @@
 
             <div
                 v-if="visible"
-                class="fixed inset-0 flex justify-center items-center z-100 pointer-events-none"
+                class="fixed inset-0 flex justify-center items-center  z-100 pointer-events-none"
             >
 
                 <div
                     class="
-                        max-w-2xl max-h-100
-                        grid grid-cols-[280px_1em_300px]
-                        w-full h-full gap-10
+                        max-w-2xl max-h-100 
+                        lg:grid lg:grid-cols-[280px_1em_300px]
+                        flex justify-center items-center
+                        w-full h-full gap-10 
                         pointer-events-auto
+                        translate-y-[-20%]
                     "
                 >
 
-                    <div class="w-full">
+                    <div class="w-full h-full hidden lg:block">
 
                         <DefaultNoteCard
                             v-if="note && showCard"
@@ -43,8 +45,9 @@
 
                     <div
                         class="
+                            hidden lg:flex 
                             gap-2 mx-auto w-full
-                            flex flex-col justify-center items-center
+                            flex-col justify-center items-center
                             text-4xl text-(--white) font-black
                         "
                     >
@@ -52,7 +55,7 @@
                         <i class="bi bi-arrow-left" />
                     </div>
 
-                    <div class="w-full">
+                    <div class="w-full max-w-80">
 
                         <div
                             class="
@@ -75,13 +78,13 @@
                                 Paramettres de la note
                             </h3>
 
-                            <div class="w-full ">
+                            <div class="w-full h-full">
 
                                 <span class="text-xs text-(--text-little) uppercase font-semibold">
                                     Tags
                                 </span>
 
-                                <ul class="flex flex-col gap-2 h-40 overflow-y-auto w-full px-2 overflow-x-hidden">
+                                <ul class="flex flex-col gap-2 max-h-60 h-full overflow-y-auto w-full px-2 overflow-x-hidden ">
 
                                     <li
                                         v-if="Tags.length > 0"
@@ -148,6 +151,7 @@
                             </div>
 
                             <div
+                                v-if="!justTags"
                                 class="
                                     group flex items-center justify-between 
                                     border rounded-xl cursor-pointer p-4 
@@ -213,7 +217,7 @@
 
                             </div>
 
-                            <div class="grid grid-cols-2 gap-2">
+                            <div class="grid grid-cols-2 gap-2" v-if="!justTags">
                                 <button class="w-full primary danger flex gap-1">
                                     <i class="bi bi-trash-fill" />
                                     Supprimer
@@ -256,8 +260,9 @@ import database from '@/assets/ts/database/database';
 
 
 const props = defineProps<{
-    visible: Boolean,
-    id: number
+    visible: Boolean;
+    id: number;
+    justTags: boolean;
 }>();
 
 const note = ref<Note | undefined>(undefined);
