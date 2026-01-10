@@ -18,7 +18,7 @@ const router = useRouter();
         class="flex flex-col gap-4 "
     >
 
-        <span class=" uppercase text-md font-semibold text-gray-500 ">
+        <span class=" uppercase text-md font-semibold text-(--text-little) ">
             <i class="bi bi-pin mr-1" />
             Notes épinglés
         </span>

@@ -39,7 +39,7 @@ onMounted(async() => {
 
             <span 
                 v-if="SharedNotes.length"
-                class=" uppercase text-md font-semibold text-gray-500 "
+                class=" uppercase text-md font-semibold text-(--text-little) "
             >
                 Notes partagées
             </span>

@@ -58,8 +58,9 @@ const ShowNewTagPopup = ref<boolean>(false);
                     class="
                         bg-(--white) border border-(--btn) border-dashed
                         flex justify-center items-center gap-1 flex-row
-                        px-3 py-1.5 text-(--btn) rounded-2xl cursor-pointer
-                        min-w-18
+                        px-3 py-1.5 rounded-2xl cursor-pointer
+                        min-w-18 hover:text-(--btn)
+                        transition-all duration-200 ease-in-out
                     "
                     @click="ShowNewTagPopup = true"
                 >
