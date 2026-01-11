@@ -2,7 +2,9 @@
 
 import { setThemePreference } from '@/assets/ts/theme';
 import DefaultNoteCard from '@/views/Home/components/common/DefaultNoteCard.vue';
+import { IsPrivate, setPrivate } from '@/assets/ts/settings/privatMode';
 import { ref, watch } from 'vue';
+import Switch from '@/components/Switch.vue';
 
 type Theme = 'light' | 'dark' | 'default';
 
@@ -58,6 +60,23 @@ watch(currentTheme, (newTheme) => {
                     <span class="font-medium text-sm">{{ theme.label }}</span>
                 </button>
 
+            </div>
+
+        </section>
+
+        <section class="mb-8">
+
+            <h2 class="font-semibold text-lg mb-4">Mode privée</h2>
+
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="font-medium">Activer le mode privée</div>
+                    <div class="text-xs opacity-60">Ne pas afficher le contenu des notes.</div>
+                </div>
+                <Switch
+                    :model-value="IsPrivate!"
+                    @update:model-value="setPrivate(!IsPrivate)"
+                />
             </div>
 
         </section>
