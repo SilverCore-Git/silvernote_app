@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import BackBtn from '@/components/backBtn.vue';
 import NavBar from './components/layout/Navbar.vue';
 
 </script>
@@ -11,12 +10,6 @@ import NavBar from './components/layout/Navbar.vue';
   >
 
     <NavBar />
-
-    <div
-      class="absolute top-10 left-10"
-    >
-      <BackBtn />
-    </div>
 
     <div>
 

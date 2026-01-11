@@ -27,6 +27,9 @@ const routes = [
   { 
     path: '/settings', 
     name: 'Settings', 
+    props: {
+      page: ""
+    },
     component: Settings,
     meta: { title: 'Settings - Silvernote' }
   },

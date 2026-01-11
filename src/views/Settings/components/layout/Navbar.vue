@@ -3,30 +3,63 @@
     <div
         class="
             h-screen
-            p-4 min-w-65
+            p-4 w-full
+            max-w-70
         "
     >
 
-       <ul class="w-full flex flex-col gap-2">
+       <ul class="w-full flex flex-col gap-2  mt-4">
 
             <li
                 @click="router.push('/')"
-                class="relative flex gap-2 mb-8"
+                class="
+                    px-4 py-2 rounded-xl cursor-pointer
+                    flex gap-2 justify-start items-center
+                    transition-all duration-300
+                    border-transparent
+                    hover:border-(--btn) border
+                    hover:-translate-x-4
+                "
             >
                 <div class="left-arrow" />
                 Accueil
             </li>
 
+            <hr class=" my-6 text-gray-400" />
+
             <li 
-                v-for="value in 5"
-                class="li"
-                :class="false ? 'bg-[var(--btn)] text-white' : ''"
+                v-for="page in pages"
+                @click="router.push('/settings' + page.path)"
+                class="li px-4 py-2 rounded-xl cursor-pointer"
+                :class="
+                    route.params.page == page.path.replace('/', '')
+                    || page.path == '/' && !route.params.page
+                        ? 'bg-(--btn) text-white' 
+                        : ''
+                "
             >
                 <i 
-                    :class="false ? '' : 'text-[var(--btn)]'"
-                    class="bi bi-people-fill text-xl"
+                    :class="
+                        page.icon,
+                        route.params.page == page.path.replace('/', '') 
+                        || page.path == '/' && !route.params.page
+                            ? '' 
+                            : 'text-(--btn)'
+                    "
+                    class="bi text-xl"
                 />
-                <span>Notes partagées</span>
+                <span>{{ page.name }}</span>
+            </li>
+            
+            <hr class=" my-6 text-gray-400" />
+
+            <li 
+                class="li px-4 py-2 rounded-xl cursor-pointer text-red-600"
+            >
+                <i
+                    class="bi bi-box-arrow-right text-xl"
+                />
+                <span>Se déconnecter</span>
             </li>
 
         </ul>
@@ -36,10 +69,46 @@
 </template>
 
 <script lang="ts" setup>
-import BackBtn from '@/components/backBtn.vue';
-import { useRouter } from 'vue-router';
+    
+import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();
+const route = useRoute();
+
+interface Page {
+    path: string;
+    icon: string;
+    name: string;
+}
+
+const pages: Page[] = [
+    {
+        path: '/',
+        icon: "bi-person", // Compte utilisateur
+        name: "Compte"
+    },
+    {
+        path: '/preferences',
+        icon: "bi-sliders", // Préférences / réglages généraux
+        name: "Préférences"
+    },
+    {
+        path: '/appearance',
+        icon: "bi-palette-fill", // Apparence / thème
+        name: "Apparence"
+    },
+    {
+        path: '/mydata',
+        icon: "bi-database-fill", // Mes données / données personnelles
+        name: "Mes données"
+    },
+    {
+        path: '/legal',
+        icon: "bi-shield-check", // Juridique / sécurité
+        name: "Juridique"
+    },
+]
+
 
 
 </script>
@@ -59,24 +128,8 @@ const router = useRouter();
 }
 
 .li:not(.nohover2):hover {
-    padding-left: 1.5em;
+    padding-left: 2em;
 }
 
-ul li {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 0.5rem;
-  border-radius: 6px;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-ul hr {
-    opacity: 50%;
-}
-
-ul li:not(.nohover):hover {
-  background-color: rgba(131, 131, 131, 0.15);
-}
 
 </style>
