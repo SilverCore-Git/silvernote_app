@@ -26,17 +26,21 @@ const appearanceSettings = {
 </script>
 
 <template>
+
+  <div class="min-h-screen w-full p-8 transition-colors duration-300">
+        
+    <header class="mb-8">
     
-    <h1 class="font-bold text-3xl mb-4">
-        Paramettre du compte
-    </h1>
+      <h1 class="font-bold text-3xl mb-4">
+          Paramettre du compte
+      </h1>
+
+    </header>
     
     <UserProfile 
         :appearance="appearanceSettings"
     />
 
-
-
-
+  </div>
 
 </template>
