@@ -16,7 +16,7 @@ defineProps<{
 <template>
 
   <div
-    class="flex flex-raw h-screen max-w-6xl mx-auto"
+    class="flex flex-raw h-screen w-screen"
   >
 
     <NavBar />

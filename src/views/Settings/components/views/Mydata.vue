@@ -108,41 +108,26 @@ const exportData = (format: string) => {
                 </button>
             </div>
 
-            <div class="p-6 rounded-xl bg-(--bg2) border border-(--white)/10">
+            <div class="p-6 rounded-xl border border-red-500/20 bg-red-500/5">
 
-                <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
-                    <i class="bi bi-arrow-repeat text-(--btn)" /> Dernière Sync
+                <h2 class="text-red-500 font-semibold text-lg mb-2 flex items-center gap-2">
+                    <i class="bi bi-exclamation-triangle" /> Zone de danger
                 </h2>
-                <p class="text-sm opacity-60 mb-4">Vos données sont synchronisées avec le cloud sécurisé.</p>
 
-                <div class="flex items-center justify-between text-sm">
-                    <span class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                        À jour (il y a 5 min)
-                    </span>
-                    <button class="text-(--btn) hover:underline font-medium">Forcer</button>
+                <div class="flex flex-col items-start  gap-4">
+                    <p class="text-sm text-red-500/70">
+                        Vider vôtre base de donnés. Supprimer toutes vos notes et vos tags (cette action est irreversible).
+                    </p>
+                    <button class="second danger w-full">
+                        Supprimer tout
+                    </button>
                 </div>
 
             </div>
 
         </section>
 
-        <section class="p-6 rounded-xl border border-red-500/20 bg-red-500/5">
 
-            <h2 class="text-red-500 font-semibold text-lg mb-2 flex items-center gap-2">
-                <i class="bi bi-exclamation-triangle" /> Zone de danger
-            </h2>
-
-            <div class="flex flex-col items-start  gap-4">
-                <p class="text-sm text-red-500/70">
-                    Vider vôtre base de donnés. Supprimer toutes vos notes et vos tags (cette action est irreversible).
-                </p>
-                <button class="second danger w-full">
-                    Supprimer tout
-                </button>
-            </div>
-
-        </section>
 
     </div>
 
