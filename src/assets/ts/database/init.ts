@@ -1,11 +1,6 @@
-
-import db from '@/assets/ts/database/database';
-
 import { type Ref } from "vue";
-import type { Note, Tag } from "../type";
 import { Notes, Tags, SharedNotes } from "./Var";
 import { api_url } from '../backend_link';
-import utils from '../utils';
 import { useToken } from '@/composables/useToken';
 
 
@@ -13,18 +8,17 @@ class InitDB {
 
     private user: Ref<any> | undefined;
     private loaded: boolean;
-    private notes: Note[] | undefined;
-    private tags: Tag[] | undefined;
+    private token: string;
 
     constructor () {
 
         this.loaded = false;
+        this.token = '';
 
     }
 
     public async init (user: Ref<any>): Promise<void> {
         this.user = user;
-        await db.init();
     }
 
     public async main (): Promise<void> 
@@ -36,33 +30,18 @@ class InitDB {
 
         try {
 
-            [this.notes, this.tags] = await Promise.all([
-                db.getAll('notes'),
-                db.getAll('tags')
-            ])
+            const { waitUntilReady, token } = useToken();
 
-            if (!await this.verify_cloud_db()) 
-            {
-                
-                await db.reset();
+            await waitUntilReady();
 
-                await Promise.all([
-                    this.init_cloud_tags(),
-                    this.init_cloud_notes()
-                ]);
-
-                [this.notes, this.tags] = await Promise.all([
-                    db.getAll('notes'),
-                    db.getAll('tags')
-                ])
-
-            }
+            if (!token.value) return console.error('Token is null => init db');
+            this.token = token.value;
 
             await Promise.all([
-                this.init_shared_notes(),
-                this.init_local_notes(),
-                this.init_local_tags()
-            ]);
+                this.init_cloud_tags(),
+                this.init_cloud_notes(),
+                this.init_shared_notes()
+            ])
 
             this.loaded = true;
 
@@ -74,64 +53,17 @@ class InitDB {
 
     }
 
-
-    
-    public async init_local_notes ()
-    {
-
-            if (!this.notes) return;
-            Notes.value = this.notes;
-
-            const monthMap: Record<string, number> = {
-                janvier: 0,
-                février: 1,
-                mars: 2,
-                avril: 3,
-                mai: 4,
-                juin: 5,
-                juillet: 6,
-                août: 7,
-                septembre: 8,
-                octobre: 9,
-                novembre: 10,
-                décembre: 11,
-            };
-
-            function parseFrenchDate(dateStr: string): Date {
-                const [day, monthName, year] = dateStr.split(' ');
-                const month = monthMap[monthName.toLowerCase()];
-                return new Date(Number(year), month, Number(day));
-            }
-
-            Notes.value.sort((a: Note, b: Note) => {
-                if (a.pinned === b.pinned) {
-                    const dateA = parseFrenchDate(a.date);
-                    const dateB = parseFrenchDate(b.date);
-                    return dateB.getTime() - dateA.getTime();
-                }
-                return a.pinned ? -1 : 1;
-            });
-
-    }
-
-    public async init_local_tags() 
-    {
-        if (!this.tags) return;
-        Tags.value = this.tags;
-    }
-
-
     public async init_cloud_notes (): Promise<void> 
     {
         const data = await fetch(`${api_url}/api/db/get/user/notes?user_id=${this.user?.value?.id}`, {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': (await useToken()).token.value
+                'Authorization': `Bearer ${this.token}`
             }
         }).then(res => res.json());
         if (data) {
-            await db.add_notes(data.notes, false);
+            Notes.value = data.notes;
         }
     }
 
@@ -142,11 +74,11 @@ class InitDB {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': (await useToken()).token.value
+                'Authorization': `Bearer ${this.token}`
             }
         }).then(res => res.json());
         if (data) {
-            await db.add_tags(data.tags, false);
+            Tags.value = data.tags;
         }
     }
 
@@ -156,7 +88,7 @@ class InitDB {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + (await useToken()).token.value
+                'Authorization': `Bearer ${this.token}`
             }
         }).then(res => res.json());
 
@@ -173,29 +105,6 @@ class InitDB {
         const resNotes: any[] = res.notes;
         SharedNotes.value = resNotes.filter(note => note.user_id != this.user?.value.id);
         return;
-    }
-
-    
-    private async verify_cloud_db (): Promise<boolean> 
-    {
-
-        if (!this.notes || !this.tags) return false;
-        const notes_hash: string = await utils.hash(this.notes);
-        const tags_hash: string = await utils.hash(this.tags);
-
-        const res = await fetch(`${api_url}/api/db/verify/data`, {
-            method: "POST",
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': (await useToken()).token.value
-            },
-            body: JSON.stringify({ 
-                notes: notes_hash, 
-                tags: tags_hash
-            }),
-        }).then(res => res.json());
-        return res.ok;
     }
 
     public isLoaded (): boolean {
