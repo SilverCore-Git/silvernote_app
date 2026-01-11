@@ -4,13 +4,13 @@ import { Notes, Tags } from '@/assets/ts/database/Var';
 import { ref } from 'vue';
 import DownloadDBToSnote from '../../utils/DownloadDBToSnote';
 import DownloadDBToJSON from '../../utils/DownloadDBToJSON';
+import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
+import database from '@/assets/ts/database/database';
+import UploadFromSNOTE from '../../utils/UploadFromSNOTE';
 
-const ExportLoader = ref<string>('');
-
-const stats = ref({
-  notes: Notes.value.length,
-  tags: Tags.value.length
-});
+const Loader = ref<string>('');
+const ShowConfirmDialog = ref<boolean>(false);
+const file_input = ref<HTMLInputElement | undefined>(undefined);
 
 
 const exportFormats = [
@@ -20,22 +20,59 @@ const exportFormats = [
 //   { id: 'pdf', label: 'Documents (.pdf)', description: 'Uniquement pour la lecture et l\'impression.' },
 ];
 
+const open_input = () => file_input.value?.click();
+
 const exportData = (format: string) => {
 
     if (format == 'snote')
     {
-        ExportLoader.value = 'snote';
+        Loader.value = 'snote';
         DownloadDBToSnote()
-            .then(() => ExportLoader.value = '');
+            .then(() => {
+                setTimeout(() => {
+                    Loader.value = '';
+                }, 200)
+            });
     }
     else if (format == 'json')
     {
-        ExportLoader.value = 'snote';
+        Loader.value = 'snote';
         DownloadDBToJSON()
-            .then(() => ExportLoader.value = '');
+            .then(() => {
+                setTimeout(() => {
+                    Loader.value = '';
+                }, 200)
+            });
     }
 
 };
+
+const uploadData = (event: Event) => {
+    Loader.value = 'upload';
+    UploadFromSNOTE(event)
+        .then(() => {
+            setTimeout(() => {
+                Loader.value = '';
+            }, 200)
+        });
+}
+
+const resetDB = async (state: 1 | 2) => {
+    if (state == 1) 
+    {
+        ShowConfirmDialog.value = true;
+    }
+    else if (state == 2)
+    {
+        Loader.value = 'reset';
+
+        Notes.value = [];
+        Tags.value = [];
+        await database.reset();
+    
+        Loader.value = '';
+    }
+}
 
 </script>
 
@@ -56,12 +93,12 @@ const exportData = (format: string) => {
 
             <div class="p-5 rounded-xl bg-(--bg2) border border-(--white)/10">
                 <div class="text-xs opacity-60 uppercase tracking-wider mb-1">Notes Total</div>
-                <div class="text-3xl font-bold text-(--btn)">{{ stats.notes }}</div>
+                <div class="text-3xl font-bold text-(--btn)">{{ Notes.length }}</div>
             </div>
 
             <div class="p-5 rounded-xl bg-(--bg2) border border-(--white)/10">
                 <div class="text-xs opacity-60 uppercase tracking-wider mb-1">Tags Total</div>
-                <div class="text-3xl font-bold text-(--btn)">{{ stats.tags }}</div>
+                <div class="text-3xl font-bold text-(--btn)">{{ Tags.length }}</div>
             </div>
 
         </div>
@@ -83,7 +120,7 @@ const exportData = (format: string) => {
 
                     <div class="flex justify-between items-start mb-1">
                         <span class="font-bold text-(--btn) uppercase text-sm">{{ format.id }}</span>
-                        <i v-if="ExportLoader == format.id" class="transition-opacity bi bi-arrow-repeat text-(--btn) turn" />
+                        <i v-if="Loader == format.id" class="transition-opacity bi bi-arrow-repeat text-(--btn) turn" />
                         <i v-else class="opacity-0 group-hover:opacity-100 transition-opacity bi bi-download text-(--btn)" />
                     </div>
 
@@ -99,13 +136,30 @@ const exportData = (format: string) => {
         <section class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <div class="p-6 rounded-xl bg-(--bg2) border border-(--white)/10">
+
                 <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
                     <i class="bi bi-box-arrow-down text-(--btn)" /> Importer
                 </h2>
+
                 <p class="text-sm opacity-60 mb-4">Fusionnez vos notes depuis un fichier .snote.</p>
-                <button class="second w-full">
-                    Sélectionner un fichier
-                </button>
+
+                <label>
+                    <button 
+                        class="second w-full"
+                        :class="Loader == 'upload' ? 'loader' : ''"
+                        @click="open_input"
+                    >
+                        Sélectionner un fichier
+                    </button>
+                    <input 
+                        ref="file_input" 
+                        @change="uploadData($event)" 
+                        accept=".snote" 
+                        class="w-0" 
+                        type="file"
+                    />
+                </label>
+
             </div>
 
             <div class="p-6 rounded-xl border border-red-500/20 bg-red-500/5">
@@ -118,7 +172,11 @@ const exportData = (format: string) => {
                     <p class="text-sm text-red-500/70">
                         Vider vôtre base de donnés. Supprimer toutes vos notes et vos tags (cette action est irreversible).
                     </p>
-                    <button class="second danger w-full">
+                    <button 
+                        @click="resetDB(1)"
+                        class="second danger w-full"
+                        :class="Loader == 'reset' ? 'loader' : ''"
+                    >
                         Supprimer tout
                     </button>
                 </div>
@@ -127,8 +185,14 @@ const exportData = (format: string) => {
 
         </section>
 
-
-
     </div>
+
+    <ConfirmDialog
+        :visible="ShowConfirmDialog"
+        title="Réinitialiser la db"
+        message="Cette action est irréversible. Êtes-vous sûr de vouloir réinitialiser votre base de données ? Toutes vos notes et tags seront supprimés définitivement."
+        @cancel="ShowConfirmDialog = false"
+        @confirm="resetDB(2); ShowConfirmDialog = false"
+    />
 
 </template>

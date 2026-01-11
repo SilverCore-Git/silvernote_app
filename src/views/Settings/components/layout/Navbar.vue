@@ -86,11 +86,11 @@ const pages: Page[] = [
         icon: "bi-person", // Compte utilisateur
         name: "Compte"
     },
-    {
-        path: '/preferences',
-        icon: "bi-sliders", // Préférences / réglages généraux
-        name: "Préférences"
-    },
+    // {
+    //     path: '/preferences',
+    //     icon: "bi-sliders", // Préférences / réglages généraux
+    //     name: "Préférences"
+    // },
     {
         path: '/appearance',
         icon: "bi-palette-fill", // Apparence / thème
