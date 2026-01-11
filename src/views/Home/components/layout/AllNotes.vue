@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import useFilter from '../../composables/useFilter';
 import FilteredNotes from '../Notes/FilteredNotes.vue';
 import OtherNotes from '../Notes/OtherNotes.vue';
@@ -8,9 +8,11 @@ import PinnedNotes from '../Notes/PinnedNotes.vue';
 import NotesByQuery from '../Notes/NotesByQuery.vue';
 import { computed } from 'vue';
 import SharedNotes from '../Notes/SharedNotes.vue';
+import { Notes } from '@/assets/ts/database/Var';
 
 const { selectedFilter } = useFilter();
 const route = useRoute();
+const router = useRouter();
 
 const searchQuery = computed(() => (route.query.q ? String(route.query.q).trim() : ''));
 const pageQuery = computed(() => (route.query.page ? String(route.query.page).trim() : ''));
@@ -19,7 +21,10 @@ const pageQuery = computed(() => (route.query.page ? String(route.query.page).tr
 
 <template>
 
-    <div class="flex-1 overflow-y-auto flex flex-col gap-8 pb-10 h-full">
+    <div
+        class="flex-1 overflow-y-auto flex flex-col gap-8 pb-10 h-full"
+        v-if="Notes.length"
+    >
 
         <template v-if="pageQuery === 'shared'">
             <SharedNotes />
@@ -41,6 +46,34 @@ const pageQuery = computed(() => (route.query.page ? String(route.query.page).tr
             </template>
 
         </template>
+
+    </div>
+
+    <div
+        v-else
+        class="
+            flex justify-center items-start
+            w-full h-full pt-20
+        "
+    >
+
+        <div class="flex justify-center items-center flex-col gap-4 text-2xl">
+
+            <i class="text-6xl bi bi-journal-x" />
+            
+            <h2 class="font-semibold">
+                Aucune note trouvée
+            </h2>
+
+            <button 
+                @click="router.push('/edit/new')"
+                class="primary"
+            >
+                Créer une note
+            </button>
+
+        </div>
+
 
     </div>
 

@@ -2,7 +2,7 @@
 
     <PressAndHold
         @long-press="select_note"
-        @click.stop="open_note(id, true)"
+        @click.stop="open_note(uuid, true)"
         class="h-full"
     >
 
@@ -74,7 +74,7 @@
 
     <NoteParamsOverlay
         v-model:visible="note_selected"
-        :id="id"
+        :uuid="uuid"
     />
 
 </template>
@@ -83,7 +83,6 @@
 
 import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import db from '@/assets/ts/database/database';
 import utils from '@/assets/ts/utils';
 import type { Tag } from '@/assets/ts/type';
 import { IsPrivate } from '@/assets/ts/settings/privatMode';
@@ -91,7 +90,7 @@ import PressAndHold from '@/components/PressAndHold.vue';
 import NoteParamsOverlay from './NoteParamsOverlay.vue';
 
 const props = defineProps<{
-    id: number;
+    uuid: string;
     title: string;
     content: string;
     icon: string;
@@ -105,23 +104,19 @@ const Tags = ref<Tag[]>([]);
 const note_selected = ref<boolean>(false);
 
 
-// --- Logique identique à NoteCard ---
 
-const open_note = (id: number, pinned: boolean) => {
+const open_note = (uuid: string, pinned: boolean) => {
   if (props.click) return props.click();
-  router.push(`/edit/${id}?pinned=${pinned}`);
+  router.push(`/edit/${uuid}?pinned=${pinned}`);
 };
 
 const select_note = () => {
   note_selected.value = !note_selected.value;
 };
 
-// Chargement des tags depuis la DB (IndexDB)
 const loadTags = async () => {
   if (!props.tags || props.tags.length === 0) return;
-  const all_tags = await db.getAll('tags');
-  // On récupère les objets Tag complets qui correspondent aux IDs
-  Tags.value = all_tags.filter(tag => props.tags.includes(tag.id));
+  Tags.value = Tags.value.filter(tag => props.tags.includes(tag.id));
 };
 
 onMounted(() => {

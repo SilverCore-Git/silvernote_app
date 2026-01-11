@@ -33,7 +33,7 @@
 
                         <DefaultNoteCard
                             v-if="note && showCard"
-                            :id="note.id"
+                            :uuid="note.uuid"
                             :title="note.title"
                             :content="note.content"
                             :icon="note.icon"
@@ -261,8 +261,8 @@ import database from '@/assets/ts/database/database';
 
 const props = defineProps<{
     visible: Boolean;
-    id: number;
-    justTags: boolean;
+    uuid: string;
+    justTags?: boolean;
 }>();
 
 const note = ref<Note | undefined>(undefined);
@@ -277,7 +277,7 @@ const emitClose = () => {
 const save = () => {
     if (!note.value) return;
 
-    const index = Notes.value.findIndex(n => n.id === props.id);
+    const index = Notes.value.findIndex(n => n.uuid === props.uuid);
 
     if (index !== -1) {
         Notes.value[index] = { ...note.value };
@@ -324,7 +324,7 @@ const refrechCard = async () => {
 
 
 const mount = () => {
-    const _note = Notes.value.find(note => note.id === props.id);
+    const _note = Notes.value.find(note => note.uuid === props.uuid);
     note.value = JSON.parse(JSON.stringify(_note));
     showCard.value = true;
 }

@@ -32,11 +32,11 @@ export interface Benefits {
 }
 
 export interface Note {
-    id: number;
+    id?: number; // plus besoin mais ancien possede encore donc garder
+    _id?: string; // for mongodb
     uuid: string;
     icon: string;
     pinned: boolean;
-    simply_edit?: boolean;
     title: string;
     content: string;
     date: string;
@@ -47,8 +47,8 @@ export interface Note {
 
 export interface Tag {
     uuid: string;
-    _id: string | undefined; // added by indexed db
-    id: number;
+    _id?: string; // for mongodb
+    id: number; // tag encore sous id
     active: boolean;
     name: string;
     color: string;

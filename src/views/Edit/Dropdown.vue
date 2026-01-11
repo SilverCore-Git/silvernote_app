@@ -23,7 +23,7 @@
                     <hr />
 
                     <li @click="share_menu = true">Partager</li>
-                    <li @click="saveNote(id)">Sauvegarder</li>
+                    <li @click="saveNote(uuid)">Sauvegarder</li>
 
                     <hr />
 
@@ -72,13 +72,13 @@
 
     <note-params-overlay
         v-model:visible="tagManager"
-        :id="note.id"
+        :uuid="note.uuid"
         :justTags="true"
     />
 
     <import
         v-model:visible="import_menu"
-        :id="id"
+        :uuid="uuid"
         :note="note"
     />
 
@@ -104,7 +104,7 @@ import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 
 defineProps<{
   visible: boolean;
-  id: number;
+  uuid: string;
   note: Note;
 }>()
 

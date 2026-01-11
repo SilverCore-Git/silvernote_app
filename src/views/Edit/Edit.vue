@@ -12,9 +12,10 @@ import { api_url } from '@/assets/ts/backend_link';
 import { useToken } from '@/composables/useToken';
 import waitFor from '@/assets/ts/utils/waitFor';
 import useEmoji from './composable/useEmoji';
+import CreateNewNote from './composable/CreateNewNote';
 
 const props = defineProps<{
-  id: string;
+  uuid: string;
 }>();
 
 const { user } = useUser();
@@ -25,7 +26,7 @@ const ShowDropdown = ref<boolean>(false);
 const users = ref<User[]>([]);
 const shared = ref<boolean>(false);
 const hide8moreTags = ref<boolean>(true);
-const note = computed(() => Notes.value.find(note => note.id === Number(props.id)));
+const note = computed(() => Notes.value.find(note => note.uuid === props.uuid));
 
 
 const update_title = () => {
@@ -34,11 +35,12 @@ const update_title = () => {
 
 }
 
-
 watch(() => note.value?.title, update_title)
 
 
 onMounted(async () => {
+
+  if (props.uuid == 'new') await CreateNewNote();
 
   await waitFor(() => note.value !== undefined, 5_000);
 
@@ -145,7 +147,7 @@ onMounted(async () => {
           <Dropdown
             v-model:visible="ShowDropdown"
             :note="note"
-            :id="Number(props.id)"
+            :uuid="props.uuid"
           />
           <Teleport to="body">
             <div 

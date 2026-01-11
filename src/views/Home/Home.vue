@@ -64,11 +64,11 @@
 
 
 <script lang="ts" setup>
+
 import AllNotes from './components/layout/AllNotes.vue';
 import NavBar from './components/layout/Navbar.vue';
 import SearchAndTag from './components/layout/SearchAndTag.vue';
 import { isRotating, reload_list } from './composables/Reload';
-
 
 </script>
 

@@ -49,20 +49,14 @@ class Database {
     /**
      * Création d'une nouvelle note
      */
-    public async create(arg: { note: Note, cloud_post?: boolean }): Promise<{ id: number; uuid: string }> {
-        if (!arg.note.uuid) arg.note.uuid = await utils.UUID();
-        if (!arg.note.tags) arg.note.tags = [];
+    public async create(note: Note): Promise<void> {
 
-        if (arg.cloud_post) {
-            await fetch(`${api_url}/api/db/new/note`, {
-                method: 'POST',
-                headers: await this.getHeaders(),
-                credentials: 'include',
-                body: JSON.stringify({ note: arg.note }),
-            });
-        }
-
-        return { id: arg.note.id, uuid: arg.note.uuid };
+        await fetch(`${api_url}/api/db/new/note`, {
+            method: 'POST',
+            headers: await this.getHeaders(),
+            credentials: 'include',
+            body: JSON.stringify({ note }),
+        });
     }
 
     /**

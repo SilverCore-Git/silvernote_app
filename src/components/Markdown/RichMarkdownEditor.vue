@@ -72,14 +72,14 @@ const focusEditor = () => editor.value?.commands.focus();
 const handleSaveShortcut = (e: KeyboardEvent) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
     e.preventDefault();
-    saveNote(props.data.id);
+    saveNote(props.data.uuid);
   }
 };
 
 const updateSize = () => { isLargeScreen.value = window.innerWidth >= 1024; };
 
 const startAutoSave = () => {
-  autosaveInterval = setInterval(() => saveNote(props.data.id), 10 * 1000);
+  autosaveInterval = setInterval(() => saveNote(props.data.uuid), 10 * 1000);
 };
 
 const getColorByImage = async (): Promise<string> => {
@@ -160,7 +160,7 @@ onBeforeUnmount(() => {
   if (editor.value) editor.value.destroy();
   clearMathCache();
   cleanupProvider(provider as any, autosaveInterval);
-  saveNote(props.data.id);
+  saveNote(props.data.uuid);
 });
 
 </script>
