@@ -133,6 +133,19 @@ a:hover {
   }
 }
 
+@keyframes turn {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.turn {
+  animation: turn 0.8s linear infinite;
+}
+
 
 @keyframes bbounce {
   0%, 100% {

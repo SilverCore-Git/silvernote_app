@@ -2,22 +2,38 @@
 
 import { Notes, Tags } from '@/assets/ts/database/Var';
 import { ref } from 'vue';
+import DownloadDBToSnote from '../../utils/DownloadDBToSnote';
+import DownloadDBToJSON from '../../utils/DownloadDBToJSON';
 
-// --- Statistiques (Improvisées) ---
+const ExportLoader = ref<string>('');
+
 const stats = ref({
   notes: Notes.value.length,
   tags: Tags.value.length
 });
 
-// --- Formats d'export ---
+
 const exportFormats = [
   { id: 'snote', label: 'Format natif (.snote)', description: 'Idéal pour sauvegarder et restaurer sur un autre compte.' },
-  { id: 'md', label: 'Markdown (.zip)', description: 'Exportez vos notes pour les utiliser dans Obsidian ou Notion.' },
+//   { id: 'md', label: 'Markdown (.zip)', description: 'Exportez vos notes pour les utiliser dans Obsidian ou Notion.' },
   { id: 'json', label: 'Données brutes (.json)', description: 'Toutes vos données structurées pour les développeurs.' },
-  { id: 'pdf', label: 'Documents (.pdf)', description: 'Uniquement pour la lecture et l\'impression.' },
+//   { id: 'pdf', label: 'Documents (.pdf)', description: 'Uniquement pour la lecture et l\'impression.' },
 ];
 
 const exportData = (format: string) => {
+
+    if (format == 'snote')
+    {
+        ExportLoader.value = 'snote';
+        DownloadDBToSnote()
+            .then(() => ExportLoader.value = '');
+    }
+    else if (format == 'json')
+    {
+        ExportLoader.value = 'snote';
+        DownloadDBToJSON()
+            .then(() => ExportLoader.value = '');
+    }
 
 };
 
@@ -67,7 +83,8 @@ const exportData = (format: string) => {
 
                     <div class="flex justify-between items-start mb-1">
                         <span class="font-bold text-(--btn) uppercase text-sm">{{ format.id }}</span>
-                        <i class="opacity-0 group-hover:opacity-100 transition-opacity bi bi-download text-(--btn)" />
+                        <i v-if="ExportLoader == format.id" class="transition-opacity bi bi-arrow-repeat text-(--btn) turn" />
+                        <i v-else class="opacity-0 group-hover:opacity-100 transition-opacity bi bi-download text-(--btn)" />
                     </div>
 
                     <div class="font-medium text-sm mb-1">{{ format.label }}</div>
