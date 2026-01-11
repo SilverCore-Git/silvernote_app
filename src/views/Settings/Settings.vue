@@ -22,7 +22,7 @@ defineProps<{
     <NavBar />
 
     <div
-      class="w-full h-full p-10"
+      class="w-full h-full p-10 overflow-y-auto pb-10"
     >
 
       <Legal v-if="page == 'legal'" />
