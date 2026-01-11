@@ -31,6 +31,13 @@ const routes = [
     meta: { title: 'Settings - Silvernote' }
   },
   { 
+    path: '/settings/:page', 
+    name: 'SettingsPage',
+    props: true, 
+    component: Settings,
+    meta: { title: 'Settings - Silvernote' }
+  },
+  { 
     path: '/dev', 
     name: 'dev', 
     component: Dev,
