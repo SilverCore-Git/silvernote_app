@@ -9,14 +9,15 @@
         <div
             class="
                 group relative flex flex-col
-                bg-[var(--white)]
+                bg-(--white)
                 rounded-2xl p-4 
                 cursor-pointer overflow-hidden h-full
                 border border-gray-200
                 hover:border-(--btn)
                 transition-all duration-200 ease-in-out
+                max-h-40 w-full
             "
-            :class="{ 'ring-1 ring-[var(--btn)]': note_selected }"
+            :class="{ 'ring-1 ring-(--btn)': note_selected }"
         >
             
             <div class="flex justify-between items-start mb-3 gap-2">
@@ -28,14 +29,14 @@
                         class="w-5 h-5 object-contain shrink-0 opacity-80" 
                     />
                     <h2 
-                        class="font-bold text-sm sm:text-base truncate leading-tight"
+                        class="font-bold text-base sm:text-lg truncate leading-tight"
                         v-html="utils.clean_html(title)"
                     ></h2>
                 </div>
 
             </div>
 
-            <div class="text-xs sm:text-sm text-[var(--text)]/80 leading-relaxed break-words">
+            <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed wrap-break-word">
                 <p
                     v-if="IsPrivate"
                     class=" font-mono text-[10px] tracking-widest opacity-50"

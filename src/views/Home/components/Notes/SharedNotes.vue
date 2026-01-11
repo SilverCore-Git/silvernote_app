@@ -38,7 +38,7 @@ onMounted(async() => {
         >
 
             <span 
-                v-if="SharedNotes.length"
+                v-if="SharedNotes && SharedNotes.length"
                 class=" uppercase text-md font-semibold text-(--text-little) "
             >
                 Notes partagées
@@ -48,7 +48,7 @@ onMounted(async() => {
                 class="
                     flex flex-wrap gap-4
                 "
-                v-if="SharedNotes.length"
+                v-if="SharedNotes && SharedNotes.length"
             >
                 <li
                     v-for="(note, index) in SharedNotes"
@@ -67,7 +67,7 @@ onMounted(async() => {
             </ul>
 
             <span 
-                v-if="ShareByMe.length"
+                v-if="ShareByMe && ShareByMe.length"
                 class=" uppercase text-md font-semibold text-gray-500 "
             >
                 Mes notes partagées
@@ -77,7 +77,7 @@ onMounted(async() => {
                 class="
                     flex flex-wrap gap-4
                 "
-                v-if="ShareByMe.length"
+                v-if="ShareByMe && ShareByMe.length"
             >
                 <li
                     v-for="(note, index) in ShareByMe"

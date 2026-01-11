@@ -23,7 +23,7 @@ const pageQuery = computed(() => (route.query.page ? String(route.query.page).tr
 
     <div
         class="flex-1 overflow-y-auto flex flex-col gap-8 pb-10 h-full"
-        v-if="Notes.length"
+        v-if="Notes.length || pageQuery == 'shared'"
     >
 
         <template v-if="pageQuery === 'shared'">
