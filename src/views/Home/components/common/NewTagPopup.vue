@@ -106,7 +106,7 @@ const create_tag = () => {
     }
 
     Tags.value.push(tag);
-    database.create_tag(tag, true);
+    database.create_tag(tag);
 
     tag_name.value = '';
     tag_color.value = '';

@@ -32,13 +32,13 @@ const router = useRouter();
             "
         >
             <li
-                v-for="note in notes"
-                :key="note.id"
-                @click="router.push('/edit/'+note.id)"
+                v-for="(note, index) in notes"
+                :key="index"
+                @click="router.push('/edit/'+note.uuid)"
                 class="w-[250px]"
             >
                 <DefaultNoteCard
-                    :id="note.id"
+                    :uuid="note.uuid"
                     :title="note.title"
                     :content="note.content"
                     :icon="note.icon"

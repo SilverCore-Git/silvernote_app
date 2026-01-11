@@ -51,13 +51,13 @@ onMounted(async() => {
                 v-if="SharedNotes.length"
             >
                 <li
-                    v-for="note in SharedNotes"
-                    :key="note.id"
-                    @click="router.push('/edit/'+note.id)"
+                    v-for="(note, index) in SharedNotes"
+                    :key="index"
+                    @click="router.push('/edit/'+note.uuid)"
                     class="w-[250px]"
                 >
                     <DefaultNoteCard
-                        :id="note.id"
+                        :uuid="note.uuid"
                         :title="note.title"
                         :content="note.content"
                         :icon="note.icon"
@@ -80,13 +80,13 @@ onMounted(async() => {
                 v-if="ShareByMe.length"
             >
                 <li
-                    v-for="note in ShareByMe"
-                    :key="note.id"
-                    @click="router.push('/edit/'+note.id)"
+                    v-for="(note, index) in ShareByMe"
+                    :key="index"
+                    @click="router.push('/edit/'+note.uuid)"
                     class="w-[250px]"
                 >
                     <DefaultNoteCard
-                        :id="note.id"
+                        :uuid="note.uuid"
                         :title="note.title"
                         :content="note.content"
                         :icon="note.icon"

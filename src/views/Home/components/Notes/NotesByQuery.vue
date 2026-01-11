@@ -33,13 +33,13 @@ const notes = computed(() => {
 
         <ul v-if="notes.length" class="flex flex-wrap gap-4">
             <li
-                v-for="note in notes"
-                :key="note.id"
-                @click="router.push('/edit/' + note.id)"
+                v-for="(note, index) in notes"
+                :key="index"
+                @click="router.push('/edit/' + note.uuid)"
                 class="w-[250px] cursor-pointer"
             >
                 <DefaultNoteCard
-                    :id="note.id"
+                    :uuid="note.uuid"
                     :title="note.title"
                     :content="note.content"
                     :icon="note.icon"

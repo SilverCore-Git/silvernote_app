@@ -1,5 +1,6 @@
 import utils from "@/assets/ts/utils";
 import indexed_db from '@/assets/ts/database/database';
+import { Notes, Tags } from "@/assets/ts/database/Var";
 
 export default async function
 (event: Event): Promise<void>
@@ -40,10 +41,12 @@ export default async function
 
             try {
               await indexed_db.create(data.notes);
+              Notes.value = data.notes;
             } catch(err) { throw new Error('Erreur lors de la sync des notes.') }
 
             try {
               await indexed_db.create_tag(data.tags);
+              Tags.value = data.tags;
             } catch(err) { throw new Error('Erreur lors de la sync des tags.') }
 
           }

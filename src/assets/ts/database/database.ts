@@ -3,6 +3,7 @@ import { api_url } from '../backend_link';
 import utils from '../utils';
 import type { Socket } from 'socket.io-client';
 import { useToken } from '@/composables/useToken';
+import { Notes, Tags } from './Var';
 
 class Database {
     
@@ -127,11 +128,8 @@ class Database {
      * Reset des données sur le cloud
      */
     public async reset(): Promise<void> {
-        const notes = await this.getAll('notes');
-        const tags = await this.getAll('tags');
-
-        for (const tag of tags) await this.delete_tag(tag.uuid);
-        for (const note of notes) await this.delete(note.uuid);
+        for (const tag of Tags.value) await this.delete_tag(tag.uuid);
+        for (const note of Notes.value) await this.delete(note.uuid);
     }
     
 }

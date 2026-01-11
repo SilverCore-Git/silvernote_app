@@ -29,12 +29,12 @@ const router = useRouter();
             "
         >
             <li
-                v-for="note in pinned_notes"
-                :key="note.id"
-                @click="router.push('/edit/'+note.id)"
+                v-for="(note, index) in pinned_notes"
+                :key="index"
+                @click="router.push('/edit/'+note.uuid)"
             >
                 <PinnedNoteCard
-                    :id="note.id"
+                    :uuid="note.uuid"
                     :title="note.title"
                     :content="note.content"
                     :icon="note.icon"

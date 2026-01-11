@@ -1,5 +1,5 @@
 <template>
-  <Popup v-model:visible="export_menu">
+  <Popup v-model:visible="export_menu!">
     <div class="w-full flex flex-col gap-4">
       <h2 class="text-xl font-bold">
         Exporter :

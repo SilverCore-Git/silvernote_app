@@ -1,5 +1,5 @@
 <template>
-  <Popup v-model:visible="import_menu">
+  <Popup v-model:visible="import_menu!">
     <div class="flex flex-col gap-6">
       <h2 class="text-2xl font-bold">Importer du contenu</h2>
 

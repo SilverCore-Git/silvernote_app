@@ -2,7 +2,7 @@
 
 import { Notes, Tags } from '@/assets/ts/database/Var';
 import { ref } from 'vue';
-import DownloadDBToSnote from '../../utils/DownloadDBToSnote';
+import DownloadDBToSnote from '../../utils/DownloadDBToSNOTE';
 import DownloadDBToJSON from '../../utils/DownloadDBToJSON';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import database from '@/assets/ts/database/database';

@@ -181,7 +181,7 @@ const create_share_link = async () => {
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',
-      'Authorization': (await useToken()).token.value
+      'Authorization': useToken().token.value!
     },
     credentials: 'include',
     body: JSON.stringify({

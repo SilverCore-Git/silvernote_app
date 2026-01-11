@@ -127,7 +127,6 @@ import { useRoute, useRouter } from 'vue-router';
 import { version, dev } from '../../../../../package.json';
 import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
-import Navbar_note_settings from '@/components/notes/Navbar_note_settings.vue';
 import { UserButton } from '@clerk/vue';
 
 
@@ -142,10 +141,6 @@ const setPage = (a: 'shared' | 'all'): void => {
             page: a
         }
     });
-}
-
-const newNote = () => {
-    router.push('/edit/new');
 }
 
 watch(() => route.query.selectedNote, () => {

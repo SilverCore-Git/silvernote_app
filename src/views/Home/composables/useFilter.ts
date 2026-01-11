@@ -9,7 +9,7 @@ export default function
     function toggleFilter(id: number)
     {
         if (isSelected(id)) {
-            removeFilter(id);
+            removeFilter();
         } else {
             setFilter(id);
         }
@@ -21,7 +21,7 @@ export default function
         selectedFilter.value = (id);
     }
 
-    function removeFilter(id: number)
+    function removeFilter()
     {
         selectedFilter.value = 0;
     }
