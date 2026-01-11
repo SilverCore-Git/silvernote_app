@@ -3,8 +3,7 @@
     <div
         class="
             h-screen
-            p-4 w-full
-            max-w-70
+            p-4 min-w-70
         "
     >
 
