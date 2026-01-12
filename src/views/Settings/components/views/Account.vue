@@ -1,27 +1,6 @@
 <script setup lang="ts">
+import { clerkAppearanceSettings } from '@/assets/ts/theme';
 import { UserProfile } from '@clerk/vue';
-
-const appearanceSettings = {
-  variables: {
-    colorPrimary: "var(--btn)",
-    colorText: "var(--text)",
-    colorBackground: "var(--bg)",
-    colorBorder: "var(--shadow)",
-    colorButtonPrimaryBackground: "var(--btn)",
-    colorButtonPrimaryText: "var(--white)",
-    colorButtonPrimaryHoverBackground: "var(--btn-hover)",
-    colorInputBackground: "var(--bg2)",
-    colorInputBorder: "var(--shadow)",
-    colorInputText: "var(--text-strong)",
-    colorLinkText: "var(--btn)",
-  },
-  elements: {
-    buttonBorderRadius: "var(--br-btn)",
-    inputBorderRadius: "var(--br-main)",
-    cardBorderRadius: "var(--br-card)"
-  }
-};
-
 
 </script>
 
@@ -38,7 +17,7 @@ const appearanceSettings = {
     </header>
     
     <UserProfile 
-        :appearance="appearanceSettings"
+        :appearance="clerkAppearanceSettings"
     />
 
   </div>

@@ -70,6 +70,7 @@
                 <a class="p-1.5 flex items-center justify-center ">
                     <UserButton
                         :appearance="{
+                            ...clerkAppearanceSettings,
                             elements: {
                                 userButtonAvatarBox: {
                                     width: '24px',
@@ -128,6 +129,7 @@ import { version, dev } from '../../../../../package.json';
 import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { UserButton } from '@clerk/vue';
+import { clerkAppearanceSettings } from '@/assets/ts/theme';
 
 
 const router = useRouter();
