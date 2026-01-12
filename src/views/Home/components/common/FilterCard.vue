@@ -100,8 +100,8 @@ const deleteTag = async (state: number) => {
         verifyDelete.value = false;
         tagDel.value = false;
 
-        Tags.value = Tags.value.filter(tag => tag.uuid !== props.uuid);
         await database.delete_tag(props.uuid);
+        Tags.value = Tags.value.filter(tag => tag.uuid !== props.uuid);
 
     }
 }

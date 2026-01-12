@@ -9,15 +9,17 @@
         <div
             class="
                 group relative flex flex-col
-                bg-(--white)
+                bg-(--white) w-full
                 rounded-2xl p-4 
-                cursor-pointer overflow-hidden h-full
+                cursor-pointer overflow-hidden
                 border border-gray-200
                 hover:border-(--btn)
                 transition-all duration-200 ease-in-out
-                max-h-40 w-full
             "
-            :class="{ 'ring-1 ring-(--btn)': note_selected }"
+            :class="[
+                note_selected ? 'ring-1 ring-(--btn)' : '', 
+                hfull ? 'h-full' : 'h-full max-h-40' 
+            ]"
         >
             
             <div class="flex justify-between items-start mb-3 gap-2">
@@ -82,7 +84,7 @@
 
 <script lang="ts" setup>
 
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import utils from '@/assets/ts/utils';
 import type { Tag } from '@/assets/ts/type';
@@ -99,6 +101,7 @@ const props = defineProps<{
     tags: number[]; // Liste des IDs des tags
     click?: () => void;
     lines?: 3 | 4 | 5 | 6 | 7 | 8;
+    hfull?: boolean;
 }>();
 
 const router = useRouter();

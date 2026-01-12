@@ -39,6 +39,7 @@
                             :icon="note.icon"
                             :tags="note.tags"
                             :lines="8"
+                            :hfull="true"
                         />
 
                     </div>
@@ -55,7 +56,7 @@
                         <i class="bi bi-arrow-left" />
                     </div>
 
-                    <div class="w-full max-w-80">
+                    <div class="w-full h-full max-w-80">
 
                         <div
                             class="
@@ -75,7 +76,7 @@
                             </a>
 
                             <h3 class="text-xl font-semibold">
-                                Paramettres de la note
+                                Paramètres de la note
                             </h3>
 
                             <div class="w-full h-full">
@@ -218,11 +219,17 @@
                             </div>
 
                             <div class="grid grid-cols-2 gap-2" v-if="!justTags">
-                                <button class="w-full primary danger flex gap-1">
+                                <button 
+                                    @click="deleteNote(1)"
+                                    class="w-full primary danger flex gap-1"
+                                >
                                     <i class="bi bi-trash-fill" />
                                     Supprimer
                                 </button>
-                                <button class="w-full primary flex gap-1">
+                                <button
+                                    @click="showShareMenu = true; emitClose()"
+                                    class="w-full primary flex gap-1"
+                                >
                                     <i class="bi bi-share-fill" />
                                     Partager
                                 </button>
@@ -245,6 +252,19 @@
 
         </transition>
 
+        <Share_menu
+            :uuid="uuid"
+            v-model="showShareMenu"
+        />
+
+        <ConfirmDialog
+            :visible="showConfirmDel"
+            title="Supprimer vôtre note"
+            message="êtes vous sur de vouloir supprimer votre note ?"
+            @cancel="showConfirmDel = false"
+            @confirm="deleteNote(2)"
+        />
+
     </Teleport>
 
 </template>
@@ -257,6 +277,8 @@ import { nextTick, ref, watch } from 'vue';
 import { Notes, Tags } from '@/assets/ts/database/Var';
 import DefaultNoteCard from '@/views/Home/components/common/DefaultNoteCard.vue';
 import database from '@/assets/ts/database/database';
+import Share_menu from '@/components/popup/share_menu.vue';
+import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 
 
 const props = defineProps<{
@@ -267,12 +289,29 @@ const props = defineProps<{
 
 const note = ref<Note | undefined>(undefined);
 const showCard = ref<boolean>(false);
+const showShareMenu = ref<boolean>(false);
+const showConfirmDel = ref<boolean>(false);
 
 const emit = defineEmits(['update:visible']);
 
 const emitClose = () => {
   emit('update:visible', false);
 };
+
+const deleteNote = async (state: number) => {
+    if (state == 1)
+    {
+        showConfirmDel.value = true;
+        
+    }
+    else
+    {
+        showConfirmDel.value = false;
+        await database.delete(props.uuid);
+        Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
+        emitClose();
+    }
+}
 
 const save = () => {
     if (!note.value) return;
