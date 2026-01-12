@@ -7,7 +7,7 @@
       <div
           v-if="visible"
           @click="cancel"
-          class="fixed inset-0 z-50 flex items-center justify-center"
+          class="fixed inset-0 z-120 flex items-center justify-center"
           style="
               background-color: #00000090;
               backdrop-filter: blur(5px);

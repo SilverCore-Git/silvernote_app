@@ -20,17 +20,19 @@ if (!PUBLISHABLE_KEY) {
 
 const app = createApp(App)
 
-
-app.config.errorHandler = (err, instance, info) => {
-  postError({
-    raw: err,
-    place: info,
-    error: "500",
-    more: (instance as any)?.type?.name
-      ? `Component: ${(instance as any).type.name}`
-      : "Unknown component",
-  });
-};
+if (pkg.dev)
+{
+  app.config.errorHandler = (err, instance, info) => {
+    postError({
+      raw: err,
+      place: info,
+      error: "500",
+      more: (instance as any)?.type?.name
+        ? `Component: ${(instance as any).type.name}`
+        : "Unknown component",
+    });
+  };
+}
 
 app.use(clerkPlugin, { publishableKey: PUBLISHABLE_KEY });
 app.use(FloatingVue);

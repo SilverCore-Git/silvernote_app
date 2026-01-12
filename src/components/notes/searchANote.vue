@@ -43,7 +43,7 @@
                         <div
                             v-for="note in filteredNotes"
                             :key="note.id"
-                            @click="$emit('note', note.id)"
+                            @click="$emit('note', note.uuid)"
                             class="
                                 p-3 mb-2 rounded-lg cursor-pointer
                                 hover:bg-(--bg3) transition-colors border
@@ -90,7 +90,7 @@ const isFocus = ref<boolean>(false);
 const input = ref<HTMLInputElement | null>(null);
 
 const emit = defineEmits<{
-    (e: 'note', value: number): void;
+    (e: 'note', value: string): void;
     (e: 'close'): void;
 }>()
 

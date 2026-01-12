@@ -6,8 +6,8 @@
 
       <div @click.stop class="relative flex flex-col gap-6 ">
 
-        <h2 class="text-center text-xl font-semibold drop-shadow-sm">
-          Partager la note : <span class="text-[#F28C28]">{{ title }}</span>
+        <h2 class="text-start text-xl font-semibold drop-shadow-sm">
+          Partager votre note
         </h2>
 
         <div class="space-y-6">
@@ -158,7 +158,7 @@ import { useToken } from '@/composables/useToken';
 
 const props = defineProps<{
   uuid: string;
-  title: string;
+  title?: string;
   modelValue: boolean;
 }>();
 
@@ -181,7 +181,7 @@ const create_share_link = async () => {
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',
-      'Authorization': (await useToken()).token.value
+      'Authorization': useToken().token.value!
     },
     credentials: 'include',
     body: JSON.stringify({

@@ -1,332 +1,136 @@
-import { openDB } from 'idb';
-import type { DBSchema, IDBPDatabase } from 'idb';
 import type { Note, Tag } from '../type';
 import { api_url } from '../backend_link';
-import utils from '../utils';
 import type { Socket } from 'socket.io-client';
 import { useToken } from '@/composables/useToken';
-
-
-interface NotesDB extends DBSchema {
-    notes: {
-        key: number;
-        value: Note;
-    };
-    tags: {
-        key: number;
-        value: Tag;
-    }
-}
+import { Notes, Tags } from './Var';
 
 class Database {
-
-    private dbPromise: Promise<IDBPDatabase<NotesDB>>;
-
-    constructor(initialNotes?: Note[], initialTags?: Tag[]) {
-
-        this.dbPromise = openDB<NotesDB>('silvernote-db', 2, {
-            upgrade(db) {
-                if (!db.objectStoreNames.contains('notes')) {
-                    const store = db.createObjectStore('notes', { keyPath: 'id' });
-                    if (initialNotes) {
-                        for (const note of initialNotes) {
-                            store.add(note);
-                        }
-                    }
-                }
-
-                if (!db.objectStoreNames.contains('tags')) {
-                    const tagsStore = db.createObjectStore('tags', { keyPath: 'id' });
-                    if (initialTags) {
-                        for (const tag of initialTags) {
-                            tagsStore.add(tag);
-                        }
-                    }
-                };
-            }
-        });
+    
+    private async getHeaders() {
+        const { token } = await useToken();
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token.value}`
+        };
     }
 
-    public async init ()
-    {
-        return;
-    }
-
+    /**
+     * Envoi d'une note vers le serveur (via Socket ou Fetch)
+     */
     private async push_note(note: Note, socket?: Socket) {
-
         if (socket) {
-
             socket.emit('edit_note', { 
                 uuid: note.uuid,
                 content: note.content,
                 title: note.title
-            })
-
-        }
-
-        else {
+            });
+        } else {
             await fetch(`${api_url}/api/db/update/a/note`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${(await useToken()).token.value}`
-                },
+                headers: await this.getHeaders(),
                 credentials: 'include',
                 body: JSON.stringify({ note }),
-            })
+            });
         }
-
     }
 
+    /**
+     * Récupération de toutes les données (Notes ou Tags)
+     */
     public async getAll<T extends 'notes' | 'tags'>(type: T): Promise<T extends 'notes' ? Note[] : Tag[]> {
-        const db = await this.dbPromise;
-        return db.getAll(type) as any;
+        const endpoint = type === 'notes' ? 'get/notes' : 'get/tags';
+        const response = await fetch(`${api_url}/api/db/${endpoint}`, {
+            headers: await this.getHeaders(),
+            credentials: 'include',
+        });
+        return await response.json();
     }
 
-    public async save(note: Note): Promise<void> { // equivelent a un push
-        const db = await this.dbPromise;
-        await db.put('notes', note);
+    /**
+     * Création d'une nouvelle note
+     */
+    public async create(note: Note): Promise<void> {
+
+        await fetch(`${api_url}/api/db/new/note`, {
+            method: 'POST',
+            headers: await this.getHeaders(),
+            credentials: 'include',
+            body: JSON.stringify({ note }),
+        });
     }
 
-    public async saveTags(tags: number[], id: number): Promise<void> {
-        const db = await this.dbPromise;
-        const note = await db.get('notes', id);
-        if (note) {
-            note.tags = tags;
-            this.push_note(note);
-            await db.put('notes', note);
-        }
+    /**
+     * Mise à jour globale d'une note
+     */
+    public async update(note: Note) {
+        await this.push_note(note);
     }
 
-    public async saveContent(content: string, id: number): Promise<void> {
-        const db = await this.dbPromise;
-        const note = await db.get('notes', id);
-
-        if (note) {
-            note.content = content;
-            await db.put('notes', note);
-        }
+    /**
+     * Mise à jour partielle (ex: icône, titre, contenu)
+     */
+    public async updateField(note: Note, socket?: Socket) {
+        await this.push_note(note, socket);
     }
 
-    public async saveTitle(title: string, id: number): Promise<void> {
-        const db = await this.dbPromise;
-        const note = await db.get('notes', id);
-        if (note) {
-            note.title = title;
-            await db.put('notes', note);
-        }
+    /**
+     * Suppression d'une note
+     */
+    public async delete(uuid: string): Promise<void> {
+        await fetch(`${api_url}/api/db/delete/a/note?uuid=${uuid}`, {
+            method: 'POST',
+            headers: await this.getHeaders(),
+            credentials: 'include',
+        });
     }
 
-    public async saveIcon(icon: string, id: number): Promise<void> {
-        const db = await this.dbPromise;
-        const note = await db.get('notes', id);
-        if (note) {
-            note.icon = icon;
-            this.push_note(note);
-            await db.put('notes', note);
-        }
+    /**
+     * Création d'un tag
+     */
+    public async create_tag(tag: Tag): Promise<void> {
+        tag.id = parseInt(Date.now() + Math.floor(Math.random() * 1000).toString());
+        await fetch(`${api_url}/api/db/new/tag`, {
+            method: 'POST',
+            headers: await this.getHeaders(),
+            credentials: 'include',
+            body: JSON.stringify({ tag }),
+        });
     }
 
-    public async togle_pinned(id: number): Promise<void> {
-        const db = await this.dbPromise;
-        const note = await db.get('notes', id);
-        if (note) {
-            note.pinned = !note.pinned;
-            await db.put('notes', note);
-            await this.push_note(note);
-        }
+    /**
+     * Mise à jour de la couleur d'un tag
+     */
+    public async save_tag_color(tag: Tag, color: string) {
+        if (!color) return;
+        tag.color = color;
+        
+        await fetch(`${api_url}/api/db/update/a/tag`, {
+            method: 'POST',
+            headers: await this.getHeaders(),
+            credentials: 'include',
+            body: JSON.stringify({ tag }),
+        });
     }
 
-    public async delete(id: number, noFetchDB?: boolean): Promise<void> {
-        const db = await this.dbPromise;
-        if (noFetchDB !== true) {
-            const uuid = (await this.getNote(id))?.uuid;
-            await fetch(`${api_url}/api/db/delete/a/note?uuid=${uuid}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${(await useToken()).token.value}
-                    `
-                },
-                credentials: 'include',
-            })
-        }  
-        await db.delete('notes', id);
+    /**
+     * Suppression d'un tag
+     */
+    public async delete_tag(uuid: string): Promise<void> {
+        await fetch(`${api_url}/api/db/delete/a/tag?uuid=${uuid}`, {
+            method: 'POST',
+            headers: await this.getHeaders(),
+            credentials: 'include',
+        });
     }
 
-    public async delete_tag(id: number, noFetchDB?: boolean): Promise<void> {
-        const db = await this.dbPromise;
-        const tag = await db.get('tags', id);
-
-        if (noFetchDB !== true) {
-            await fetch(`${api_url}/api/db/delete/a/tag?uuid=${tag!.uuid}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${(await useToken()).token.value}
-                    `
-                },
-                credentials: 'include',
-            })
-        }  
-
-        await db.delete('tags', id);
-    }
-
-    public async create(arg: { note: Note, cloud_post?: boolean, idInTheProps?: boolean }): Promise<{ id: number }> {
-
-        const db = await this.dbPromise;
-
-        if (!arg.idInTheProps) {
-            arg.note.id = Math.floor(Math.random() * 1e12);;
-            arg.note.uuid = await utils.UUID();
-        }
-
-        if (!arg.note.tags) arg.note.tags = [];
-
-        await db.put('notes', arg.note);
-
-        if (arg.cloud_post) {
-            await fetch(`${api_url}/api/db/new/note`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${(await useToken()).token.value}
-                    `
-                },
-                credentials: 'include',
-                body: JSON.stringify({ note: arg.note }),
-            })
-        }
-
-        return { id: arg.note.id };
-
-    }
-
-    public async create_tag(tag: Tag, cloud_post: boolean): Promise<void> {
-        const db = await this.dbPromise;
-        if (cloud_post) {
-            tag.uuid = await utils.UUID();
-            tag.id = Math.floor(Math.random() * 1e12);
-
-            await fetch(`${api_url}/api/db/new/tag`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${(await useToken()).token.value}
-                    `
-                },
-                credentials: 'include',
-                body: JSON.stringify({ tag }),
-            })
-        }
-        await db.put('tags', tag);
-    }
-
-    public async getNote(id: number): Promise<Note | undefined> {
-        const db = await this.dbPromise;
-        return await db.get('notes', id);
-    }
-
-    public async getNoteByUUID(uuid: string): Promise<Note | undefined> {
-        const all_notes = this.getAll('notes');
-        return (await all_notes).find(note => note.uuid === uuid);
+    /**
+     * Reset des données sur le cloud
+     */
+    public async reset(): Promise<void> {
+        for (const tag of Tags.value) await this.delete_tag(tag.uuid);
+        for (const note of Notes.value) await this.delete(note.uuid);
     }
     
-    public async getTag(id: number): Promise<Tag | undefined> {
-        const db = await this.dbPromise;
-        return await db.get('tags', id);
-    }
-
-    public async add_notes(notes: Note[], cloud_post: boolean): Promise<void> {
-
-        if (notes.length) {
-
-            for (const note of notes) {
-                if (!note.title && !note.content) continue;
-                await this.create({
-                    note,
-                    cloud_post,
-                    idInTheProps: true
-                });
-            }
-
-        }
-
-    }
-
-    public async add_tags(tags: Tag[], cloud_post: boolean): Promise<void> {
-
-        if (tags.length) {
-
-            for (const tag of tags) {
-                await this.create_tag(tag, cloud_post);
-            }
-
-        }
-
-    }
-
-    public async save_tag_color(id: number, color: string) {
-
-        if (!color) return;
-
-        const db = await this.dbPromise;
-        const tag = await db.get('tags', id);
-
-        if (tag) {
-
-            tag._id = undefined;
-            tag.color = color;
-            
-            await fetch(`${api_url}/api/db/update/a/tag`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${(await useToken()).token.value}
-                    `
-                },
-                credentials: 'include',
-                body: JSON.stringify({ tag }),
-            })
-
-            await db.put('tags', tag);
-
-        }
-
-    }
-
-    public async reset({ localANDcloud }: { localANDcloud?: boolean } = {}): Promise<void> {
-
-        if (localANDcloud)
-        {
-
-            const notes = await this.getAll('notes');
-            const tags = await this.getAll('tags');
-
-            for (const tag of tags) {
-                await this.delete_tag(tag.id, localANDcloud == true ? false : true);
-            }
-
-            for (const note of notes) {
-                await this.delete(note.id, localANDcloud == true ? false : true);
-            }
-
-        }
-        else
-        {
-
-            const db = await this.dbPromise;
-            await db.clear('notes');
-            await db.clear('tags');
-
-        }
-
-    }
-
 }
 
-export default new Database(
-    undefined,
-    undefined
-);
+export default new Database();

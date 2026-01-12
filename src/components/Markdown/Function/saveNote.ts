@@ -1,13 +1,13 @@
 import { api_url } from "@/assets/ts/backend_link";
 import { editor } from "../Editor";
-import db from "@/assets/ts/database/database";
 import type { Note } from "@/assets/ts/type";
+import { Notes } from "@/assets/ts/database/Var";
 
 
 let isSaving = false;
 let lastSavedContent = '';
 
-export const saveNote = async (id: number) => 
+export const saveNote = async (uuid: string) => 
 {
   
         
@@ -28,7 +28,7 @@ export const saveNote = async (id: number) =>
         return;
     }
 
-    const note = await db.getNote(id);
+    const note = Notes.value.find(note => note.uuid == uuid);
 
     if (!note) {
         console.error('Note not found in local DB');
@@ -52,7 +52,7 @@ export const saveNote = async (id: number) =>
             updated_at: new Date().getTime()
         };
 
-        await db.saveContent(newContent, id);
+        note.content = newContent;
         console.log('Saved to local DB');
 
         const response = await fetch(`${api_url}/api/db/update/a/note`, {
@@ -73,7 +73,7 @@ export const saveNote = async (id: number) =>
         lastSavedContent = newContent;
 
         window.dispatchEvent(new CustomEvent('note-saved', {
-            detail: { noteId: id, timestamp: Date.now() }
+            detail: { noteId: uuid, timestamp: Date.now() }
         }));
 
     } catch (error) {
@@ -81,7 +81,7 @@ export const saveNote = async (id: number) =>
         console.error('Error saving note:', error);
 
         window.dispatchEvent(new CustomEvent('note-save-error', {
-            detail: { noteId: id, error }
+            detail: { noteId: uuid, error }
         }));
 
         throw error; // Re-throw pour permettre la gestion d'erreur en amont
@@ -93,9 +93,9 @@ export const saveNote = async (id: number) =>
 };
 
 
-export const forceSaveNote = async (id: number) => {
+export const forceSaveNote = async (uuid: string) => {
   lastSavedContent = '';
-  await saveNote(id);
+  await saveNote(uuid);
 };
 
 

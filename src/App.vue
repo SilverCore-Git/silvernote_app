@@ -4,26 +4,11 @@
 
   <ShortsCut />
 
-  <div
-    :style="{
-      marginTop: mobile_config.active ? mobile_config.margin.top : 0,
-      marginBottom: mobile_config.active ? mobile_config.margin.bottom : 0,
-    }"
-  >
+  <div>
 
-      <div :class="[ 'Edit', 'Share' ].includes(route.name as string) ? 'flex' : ''">
+      <div>
         
-        <div 
-          v-if="route.name == 'sign' || route.name == 'ssoCallback' || !loader && InitDB.isLoaded()"
-          class="flex-1 relative "
-          :class="
-                  route.name === 'Home'
-                    ? 'mt-(--mt) mr-(--mlr) ml-(--mrl) ' 
-                    : route.name == 'sign' || route.name == 'Edit' || route.name == 'Share'
-                        ? ''
-                        : 'mr-(--mlr) ml-(--mrl)'
-          "
-        >
+        <div>
           <router-view />
         </div>
 
@@ -31,7 +16,8 @@
           v-if="route.name !== 'silveria' && loaded"
           class=" z-50 relative"
         >
-          <Chatbot v-if="open_chatbot" />
+          <BtnOverlay />
+          <!-- <Chatbot v-if="open_chatbot" /> -->
         </div>
 
       </div>
@@ -79,17 +65,17 @@
 import { ref, onMounted, watch, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Loader from "./components/Loader.vue";
-import Chatbot from "./components/chatbot/Chatbot.vue";
 import { api_url, Session } from "./assets/ts/backend_link";
 import { init_theme } from "./assets/ts/theme";
-import { useAuth, useUser } from "@clerk/vue";
+import { useAuth, useSession, useUser } from "@clerk/vue";
 import { loaded } from "./assets/ts/utils";
 import InitDB from "./assets/ts/database/init";
-import mobile_config from "@/configs/mobile.json";
 import waitFor from "./assets/ts/utils/waitFor";
 import ShortsCut from "./components/shortsCut.vue";
 import ErrorOverlay from "./components/errorOverlay/errorOverlay.vue";
 import postError from "./components/errorOverlay/postError";
+import BtnOverlay from "./components/common/BtnOverlay.vue";
+import { initTokenService } from "./composables/useToken";
 
 const loader = ref<boolean>(true);
 const status = ref<string>('Chargement de l\'app...');
@@ -98,6 +84,7 @@ const session = new Session();
 const route = useRoute();
 const router = useRouter();
 const { user, isLoaded } = useUser();
+const { session: clerkSession } = useSession();
 const { isSignedIn } = useAuth();
 
 const is_offline = ref<boolean>(false);
@@ -126,6 +113,11 @@ onMounted(async () => {
     () => isLoaded.value,
     5_000
   );
+  initTokenService({
+    user,
+    isLoaded,
+    session: clerkSession
+  });
 
   // affichage si pas online (enlever ??)
   if (!online) {
