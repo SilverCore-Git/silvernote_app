@@ -40,11 +40,12 @@ const ShowNewTagPopup = ref<boolean>(false);
                 "
             >
                 <SwiperSlide
-                    v-for="(tag, index) in Tags"
-                    :key="index"
+                    v-for="tag in Tags"
+                    :key="tag.id"
                     class="!w-auto"
                 >
                     <FilterCard
+                        :uuid="tag.uuid"
                         :color="tag.color"
                         :name="tag.name"
                         :active="isSelected(tag.id)"

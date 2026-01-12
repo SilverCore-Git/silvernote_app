@@ -115,8 +115,8 @@ class Database {
     /**
      * Suppression d'un tag
      */
-    public async delete_tag(id: number): Promise<void> {
-        await fetch(`${api_url}/api/db/delete/a/tag?id=${id}`, {
+    public async delete_tag(uuid: string): Promise<void> {
+        await fetch(`${api_url}/api/db/delete/a/tag?uuid=${uuid}`, {
             method: 'POST',
             headers: await this.getHeaders(),
             credentials: 'include',
@@ -127,7 +127,7 @@ class Database {
      * Reset des données sur le cloud
      */
     public async reset(): Promise<void> {
-        for (const tag of Tags.value) await this.delete_tag(tag.id);
+        for (const tag of Tags.value) await this.delete_tag(tag.uuid);
         for (const note of Notes.value) await this.delete(note.uuid);
     }
     

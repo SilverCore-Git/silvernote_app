@@ -46,6 +46,7 @@ export interface Note {
 };
 
 export interface Tag {
+    uuid: string;
     _id?: string; // for mongodb
     id: number; // tag encore sous id
     active: boolean;
