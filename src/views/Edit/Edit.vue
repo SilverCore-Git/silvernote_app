@@ -4,9 +4,9 @@ import { Notes, Tags } from '@/assets/ts/database/Var';
 import BackBtn from '@/components/backBtn.vue';
 import { editor } from '@/components/Markdown/Editor';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import Dropdown from './Dropdown.vue';
-import type { Tag, User } from '@/assets/ts/type';
+import type { Note, Tag, User } from '@/assets/ts/type';
 import useWSocket from './composable/useWSocket';
 import { useUser } from '@clerk/vue';
 import { api_url } from '@/assets/ts/backend_link';
@@ -15,6 +15,7 @@ import waitFor from '@/assets/ts/utils/waitFor';
 import useEmoji from './composable/useEmoji';
 import CreateNewNote from './composable/CreateNewNote';
 import { useRoute, useRouter } from 'vue-router';
+import database from '@/assets/ts/database/database';
 
 const props = defineProps<{
   uuid: string;
@@ -31,6 +32,7 @@ const users = ref<User[]>([]);
 const shared = ref<boolean>(false);
 const hide8moreTags = ref<boolean>(true);
 const note = computed(() => Notes.value.find(note => note.uuid === props.uuid));
+const title = ref<HTMLInputElement | undefined>(undefined);
 
 
 const update_title = () => {
@@ -85,6 +87,7 @@ onMounted(async () => {
   if (props.uuid == 'new')
   {
     await initNewNote(); 
+    title.value?.focus();
   }
   else
   {
@@ -98,7 +101,14 @@ onMounted(async () => {
   });
   update_title();
 
+})
 
+onUnmounted(async () => {
+  if (note.value?.title == '')
+  {
+    note.value.title = 'Note sans nom';
+  }
+  await database.update(note.value as Note);
 })
 
 
