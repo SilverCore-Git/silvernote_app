@@ -290,12 +290,12 @@ onUnmounted(async () => {
 
           </div>
 
-          <div
+          <!-- <div
             v-else
             @click="tagManager = true"
           >
             <a class="px-1">Ajouter un tag</a>
-          </div>
+          </div> -->
         
         </div>
 

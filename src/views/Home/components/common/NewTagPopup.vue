@@ -46,6 +46,7 @@
                     <div class="flex flex-col justify-center items-center w-full">
 
                         <FilterCard
+                            uuid=""
                             :color="tag_color"
                             :name="tag_name"
                             :active="true"
@@ -98,6 +99,7 @@ const create_tag = () => {
 
     const tag = {
         id: parseInt(Date.now() + Math.floor(Math.random() * 1000).toString()), 
+        uuid: '',
         name: tag_name.value, 
         active: false, 
         color: tag_color.value 
