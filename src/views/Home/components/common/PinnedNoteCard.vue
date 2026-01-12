@@ -34,18 +34,18 @@
                     ></h2>
                 </div>
 
-                <div v-if="Tags.length > 0" class="shrink-0">
+                <div v-if="_Tags.length > 0" class="shrink-0">
                     <span 
                         class="
                             px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide
                             flex items-center justify-center
                         "
                         :style="{ 
-                            backgroundColor: Tags[0].color + '20', /* 20 = ~12% opacité pour le fond pastel */
-                            color: Tags[0].color 
+                            backgroundColor: _Tags[0].color + '20', /* 20 = ~12% opacité pour le fond pastel */
+                            color: _Tags[0].color 
                         }"
                     >
-                        {{ Tags[0].name }}
+                        {{ _Tags[0].name }}
                     </span>
                 </div>
             </div>
@@ -65,12 +65,12 @@
                 ></div>
             </div>
 
-            <div v-if="Tags.length > 1" class="mt-2 flex gap-1">
+            <div v-if="_Tags.length > 1" class="mt-2 flex gap-1">
                 <div 
-                    v-for="i in (Tags.length - 1)" 
+                    v-for="i in (_Tags.length - 1)" 
                     :key="i" 
                     class="w-1.5 h-1.5 rounded-full"
-                    :style="{ backgroundColor: Tags[i].color }"
+                    :style="{ backgroundColor: _Tags[i].color }"
                 ></div>
             </div>
 
@@ -87,13 +87,14 @@
 
 <script lang="ts" setup>
 
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import utils from '@/assets/ts/utils';
 import type { Tag } from '@/assets/ts/type';
 import { IsPrivate } from '@/assets/ts/settings/privatMode';
 import PressAndHold from '@/components/PressAndHold.vue';
 import NoteParamsOverlay from './NoteParamsOverlay.vue';
+import { Tags } from '@/assets/ts/database/Var';
 
 const props = defineProps<{
     uuid: string;
@@ -105,7 +106,7 @@ const props = defineProps<{
 }>();
 
 const router = useRouter();
-const Tags = ref<Tag[]>([]);
+const _Tags = computed<Tag[]>(() => Tags.value.filter(tag => props.tags.includes(tag.id)));
 const note_selected = ref<boolean>(false);
 
 const open_note = (uuid: string) => {
@@ -117,19 +118,6 @@ const select_note = () => {
   note_selected.value = !note_selected.value;
 };
 
-
-const loadTags = async () => {
-  if (!props.tags || props.tags.length === 0) return;
-  Tags.value = Tags.value.filter(tag => props.tags.includes(tag.id));
-};
-
-onMounted(() => {
-  loadTags();
-});
-
-watch(() => props.tags, () => {
-  loadTags();
-});
 
 </script>
 

@@ -53,9 +53,9 @@
                 ></div>
             </div>
 
-            <div v-if="Tags.length > 0" class="shrink-0 flex flex-wrap gap-1 mt-2">
+            <div v-if="_Tags.length > 0" class="shrink-0 flex flex-wrap gap-1 mt-2">
                 <span
-                    v-for="tag in Tags"
+                    v-for="tag in _Tags"
                     class="
                         px-2 py-1 rounded-md text-[10px] font-bold uppercase
                         flex items-center justify-center tracking-wide
@@ -82,13 +82,14 @@
 
 <script lang="ts" setup>
 
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import utils from '@/assets/ts/utils';
 import type { Tag } from '@/assets/ts/type';
 import { IsPrivate } from '@/assets/ts/settings/privatMode';
 import PressAndHold from '@/components/PressAndHold.vue';
 import NoteParamsOverlay from './NoteParamsOverlay.vue';
+import { Tags } from '@/assets/ts/database/Var';
 
 const props = defineProps<{
     uuid: string;
@@ -101,7 +102,7 @@ const props = defineProps<{
 }>();
 
 const router = useRouter();
-const Tags = ref<Tag[]>([]);
+const _Tags = computed<Tag[]>(() => Tags.value.filter(tag => props.tags.includes(tag.id)));
 const note_selected = ref<boolean>(false);
 
 
@@ -115,18 +116,6 @@ const select_note = () => {
   note_selected.value = !note_selected.value;
 };
 
-const loadTags = async () => {
-  if (!props.tags || props.tags.length === 0) return;
-  Tags.value = Tags.value.filter(tag => props.tags.includes(tag.id));
-};
-
-onMounted(() => {
-  loadTags();
-});
-
-watch(() => props.tags, () => {
-  loadTags();
-});
 
 </script>
 

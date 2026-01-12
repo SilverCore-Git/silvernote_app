@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 import { Notes, Tags } from '@/assets/ts/database/Var';
 import BackBtn from '@/components/backBtn.vue';
 import { editor } from '@/components/Markdown/Editor';
@@ -13,11 +14,14 @@ import { useToken } from '@/composables/useToken';
 import waitFor from '@/assets/ts/utils/waitFor';
 import useEmoji from './composable/useEmoji';
 import CreateNewNote from './composable/CreateNewNote';
+import { useRoute, useRouter } from 'vue-router';
 
 const props = defineProps<{
   uuid: string;
 }>();
 
+const router = useRouter();
+const route = useRoute();
 const { user } = useUser();
 const { init_emoji_picker } = useEmoji();
 
@@ -30,36 +34,62 @@ const note = computed(() => Notes.value.find(note => note.uuid === props.uuid));
 
 
 const update_title = () => {
-  if (!note.value) return;
-  document.title = `${note.value?.title} - Silvernote edit`;
+  if (!note.value?.title) return;
+  document.title = `${note.value.title} - Silvernote edit`;
 
 }
 
-watch(() => note.value?.title, update_title)
+const initNewNote = async () => {
+  
+  const _note = await CreateNewNote();
+
+  router.push({
+    params: {
+      ...route.params,
+      uuid: _note.uuid
+    }
+  })
+
+}
+
+const initExistingNote = async () => {
+
+  await waitFor(() => note.value !== undefined, 5_000);
+
+  const _fetch = await fetch(`${api_url}/api/share/${note.value?.uuid}/info`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${(useToken()).token.value}`
+    }
+  }).then(res => res.json())
+
+  shared.value = await _fetch.share.uuid === note.value?.uuid
+
+  useWSocket({
+    note,
+    users,
+    shared,
+    user
+  });
+
+}
+
+
+watch(() => note.value?.title, update_title);
 
 
 onMounted(async () => {
 
-  if (props.uuid == 'new') await CreateNewNote();
 
-  await waitFor(() => note.value !== undefined, 5_000);
-
-    const _fetch = await fetch(`${api_url}/api/share/${note.value?.uuid}/info`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${(useToken()).token.value}`
-      }
-    }).then(res => res.json())
-
-    shared.value = await _fetch.share.uuid === note.value?.uuid
-
-    useWSocket({
-      note,
-      users,
-      shared,
-      user
-    });
+  if (props.uuid == 'new')
+  {
+    await initNewNote(); 
+  }
+  else
+  {
+    await initExistingNote();
+  }
 
 
   init_emoji_picker({
@@ -68,8 +98,8 @@ onMounted(async () => {
   });
   update_title();
 
-})
 
+})
 
 
 </script>

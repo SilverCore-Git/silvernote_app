@@ -97,9 +97,7 @@ const tag_color = ref<string>(utils.getRandomHexColor());
 const create_tag = () => {
 
     const tag = {
-        uuid: '',
-        _id: '',
-        id: -1, 
+        id: parseInt(Date.now() + Math.floor(Math.random() * 1000).toString()), 
         name: tag_name.value, 
         active: false, 
         color: tag_color.value 

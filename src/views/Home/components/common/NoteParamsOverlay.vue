@@ -88,8 +88,8 @@
 
                                     <li
                                         v-if="Tags.length > 0"
-                                        v-for="(tag, index) in Tags"
-                                        :key="index"
+                                        v-for="tag in Tags"
+                                        :key="tag.id"
                                     >
 
                                         <label

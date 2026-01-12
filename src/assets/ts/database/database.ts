@@ -1,6 +1,5 @@
 import type { Note, Tag } from '../type';
 import { api_url } from '../backend_link';
-import utils from '../utils';
 import type { Socket } from 'socket.io-client';
 import { useToken } from '@/composables/useToken';
 import { Notes, Tags } from './Var';
@@ -89,7 +88,7 @@ class Database {
      * Création d'un tag
      */
     public async create_tag(tag: Tag): Promise<void> {
-        tag.uuid = await utils.UUID();
+        tag.id = parseInt(Date.now() + Math.floor(Math.random() * 1000).toString());
         await fetch(`${api_url}/api/db/new/tag`, {
             method: 'POST',
             headers: await this.getHeaders(),
@@ -116,8 +115,8 @@ class Database {
     /**
      * Suppression d'un tag
      */
-    public async delete_tag(uuid: string): Promise<void> {
-        await fetch(`${api_url}/api/db/delete/a/tag?uuid=${uuid}`, {
+    public async delete_tag(id: number): Promise<void> {
+        await fetch(`${api_url}/api/db/delete/a/tag?id=${id}`, {
             method: 'POST',
             headers: await this.getHeaders(),
             credentials: 'include',
@@ -128,7 +127,7 @@ class Database {
      * Reset des données sur le cloud
      */
     public async reset(): Promise<void> {
-        for (const tag of Tags.value) await this.delete_tag(tag.uuid);
+        for (const tag of Tags.value) await this.delete_tag(tag.id);
         for (const note of Notes.value) await this.delete(note.uuid);
     }
     

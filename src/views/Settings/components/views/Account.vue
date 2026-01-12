@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { clerkAppearanceSettings } from '@/assets/ts/theme';
-import { UserProfile } from '@clerk/vue';
+import { UserProfile, useUser } from '@clerk/vue';
 
 </script>
 
@@ -19,6 +19,10 @@ import { UserProfile } from '@clerk/vue';
     <UserProfile 
         :appearance="clerkAppearanceSettings"
     />
+
+    <p class=" mt-10 text-(--text-little)">
+      User id : {{ useUser().user.value?.id }}
+    </p>
 
   </div>
 

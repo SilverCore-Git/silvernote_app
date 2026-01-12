@@ -5,7 +5,7 @@ import utils from "@/assets/ts/utils";
 
 export default 
 async function
-()
+(): Promise<Note>
 {
 
     const note: Note = {
@@ -20,5 +20,7 @@ async function
 
     Notes.value.push(note);
     await database.create(note);
+
+    return note;
     
 }
