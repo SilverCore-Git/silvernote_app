@@ -15,12 +15,12 @@
 
             <div
                 v-if="visible"
-                class="fixed inset-0 flex justify-center items-center  z-100 pointer-events-none"
+                class="fixed inset-0 flex justify-center items-center z-100 pointer-events-none"
             >
 
                 <div
                     class="
-                        max-w-2xl max-h-100 
+                        max-w-2xl max-h-140 lg:max-h-100 
                         lg:grid lg:grid-cols-[280px_1em_300px]
                         flex justify-center items-center
                         w-full h-full gap-10 
@@ -47,7 +47,7 @@
                     <div
                         class="
                             hidden lg:flex 
-                            gap-2 mx-auto w-full
+                            gap-2 mx-auto w-full 
                             flex-col justify-center items-center
                             text-4xl text-(--white) font-black
                         "
@@ -56,11 +56,11 @@
                         <i class="bi bi-arrow-left" />
                     </div>
 
-                    <div class="w-full h-full max-w-80">
+                    <div class="w-full h-full max-w-80 relative">
 
                         <div
                             class="
-                                bg-[var(--white)] rounded-2xl shadow-xl
+                                bg-(--white) rounded-2xl shadow-xl
                                 p-4 w-full text-sm h-full gap-4 flex flex-col
                                 border border-[#F28C28]/60 relative
                             "
@@ -130,7 +130,7 @@
                                                 ></div>
 
                                                 <div
-                                                    class="absolute left-[2px] top-[2px] w-5 h-5 bg-white
+                                                    class="absolute left-0.5 top-0.5 w-5 h-5 bg-white
                                                     rounded-full transition-transform peer-checked:translate-x-5"
                                                 ></div>
 
@@ -160,8 +160,8 @@
                                     select-none
                                 "
                                 :class="note?.pinned 
-                                    ? 'bg-[var(--btn)]/10 border-[var(--btn)] shadow-[var(--btn)]/20 shadow-sm' 
-                                    : 'bg-[var(--bg)]/50 border-gray-200 hover:border-[var(--btn)] hover:bg-[var(--bg)]'
+                                    ? 'bg-(--btn)/10 border-(--btn) shadow-(--btn)/20 shadow-sm' 
+                                    : 'bg-(--bg)/50 border-gray-200 hover:border-(--btn) hover:bg-(--bg)'
                                 "
                                 @click.stop="togglePin()"
                             >
@@ -173,16 +173,16 @@
                                             w-8 h-8 rounded-full flex items-center justify-center
                                             transition-colors duration-300
                                         "
-                                        :class="note?.pinned ? 'bg-[var(--btn)] text-white' : 'bg-gray-100 text-gray-400 group-hover:text-[var(--btn)]'"
+                                        :class="note?.pinned ? 'bg-(--btn) text-white' : 'bg-gray-100 text-gray-400 group-hover:text-(--btn)'"
                                     >
                                         <i class="bi" :class="note?.pinned ? 'bi-pin-fill' : 'bi-pin'" />
                                     </div>
 
                                     <div class="flex flex-col">
-                                        <span class="text-sm font-bold text-[var(--text)]">
+                                        <span class="text-sm font-bold text-(--text)">
                                             {{ note?.pinned ? 'Note épinglée' : 'Épingler la note' }}
                                         </span>
-                                        <span class="text-[10px] text-[var(--text-little)]">
+                                        <span class="text-[10px] text-(--text-little)">
                                             {{ note?.pinned ? 'Apparaît en haut de la liste' : 'Gardez cette note à portée de main' }}
                                         </span>
                                     </div>
@@ -199,16 +199,16 @@
                                     <div
                                         class="
                                             w-11 h-6 bg-gray-200 
-                                            peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-[var(--btn)]/50 
+                                            peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-(--btn)/50 
                                             rounded-full peer 
-                                            peer-checked:bg-[var(--btn)]
+                                            peer-checked:bg-(--btn)
                                             transition-colors duration-300
                                         "
                                     ></div>
 
                                     <div
                                         class="
-                                            absolute left-[2px] top-[2px] w-5 h-5 bg-white
+                                            absolute left-0.5 top-0.5 w-5 h-5 bg-white
                                             rounded-full shadow-sm transition-transform duration-300
                                             peer-checked:translate-x-5
                                         "
@@ -237,8 +237,7 @@
 
                             <hr class="-mx-4 text-gray-300" />
 
-                            <div class="grid grid-cols-2 gap-2">
-                                <button class="w-full primary danger" @click="emitClose">Annuler</button>
+                            <div class="">
                                 <button class="w-full primary" @click="save">Sauvegarder</button>
                             </div>
 
@@ -366,6 +365,7 @@ const mount = () => {
     const _note = Notes.value.find(note => note.uuid === props.uuid);
     note.value = JSON.parse(JSON.stringify(_note));
     showCard.value = true;
+    if (!note) throw new Error('Note is undefined on params overlay !')
 }
 
 watch(() => props.visible, () => {
