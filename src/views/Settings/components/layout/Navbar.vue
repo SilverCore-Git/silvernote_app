@@ -3,7 +3,9 @@
     <div
         class="
             h-screen
-            p-4 min-w-70
+            p-4 
+            min-w-55
+            xl:min-w-70
         "
     >
 
@@ -71,45 +73,10 @@
     
 import { useRoute, useRouter } from 'vue-router';
 import { SignOutButton } from '@clerk/vue';
+import { pages } from './navbar';
 
 const router = useRouter();
 const route = useRoute();
-
-interface Page {
-    path: string;
-    icon: string;
-    name: string;
-}
-
-const pages: Page[] = [
-    {
-        path: '/',
-        icon: "bi-person", // Compte utilisateur
-        name: "Compte"
-    },
-    // {
-    //     path: '/preferences',
-    //     icon: "bi-sliders", // Préférences / réglages généraux
-    //     name: "Préférences"
-    // },
-    {
-        path: '/appearance',
-        icon: "bi-palette-fill", // Apparence / thème
-        name: "Apparence"
-    },
-    {
-        path: '/mydata',
-        icon: "bi-database-fill", // Mes données / données personnelles
-        name: "Mes données"
-    },
-    {
-        path: '/legal',
-        icon: "bi-shield-check", // Juridique / sécurité
-        name: "Juridique"
-    },
-]
-
-
 
 </script>
 

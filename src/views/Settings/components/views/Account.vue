@@ -6,7 +6,7 @@ import { UserProfile, useUser } from '@clerk/vue';
 
 <template>
 
-  <div class="min-h-screen w-full p-8 transition-colors duration-300">
+  <div class="min-h-screen w-full p-4 lg:p-8 transition-colors duration-300">
         
     <header class="mb-8">
     

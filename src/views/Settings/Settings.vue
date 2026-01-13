@@ -1,5 +1,6 @@
 <script setup lang="ts">
 
+import MobileNavBar from './components/layout/MobileNavBar.vue';
 import NavBar from './components/layout/Navbar.vue';
 import Account from './components/views/Account.vue';
 import Appearance from './components/views/Appearance.vue';
@@ -19,10 +20,11 @@ defineProps<{
     class="flex flex-raw h-screen w-screen"
   >
 
-    <NavBar />
+    <NavBar class="lg:block hidden" />
+    <MobileNavBar />
 
     <div
-      class="w-full h-full p-10 overflow-y-auto pb-10"
+      class="w-full h-full xl:px-10 py-10 overflow-y-auto pb-20"
     >
 
       <Legal v-if="page == 'legal'" />
