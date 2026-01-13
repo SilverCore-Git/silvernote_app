@@ -35,16 +35,15 @@
 
             </NavBar>
 
-            <MobileNavBar 
-                class="md:hidden"
-            />
+            <!-- md:hidden gérer par le composant -->
+            <MobileNavBar />
 
         </nav>
 
         <!-- conteneur allignement y -->
         <div
             class="
-                flex-1 flex flex-col p-8 gap-8 overflow-hidden
+                flex-1 flex flex-col p-4 gap-4 md:p-8 md:gap-8 overflow-hidden
             "
         >
 
