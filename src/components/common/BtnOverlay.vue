@@ -3,25 +3,27 @@
 
     <div
         class="
-            fixed bottom-10 right-6 z-20 gap-4
+            fixed bottom-22 md:bottom-10 right-6 z-20 gap-4
             flex flex-col justify-center items-center 
         "
     >
 
         <!-- SilverIA btn -->
-        <button
-            class="
-                bg-(--white) hover:bg-(--bg2) border-gray-200
-                hover:text-(--btn) hover:border
-                transition-all duration-300 ease-in-out
-                w-14 h-14 rounded-full
-                flex justify-center items-center
-                text-2xl shadow-lg bounce-hover
-                cursor-pointer
-            "
-        >
-            <i class="bi bi-stars" />
-        </button>
+        <div class="hidden md:block">
+            <button
+                class="
+                    bg-(--white) hover:bg-(--bg2) border-gray-200
+                    hover:text-(--btn) hover:border
+                    transition-all duration-300 ease-in-out
+                    w-14 h-14 rounded-full
+                    flex justify-center items-center
+                    text-2xl shadow-lg bounce-hover
+                    cursor-pointer
+                "
+            >
+                <i class="bi bi-stars" />
+            </button>
+        </div>
 
         <!-- new note btn -->
         <button

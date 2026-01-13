@@ -19,7 +19,7 @@
         <!-- navbar -->
         <nav>
 
-            <NavBar>
+            <NavBar class="hidden md:block">
 
                 <a class="p-1.5" v-tooltip.bottom="'Recharger'">
                     <div
@@ -34,6 +34,10 @@
                 </a>
 
             </NavBar>
+
+            <MobileNavBar 
+                class="md:hidden"
+            />
 
         </nav>
 
@@ -66,6 +70,7 @@
 <script lang="ts" setup>
 
 import AllNotes from './components/layout/AllNotes.vue';
+import MobileNavBar from './components/layout/MobileNavBar.vue';
 import NavBar from './components/layout/Navbar.vue';
 import SearchAndTag from './components/layout/SearchAndTag.vue';
 import { isRotating, reload_list } from './composables/Reload';

@@ -58,7 +58,7 @@
                 <a class="p-1.5" v-tooltip.bottom="'Paramètres'">
                     <div
                         class="
-                                bi bi-gear text-(--btn) text-2xl 
+                                bi bi-gear-fill text-(--btn) text-2xl 
                                 w-7 h-7 flex justify-center items-center
                         "
                         @click="router.push('/settings')"
