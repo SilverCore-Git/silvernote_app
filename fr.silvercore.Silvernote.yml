@@ -3,14 +3,39 @@ runtime: org.freedesktop.Platform
 runtime-version: '23.08'
 sdk: org.freedesktop.Sdk
 command: silvernote
-modules:
-  - name: silvernote
-    buildsystem: simple
-    build-commands:
-      - cp -r build/linux-unpacked/* /app/
-    sources: []
+
 finish-args:
   - --share=network
   - --socket=x11
   - --socket=wayland
   - --filesystem=home
+  - --device=dri
+
+modules:
+  - name: silvernote
+    buildsystem: simple
+    build-commands:
+      # ... (tes commandes de build précédentes)
+      - mkdir -p /app/lib
+      - mkdir -p /app/bin
+      # Copie de l'exécutable et des fichiers binaires
+      - cp silvernote /app/lib/
+      - cp lib*so* /app/lib/
+      - cp icudtl.dat /app/lib/
+      - cp *.bin /app/lib/       # Simplifie snapshot_blob.bin et v8_context_snapshot.bin
+      - cp *.pak /app/lib/       # IMPORTANT: Cela copiera resources.pak et les chrome_*.pak
+      - cp -r locales /app/lib/
+      
+      # CORRECTION CRITIQUE ICI : Copier 'resources' DANS 'lib'
+      - cp -r resources /app/lib/ 
+      
+      # Le script de lancement (wrapper)
+      - echo '#!/bin/sh' > /app/bin/silvernote
+      - echo 'export LD_LIBRARY_PATH=/app/lib' >> /app/bin/silvernote
+      # On garde --no-sandbox pour l'instant (requis sans zypak)
+      - echo 'exec /app/lib/silvernote --no-sandbox "$@"' >> /app/bin/silvernote
+      - chmod +x /app/bin/silvernote
+
+    sources:
+      - type: dir
+        path: build/linux-unpacked

@@ -17,7 +17,11 @@
     "build:mac": "electron-builder --mac",
     "build:linux": "electron-builder --linux",
     "maj:front": "node scripts/maj_front",
-    "icon": "npx electron-icon-maker --input=resources/icon.png --output=resources"
+    "icon": "npx electron-icon-maker --input=resources/icon.png --output=resources",
+    "build:flathub": "npm i && npm run build:linux && mkdir build-dir && npm run flathub",
+    "flathub": "flatpak-builder --force-clean build-dir fr.silvercore.Silvernote.yml",
+    "flathub:start": "flatpak-builder --run build-dir fr.silvercore.Silvernote.yml silvernote",
+    "flathub:full": "rm -rf build-dir .flatpak-builder && npm run flathub && npm run flathub:start"
   },
   "keywords": [],
   "author": {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>fr.silvercore.Silvernote</id>
+  <name>Silvernote</name>
+  <summary>Application de prise de notes simple et intuitive</summary>
+
+  <description>
+    <p>
+      Silvernote est une application de prise de notes moderne,
+      rapide et intuitive.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">silvernote.desktop</launchable>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>Proprietary</project_license>
+
+  <developer_name>Silvercore</developer_name>
+
+  <url type="homepage">https://www.silvernote.fr</url>
+
+  <categories>
+    <category>Utility</category>
+    <category>Productivity</category>
+  </categories>
+</component>
