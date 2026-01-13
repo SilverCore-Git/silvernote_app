@@ -1,5 +1,6 @@
 <script setup lang="ts">
 
+import BackBtn from '@/components/backBtn.vue';
 import MobileNavBar from './components/layout/MobileNavBar.vue';
 import NavBar from './components/layout/Navbar.vue';
 import Account from './components/views/Account.vue';
@@ -22,6 +23,7 @@ defineProps<{
 
     <NavBar class="lg:block hidden" />
     <MobileNavBar />
+    <BackBtn class="absolute top-4 left-4 lg:hidden" />
 
     <div
       class="w-full h-full xl:px-10 py-10 overflow-y-auto pb-20"
