@@ -31,7 +31,14 @@ const notes = computed(() => {
             Notes filtrées ({{ notes.length }})
         </span>
 
-        <ul v-if="notes.length" class="flex flex-wrap gap-4">
+        <ul 
+            v-if="notes.length"
+            class="
+                sm:flex sm:flex-wrap
+                grid grid-cols-2
+                gap-4
+            "
+        >
             <li
                 v-for="(note, index) in notes"
                 :key="index"

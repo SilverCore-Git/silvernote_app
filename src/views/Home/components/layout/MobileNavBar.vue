@@ -20,7 +20,7 @@
                     v-for="(btn, index) in Btns"
                     :key="index" 
                     @click="router.push(btn.href)"
-                    :class="route.path == btn.href ? 'text-(--btn)' : ''"
+                    :class="route.fullPath == btn.href ? 'text-(--btn)' : ''"
                     class="p-1"
                 >
                     <i class="bi" :class="btn.icon" />
@@ -47,6 +47,10 @@ const Btns = [
     {
         icon: 'bi-house-fill',
         href: '/'
+    },
+    {
+        icon: 'bi-share-fill',
+        href: '/?page=shared'
     },
     {
         icon: 'bi-stars',

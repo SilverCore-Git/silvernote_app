@@ -28,7 +28,9 @@ const router = useRouter();
         <ul
             v-if="notes.length"
             class="
-                flex flex-wrap gap-4
+                sm:flex sm:flex-wrap
+                grid grid-cols-2
+                gap-4
             "
         >
             <li
