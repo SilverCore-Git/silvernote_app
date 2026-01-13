@@ -43,13 +43,13 @@ const ShowNewTagPopup = ref<boolean>(false);
                     v-for="tag in Tags"
                     :key="tag.id"
                     class="!w-auto"
+                    @click.stop="toggleFilter(tag.id)"
                 >
                     <FilterCard
                         :uuid="tag.uuid"
                         :color="tag.color"
                         :name="tag.name"
                         :active="isSelected(tag.id)"
-                        @click.stop="toggleFilter(tag.id)"
                     />
                 </SwiperSlide>
             </Swiper>
