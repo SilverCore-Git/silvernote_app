@@ -62,7 +62,7 @@ const clerkAppearanceSettings = {
     colorBackground: "var(--bg)",
     colorBorder: "var(--shadow)",
     colorButtonPrimaryBackground: "var(--btn)",
-    colorButtonPrimaryText: "var(--white)",
+    colorButtonPrimaryText: "var(--text)",
     colorButtonPrimaryHoverBackground: "var(--btn-hover)",
     colorInputBackground: "var(--bg2)",
     colorInputBorder: "var(--shadow)",
@@ -72,7 +72,7 @@ const clerkAppearanceSettings = {
   elements: {
     buttonBorderRadius: "var(--br-btn)",
     inputBorderRadius: "var(--br-main)",
-    cardBorderRadius: "var(--br-card)"
+    cardBorderRadius: "var(--br-card)",
   }
 };
 
