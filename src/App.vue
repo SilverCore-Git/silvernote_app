@@ -45,7 +45,7 @@
             </div>
 
             <div class="my-10 text-center">
-              <h2 class=" text-2xl ">Pas de connexion internet</h2>
+              <h2 class=" text-2xl ">L'API ne répond pas...</h2>
               <span class="text-sm">Vérifier la connexion réseau et réessayer.</span>
             </div>
 

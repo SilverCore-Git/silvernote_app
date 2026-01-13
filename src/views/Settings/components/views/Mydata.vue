@@ -66,9 +66,9 @@ const resetDB = async (state: 1 | 2) => {
     {
         Loader.value = 'reset';
 
+        await database.reset();
         Notes.value = [];
         Tags.value = [];
-        await database.reset();
     
         Loader.value = '';
     }

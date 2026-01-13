@@ -1,5 +1,5 @@
 import utils from "@/assets/ts/utils";
-import indexed_db from '@/assets/ts/database/database';
+import db from '@/assets/ts/database/database';
 import { Notes, Tags } from "@/assets/ts/database/Var";
 
 export default async function
@@ -16,6 +16,7 @@ export default async function
 
     
     reader.onload = async (e: ProgressEvent<FileReader>) => {
+
       const contenu = e.target?.result
 
       if (typeof contenu === "string") {
@@ -39,15 +40,33 @@ export default async function
             console.log('All hash ok !');
             console.log('Starting eating data...');
 
-            try {
-              await indexed_db.create(data.notes);
-              Notes.value = data.notes;
-            } catch(err) { throw new Error('Erreur lors de la sync des notes.') }
+            const user_id = window.localStorage.getItem('user_id');
 
-            try {
-              await indexed_db.create_tag(data.tags);
-              Tags.value = data.tags;
-            } catch(err) { throw new Error('Erreur lors de la sync des tags.') }
+            for (const note of data.notes)
+            {
+              note.user_id = user_id;
+              note.uuid = await utils.UUID();
+              note.id = parseInt(Date.now() + Math.floor(Math.random() * 1000).toString());
+              note._id = undefined;
+              await Promise.all([
+                db.create(note),
+                Notes.value.push(note)
+              ]);
+              console.log(`Eat : ${note.uuid}`);
+            }
+
+            for (const tag of data.tags)
+            {
+              tag.user_id = user_id;
+              tag.uuid = await utils.UUID();
+              tag.id = parseInt(Date.now() + Math.floor(Math.random() * 1000).toString());
+              tag._id = undefined;
+              await Promise.all([
+                db.create_tag(tag),
+                Tags.value.push(tag)
+              ]);
+              console.log(`Eat : ${tag.uuid}`);
+            }
 
           }
           else 
@@ -62,6 +81,7 @@ export default async function
         console.log('Database eat end !');
 
       }
+
     }
 
     reader.readAsText(file);
