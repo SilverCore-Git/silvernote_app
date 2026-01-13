@@ -24,14 +24,16 @@ const router = useRouter();
 
         <ul
             class="
-                flex flex-wrap gap-4
+                sm:flex sm:flex-wrap
+                grid grid-cols-2
+                gap-4
             "
         >
             <li
                 v-for="(note, index) in notes"
                 :key="index"
                 @click="router.push('/edit/'+note.uuid)"
-                class="w-[250px]"
+                class="sm:max-w-[250px]"
             >
                 <DefaultNoteCard
                     :uuid="note.uuid"
