@@ -2,7 +2,7 @@
   "name": "Silvernote",
   "productName": "Silvernote",
   "version": "1.1.16",
-  "description": "Silvernote",
+  "description": "Silvernote est une application de prise de notes moderne, rapide et sécurisée. Organisez vos idées, dossiers et tags, sur tous vos appareils.",
   "dev": false,
   "main": "src/app.js",
   "repository": {
@@ -19,9 +19,9 @@
     "maj:front": "node scripts/maj_front",
     "icon": "npx electron-icon-maker --input=resources/icon.png --output=resources",
     "build:flathub": "npm i && npm run build:linux && mkdir build-dir && npm run flathub",
-    "flathub": "flatpak-builder --force-clean build-dir fr.silvercore.Silvernote.yml",
+    "flathub:build": "flatpak-builder --force-clean build-dir fr.silvercore.Silvernote.yml",
     "flathub:start": "flatpak-builder --run build-dir fr.silvercore.Silvernote.yml silvernote",
-    "flathub:full": "rm -rf build-dir .flatpak-builder && npm run flathub && npm run flathub:start"
+    "flathub": "rm -rf build-dir .flatpak-builder && npm run flathub:build && npm run flathub:start"
   },
   "keywords": [],
   "author": {
