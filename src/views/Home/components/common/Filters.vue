@@ -19,18 +19,46 @@ const ShowNewTagPopup = ref<boolean>(false);
 
     <div
         class="
-            flex flex-row justify-start items-center
-            pl-1 gap-4 w-full
+            flex flex-col justify-start items-center
+            pl-1 gap-4 w-full 
         "
     >
 
-        <span class=" uppercase opacity-60 text-sm whitespace-nowrap">Filtres :</span>
+        <div class="flex md:hidden justify-between items-center w-full">
+
+            <span class=" uppercase opacity-60 text-sm whitespace-nowrap">Filtres :</span>
+
+            <div
+                class="
+                    bg-(--white) border border-(--btn) border-dashed
+                    flex justify-center items-center gap-1 flex-row
+                    px-3 py-1.5 rounded-2xl cursor-pointer
+                    min-w-18 hover:text-(--btn)
+                    transition-all duration-200 ease-in-out
+                "
+                @click="ShowNewTagPopup = true"
+            >
+                
+                <span  class=" text-xs">
+                    <i class="bi bi-plus" />
+                    Filtre
+                </span>
+            </div>
+
+        </div>
 
         <ul
-            class="flex flex-row justify-center items-center gap-4 overflow-x-auto "
+            class="
+                flex flex-row justify-center items-center
+                gap-4 overflow-x-auto w-full 
+            "
         >
+
+            <li class="md:block hidden">
+                <span class=" uppercase opacity-60 text-sm whitespace-nowrap">Filtres :</span>
+            </li>
+
             <Swiper
-                :slides-per-view="'auto'"
                 :space-between="8"
                 :free-mode="true"
                 :modules="[FreeMode]"
@@ -53,8 +81,8 @@ const ShowNewTagPopup = ref<boolean>(false);
                     />
                 </SwiperSlide>
             </Swiper>
-            
-            <li>
+
+            <li class="md:block hidden">
                 <div
                     class="
                         bg-(--white) border border-(--btn) border-dashed
@@ -65,7 +93,7 @@ const ShowNewTagPopup = ref<boolean>(false);
                     "
                     @click="ShowNewTagPopup = true"
                 >
-                    
+
                     <span  class=" text-xs">
                         <i class="bi bi-plus" />
                         Filtre

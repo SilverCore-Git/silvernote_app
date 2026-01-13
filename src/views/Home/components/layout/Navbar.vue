@@ -17,7 +17,7 @@
 
                     <div class="flex flex-col items-start">
                         <span class="text-base font-bold">Silvernote</span>
-                        <span class="text-[var(--text-little)] text-[10px] -mt-1">
+                        <span class="text(--text-little) text-[10px] -mt-1">
                             version {{ version }}
                         </span>
                     </div>
@@ -26,7 +26,7 @@
 
                 <span 
                     v-if="dev" 
-                    class="text-sm text-[var(--btn)]" 
+                    class="text-sm text-(--btn)" 
                     style="letter-spacing: 0.2px;"
                 >
                     Development mode
@@ -92,10 +92,10 @@
                 <li 
                     class="li"
                     @click="setPage('all')"
-                    :class="route.query.page !== 'shared' ? 'bg-[var(--btn)] text-white' : ''"
+                    :class="route.query.page !== 'shared' ? 'bg-(--btn) text-white' : ''"
                 >
                     <i 
-                        :class="route.query.page !== 'shared' ? '' : 'text-[var(--btn)]'"
+                        :class="route.query.page !== 'shared' ? '' : 'text-(--btn)'"
                         class="bi bi-journal-text text-xl"
                     />
                     <span>Toutes les notes</span>
@@ -104,10 +104,10 @@
                 <li 
                     class="li"
                     @click="setPage('shared')"
-                    :class="route.query.page == 'shared' ? 'bg-[var(--btn)] text-white' : ''"
+                    :class="route.query.page == 'shared' ? 'bg-(--btn) text-white' : ''"
                 >
                     <i 
-                        :class="route.query.page == 'shared' ? '' : 'text-[var(--btn)]'"
+                        :class="route.query.page == 'shared' ? '' : 'text-(--btn)'"
                         class="bi bi-people-fill text-xl"
                     />
                     <span>Notes partagées</span>

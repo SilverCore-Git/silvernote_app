@@ -4,10 +4,10 @@
         class="
             flex justify-center items-center flex-row 
             border rounded-2xl bg-(--white)
-            py-3 px-3.5 w-full gap-[10px]
+            py-3 px-3.5 w-full gap-2.5
             transition-all duration-300 ease-in-out
         "
-        :class="isFocus ? 'border-(--btn) text-(--btn)' : 'border-gray-300 text-(--text)'"
+        :class="isFocus ? 'border-(--btn)' : 'border-gray-300'"
     >
 
         <i class="bi bi-search opacity-50" />

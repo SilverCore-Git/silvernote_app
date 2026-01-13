@@ -24,7 +24,7 @@ const hasNotPinnedNotes = computed(() => Notes.value.some(note => note.pinned !=
 <template>
 
     <div
-        class="flex-1 overflow-y-auto flex flex-col gap-8 pb-10 h-full"
+        class="flex-1 overflow-y-auto flex flex-col gap-8 pb-40 h-full"
         v-if="Notes.length || pageQuery == 'shared'"
     >
 
