@@ -18,7 +18,16 @@
             class="w-full outline-none"
             v-model="query"
             @focus="isFocus = true"
-            @blur="isFocus = false"
+        />
+
+        <i 
+            class="
+                bi bi-x 
+                opacity-50 hover:opacity-100 
+                cursor-pointer text-3xl
+                -my-3
+            "
+            @click="isFocus = false"
         />
 
     </search>
