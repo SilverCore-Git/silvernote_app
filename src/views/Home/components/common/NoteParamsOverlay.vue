@@ -49,7 +49,7 @@
                             hidden lg:flex 
                             gap-2 mx-auto w-full 
                             flex-col justify-center items-center
-                            text-4xl text-(--white) font-black
+                            text-4xl font-black
                         "
                     >
                         <i class="bi bi-arrow-right" />

@@ -83,7 +83,7 @@
 
             </div>
 
-            <div class="phone-hidden-flex flex-col gap-2">
+            <div class="flex flex-col gap-2">
 
                 <hr class="mt-3 mb-4 text-gray-400 -mx-4" />
 
