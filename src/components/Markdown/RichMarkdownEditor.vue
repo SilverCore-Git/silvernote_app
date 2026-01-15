@@ -49,9 +49,6 @@ import type { SocketIOProvider } from './SocketIOProvider';
 import { getEditorConfig } from './editorConfig';
 import { createMathCheckDebounced, clearMathCache } from './tiptap-extensions/mathExtension';
 import { createTodoInputExtension } from './tiptap-extensions/todoExtension';
-const todoInputExtension = createTodoInputExtension({
-  value: editor.value,
-} as any);
 import { initializeProvider, loadDocumentContent, cleanupProvider } from './providerManager';
 import './css/DragHandler.scss';
 
@@ -85,7 +82,7 @@ const startAutoSave = () => {
 
 const getColorByImage = async (): Promise<string> => {
   if (colorCache.value) return colorCache.value;
-  if (!user.value?.id) return '#6200ee'; // Couleur par défaut plus sympa
+  if (!user.value?.id) return '#6200ee';
 
   try {
     const res = await fetch(`${api_url}/api/user/by/id/${user.value.id}`, { credentials: 'include' });
@@ -98,82 +95,56 @@ const getColorByImage = async (): Promise<string> => {
   }
 };
 
-// the last
-// const initEditor = async () => {
-//   const ydoc = new Y.Doc();
-//   const todoInputExtension = createTodoInputExtension({
-//     value: editor.value,
-//   } as any);
-//   const userColor = await getColorByImage();
 
-//   // Initialize provider with sync handling
-//   provider = await initializeProvider(
-//     api_url,
-//     props.data.uuid,
-//     user.value?.id || '',
-//     ydoc,
-//     (command, content) => {
-//       if (command === 'insertContent' && editor.value) {
-//         editor.value.commands.setContent(content);
-//       }
-//     }
-//   );
+async function initEditor(): Promise<void>
+{
 
-//   const mathCheckDebounced = createMathCheckDebounced();
-
-//   // Create editor with optimized config
-//   editor.value = new Editor({
-//     ...getEditorConfig({
-//       editable: props.editable,
-//       ydoc,
-//       provider: provider as any,
-//       todoInputExtension,
-//       userColor,
-//       userName: user.value?.username || 'Invité',
-//       userAvatar: user.value?.imageUrl,
-//       onMathCheck: () => {
-//         if (editor.value) {
-//           mathCheckDebounced(editor.value as any);
-//         }
-//       },
-//     }),
-//   });
-
-//   await nextTick();
-
-//   // Load content
-//   if (editor.value) {
-//     loadDocumentContent(editor.value as any, ydoc, props.data.content);
-//   }
-
-//   isLoaded.value = true;
-//   loader.value = false;
-// };
-
-
-//  the new
-const initEditor = async () => {
-
+  console.time('Editor Init Total');
   const ydoc = new Y.Doc();
   
-  const [userColor, socketProvider] = await Promise.all([
-    getColorByImage(),
-    initializeProvider(api_url, props.data.uuid, user.value?.id || '', ydoc, (command, content) => {
+  console.time('Provider Init');
+  const providerPromise = initializeProvider(
+    api_url,
+    props.data.uuid,
+    user.value?.id || '',
+    ydoc,
+    (command, content) => {
       if (command === 'insertContent' && editor.value) {
         editor.value.commands.setContent(content, false);
       }
+    }
+  );
+
+  const defaultUserColor = '#6200ee';
+  let userColor = defaultUserColor;
+
+  console.time('User Color Fetch');
+  const colorPromise = getColorByImage()
+    .then(color => {
+      console.timeEnd('User Color Fetch');
+      return color;
     })
-  ]);
+    .catch(() => {
+      console.timeEnd('User Color Fetch');
+      return defaultUserColor;
+    });
 
+  const socketProvider = await providerPromise;
+  console.timeEnd('Provider Init');
   provider = socketProvider;
+  
+  console.time('Editor Creation');
   const mathCheckDebounced = createMathCheckDebounced();
-
+  
+  const todoInputExtension = createTodoInputExtension({
+    value: editor,
+  } as any);
 
   editor.value = new Editor({
     ...getEditorConfig({
       editable: props.editable,
       ydoc,
-      provider: provider as any,
+      provider: socketProvider as any,
       todoInputExtension,
       userColor,
       userName: user.value?.username || 'Invité',
@@ -186,13 +157,35 @@ const initEditor = async () => {
     }),
   });
 
+  console.timeEnd('Editor Creation');
+  
+  console.time('Content Loading');
+
   await nextTick();
+  
   if (editor.value && props.data.content) {
     loadDocumentContent(editor.value as any, ydoc, props.data.content);
   }
 
+  console.timeEnd('Content Loading');
+
   loader.value = false;
-  
+
+  console.timeEnd('Editor Init Total');
+
+  colorPromise.then((color) => {
+    userColor = color;
+    if (socketProvider?.awareness) {
+      const state = socketProvider.awareness.getLocalState();
+      if (state) {
+        socketProvider.awareness.setLocalState({ 
+          ...state, 
+          user: { ...state.user, color } 
+        });
+      }
+    }
+  }).catch(err => console.warn('Failed to fetch user color:', err));
+
 };
 
 
