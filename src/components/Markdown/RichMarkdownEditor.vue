@@ -98,55 +98,26 @@ const getColorByImage = async (): Promise<string> => {
 
 async function initEditor(): Promise<void>
 {
-
-  console.time('Editor Init Total');
+  console.time('📊 Editor Init Total');
   const ydoc = new Y.Doc();
   
-  console.time('Provider Init');
-  const providerPromise = initializeProvider(
-    api_url,
-    props.data.uuid,
-    user.value?.id || '',
-    ydoc,
-    (command, content) => {
-      if (command === 'insertContent' && editor.value) {
-        editor.value.commands.setContent(content, false);
-      }
-    }
-  );
-
-  const defaultUserColor = '#6200ee';
-  let userColor = defaultUserColor;
-
-  console.time('User Color Fetch');
-  const colorPromise = getColorByImage()
-    .then(color => {
-      console.timeEnd('User Color Fetch');
-      return color;
-    })
-    .catch(() => {
-      console.timeEnd('User Color Fetch');
-      return defaultUserColor;
-    });
-
-  const socketProvider = await providerPromise;
-  console.timeEnd('Provider Init');
-  provider = socketProvider;
-  
-  console.time('Editor Creation');
+  // ✅ Create editor FIRST without provider (instant render)
+  console.time('⚙️ Editor Creation');
   const mathCheckDebounced = createMathCheckDebounced();
+  const defaultUserColor = '#6200ee';
   
   const todoInputExtension = createTodoInputExtension({
     value: editor,
   } as any);
 
+  // Create editor with basic config (no collaboration yet)
   editor.value = new Editor({
     ...getEditorConfig({
       editable: props.editable,
       ydoc,
-      provider: socketProvider as any,
+      provider: null, // ✅ No provider initially
       todoInputExtension,
-      userColor,
+      userColor: defaultUserColor,
       userName: user.value?.username || 'Invité',
       userAvatar: user.value?.imageUrl,
       onMathCheck: () => {
@@ -157,35 +128,75 @@ async function initEditor(): Promise<void>
     }),
   });
 
-  console.timeEnd('Editor Creation');
+  console.timeEnd('⚙️ Editor Creation');
   
-  console.time('Content Loading');
-
+  // ✅ Load content immediately
+  console.time('📄 Content Loading');
   await nextTick();
   
   if (editor.value && props.data.content) {
     loadDocumentContent(editor.value as any, ydoc, props.data.content);
   }
 
-  console.timeEnd('Content Loading');
+  console.timeEnd('📄 Content Loading');
 
+  // ✅ Remove loader immediately (UI visible!)
   loader.value = false;
+  console.timeEnd('📊 Editor Init Total');
 
-  console.timeEnd('Editor Init Total');
-
-  colorPromise.then((color) => {
-    userColor = color;
-    if (socketProvider?.awareness) {
-      const state = socketProvider.awareness.getLocalState();
-      if (state) {
-        socketProvider.awareness.setLocalState({ 
-          ...state, 
-          user: { ...state.user, color } 
-        });
+  // ✅ Plug collaboration in the background
+  console.time('⚡ Provider Init & Plugin');
+  initializeProvider(
+    api_url,
+    props.data.uuid,
+    user.value?.id || '',
+    ydoc,
+    (command, content) => {
+      if (command === 'insertContent' && editor.value) {
+        editor.value.commands.setContent(content, false);
       }
     }
-  }).catch(err => console.warn('Failed to fetch user color:', err));
+  )
+    .then((socketProvider) => {
+      console.timeEnd('⚡ Provider Init & Plugin');
+      provider = socketProvider;
+      
+      // Update editor with active provider
+      if (editor.value && editor.value.extensionManager) {
+        const collaborationExt = editor.value.extensionManager.extensions.find(
+          ext => ext.name === 'collaboration'
+        );
+        if (collaborationExt) {
+          collaborationExt.options.provider = socketProvider;
+        }
+      }
 
+      console.log('✅ Collaboration enabled');
+    })
+    .catch((err) => {
+      console.error('❌ Failed to initialize collaboration:', err);
+      console.timeEnd('⚡ Provider Init & Plugin');
+    });
+
+  // ✅ Fetch user color in background
+  console.time('🎨 User Color Fetch');
+  getColorByImage()
+    .then(color => {
+      console.timeEnd('🎨 User Color Fetch');
+      if (provider?.awareness) {
+        const state = provider.awareness.getLocalState();
+        if (state) {
+          provider.awareness.setLocalState({ 
+            ...state, 
+            user: { ...state.user, color } 
+          });
+        }
+      }
+    })
+    .catch(err => {
+      console.timeEnd('🎨 User Color Fetch');
+      console.warn('Failed to fetch user color:', err);
+    });
 };
 
 
