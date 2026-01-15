@@ -12,8 +12,10 @@ import {
     toggleChat, 
     toggleMaximise,
     scrollToBottom,
+    isUserInputMaximised,
     chatBody, // ref
-    isLoading
+    isLoading,
+    toggleUserInputMaximise
 } from './assets/const';
 
 import {
@@ -21,7 +23,6 @@ import {
     messages,
     sendMessage
 } from './composables/useMessage';
-
 
 </script>
 
@@ -151,15 +152,16 @@ import {
 
                     
                 <div 
-                    class="p-4 bg-(--bg2) border-t border-(--text)/5"
+                    class="p-4 bg-(--bg2) border-t border-(--text)/5 "
                 >
 
                     <div
                         class="
                             relative flex items-end
-                            gap-2 bg-(--bg) p-2
+                            gap-2 bg-(--bg) p-2 h-full
                             rounded-xl border border-(--text)/10
-                            focus-within:border-(--btn) transition-all
+                            focus-within:border-(--btn)
+                            transition-all duration-500
                         "
                     >
 
@@ -168,27 +170,29 @@ import {
                             @keydown.enter.exact.prevent="sendMessage()"
                             placeholder="Posez votre question..."
                             :rows="
-                                isMaximised
-                                    ? userInput.length > 90*2 // ~ 2 liness
-                                        ? userInput.length > 90*3 // ~ 4 lignes
-                                            ? userInput.length > 90*4 // ~ 5 lines
-                                                ? userInput.length > 90*5 // ~ 6 lines
-                                                    ? userInput.length > 90*6 // ~ 7 lines
-                                                        ? userInput.length > 90*7 // ~ 8 lines
-                                                            ? '7'
-                                                            : '6'
-                                                        : '5'
-                                                    : '4'
-                                                : '3'
-                                            : '2'
-                                        : '1'
-                                    : userInput.length > 40*2 // ~ 2 liness
-                                        ? userInput.length > 40*3 // ~ 4 lignes
-                                            ? userInput.length > 40*4 // ~ 5 lines
-                                                ? '4'
-                                                : '3'
-                                            : '2'
-                                        : '1'
+                                isUserInputMaximised === 'yes'
+                                    ?   20
+                                    :   isMaximised
+                                            ? userInput.length > 90*2 // ~ 2 liness
+                                                ? userInput.length > 90*3 // ~ 4 lignes
+                                                    ? userInput.length > 90*4 // ~ 5 lines
+                                                        ? userInput.length > 90*5 // ~ 6 lines
+                                                            ? userInput.length > 90*6 // ~ 7 lines
+                                                                ? userInput.length > 90*7 // ~ 8 lines
+                                                                    ? '7'
+                                                                    : '6'
+                                                                : '5'
+                                                            : '4'
+                                                        : '3'
+                                                    : '2'
+                                                : '1'
+                                            : userInput.length > 40*2 // ~ 2 liness
+                                                ? userInput.length > 40*3 // ~ 4 lignes
+                                                    ? userInput.length > 40*4 // ~ 5 lines
+                                                        ? '4'
+                                                        : '3'
+                                                    : '2'
+                                                : '1'
                             "
                             v-autosize
                             class="
@@ -199,22 +203,39 @@ import {
                             "
                         />
 
-                        <button 
-                            @click="sendMessage()"
-                            :disabled="!userInput.trim() || isLoading"
+                        <div 
                             class="
-                                h-9 w-9 rounded-lg
-                                flex items-center justify-center
-                                shrink-0 transition-all mb-0.5
-                            "
-                            :class="
-                                userInput.trim() 
-                                    ? 'bg-(--btn) text-white shadow-lg scale-105' 
-                                    : 'bg-(--text)/10 text-(--text)/20'
+                                flex items-center justify-between
+                                flex-col shrink-0 h-full
                             "
                         >
-                            <i class="bi bi-send-fill text-sm" />
-                        </button>
+
+                            <button 
+                                v-if="isUserInputMaximised == 'can' || isUserInputMaximised == 'yes'"
+                                @click="toggleUserInputMaximise" 
+                                class="header-btn" 
+                                :title="isUserInputMaximised == 'yes' ? 'Réduire' : 'Agrandir'"
+                            >
+                                <i :class="isUserInputMaximised == 'yes' ? 'bi bi-fullscreen-exit' : 'bi bi-fullscreen'" />
+                            </button>
+
+                            <button 
+                                @click="sendMessage()"
+                                :disabled="!userInput.trim() || isLoading"
+                                class="
+                                    h-9 w-9 rounded-lg
+                                     transition-all mb-0.5
+                                "
+                                :class="
+                                    userInput.trim() 
+                                        ? 'bg-(--btn) text-white shadow-lg scale-105' 
+                                        : 'bg-(--text)/10 text-(--text)/20'
+                                "
+                            >
+                                <i class="bi bi-send-fill text-sm" />
+                            </button>
+
+                        </div>
 
                     </div>
 
