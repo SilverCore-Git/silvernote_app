@@ -9,14 +9,19 @@ type Message = {
   content: string;
   timestamp: number;
   isThinking?: boolean;
+  activeTool?: string | null;
 };
 
 const userInput = ref<string>('');
 const messages = ref<Message[]>([]);
 
-const sendMessage = async (a: { text?: string, route?: any } = { text: userInput.value }) => {
 
-    const content = a.text?.trim();
+const sendMessage = async ({ 
+    text = userInput.value, 
+    route
+}: { text?: string, route?: any } = {}) => {
+
+    const content = text?.trim();
     
     if (!content || isLoading.value) return;
 
@@ -45,7 +50,7 @@ const sendMessage = async (a: { text?: string, route?: any } = { text: userInput
         await sendToSilverIA({
 
             message: content,
-            note: a?.route ? a.route?.params?.uuid as string : '',
+            note: route?.params.uuid as string || undefined,
             uuid: useChat.chat.value?.uuid || '',
             model: 'gpt',
             
@@ -58,7 +63,10 @@ const sendMessage = async (a: { text?: string, route?: any } = { text: userInput
             },
 
             onToolUpdate: (toolInfo) => {
-                console.log('SilverIA utilise un outil :', toolInfo);
+                const toolTag = `\n\n[TOOL:${toolInfo || 'Action'}]\n\n`;
+                messages.value[assistantMessageIndex].content += toolTag;
+                messages.value[assistantMessageIndex].isThinking = false;
+                scrollToBottom();
             },
 
             onComplete: () => {

@@ -224,7 +224,7 @@ onBeforeUnmount(async () => {
                             </button>
 
                             <button 
-                                @click="sendMessage()"
+                                @click="sendMessage({ route })"
                                 :disabled="!userInput.trim() || isLoading"
                                 class="
                                     h-9 w-9 rounded-lg
