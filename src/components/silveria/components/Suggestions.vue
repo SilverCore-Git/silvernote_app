@@ -25,7 +25,7 @@ import { suggestions } from '../composables/useSuggestions';
             <button 
                 v-for="sugg in suggestions"
                 :key="sugg"
-                @click="sendMessage(sugg)"
+                @click="sendMessage({ text: sugg })"
                 class="suggestion-tag"
             >
                 {{ sugg }}
