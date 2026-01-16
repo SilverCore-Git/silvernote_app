@@ -1,19 +1,23 @@
 import { ref } from "vue";
 import { isLoading, scrollToBottom } from "../assets/const";
+import sendToSilverIA from "./useSilveriaAPI/sendToSilverIA";
+import useChat from "./useSilveriaAPI/useChat";
 
 type Message = {
   id: number;
   role: 'user' | 'assistant';
   content: string;
   timestamp: number;
+  isThinking?: boolean;
 };
 
 const userInput = ref<string>('');
 const messages = ref<Message[]>([]);
 
-const sendMessage = async (text: string = userInput.value) => {
+const sendMessage = async (a: { text?: string, route?: any } = { text: userInput.value }) => {
 
-    const content = text.trim();
+    const content = a.text?.trim();
+    
     if (!content || isLoading.value) return;
 
     messages.value.push({
@@ -27,25 +31,56 @@ const sendMessage = async (text: string = userInput.value) => {
     isLoading.value = true;
     await scrollToBottom();
 
-    try {
-        // Simulation API
-        await new Promise(r => setTimeout(r, 1500));
-        
-        messages.value.push({
-        id: Date.now() + 1,
+    const assistantMsgId = Date.now() + 1;
+    const assistantMessageIndex = messages.value.push({
+        id: assistantMsgId,
         role: 'assistant',
-        content: "Voici un exemple de **Markdown** :\n\n- Point 1\n- Point 2\n\n```js\nconsole.log('Ceci est bien formaté');\n```",
-        timestamp: Date.now()
+        content: '',
+        timestamp: Date.now(),
+        isThinking: true
+    }) - 1;
+
+    try {
+
+        await sendToSilverIA({
+
+            message: content,
+            note: a?.route ? a.route?.params?.uuid as string : '',
+            uuid: useChat.chat.value?.uuid || '',
+            model: 'gpt',
+            
+            onToken: (token) => {
+                if (messages.value[assistantMessageIndex].isThinking) {
+                   messages.value[assistantMessageIndex].isThinking = false;
+                }
+                messages.value[assistantMessageIndex].content += token;
+                scrollToBottom();
+            },
+
+            onToolUpdate: (toolInfo) => {
+                console.log('SilverIA utilise un outil :', toolInfo);
+            },
+
+            onComplete: () => {
+                messages.value[assistantMessageIndex].isThinking = false;
+                console.log("Réponse terminée");
+            },
+
+            onError: (err) => {
+                messages.value[assistantMessageIndex].content += "\n\n*Une erreur est survenue lors de la génération.*";
+                console.error("Erreur SilverIA:", err);
+            }
+
         });
+
     } catch (e) {
         console.error(e);
+        messages.value[assistantMessageIndex].content = "Erreur de connexion.";
     } finally {
         isLoading.value = false;
         await scrollToBottom();
     }
-
 };
-
 
 export {
     type Message,

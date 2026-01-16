@@ -1,5 +1,9 @@
 <script setup lang="ts">
 
+import { useRoute } from 'vue-router';
+import { onBeforeUnmount, onMounted } from 'vue';
+import { useUser } from '@clerk/vue';
+
 // import components
 import SilverIAButton from './components/SilverIAButton.vue';
 import MessagesContaner from './components/MessagesContaner.vue';
@@ -11,7 +15,6 @@ import {
     isMaximised, 
     toggleChat, 
     toggleMaximise,
-    scrollToBottom,
     isUserInputMaximised,
     chatBody, // ref
     isLoading,
@@ -23,6 +26,24 @@ import {
     messages,
     sendMessage
 } from './composables/useMessage';
+
+import useChat from './composables/useSilveriaAPI/useChat';
+import waitFor from '@/assets/ts/utils/waitFor';
+
+
+const route = useRoute();
+const { user, isLoaded } = useUser();
+
+
+onMounted(async () => {
+    await waitFor(() => isLoaded.value, 10000);
+    await useChat.create(user.value);
+})
+
+onBeforeUnmount(async () => {
+    await useChat.close(useChat?.chat.value?.uuid || '');
+})
+
 
 </script>
 
@@ -131,23 +152,6 @@ import {
 
                     <MessagesContaner />
 
-                    <div 
-                        v-if="isLoading"
-                        class="flex justify-start"
-                    >
-                        <div
-                            class="
-                                bg-(--bg2) border border-(--text)/10
-                                px-4 py-3 rounded-2xl rounded-bl-none
-                                flex gap-1 items-center
-                            "
-                        >
-                            <span class="dot-bounce" />
-                            <span class="dot-bounce delay-100" />
-                            <span class="dot-bounce delay-200" />
-                        </div>
-                    </div>
-
                 </div>
 
                     
@@ -167,7 +171,7 @@ import {
 
                         <textarea
                             v-model="userInput"
-                            @keydown.enter.exact.prevent="sendMessage()"
+                            @keydown.enter.exact.prevent="sendMessage({ route })"
                             placeholder="Posez votre question..."
                             :rows="
                                 isUserInputMaximised === 'yes'
