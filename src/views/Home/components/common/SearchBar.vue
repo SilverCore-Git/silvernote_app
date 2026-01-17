@@ -39,7 +39,7 @@
             <button 
                 class="
                     py-2.5 px-3.5
-                    border border-(--text-little)
+                    border border-gray-300
                     rounded-2xl bg-(--white)/50
                     hover:bg-(--white) cursor-pointer
                     transition-all duration-300 ease-in-out
@@ -57,7 +57,7 @@
                         { rotating: isRotating }
                     ]"
                 />
-                
+
             </button>
 
         </div>

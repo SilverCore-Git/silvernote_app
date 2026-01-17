@@ -2,7 +2,7 @@
 
     <PressAndHold
         @long-press="select_note"
-        @click.stop="open_note(uuid, true)"
+        @click.stop="open_note(uuid)"
         class="h-full"
     >
 
@@ -150,9 +150,9 @@ const note_selected = ref<boolean>(false);
 const sharerIcon = ref<string | undefined>(undefined);
 const shareVisitors = ref<User[]>([]);
 
-const open_note = (uuid: string, pinned: boolean) => {
+const open_note = (uuid: string) => {
   if (props.click) return props.click();
-  router.push(`/edit/${uuid}?pinned=${pinned}`);
+  router.push(`/${props.sharedBy ? 'share' : 'edit'}/${uuid}`);
 };
 
 const select_note = () => {
