@@ -133,7 +133,7 @@ function useFetchShare()
 
         } catch (e) {
             console.error("Erreur fetch share:", e);
-            error.value = "Une erreur réseau est survenue.";
+            // error.value = "Une erreur réseau est survenue.";
             loaded.value = true;
         }
 

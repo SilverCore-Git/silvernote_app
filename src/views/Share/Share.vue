@@ -316,8 +316,6 @@ onMounted(async () => {
 
     await initShare();
 
-
-
     initUseShare(props.uuid)
 
     await waitFor(() => note.value !== undefined, 5_000);
