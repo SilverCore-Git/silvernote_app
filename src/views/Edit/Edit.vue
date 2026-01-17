@@ -87,6 +87,7 @@ onMounted(async () => {
   if (props.uuid == 'new')
   {
     await initNewNote(); 
+    await waitFor(() => title.value !== undefined, 5_000);
     title.value?.focus();
   }
   else

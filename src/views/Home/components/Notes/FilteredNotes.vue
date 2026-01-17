@@ -37,7 +37,7 @@ const router = useRouter();
                 v-for="(note, index) in notes"
                 :key="index"
                 @click="router.push('/edit/'+note.uuid)"
-                class="w-[250px]"
+                class="sm:max-w-[250px]"
             >
                 <DefaultNoteCard
                     :uuid="note.uuid"

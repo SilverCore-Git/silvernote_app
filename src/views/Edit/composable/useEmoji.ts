@@ -20,7 +20,10 @@ export default function
 
     const init_emoji_picker = (
         { note, ref }: 
-        { note :ComputedRef<Note | undefined>, ref: Ref<HTMLElement | null> }
+        { 
+            note : ComputedRef<Note | undefined> | Ref<Note | undefined>, 
+            ref: Ref<HTMLElement | null> 
+        }
     ) => {
 
         if (!ref.value) {

@@ -1,6 +1,6 @@
 import { ref, watch, readonly } from 'vue';
 
-const token = ref<string | null>(null);
+const token = ref<string | undefined>(undefined);
 const isReady = ref(false);
 
 let resolveInit: () => void;
@@ -17,11 +17,11 @@ export function initTokenService
       if (session.value) {
         token.value = await session.value.getToken();
       } else {
-        token.value = null;
+        token.value = undefined;
       }
     } catch (e) {
       console.error("Erreur lors de la récupération du token:", e);
-      token.value = null;
+      token.value = undefined;
     } finally {
       isReady.value = true;
     }
@@ -31,7 +31,7 @@ export function initTokenService
     if (newSession) {
       await refresh();
     } else {
-      token.value = null;
+      token.value = undefined;
     }
   }, { deep: true });
 
@@ -46,7 +46,7 @@ export function initTokenService
     if (signedIn) {
       await refresh();
     } else {
-      token.value = null;
+      token.value = undefined;
     }
   });
 

@@ -3,7 +3,7 @@ import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router
 import Home from './views/Home/Home.vue';
 import Edit from './views/Edit/Edit.vue';
 import Settings from './views/Settings/Settings.vue';
-import Share from './views/Share.vue';
+import Share from './views/Share/Share.vue';
 import Chatbot from './components/chatbot/Chatbot.vue';
 import { signPage, ssoCallback } from './lib/silvernote-vue/index.ts';
 

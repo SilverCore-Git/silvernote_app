@@ -43,7 +43,7 @@ const notes = computed(() => {
                 v-for="(note, index) in notes"
                 :key="index"
                 @click="router.push('/edit/' + note.uuid)"
-                class="w-[250px] cursor-pointer"
+                class="sm:max-w-[250px]"
             >
                 <DefaultNoteCard
                     :uuid="note.uuid"

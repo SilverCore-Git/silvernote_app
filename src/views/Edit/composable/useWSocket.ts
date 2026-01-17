@@ -24,7 +24,7 @@ export default function
 }
 :
 { 
-    note: ComputedRef<Note | undefined>, 
+    note: ComputedRef<Note | undefined> | Ref<Note | undefined>, 
     users: Ref<any[]>, 
     shared: Ref<boolean>, 
     user: Ref<any> 

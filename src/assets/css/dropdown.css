@@ -5,6 +5,7 @@
   backdrop-filter: blur(20px);
   min-width: 200px;
   z-index: 50;
+  background-color: var(--white);
 }
 
 .dropdown:not(.p-0) {
