@@ -5,190 +5,157 @@
         style="background: linear-gradient(to top, transparent 0%, var(--bg2) 100%);"
     ></div>
 
-    <header 
+    <header
         class="
-                flex flex-row fixed inset-x-0 
-                pt-4 z-50 m-4 lg:m-0 lg:mx-[20%]
-            "
+            flex justify-center items-center flex-row
+            fixed inset-x-4 top-8 z-50 
+            md:inset-x-[10%] xl:inset-x-[20%]
+            2xl:inset-x-[25vw]
+        "
     >
 
-        <BackBtn />
-
-        <div 
+        <div
             class="
-                absolute right-0
-                flex flex-row justify-center items-center
-                space-x-5
-            " 
+                flex justify-between items-center
+            "
         >
 
-            <div
-                class="flex -space-x-3"
+            <BackBtn />
+
+            <div 
+                class="
+                    absolute right-0
+                    flex flex-row justify-center items-center
+                    space-x-5
+                " 
             >
 
-                <img
-                    v-if="users.length > 0"
-                    v-for="user in users"
-                    class="w-8 h-8  rounded-full border-1 border-gray-200"
-                    :src="user.imageUrl"
-                />
-
-            </div>
-
-            <a 
-                class="px-2 rounded"
-                :class="share_menu ? 'bg-gray-200 ' : ''"
-                @click="share_menu = !share_menu"
-            >Partage</a>
-
-        </div>
-
-
-
-        <transition name="fade-slide">
-                
-            <div
-                v-if="share_menu && users"
-                class="absolute inset-0 z-50 w-full h-screen"
-                @click="share_menu = false"
-            >
-
-                <div 
-                    class="dropdown absolute 
-                            right-0 bg-[var(--bg2)]"
-                    :style="{ top: `calc(3.4rem + env(safe-area-inset-top))` }"
+                <div
+                    class="flex -space-x-3"
                 >
 
-                    <ul>
-
-                        <li
-                            v-for="user in users"
-                            class="
-                                flex justify-between items-center flex-row
-                                space-x-8
-                            "
-                            @click.stop
-                        >
-
-                            <div
-                                class="
-                                    flex justify-center items-center flex-row
-                                    space-x-3
-                                "
-                            >
-
-                                <img 
-                                    class="w-8 h-8 rounded-full"
-                                    :class="user.isMe 
-                                                ? 'border-2 border-[var(--btn)]'
-                                                : ''
-                                    "
-                                    :src="user.imageUrl" 
-                                />
-
-                                <span>{{ user.username }}</span>
-                                <span 
-                                    v-if="user.isMe"
-                                    class="text-xs -translate-x-3.5 -translate-y-2"
-                                >(Vous)</span>
-
-                            </div>
-
-                            <div>
-                                
-                                <span>
-                                    {{ 
-                                        user.type == 'visitor' 
-                                            ? 'Invité' 
-                                            : 'Auteur'
-                                    }}
-                                </span>
-
-                            </div>
-
-                        </li>
-
-                        <li 
-                            class="flex items-center justify-center"
-                            @click.stop="send_share()"
-                        >
-                            <button 
-                                class="second nohover w-full"
-                            >
-                                Ajouter un.e invité.e
-                            </button>
-                        </li>
-
-                    </ul>
+                    <img
+                        v-if="users.length > 0"
+                        v-for="user in users"
+                        class="w-8 h-8  rounded-full border-1 border-gray-200"
+                        :src="user.imageUrl"
+                    />
 
                 </div>
 
-            </div>
-            
-        </transition>
-
-    </header>
-
-    <section 
-        v-if="loaded && note"
-        class="flex flex-col justify-start items-center h-full mx-auto
-            mt-18 overflow-x-hidden overflow-y-scroll max-w-3xl"
-    >
-
-        <div 
-                class="flex w-[90%] mb-2 items-end"
-                :class="
-                    note?.icon
-                    ? 'justify-between' 
-                    : 'justify-start gap-2'
-                "  
-            >
-
-            <button ref="emojiBtn"><a>
-
-                <img
-                    v-if="note.icon" 
-                    class="w-[80px] h-[80px] p-2 cursor-pointer" 
-                    :src="note.icon" 
-                />
-
                 <a 
-                    v-else
-                    class="px-1"
-                >
-                    Ajouter une icon
-                </a>
+                    class="px-2 rounded"
+                    :class="share_menu ? 'bg-gray-200 ' : ''"
+                    @click="share_menu = !share_menu"
+                >Partage</a>
 
-            </a></button>
+            </div>
+
+
+
+            <transition name="fade-slide">
+                    
+                <Dropdown
+                    v-if="share_menu"
+                    @click="share_menu = false"
+                    :users="users"
+                    :send_share="send_share"
+                />
+                
+            </transition>
 
         </div>
 
-        <input 
-            v-if="loaded"
-            class="text-4xl font-extrabold mb-4 text-[var(--text-strong)]" 
-            type="text" 
-            placeholder="Titre..." 
-            ref="title"
-            v-model="note.title"
-            @input="saveTitle()"
-            :readonly="!editable"
-        />
+    </header>
 
-        <div 
-            v-else
-            class="text-3xl mb-3 font-bold animate-pulse bg-gray-300 h-10 w-[90%] rounded-xl" 
-        ></div>
+    <div
+        class="
+        flex flex-col justify-start items-center 
+        overflow-hidden w-screen mt-22
+        "
+    >
 
-        <RichMarkdownEditor 
-            v-if="note && socket"
-            :id="-2" 
-            :data="note" 
-            :editable="editable" 
-            :uuid="uuid"
-            :socket="socket"
-        />
+        <div
+            class="
+                flex flex-col justify-start items-center 
+                md:max-w-[70vw] lg:max-w-[60vw] xl:max-w-[50vw]
+                2xl:max-w-[40vw] max-w-[90%] w-full h-full
+            "
+        >
 
-    </section>
+            <div
+                class="w-full h-full flex justify-center items-center"
+                v-if="note && note.tags"
+            >
+
+                <div 
+                    class="flex w-[90%] mb-2 items-end"
+                    :class="
+                        note?.icon
+                            ? 'justify-between' 
+                            : 'justify-start gap-2'
+                    "  
+                >
+
+                <button ref="emojiBtn"><a>
+
+                    <img
+                        v-if="note.icon" 
+                        class="w-20 h-20 p-2 cursor-pointer" 
+                        :src="note.icon" 
+                    />
+
+                    <a 
+                        v-else
+                        class="px-1"
+                    >
+                        Ajouter une icon
+                    </a>
+
+                </a></button>
+
+                <!-- <div
+                    v-else
+                    @click="tagManager = true"
+                >
+                    <a class="px-1">Ajouter un tag</a>
+                </div> -->
+                
+                </div>
+
+            </div>
+
+            <div
+                class="w-full h-full flex justify-center items-center flex-col"
+            >
+
+                <input 
+                    v-if="note"
+                    class="
+                        text-4xl font-extrabold mb-4 
+                        text-(--text-strong) w-[90%]
+                        outline-0
+                    " 
+                    type="text" 
+                    placeholder="Titre..." 
+                    ref="title"
+                    v-model="note.title"
+                    @keydown.enter="editor?.commands.focus()"
+                />
+
+                <RichMarkdownEditor
+                    v-if="note"
+                    :editable="true"
+                    :id="-2" 
+                    :uuid="note.uuid"
+                    :data="note"
+                />
+
+            </div>
+
+        </div>
+
+    </div>
 
 
     <Popup
@@ -278,8 +245,6 @@
 
     </div>
 
-    <Loader v-if="!loaded" :icon="false" />
-
     <Success
         v-if="_success?.active"
         :value="_success.value"
@@ -291,7 +256,6 @@
 
 import { api_url } from '@/assets/ts/backend_link';
 import type { Note, User } from '@/assets/ts/type';
-import Loader from '@/components/Loader.vue';
 import { useUser } from '@clerk/vue';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
 import { onMounted, ref, watch } from 'vue';
@@ -302,6 +266,8 @@ import Success from '@/components/alert/Success.vue';
 import utils from '@/assets/ts/utils';
 import Popup from '@/components/popup/Popup.vue';
 import BackBtn from '@/components/backBtn.vue';
+import { editor } from '@/components/Markdown/Editor';
+import Dropdown from './components/dropdown.vue';
 
 
 const props = defineProps<{
