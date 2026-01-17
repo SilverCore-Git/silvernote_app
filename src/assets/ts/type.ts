@@ -40,6 +40,7 @@ export interface Note {
     title: string;
     content: string;
     date: string;
+    user_id?: string;
     tags: number[];
     selected?: boolean;
     updated_at?: number;

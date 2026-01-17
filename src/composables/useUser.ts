@@ -7,7 +7,7 @@ export default function
 {
 
 
-    const getUserByUUID = async (user_id: string, type: 'owner' | 'visitor'): Promise<User> => {
+    const getUserByUUID = async (user_id: string, type?: 'owner' | 'visitor'): Promise<User> => {
     
         const data = await fetch(`${api_url}/api/user/by/id/${user_id}`, {
             credentials: 'include'

@@ -37,7 +37,7 @@
                     <img
                         v-if="users.length > 0"
                         v-for="user in users"
-                        class="w-8 h-8  rounded-full border-1 border-gray-200"
+                        class="w-8 h-8  rounded-full border border-gray-200"
                         :src="user.imageUrl"
                     />
 

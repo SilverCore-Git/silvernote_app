@@ -41,7 +41,7 @@ onMounted(async() => {
                 v-if="SharedNotes && SharedNotes.length"
                 class=" uppercase text-md font-semibold text-(--text-little) "
             >
-                Notes partagées
+                Notes partagées visité récemment
             </span>
 
             <ul
@@ -64,6 +64,7 @@ onMounted(async() => {
                         :content="note.content"
                         :icon="note.icon"
                         :tags="note.tags"
+                        :sharedBy="note.user_id"
                     />
                 </li>
             </ul>
