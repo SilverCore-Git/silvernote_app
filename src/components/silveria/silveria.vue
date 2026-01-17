@@ -67,12 +67,11 @@ onBeforeUnmount(async () => {
                     rounded-2xl shadow-2xl overflow-hidden
                     flex flex-col transition-all duration-500
                     ease-in-out origin-bottom-right
-                    absolute bottom-20 right-0
                 "
                 :class="[
                     isMaximised 
-                        ? 'w-[95vw] h-[85vh] sm:w-[800px] sm:h-[700px]' 
-                        : 'w-[90vw] h-[500px] sm:w-[400px]'
+                        ? 'fixed inset-0 z-50 md:absolute md:inset-auto md:right-0 bottom-20 md:bottom-20 md:w-[800px] md:h-[700px] rounded-none md:rounded-2xl' 
+                        : 'w-[90vw] h-[500px] sm:w-[400px] absolute bottom-20 right-0'
                 ]"
             >
 
