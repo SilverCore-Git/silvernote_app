@@ -75,20 +75,3 @@ import SearchAndTag from './components/layout/SearchAndTag.vue';
 import { isRotating, reload_list } from './composables/Reload';
 
 </script>
-
-<style scoped>
-
-.rotating {
-    animation: rotate 0.6s linear infinite;
-}
-
-@keyframes rotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-</style>
