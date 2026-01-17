@@ -53,10 +53,6 @@ const Btns = [
         href: '/?page=shared'
     },
     {
-        icon: 'bi-stars',
-        href: '/silveria'
-    },
-    {
         icon: 'bi-gear-fill',
         href: '/settings'
     }

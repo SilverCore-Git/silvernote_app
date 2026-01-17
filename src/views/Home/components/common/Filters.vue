@@ -24,9 +24,14 @@ const ShowNewTagPopup = ref<boolean>(false);
         "
     >
 
-        <div class="flex md:hidden justify-between items-center w-full">
+        <div 
+            class="flex md:hidden items-center w-full"
+            :class="Tags.length ? 'justify-between' : 'justify-start'"
+        >
 
-            <span class=" uppercase opacity-60 text-sm whitespace-nowrap">Filtres :</span>
+            <span 
+                class=" uppercase opacity-60 text-sm whitespace-nowrap"
+            >Filtres :</span>
 
             <div
                 class="
