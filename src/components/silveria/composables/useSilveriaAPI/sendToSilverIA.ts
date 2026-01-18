@@ -1,8 +1,9 @@
 import { api_url } from "@/assets/ts/backend_link";
 import { useToken } from "@/composables/useToken";
 import { useTools } from "./useTools"; 
+import { messages } from "../useMessage";
 
-const { addTool, addToolResult } = useTools();
+const { addTool, addToolResult, failTool } = useTools();
 
 
 interface SendStreamOptions {
@@ -88,7 +89,7 @@ export async function sendMessageStream
                     {
                         addTool({
                             name: tool,
-                            id: tool
+                            id: messages.value[messages.value.length].id + tool
                         })
                     }
 
@@ -98,8 +99,11 @@ export async function sendMessageStream
                 {
 
                     const tool = parsedData.tool;
-
-                    addToolResult(tool, content);
+                    if (content.startsWith('Error')) failTool(tool, content);
+                    else addToolResult(
+                        messages.value[messages.value.length].id + tool, 
+                        content
+                    );
                    
                 }
 

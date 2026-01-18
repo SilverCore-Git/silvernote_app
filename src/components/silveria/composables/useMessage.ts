@@ -62,13 +62,6 @@ const sendMessage = async ({
                 scrollToBottom();
             },
 
-            onToolUpdate: (toolInfo) => {
-                const toolTag = `\n\n[TOOL:${toolInfo || 'Action'}]\n\n`;
-                messages.value[assistantMessageIndex].content += toolTag;
-                messages.value[assistantMessageIndex].isThinking = false;
-                scrollToBottom();
-            },
-
             onComplete: () => {
                 messages.value[assistantMessageIndex].isThinking = false;
                 console.log("Réponse terminée");
