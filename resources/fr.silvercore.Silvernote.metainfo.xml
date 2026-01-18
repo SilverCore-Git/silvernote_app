@@ -8,38 +8,63 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>LicenseRef-proprietary</project_license>
 
-  <developer_name>Silvercore</developer_name>
+  <developer_name>Silvercore Inc.</developer_name>
+  <developer_url>https://www.silvercore.fr</developer_url>
+
 
   <description>
+
     <p>
-      Silvernote est une application de prise de notes moderne, rapide et sécurisée. Organisez vos idées, dossiers et tags, sur tous vos appareils.
+      <strong>SilverNote</strong> est une application de prise de notes moderne, rapide et sécurisée,
+      conçue pour centraliser toutes vos idées et informations au même endroit.
+      Accessible sur ordinateur, mobile et web, elle s’adapte à votre façon de travailler,
+      où que vous soyez.
     </p>
-    <p>Fonctionnalités principales :</p>
-    <ul>
-      <li>Interface épurée et distraction-free</li>
-      <li>Organisation par dossiers et étiquettes</li>
-      <li>Synchronisation rapide</li>
-    </ul>
+
+    <p>
+      Grâce à une interface claire et intuitive, vous pouvez créer, modifier et organiser
+      vos notes facilement à l’aide de dossiers, de tags et d’une recherche intelligente,
+      vous permettant de retrouver instantanément vos contenus importants.
+    </p>
+
+    <p>
+      SilverNote intègre également un <strong>assistant intelligent basé sur l’IA</strong>,
+      capable de vous aider à rédiger, reformuler, résumer ou analyser vos notes en quelques secondes.
+      Cet assistant transforme vos notes en un véritable espace de réflexion et de productivité.
+    </p>
+
+    <p>
+      Pensée pour les particuliers comme pour les équipes, l’application synchronise vos données
+      en temps réel et offre une expérience fluide, fiable et respectueuse de votre vie privée.
+    </p>
+
+    <p>
+      <strong>SilverNote</strong> est le compagnon idéal pour capturer vos idées,
+      gérer vos projets et améliorer votre organisation au quotidien.
+    </p>
+    
   </description>
 
-  <launchable type="desktop-id">fr.silvercore.Silvernote.desktop</launchable>
+
+  <launchable type="desktop-id">fr.silvercore.Silvernote</launchable>
 
   <url type="homepage">https://www.silvernote.fr</url>
+  
   <screenshots>
     <screenshot type="default">
-      <image>https://www.silvernote.fr/assets/screenshots/main_window.png</image> 
+      <image>https://www.silvernote.fr/assets/screenshot/home_light.png</image> 
       <caption>Vue principale de l'application</caption>
     </screenshot>
     <screenshot type="default">
-      <image>https://www.silvernote.fr/assets/screenshots/main_window_dark.png</image> 
+      <image>https://www.silvernote.fr/assets/screenshot/home_dark.png</image> 
       <caption>Vue principale de l'application</caption>
     </screenshot>
     <screenshot>
-      <image>https://www.silvernote.fr/assets/screenshots/editor.png</image>
+      <image>https://www.silvernote.fr/assets/screenshot/edit_light.png</image>
       <caption>L'éditeur de texte</caption>
     </screenshot>
     <screenshot>
-      <image>https://www.silvernote.fr/assets/screenshots/editor_dark.png</image>
+      <image>https://www.silvernote.fr/assets/screenshot/edit_dark.png</image>
       <caption>L'éditeur de texte</caption>
     </screenshot>
   </screenshots>
