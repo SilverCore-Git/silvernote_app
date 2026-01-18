@@ -216,11 +216,11 @@ import { nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import MessageDubble from './MessageDubble.vue';
 import { useUser } from '@clerk/vue';
-import db from '@/assets/ts/database/database';
 import { api_url } from '@/assets/ts/backend_link';
 import type { Note } from '@/assets/ts/type';
 import BackBtn from '../backBtn.vue';
 import isMobile from '@/assets/ts/utils/isMobile';
+import { Notes } from '@/assets/ts/database/Var';
 
 const props = defineProps<{
     visible?: boolean;
@@ -428,7 +428,7 @@ const send = async (prompt: string): Promise<void> => {
         let note: Note | undefined = undefined;
 
         if (route.params.id) {
-            note = await db.getNote(Number(route.params.id));
+            note = Notes.value.find(note => note.uuid === route.params.id);
         } else if (route.params.uuid) {
             note!.uuid = String(route.params.uuid);
         }

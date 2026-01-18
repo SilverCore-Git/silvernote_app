@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "fr.silvercore.silvernote",
+      "sha256_cert_fingerprints": [
+        "0F:E5:B9:B1:BA:33:D5:6B:79:16:76:C2:77:6D:EC:CE:CA:E8:D9:30:0F:64:E0:E4:9E:63:21:F3:EC:9F:0C:97"
+      ]
+    }
+  }
+]

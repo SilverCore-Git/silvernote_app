@@ -1,13 +1,11 @@
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
 
 import Home from './views/Home/Home.vue';
-import Edit from './views/Edit.vue';
+import Edit from './views/Edit/Edit.vue';
 import Settings from './views/Settings/Settings.vue';
-import Dev from './views/Dev.vue';
-import Share from './views/Share.vue';
+import Share from './views/Share/Share.vue';
 import Chatbot from './components/chatbot/Chatbot.vue';
 import { signPage, ssoCallback } from './lib/silvernote-vue/index.ts';
-import SearchANote from './components/notes/searchANote.vue';
 
 
 const routes = [
@@ -18,7 +16,7 @@ const routes = [
     meta: { title: 'Accueil - Silvernote' }
   },
   { 
-    path: '/edit/:id', 
+    path: '/edit/:uuid', 
     name: 'Edit', 
     component: Edit,
     props: true,
@@ -27,14 +25,18 @@ const routes = [
   { 
     path: '/settings', 
     name: 'Settings', 
+    props: {
+      page: ""
+    },
     component: Settings,
     meta: { title: 'Settings - Silvernote' }
   },
   { 
-    path: '/dev', 
-    name: 'dev', 
-    component: Dev,
-    meta: { title: 'dev access - Silvernote' }
+    path: '/settings/:page', 
+    name: 'SettingsPage',
+    props: true, 
+    component: Settings,
+    meta: { title: 'Settings - Silvernote' }
   },
   { 
     path: '/silveria', 
@@ -70,12 +72,6 @@ const routes = [
     name: 'ssoCallback',
     component: ssoCallback,
     meta: { title: 'auth - Silvernote' }
-  },
-
-  {
-    path: '/dd',
-
-    component: SearchANote
   }
 ]
 

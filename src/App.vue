@@ -4,39 +4,23 @@
 
   <ShortsCut />
 
-  <div
-    :style="{
-      marginTop: mobile_config.active ? mobile_config.margin.top : 0,
-      marginBottom: mobile_config.active ? mobile_config.margin.bottom : 0,
-    }"
-  >
+  <div>
 
-      <div :class="[ 'Edit', 'Share' ].includes(route.name as string) ? 'flex' : ''">
+      <div>
         
-        <div 
-          v-if="route.name == 'sign' || route.name == 'ssoCallback' || !loader && InitDB.isLoaded()"
-          class="flex-1 relative "
-          :class="
-                  route.name === 'Home'
-                    ? 'mt-(--mt) mr-(--mlr) ml-(--mrl) ' 
-                    : route.name == 'sign' || route.name == 'Edit' || route.name == 'Share'
-                        ? ''
-                        : 'mr-(--mlr) ml-(--mrl)'
-          "
-        >
-          <router-view />
-        </div>
+        <router-view />
 
         <div 
-          v-if="route.name !== 'silveria' && loaded"
+          v-if="loaded"
           class=" z-50 relative"
         >
-          <Chatbot v-if="open_chatbot" />
+          <BtnOverlay />
         </div>
 
       </div>
 
 
+      <!-- loader -->
       <div v-if="loader" class="fixed inset-0 bg-(--bg) z-50">
         <div class="flex justify-center items-center w-screen h-screen">
           <Loader :icon="false" />
@@ -59,7 +43,7 @@
             </div>
 
             <div class="my-10 text-center">
-              <h2 class=" text-2xl ">Pas de connexion internet</h2>
+              <h2 class=" text-2xl ">L'API ne répond pas...</h2>
               <span class="text-sm">Vérifier la connexion réseau et réessayer.</span>
             </div>
 
@@ -76,28 +60,28 @@
 
 <script lang="ts" setup>
 
-import { ref, onMounted, watch, onUnmounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Loader from "./components/Loader.vue";
-import Chatbot from "./components/chatbot/Chatbot.vue";
 import { api_url, Session } from "./assets/ts/backend_link";
 import { init_theme } from "./assets/ts/theme";
-import { useAuth, useUser } from "@clerk/vue";
+import { useAuth, useSession, useUser } from "@clerk/vue";
 import { loaded } from "./assets/ts/utils";
 import InitDB from "./assets/ts/database/init";
-import mobile_config from "@/configs/mobile.json";
 import waitFor from "./assets/ts/utils/waitFor";
 import ShortsCut from "./components/shortsCut.vue";
 import ErrorOverlay from "./components/errorOverlay/errorOverlay.vue";
 import postError from "./components/errorOverlay/postError";
+import BtnOverlay from "./components/common/BtnOverlay.vue";
+import { initTokenService } from "./composables/useToken";
 
 const loader = ref<boolean>(true);
 const status = ref<string>('Chargement de l\'app...');
-const open_chatbot = ref<boolean>(true);
 const session = new Session();
 const route = useRoute();
 const router = useRouter();
 const { user, isLoaded } = useUser();
+const { session: clerkSession } = useSession();
 const { isSignedIn } = useAuth();
 
 const is_offline = ref<boolean>(false);
@@ -105,118 +89,77 @@ const is_offline = ref<boolean>(false);
 
 onMounted(async () => {
 
-  status.value = 'Initialisation des thèmes...';
-  init_theme(); // initialisation du theme dark / light => no timeout 
-  
-  localStorage.removeItem('hiddenNews'); 
-
-  // check si online => voir si cela ne fraine pas le proc
-  let online = false;
   try {
-    const res = await fetch(api_url + '/version');
-    const data = await res.json();
-    online = !!data.v;
-  } catch (err) {
-    online = false;
-  }
 
-  // on attend que clerk soit chargé => si chargement > 5s alors on pass
-  status.value = 'Authentification...';
-  await waitFor(
-    () => isLoaded.value,
-    5_000
-  );
+    init_theme();
+    localStorage.removeItem('hiddenNews');
 
-  // affichage si pas online (enlever ??)
-  if (!online) {
-    console.warn("offline");
-    is_offline.value = true;
-    return;
-  }
+    const [apiCheck] = await Promise.allSettled([
+      fetch(`${api_url}/version`).then(res => res.json()),
+      waitFor(() => isLoaded.value, 5000)
+    ]);
 
-  // si non connecté => redirection sur la page de sign
-  if (!isSignedIn.value) {
-    status.value = 'Redirection vers la page de connection...';
-    if (!route.query.redirectUrl)
+    if (apiCheck.status === 'rejected' || !apiCheck.value?.v)
     {
-      route.query.redirectUrl = route.fullPath;
+      console.warn("API Offline");
+      is_offline.value = true;
+      return;
     }
-    router.push({
-      query: route.query,
-      path: "/auth/sign"
-    });
-    open_chatbot.value = false;
+
+    initTokenService({ user, isLoaded, session: clerkSession });
+
+    if (!isSignedIn.value)
+    {
+      
+      status.value = 'Redirection...';
+      const redirectUrl = route.query.redirectUrl || route.fullPath;
+      router.push({ path: "/auth/sign", query: { ...route.query, redirectUrl } });
+      loader.value = false;
+      return;
+
+    }
+
+    if (user.value?.id)
+    {
+
+      status.value = 'Chargement des notes...';
+      localStorage.setItem('user_id', user.value.id);
+      
+      await InitDB.init(user);
+      await InitDB.main();
+
+      const dbReady = await waitFor(() => InitDB.isLoaded(), 5000);
+      
+      if (!dbReady) {
+        throw new Error("InitDB timeout");
+      }
+
+    }
+
+    status.value = "Prêt !";
+    
     loader.value = false;
-    return;
-  }
+    loaded.value = true;
 
-  // si le user est connecté => init db
-  if (user.value && user.value.id) {
+    await session.create(user.value);
 
-    status.value = 'Enregistrement des données utilisateur...';
-    localStorage.setItem('user_id', user.value?.id);
-    await InitDB.init(user);
+  } catch (err: any) {
 
-    status.value = 'Chargement des notes...';
-    await InitDB.main();
-
-  }
-
-  // attendre le chargement de la db
-  status.value = 'Vérification du chargement des notes...';
-  const dbReady = await waitFor(
-    () => InitDB.isLoaded(),
-    5_000
-  );
-
-  // catch
-  if (!dbReady) {
     postError({ 
-      place: "Initialisation de la db : app.vue",
-      message: "InitDB not loaded",
+      place: "App.vue initialization",
+      message: err.message || "Erreur critique",
       error: "500"
-    })
-    console.error("InitDB not loaded.");
-    return;
+    });
+
+    console.error(err);
+
   }
 
-  // fin du chargement
-  status.value = "Finalisation...";
-
-  loader.value = false;
-  loaded.value = true;
-
-  await session.create(user.value);
-
 });
 
-
-const screen_w = ref(window.innerWidth);
-const body = document.body;
-
-const updateSize = () => {
-  screen_w.value = window.innerWidth;
-};
-
-window.addEventListener("resize", updateSize);
-
-onUnmounted(() => {
-  window.removeEventListener("resize", updateSize);
-});
 
 const reload = () => {
   window.location.reload();
 }
-
-const updateBodyClass = () => {
-  body.classList.remove("lgdesktop", "xldesktop", "xsdesktop", "xxsdesktop", "phone");
-  if (screen_w.value >= 1700) body.classList.add("xldesktop");
-  else if (screen_w.value >= 1400) body.classList.add("lgdesktop");
-  else if (screen_w.value >= 1024) body.classList.add("xsdesktop");
-  else body.classList.add("phone");
-};
-
-watch(screen_w, updateBodyClass);
-onMounted(updateBodyClass);
 
 </script>

@@ -1,10 +1,10 @@
 import utils from "@/assets/ts/utils";
-import db from "@/assets/ts/database/database";
 import { editor } from '../Editor';
 import type { Note } from "@/assets/ts/type";
 
 import ToDoList_css from '../css/ToDoList.css?inline';
 import basic_css from '../css/basic.css?inline';
+import { Notes } from "@/assets/ts/database/Var";
 
 
 export const download = async ({
@@ -12,12 +12,12 @@ export const download = async ({
     id
 }: {
     format: 'pdf' | 'html' | 'snote',
-    id: number;
+    id: string;
 }): Promise<void> => 
 
 {
 
-    const note: Note | undefined = await db.getNote(id);
+    const note: Note | undefined = Notes.value.find(note => note.uuid == id);
     const html = editor.value?.getHTML();
     if (!note || !html) return;
 

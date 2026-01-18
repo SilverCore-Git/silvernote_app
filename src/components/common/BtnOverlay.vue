@@ -1,0 +1,41 @@
+<template>
+
+
+
+    <div
+        class="
+            fixed bottom-22 md:bottom-10 right-6 z-20 gap-4
+            flex flex-col justify-center items-center 
+        "
+    >
+
+        <!-- SilverIA btn -->
+        <Silveria />
+
+        <!-- new note btn -->
+        <button
+            @click="router.push('/edit/new')"
+            class="
+                transition-all duration-300 ease-in-out
+                bg-(--btn) text-(--white)
+                w-16 h-16 rounded-2xl
+                flex justify-center items-center
+                text-5xl shadow-lg cursor-pointer
+                hover:rotate-180 hover:bg-(--btn-hover)
+            "
+        >
+            <i class="bi bi-plus" />
+        </button>
+
+    </div>
+
+</template>
+
+<script lang="ts" setup>
+import { useRouter } from 'vue-router';
+import Silveria from '../silveria/silveria.vue';
+
+
+const router = useRouter();
+
+</script>

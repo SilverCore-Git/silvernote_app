@@ -132,3 +132,78 @@ a:hover {
     transform: translateY(0px);
   }
 }
+
+@keyframes turn {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.turn {
+  animation: turn 0.8s linear infinite;
+}
+
+
+@keyframes bbounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.bounce {
+  animation: bbounce 0.8s ease-in-out infinite;
+}
+
+
+.bounce-hover:hover {
+  animation: bbounce 0.3s ease-in-out;
+}
+
+
+.rotating {
+    animation: rotate 0.6s linear infinite;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* for emoji selector */
+body .emoji-picker {
+  --font: 'Inter', sans-serif;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+  --background-color: var(--white);
+  --popup-background-color: var(--white);
+  --text-color: var(--text-strong);
+  --border-color: var(--btn);
+  --hover-color: var(--bg2);
+  --blue-color: var(--btn);
+
+  --dark-background-color: var(--white);
+  --dark-popup-background-color: var(--white);
+  --dark-text-color: var(--text-strong);
+  --dark-border-color: var(--btn);
+  --dark-hover-color: var(--bg2);
+  --dark-category-button-color: var(--text-strong);
+  --dark-search-background-color: var(--bg1);
+  --dark-search-focus-border-color: var(--btn);
+}
+body .emoji-picker__search {
+  border-radius: 8px !important;
+
+}

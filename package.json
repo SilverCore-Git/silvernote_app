@@ -1,9 +1,9 @@
 {
   "name": "silvernote_front",
   "private": true,
-  "version": "0.3.7-beta",
+  "version": "1.0.0-beta",
   "description": "A simple note taking app",
-  "dev": true,
+  "dev": false,
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -52,6 +52,7 @@
     "floating-vue": "^5.2.2",
     "hammerjs": "^2.0.8",
     "idb": "^8.0.3",
+    "markdown-it": "^14.1.0",
     "marked": "^16.2.1",
     "masonry-layout": "^4.2.2",
     "mathjs": "^14.5.0",

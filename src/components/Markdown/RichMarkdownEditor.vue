@@ -38,7 +38,7 @@ import type { Note } from '@/assets/ts/type';
 import { api_url } from '@/assets/ts/backend_link';
 import { getDominantColor } from '@/assets/ts/GetColorByImage';
 
-import { editor, isLoaded } from './Editor';
+import { editor } from './Editor';
 import { saveNote } from './Function/saveNote.js';
 import ToolsMenu from '@/components/Markdown/ToolsMenu/toolsBar/ToolsMenu.vue';
 import SaveIndicator from './SaveIndicator.vue';
@@ -53,15 +53,15 @@ import { initializeProvider, loadDocumentContent, cleanupProvider } from './prov
 import './css/DragHandler.scss';
 
 const props = defineProps<{
-  id: number
-  editable?: boolean
-  data: Note
-  uuid: string
+  id: number;
+  editable?: boolean;
+  data: Note;
+  uuid: string;
 }>()
 
-const isLargeScreen = ref<boolean>(window.innerWidth >= 1024);
 const loader = ref<boolean>(true);
 const searchBarVisible = ref<boolean>(false);
+const colorCache = ref<string | null>(null);
 const { user } = useUser();
 
 let provider: SocketIOProvider | null = null;
@@ -72,57 +72,79 @@ const focusEditor = () => editor.value?.commands.focus();
 const handleSaveShortcut = (e: KeyboardEvent) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
     e.preventDefault();
-    saveNote(props.data.id);
+    saveNote(props.data.uuid);
   }
 };
 
-const updateSize = () => { isLargeScreen.value = window.innerWidth >= 1024; };
-
 const startAutoSave = () => {
-  autosaveInterval = setInterval(() => saveNote(props.data.id), 10 * 1000);
+  autosaveInterval = setInterval(() => saveNote(props.data.uuid), 10 * 1000);
 };
 
 const getColorByImage = async (): Promise<string> => {
-  if (!user.value?.id) return '#000000';
+  if (colorCache.value) return colorCache.value;
+  if (!user.value?.id) return '#6200ee';
+
   try {
     const res = await fetch(`${api_url}/api/user/by/id/${user.value.id}`, { credentials: 'include' });
     const data = await res.json();
-    return data.imageUrl ? getDominantColor(data.imageUrl) : '#000000';
-  } catch (error) {
-    console.error('Error fetching user image:', error);
-    return '#000000';
+    const color = data.imageUrl ? await getDominantColor(data.imageUrl) : '#6200ee';
+    colorCache.value = color;
+    return color;
+  } catch {
+    return '#6200ee';
   }
 };
 
 
-const initEditor = async () => {
-  const ydoc = new Y.Doc();
-  const todoInputExtension = createTodoInputExtension({
-    value: editor.value,
-  } as any);
-  const userColor = await getColorByImage();
+async function initEditor(): Promise<void>
+{
 
-  // Initialize provider with sync handling
-  provider = await initializeProvider(
+  console.time('Editor Init Total');
+  const ydoc = new Y.Doc();
+  
+  console.time('Provider Init');
+  const providerPromise = initializeProvider(
     api_url,
     props.data.uuid,
     user.value?.id || '',
     ydoc,
     (command, content) => {
       if (command === 'insertContent' && editor.value) {
-        editor.value.commands.setContent(content);
+        editor.value.commands.setContent(content, false);
       }
     }
   );
 
-  const mathCheckDebounced = createMathCheckDebounced();
+  const defaultUserColor = '#6200ee';
+  let userColor = defaultUserColor;
 
-  // Create editor with optimized config
+  console.time('User Color Fetch');
+  const colorPromise = getColorByImage()
+    .then(color => {
+      console.timeEnd('User Color Fetch');
+      return color;
+    })
+    .catch(() => {
+      console.timeEnd('User Color Fetch');
+      return defaultUserColor;
+    });
+
+  const socketProvider = await providerPromise;
+  console.timeEnd('Provider Init');
+  provider = socketProvider;
+  
+  console.time('Editor Creation');
+  const mathCheckDebounced = createMathCheckDebounced();
+  
+  const todoInputExtension = createTodoInputExtension({
+    value: editor,
+  } as any);
+
   editor.value = new Editor({
     ...getEditorConfig({
       editable: props.editable,
       ydoc,
-      provider: provider as any,
+      provider: socketProvider as any,
       todoInputExtension,
       userColor,
       userName: user.value?.username || 'Invité',
@@ -135,32 +157,50 @@ const initEditor = async () => {
     }),
   });
 
-  await nextTick();
+  console.timeEnd('Editor Creation');
+  
+  console.time('Content Loading');
 
-  // Load content
-  if (editor.value) {
+  await nextTick();
+  
+  if (editor.value && props.data.content) {
     loadDocumentContent(editor.value as any, ydoc, props.data.content);
   }
 
-  isLoaded.value = true;
+  console.timeEnd('Content Loading');
+
   loader.value = false;
+
+  console.timeEnd('Editor Init Total');
+
+  colorPromise.then((color) => {
+    userColor = color;
+    if (socketProvider?.awareness) {
+      const state = socketProvider.awareness.getLocalState();
+      if (state) {
+        socketProvider.awareness.setLocalState({ 
+          ...state, 
+          user: { ...state.user, color } 
+        });
+      }
+    }
+  }).catch(err => console.warn('Failed to fetch user color:', err));
+
 };
 
 
-onMounted(() => {
-  window.addEventListener('resize', updateSize);
+onMounted(async () => {
   window.addEventListener('keydown', handleSaveShortcut)
-  initEditor();
+  await initEditor();
   startAutoSave();
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', updateSize);
   window.removeEventListener('keydown', handleSaveShortcut)
   if (editor.value) editor.value.destroy();
   clearMathCache();
   cleanupProvider(provider as any, autosaveInterval);
-  saveNote(props.data.id);
+  saveNote(props.data.uuid);
 });
 
 </script>

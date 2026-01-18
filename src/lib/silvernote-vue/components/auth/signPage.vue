@@ -2,10 +2,11 @@
 
 import { onMounted, ref, watch } from 'vue';
 
-import SignIn from './SignIn.vue';
-import SignUp from './SignUp.vue';
+// import SignIn from './SignIn.vue';
+// import SignUp from './SignUp.vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useAuth } from '@clerk/vue';
+import { useAuth, SignIn, SignUp } from '@clerk/vue';
+import { clerkAppearanceSettings } from '@/assets/ts/theme';
 
 const route = useRoute();
 const router = useRouter();
@@ -66,7 +67,7 @@ watch(() => route.query.form, () => {
           :class="form != 'signup' ? 'flex' : 'hidden'"
         >
 
-            <SignIn />
+             <SignIn :appearance="clerkAppearanceSettings" />
 
         </div>
 
@@ -77,7 +78,7 @@ watch(() => route.query.form, () => {
           :class="form == 'signup' ? 'flex' : 'hidden'"
         >
 
-            <SignUp />
+            <SignUp :appearance="clerkAppearanceSettings" />
 
         </div>
 

@@ -25,12 +25,12 @@
 
 <script setup lang="ts">
 
-import database from '@/assets/ts/database/database'
 import SearchANote from '@/components/notes/searchANote.vue'
 import { NodeViewWrapper, nodeViewProps } from '@tiptap/vue-3'
 import { onMounted, ref } from 'vue'
 import {  useRouter } from 'vue-router'
 import { saveNote } from '../../Function/saveNote'
+import { Notes } from '@/assets/ts/database/Var'
 
 const props = defineProps({
     ...nodeViewProps,
@@ -46,15 +46,15 @@ onMounted(async () => {
         note.value.id = -3;
     } else {
         try {
-            note.value = await database.getNote(props.node.attrs.noteId) as { title: string, icon?: string, id: number }
+            note.value = Notes.value.find(note => note.uuid == props.node.attrs.noteId) as { title: string, icon?: string, id: number }
         } catch (e) {
             console.error('Erreur récupération note :', e)
         }
     }
 })
 
-const setNote = async (noteId: number) => {
-    note.value = await database.getNote(noteId) as { title: string, icon?: string, id: number };
+const setNote = async (noteId: string) => {
+    note.value = Notes.value.find(note => note.uuid === noteId) as any;
     props.updateAttributes({ noteId });
     await saveNote(noteId);
 }
