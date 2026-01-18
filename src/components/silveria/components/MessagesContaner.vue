@@ -48,12 +48,13 @@ const getToolsForMessage = (messageId: number) => {
                     class="bg-(--bg2) border border-(--text)/10 rounded-xl px-4 py-3 text-sm"
                 >
                     
+                
                     <div class="flex items-center gap-2 mb-2">
 
                         <span class="text-lg">{{ getToolIcon(tool.name) }}</span>
                         <span class="font-medium text-(--text)">{{ tool.name }}</span>
                         
-                        <!-- État du tool -->
+
                         <div class="ml-auto flex items-center gap-2">
 
                             <div v-if="tool.loading" class="flex items-center gap-1.5">
@@ -79,13 +80,6 @@ const getToolsForMessage = (messageId: number) => {
                         </div>
                         
                     </div>
-
-                    <!-- Résultat ou erreur -->
-                    <div v-if="tool.result && !tool.loading" class="mt-2 pt-2 border-t border-(--text)/5">
-                        <div class="text-xs text-(--text)/70 bg-(--bg)/30 rounded-lg p-2 font-mono max-h-32 overflow-y-auto">
-                            {{ tool.result }}
-                        </div>
-                    </div>
                     
                     <div v-if="tool.error" class="mt-2 pt-2 border-t border-red-500/20">
                         <div class="text-xs text-red-500 bg-red-500/10 rounded-lg p-2">
@@ -97,7 +91,6 @@ const getToolsForMessage = (messageId: number) => {
 
             </div>
 
-            <!-- Message principal -->
             <div
                 class="rounded-2xl px-4 py-3 text-sm shadow-sm transition-all"
                 :class="
@@ -106,7 +99,7 @@ const getToolsForMessage = (messageId: number) => {
                     : 'bg-(--bg2) border border-(--text)/10 rounded-bl-none text-(--text)'
                 "
             >
-                <!-- Contenu assistant -->
+            
                 <div v-if="msg.role === 'assistant'">
 
                     <div
@@ -115,17 +108,14 @@ const getToolsForMessage = (messageId: number) => {
                         class="markdown-content prose-custom"
                     ></div>
 
-                    <!-- Indicateur de réflexion -->
                     <div v-if="msg.content === '' || msg.isThinking" class="flex items-center gap-2 py-2">
                         <span class="w-1.5 h-1.5 bg-(--btn) rounded-full animate-bounce" />
                         <span class="w-1.5 h-1.5 bg-(--btn) rounded-full animate-bounce [animation-delay:-0.15s]" />
                         <span class="w-1.5 h-1.5 bg-(--btn) rounded-full animate-bounce [animation-delay:-0.3s]" />
-                        <!-- <span class="text-xs text-(--text)/50 ml-2">Réflexion en cours...</span> -->
                     </div>
 
                 </div>
 
-                <!-- Contenu utilisateur -->
                 <div v-else style="white-space: pre-wrap;">{{ msg.content }}</div>
 
             </div>

@@ -21,10 +21,10 @@ const useTools = () => {
         });
     }
 
-    const addToolResult = (id: string, result: string) => {
+    const addToolResult = (id: string, result?: string) => {
         const tool = tools.value.find(tool => tool.id === id);
         if (tool) {
-            tool.result = result;
+            tool.result = result || '';
             tool.loading = false;
             tool.error = undefined;
         }

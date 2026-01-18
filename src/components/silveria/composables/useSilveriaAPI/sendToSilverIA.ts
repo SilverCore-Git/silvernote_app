@@ -28,7 +28,7 @@ export async function sendMessageStream({
 {
 
     try {
-        
+
         const response = await fetch(`${api_url}/api/ai/send?model=${model}`, {
             method: 'POST',
             headers: {
@@ -88,7 +88,7 @@ export async function sendMessageStream({
                     if (content.startsWith('Error')) {
                         failTool(toolId, content);
                     } else {
-                        addToolResult(toolId, content);
+                        addToolResult(toolId);
                     }
                 }
 
