@@ -52,6 +52,7 @@ const sendMessage = async ({
             message: content,
             note: route?.params.uuid as string || undefined,
             uuid: useChat.chat.value?.uuid || '',
+            messageID: assistantMsgId,
             model: 'gpt',
             
             onToken: (token) => {

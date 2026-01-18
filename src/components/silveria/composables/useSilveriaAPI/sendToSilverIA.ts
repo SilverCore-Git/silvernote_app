@@ -1,26 +1,24 @@
 import { api_url } from "@/assets/ts/backend_link";
 import { useToken } from "@/composables/useToken";
 import { useTools } from "./useTools"; 
-import { messages } from "../useMessage";
 
 const { addTool, addToolResult, failTool } = useTools();
-
 
 interface SendStreamOptions {
     uuid: string;
     message: string;
+    messageID: number;
     note?: string;
     model?: 'gpt' | 'gemini';
-    onToken: (token: string) => void;      // called on token recept
-    onComplete: () => void;                // called on end
-    onError: (error: string) => void;      // called on error
+    onToken: (token: string) => void;
+    onComplete: () => void;
+    onError: (error: string) => void;
 }
 
-
-export async function sendMessageStream
-({
+export async function sendMessageStream({
     uuid,
     message,
+    messageID,
     note,
     model = 'gpt',
     onToken,
@@ -30,7 +28,7 @@ export async function sendMessageStream
 {
 
     try {
-
+        
         const response = await fetch(`${api_url}/api/ai/send?model=${model}`, {
             method: 'POST',
             headers: {
@@ -49,73 +47,58 @@ export async function sendMessageStream
         let buffer = "";
 
         while (true) {
-
             const { done, value } = await reader.read();
-            
-            if (done) {
-                break;
-            }
+            if (done) break;
 
             const chunk = decoder.decode(value, { stream: true });
             buffer += chunk;
 
             const lines = buffer.split("\n\n");
-
             buffer = lines.pop() || "";
 
             for (const line of lines) {
-
                 const trimmedLine = line.trim();
-                
                 if (!trimmedLine.startsWith("data: ")) continue;
 
                 const data = trimmedLine.slice(6);
                 const parsedData = JSON.parse(data);
                 const type = parsedData.type;
                 const content = parsedData.content;
-                
-                if (type === "done")
-                {
+
+                if (type === "done") {
                     onComplete();
-                    return; 
+                    return;
                 }
 
-                else if (type == 'tool_execution')
-                {
-
+                else if (type === "tool_execution") {
                     const tools = parsedData.tools;
 
-                    for (const tool of tools)
-                    {
+                    for (const tool of tools) {
                         addTool({
                             name: tool,
-                            id: messages.value[messages.value.length].id + tool
-                        })
+                            id: messageID + "-" + tool
+                        });
                     }
-
                 }
 
-                else if (type == 'tool_result')
-                {
-
+                else if (type === "tool_result") {
                     const tool = parsedData.tool;
-                    if (content.startsWith('Error')) failTool(tool, content);
-                    else addToolResult(
-                        messages.value[messages.value.length].id + tool, 
-                        content
-                    );
-                   
+                    const toolId = messageID + "-" + tool;
+
+                    if (content.startsWith('Error')) {
+                        failTool(toolId, content);
+                    } else {
+                        addToolResult(toolId, content);
+                    }
                 }
 
-                else if (type == 'error')
-                {
+                else if (type === "error") {
                     onError(content);
                 }
 
                 else {
                     onToken(content);
                 }
-
             }
         }
 
