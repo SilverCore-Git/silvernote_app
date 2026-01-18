@@ -1,5 +1,9 @@
 import { api_url } from "@/assets/ts/backend_link";
 import { useToken } from "@/composables/useToken";
+import { useTools } from "./useTools"; 
+
+const { addTool, addToolResult } = useTools();
+
 
 interface SendStreamOptions {
     uuid: string;
@@ -7,21 +11,22 @@ interface SendStreamOptions {
     note?: string;
     model?: 'gpt' | 'gemini';
     onToken: (token: string) => void;      // called on token recept
-    onToolUpdate?: (info: string) => void; // called on tool use
     onComplete: () => void;                // called on end
     onError: (error: string) => void;      // called on error
 }
 
-export async function sendMessageStream({
+
+export async function sendMessageStream
+({
     uuid,
     message,
     note,
     model = 'gpt',
     onToken,
-    onToolUpdate,
     onComplete,
     onError
-}: SendStreamOptions): Promise<void> {
+}: SendStreamOptions): Promise<void>
+{
 
     try {
 
@@ -63,24 +68,50 @@ export async function sendMessageStream({
                 
                 if (!trimmedLine.startsWith("data: ")) continue;
 
-                const content = trimmedLine.slice(6);
+                const data = trimmedLine.slice(6);
+                const parsedData = JSON.parse(data);
+                const type = parsedData.type;
+                const content = parsedData.content;
                 
-                if (content === "[DONE]") {
+                if (type === "done")
+                {
                     onComplete();
                     return; 
                 }
-                else if (content.startsWith("[TOOLS:")) {
-                    if (onToolUpdate) {
-                        const toolsName = content.replace("[TOOLS:", "").replace("]", "");
-                        onToolUpdate(toolsName);
+
+                else if (type == 'tool_execution')
+                {
+
+                    const tools = parsedData.tools;
+
+                    for (const tool of tools)
+                    {
+                        addTool({
+                            name: tool,
+                            id: tool
+                        })
                     }
+
                 }
-                else if (content.startsWith("[TOOL_RESULT:")) {
-                    console.log("Résultat outil reçu:", content);
+
+                else if (type == 'tool_result')
+                {
+
+                    const tool = parsedData.tool;
+
+                    addToolResult(tool, content);
+                   
                 }
+
+                else if (type == 'error')
+                {
+                    onError(content);
+                }
+
                 else {
                     onToken(content);
                 }
+
             }
         }
 
