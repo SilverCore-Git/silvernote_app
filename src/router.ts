@@ -91,7 +91,7 @@ const router = createRouter({
   history: isFileProtocol
     ? createWebHashHistory(import.meta.env.BASE_URL)  // pour Electron local
     : createWebHistory(import.meta.env.BASE_URL),    // pour Web/Express
-  routes,
+  routes
 });
 
 router.beforeEach((to: any, _from: any, next: any) => {

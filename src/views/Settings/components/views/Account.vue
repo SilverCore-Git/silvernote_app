@@ -1,26 +1,37 @@
 <script setup lang="ts">
-import { clerkAppearanceSettings } from '@/assets/ts/theme';
-import { UserProfile, useUser } from '@clerk/vue';
+  
+import Loader from '@/components/Loader.vue';
+import { SignOutButton, UserProfile, useUser } from '@clerk/vue';
 
 </script>
 
 <template>
 
-  <div class="min-h-screen w-full p-4 lg:p-8 transition-colors duration-300">
+  <div 
+    class="
+      min-h-screen w-full p-4 lg:p-8
+      transition-colors duration-300
+      space-y-8
+    "
+  >
         
-    <header class="mb-8">
+    <header>
     
-      <h1 class="font-bold text-3xl mb-4">
+      <h1 class="font-bold text-3xl">
           Paramettre du compte
       </h1>
 
     </header>
     
-    <UserProfile 
-        :appearance="clerkAppearanceSettings"
-    />
+    <UserProfile :fallback="Loader" />
 
-    <p class=" mt-10 text-(--text-little)">
+    <SignOutButton>
+      <button class="primary danger w-full">
+        Se déconnecter
+      </button>
+    </SignOutButton>
+
+    <p class=" text-(--text-little)">
       User id : {{ useUser().user.value?.id }}
     </p>
 

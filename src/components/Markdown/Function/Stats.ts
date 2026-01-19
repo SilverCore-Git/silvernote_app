@@ -1,52 +1,25 @@
-import type { Editor } from "@tiptap/vue-3";
-import { editor, isLoaded } from '../Editor';
+import { computed } from 'vue';
+import { editor as editorRef } from '../Editor';
 
+export function useEditorStats
+()
+{
+  
+    const editor = editorRef.value;
 
-class Stats {
+    const characterCount = computed(() => {
+        if (!editor) return 0;
+        return editor.storage.characterCount?.characters() ?? 0;
+    });
 
-    public editor: Editor;
+    const wordCount = computed(() => {
+        if (!editor) return 0;
+        return editor.storage.characterCount?.words() ?? 0;
+    });
 
-    constructor(editor: Editor) {
-        this.editor = editor;
-    }
+    return {
+        characterCount,
+        wordCount,
+    };
 
-
-    public getCharacterCount(): number {
-        return this.editor.storage.characterCount.characters();
-    }
-
-    public getWordCount(): number {
-        return this.editor.storage.characterCount.words();
-    }
-
-
-    public getAll() {
-        return {
-        characters: this.getCharacterCount(),
-        words: this.getWordCount(),
-        };
-    }
-    
 }
-
-
-let stats: Stats | null = null;
-
-const initStats = () => {
-  if (isLoaded.value && editor.value) {
-    stats = new Stats(editor.value as Editor);
-  }
-};
-
-const interval = setInterval(() => {
-  if (!stats) {
-    initStats();
-    if (stats) clearInterval(interval);
-  }
-}, 500);
-
-
-export {
-    stats,
-    isLoaded
-};

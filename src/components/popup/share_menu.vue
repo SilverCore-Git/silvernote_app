@@ -129,11 +129,12 @@
             class="primary danger"
             @click="emit('update:modelValue', false)"
           >
-            {{ share_link === '' ? 'Annuler' : 'Fermer' }}
+            {{ share_link == '' ? 'Annuler' : 'Fermer' }}
           </button>
 
           <button
             class="primary"
+            v-if="share_link == ''"
             @click="create_share_link"
           >
             Confirmer
@@ -176,12 +177,9 @@ const visible = ref(props.modelValue);
 watch(() => props.modelValue, v => visible.value = v);
 watch(visible, v => emit('update:modelValue', v));
 
-let ll: number = 0
+
 
 const create_share_link = async () => {
-
-  if (ll === 1) return emit('update:modelValue', false);
-  ll++
 
   const res = await fetch(`${api_url}/api/share/create`, {
     method: 'POST',
@@ -211,6 +209,7 @@ const create_share_link = async () => {
 const copy_link = () => {
   navigator.clipboard.writeText(share_link.value);
 };
+
 </script>
 
 <style>

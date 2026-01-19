@@ -9,11 +9,11 @@
 
       <div
         v-if="show"
-        class="w-48 dropdown bg-[var(--bg2)] border border-[var(--btn)]"
+        class="w-48 dropdown bg-(--bg2) border border-(--btn)"
       >
 
-        <span class="text-xs text-[var(--text-little)]">
-          Couleur du text
+        <span class="text-xs text-(--text-little)">
+          Couleurs du texte
         </span>
 
         <div
@@ -43,7 +43,7 @@
 
         <hr />
 
-        <span class="text-xs text-[var(--text-little)]">
+        <span class="text-xs text-(--text-little)">
           Couleur d'arrière plan
         </span>
 
@@ -62,8 +62,8 @@
               flex justify-center items-center hover:border-2
             "
             :style="{ 
-              backgroundColor: e.color == 'default' ? 'var(--text)' : e.color, 
-              borderColor: darken(e.color == 'default' ? 'var(--text)' : e.color)
+              backgroundColor: e.color == 'default' ? '' : e.color, 
+              borderColor: darken(e.color == 'default' ? '' : e.color)
             }"
 
           ></div>
