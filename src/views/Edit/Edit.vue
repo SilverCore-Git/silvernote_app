@@ -112,6 +112,19 @@ onUnmounted(async () => {
   await database.update(note.value as Note);
 })
 
+watch(() => props.uuid, async () => {
+
+  if (props.uuid == 'new')
+  {
+    await initNewNote();
+  }
+  else
+  {
+    await initExistingNote();
+  }
+
+})
+
 
 </script>
 
