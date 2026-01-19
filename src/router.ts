@@ -63,13 +63,14 @@ const routes = [
 
   // auth
   { 
-    path: '/sauth/sign-in',
+    path: '/sauth/sign-in/:pathMatch(.*)*',
     name: 'Sign-in',
     component: SignIn,
     meta: { title: 'Se connecter - Silvernote' }
   },
+
   { 
-    path: '/sauth/sign-up',
+    path: '/sauth/sign-up/:pathMatch(.*)*',
     name: 'Sign-up',
     component: SignUp,
     meta: { title: 'Se créer un compte - Silvernote' }

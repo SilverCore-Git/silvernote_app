@@ -2,6 +2,10 @@
 
 import { SignIn } from '@clerk/vue';
 import { clerkAppearanceSettings } from '@/assets/ts/theme';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const redirectUrl = route.query.redirectUrl;
 
 </script>
 
@@ -25,6 +29,8 @@ import { clerkAppearanceSettings } from '@/assets/ts/theme';
                     :appearance="clerkAppearanceSettings"
                     routing="path" 
                     path="/sauth/sign-in" 
+                    oauthFlow="popup"
+                    :forceRedirectUrl="redirectUrl"
                     sign-up-url="/sauth/sign-up"
                 />
 
