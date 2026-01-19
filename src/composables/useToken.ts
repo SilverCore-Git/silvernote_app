@@ -1,16 +1,22 @@
-import { ref, watch, readonly } from 'vue';
+import { ref, watch, readonly } from "vue";
 
 const token = ref<string | undefined>(undefined);
 const isReady = ref(false);
 
 let resolveInit: () => void;
-const readyPromise = new Promise<void>((resolve) => {
-  resolveInit = resolve;
-});
+let readyPromise: Promise<void>;
 
-export function initTokenService
-({ isLoaded, isSignedIn, session }: any)
-{
+let refreshInterval: ReturnType<typeof setInterval> | undefined;
+
+function resetReadyPromise() {
+  readyPromise = new Promise<void>((resolve) => {
+    resolveInit = resolve;
+  });
+}
+
+resetReadyPromise();
+
+export function initTokenService({ isLoaded, isSignedIn, session }: any) {
 
   const refresh = async () => {
     try {
@@ -27,31 +33,70 @@ export function initTokenService
     }
   };
 
-  watch(() => session.value, async (newSession) => {
-    if (newSession) {
-      await refresh();
-    } else {
-      token.value = undefined;
-    }
-  }, { deep: true });
+  const autoRefreshToken = () => {
+    if (refreshInterval) clearInterval(refreshInterval);
 
-  watch(isLoaded, async (loaded) => {
-    if (loaded) {
-      await refresh();
-      resolveInit();
-    }
-  }, { immediate: true });
+    refreshInterval = setInterval(async () => {
+      if (session.value) {
+        await refresh();
+      }
+    }, 600000);
+  };
 
-  watch(isSignedIn, async (signedIn) => {
-    if (signedIn) {
-      await refresh();
-    } else {
-      token.value = undefined;
+  resetReadyPromise();
+  isReady.value = false;
+
+  watch(
+    () => session.value,
+    async (newSession) => {
+      if (newSession) {
+        await refresh();
+        autoRefreshToken();
+      } else {
+        token.value = undefined;
+        if (refreshInterval) clearInterval(refreshInterval);
+      }
+    },
+    { deep: true }
+  );
+
+  watch(
+    isLoaded,
+    async (loaded) => {
+      if (loaded) {
+        await refresh();
+        autoRefreshToken();
+        resolveInit();
+      }
+    },
+    { immediate: true }
+  );
+
+  watch(
+    isSignedIn,
+    async (signedIn) => {
+      if (signedIn) {
+        await refresh();
+        autoRefreshToken();
+      } else {
+        token.value = undefined;
+        if (refreshInterval) clearInterval(refreshInterval);
+      }
     }
-  });
+  );
 
   return { refresh };
+}
 
+
+export async function getFreshToken(session: any) {
+  if (!session?.value) return undefined;
+  try {
+    return await session.value.getToken();
+  } catch (e) {
+    console.error("Erreur getToken:", e);
+    return undefined;
+  }
 }
 
 export function useToken() {

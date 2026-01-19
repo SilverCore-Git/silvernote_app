@@ -11,7 +11,7 @@
         <router-view />
 
         <div 
-          v-if="loaded && isSignedIn"
+          v-if="loaded && isSignedIn && !route.path.startsWith('/settings')"
           class=" z-50 relative"
         >
           <BtnOverlay />

@@ -110,7 +110,7 @@ defineProps<{
 
 const emit = defineEmits(['update:visible'])
 
-const { characterCount, wordCount } = useEditorStats(editor);
+const { characterCount, wordCount } = useEditorStats();
 const tagManager = ref<boolean>(false);
 const export_menu = ref<boolean>(false);
 const import_menu = ref<boolean>(false);
