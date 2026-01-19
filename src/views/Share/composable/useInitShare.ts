@@ -1,10 +1,9 @@
 import { ref, type Ref, unref } from 'vue';
 import { api_url } from "@/assets/ts/backend_link";
-import { useToken } from "@/composables/useToken";
 import type { Note, User } from '@/assets/ts/type';
 import useUser from '@/composables/useUser';
 import useWSocket from '@/views/Edit/composable/useWSocket';
-import waitFor from '@/assets/ts/utils/waitFor';
+import useToken from '@/composables/useToken';
 
 const { getUserByUUID } = useUser();
 
@@ -36,8 +35,6 @@ function useFetchShare()
         const { note, users, error, loaded, need_passwd, editable } = _state;
         
         const passwordValue = unref(_passwd);
-        const { token } = useToken();
-        await waitFor(() => token.value != undefined, 1000);
 
         if (req > 0 && error.value === "Une erreur réseau est survenue.") error.value = '';
 
@@ -47,7 +44,7 @@ function useFetchShare()
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token.value}`
+                    'Authorization': `Bearer ${await useToken()}`
                 }
             });
 

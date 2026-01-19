@@ -1,19 +1,17 @@
 import { type Ref } from "vue";
 import { Notes, Tags, SharedNotes } from "./Var";
 import { api_url } from '../backend_link';
-import { useToken } from '@/composables/useToken';
+import useToken from "@/composables/useToken";
 
 
 class InitDB {
 
     private user: Ref<any> | undefined;
     private loaded: boolean;
-    private token: string;
 
     constructor () {
 
         this.loaded = false;
-        this.token = '';
 
     }
 
@@ -29,13 +27,6 @@ class InitDB {
         }
 
         try {
-
-            const { waitUntilReady, token } = useToken();
-
-            await waitUntilReady();
-
-            if (!token.value) return console.error('Token is null => init db');
-            this.token = token.value;
 
             await Promise.all([
                 this.init_cloud_tags(),
@@ -59,7 +50,7 @@ class InitDB {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.token}`
+                'Authorization': `Bearer ${await useToken()}`
             }
         }).then(res => res.json());
         if (data) {
@@ -74,7 +65,7 @@ class InitDB {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.token}`
+                'Authorization': `Bearer ${await useToken()}`
             }
         }).then(res => res.json());
         if (data) {
@@ -88,7 +79,7 @@ class InitDB {
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.token}`
+                'Authorization': `Bearer ${await useToken()}`
             }
         }).then(res => res.json());
 

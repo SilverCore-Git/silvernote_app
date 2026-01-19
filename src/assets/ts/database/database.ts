@@ -1,16 +1,15 @@
 import type { Note, Tag } from '../type';
 import { api_url } from '../backend_link';
 import type { Socket } from 'socket.io-client';
-import { useToken } from '@/composables/useToken';
 import { Notes, Tags } from './Var';
+import useToken from '@/composables/useToken';
 
 class Database {
     
     private async getHeaders() {
-        const { token } = await useToken();
         return {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token.value}`
+            'Authorization': `Bearer ${await useToken()}`
         };
     }
 

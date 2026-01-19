@@ -10,12 +10,12 @@ import type { Note, Tag, User } from '@/assets/ts/type';
 import useWSocket from './composable/useWSocket';
 import { useUser } from '@clerk/vue';
 import { api_url } from '@/assets/ts/backend_link';
-import { useToken } from '@/composables/useToken';
 import waitFor from '@/assets/ts/utils/waitFor';
 import useEmoji from './composable/useEmoji';
 import CreateNewNote from './composable/CreateNewNote';
 import { useRoute, useRouter } from 'vue-router';
 import database from '@/assets/ts/database/database';
+import useToken from '@/composables/useToken';
 
 const props = defineProps<{
   uuid: string;
@@ -62,7 +62,7 @@ const initExistingNote = async () => {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${(useToken()).token.value}`
+      'Authorization': `Bearer ${await useToken()}`
     }
   }).then(res => res.json())
 
