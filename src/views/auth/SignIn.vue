@@ -25,8 +25,7 @@ const redirectUrl = '/sauth/redirect?redirectUrl=' + route.query.redirectUrl;
             >
 
                 <SignIn
-                    routing="path" 
-                    oauthFlow="popup"
+                    routing="path"
                     :forceRedirectUrl="redirectUrl"
                     path="/sauth/sign-in"
                     sign-up-url="/sauth/sign-up"
