@@ -12,7 +12,7 @@
 
         <div class="space-y-6">
 
-          <div class="bg-[var(--bg)]/70 rounded-2xl p-4 border border-[#F28C28]/40 shadow-inner">
+          <div v-if="share_link == ''" class="bg-(--bg)/70 rounded-2xl p-4 border border-[#F28C28]/40 shadow-inner">
 
             <h3 class="text-sm font-semibold mb-3 flex items-center gap-2">
               ⏳ Durée de validité
@@ -26,7 +26,7 @@
                   type="number"
                   min="0"
                   max="365"
-                  class="w-20 px-2 py-1 text-center rounded-xl bg-[var(--bg2)]/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none transition"
+                  class="w-20 px-2 py-1 text-center rounded-xl bg-(--bg2)/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none transition"
                 />
                 <span class="text-sm">jours</span>
               </div>
@@ -37,7 +37,7 @@
                   type="number"
                   min="0"
                   max="24"
-                  class="w-20 px-2 py-1 text-center rounded-xl bg-[var(--bg2)]/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none transition"
+                  class="w-20 px-2 py-1 text-center rounded-xl bg-(--bg2)/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none transition"
                 />
                 <span class="text-sm">heures</span>
               </div>
@@ -46,7 +46,7 @@
 
           </div>
 
-          <div class="bg-[var(--bg)]/70 rounded-2xl p-4 border border-[#F28C28]/40 shadow-inner flex items-center justify-between">
+          <div v-if="share_link == ''" class="bg-(--bg)/70 rounded-2xl p-4 border border-[#F28C28]/40 shadow-inner flex items-center justify-between">
 
             <div class="mr-2">
 
@@ -59,7 +59,7 @@
 
           </div>
 
-          <div class="bg-[var(--bg)]/70 rounded-2xl p-4 border border-[#F28C28]/40 shadow-inner">
+          <div v-if="share_link == ''" class="bg-(--bg)/70 rounded-2xl p-4 border border-[#F28C28]/40 shadow-inner">
 
             <div class="flex justify-between items-center mb-2">
 
@@ -80,7 +80,7 @@
                   v-model="passwd"
                   type="text"
                   placeholder="Entrer un mot de passe..."
-                  class="w-full px-3 py-2 rounded-xl bg-[var(--bg2)]/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none transition"
+                  class="w-full px-3 py-2 rounded-xl bg-(--bg2)/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none transition"
                 />
 
               </div>
@@ -91,7 +91,7 @@
 
           <transition name="fade">
 
-            <div v-if="share_link" class="bg-[var(--bg)]/70 rounded-2xl p-4 border border-[#F28C28]/40 shadow-inner">
+            <div v-if="share_link" class="bg-(--bg)/70 rounded-2xl p-4 border border-[#F28C28]/40 shadow-inner">
 
               <h3 class="text-lg font-semibold mb-2 ">🔗 Lien généré</h3>
 
@@ -101,7 +101,7 @@
                   :value="share_link"
                   type="url"
                   readonly
-                  class="flex-1 rounded-xl px-3 py-2 bg-[var(--bg2)]/80 border border-[#F28C28]/40  outline-none"
+                  class="flex-1 rounded-xl px-3 py-2 bg-(--bg2)/80 border border-[#F28C28]/40  outline-none"
                 />
 
                 <button 
@@ -174,8 +174,16 @@ const editable = ref<boolean>(false);
 const error_content = ref<string>('');
 
 const visible = ref(props.modelValue);
-watch(() => props.modelValue, v => visible.value = v);
-watch(visible, v => emit('update:modelValue', v));
+watch(() => props.modelValue, v => {
+  share_link.value == '';
+  h.value = 0;
+  j.value = 1;
+  passwd.value = '';
+  password.value = false;
+  editable.value = false;
+  error_content.value = '';
+  visible.value = v;
+});
 
 
 
