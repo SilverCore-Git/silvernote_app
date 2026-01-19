@@ -108,7 +108,7 @@ onMounted(async () => {
 
     initTokenService({ user, isLoaded, session: clerkSession });
 
-    if (!isSignedIn.value && route.path != '/sauth/sign-in' && route.path != '/sauth/sign-up')
+    if (!isSignedIn.value && !route.path.startsWith('/sauth'))
     {
       
       status.value = 'Redirection...';

@@ -7,6 +7,7 @@ import Share from './views/Share/Share.vue';
 import Chatbot from './components/chatbot/Chatbot.vue';
 import SignIn from './views/auth/SignIn.vue';
 import SignUp from './views/auth/SignUp.vue';
+import Redirect from './views/auth/Redirect.vue';
 
 
 const routes = [
@@ -63,13 +64,20 @@ const routes = [
 
   // auth
   { 
-    path: '/sauth/sign-in',
+    path: '/sauth/redirect',
+    name: 'Redirect',
+    component: Redirect,
+    meta: { title: 'Redirection - Silvernote' }
+  },
+  { 
+    path: '/sauth/sign-in/:pathMatch(.*)*',
     name: 'Sign-in',
     component: SignIn,
     meta: { title: 'Se connecter - Silvernote' }
   },
+
   { 
-    path: '/sauth/sign-up',
+    path: '/sauth/sign-up/:pathMatch(.*)*',
     name: 'Sign-up',
     component: SignUp,
     meta: { title: 'Se créer un compte - Silvernote' }

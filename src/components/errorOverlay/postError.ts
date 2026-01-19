@@ -33,6 +33,7 @@ const postError = (params: {
   more?: string;
   raw?: unknown;
 }) => {
+
   const finalMessage = params.message ?? extractMessage(params.raw);
 
   const newError: AppError = {
@@ -47,12 +48,14 @@ const postError = (params: {
     more: params.more,
   };
 
-  errors.value.push(newError);
-  activeErrorIndex.value = errors.value.length - 1;
-
   if (!dev) {
     sentErrorToDiscord(newError);
   }
+  else {
+    errors.value.push(newError);
+    activeErrorIndex.value = errors.value.length - 1;
+  }
+
 };
 
 const closeError = (index: number) => {

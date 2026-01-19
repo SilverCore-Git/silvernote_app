@@ -4,7 +4,7 @@
 
         <div
             class="
-                fixed bottom-0 inset-x-0 
+                absolute bottom-0 inset-x-0 
                 bg-(--bg2) shadow-2xl
                 text-4xl py-4 px-8
                 pb-[calc(12px+env(safe-area-inset-bottom))]
