@@ -59,14 +59,16 @@ const exportNote = async () => {
     loading.value = true
 
     try {
+
+        const html = `<!DOCTYPE html>${props.note.content}`
         
         if (selected_ext.value === 'pdf')
         {
-            utils.downloadHtmlToPdf(props.note.title, props.note.content);
+            utils.downloadHtmlToPdf(html, props.note.title);
         }
         else if (selected_ext.value === 'html')
         {
-            utils.downloadHtmlFile(props.note.title, props.note.content);
+            utils.downloadHtmlFile(html, props.note.title);
         }
         else if (selected_ext.value === 'snote')
         {

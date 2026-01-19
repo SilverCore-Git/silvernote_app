@@ -15,7 +15,7 @@
             <i class="bi bi-search opacity-50" />
 
             <input 
-                type="search"
+                type="text"
                 placeholder="Rechercher vôtre note..."
                 class="w-full outline-none"
                 v-model="query"

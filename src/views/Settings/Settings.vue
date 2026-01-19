@@ -18,6 +18,7 @@ defineProps<{
 <template>
 
   <div
+    :key="page"
     class="flex flex-raw h-screen w-screen"
   >
 

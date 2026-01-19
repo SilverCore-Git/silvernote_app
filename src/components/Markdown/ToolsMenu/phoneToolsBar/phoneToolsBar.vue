@@ -37,7 +37,7 @@
               :class="
                 cat == 'MdInputMenu' || action.id == 764532
                   ? `
-                      border border-gray-400 hover:border-[var(--text)] 
+                      border border-gray-400 hover:border-(--text)
                       transition-all duration-200 rounded-lg px-1.5
                     ` 
                   : ''
@@ -51,7 +51,7 @@
             <select
               v-else-if="'actions' in action"
               @change="onSelectAction($event, action.actions)"
-              class="ml-1 rounded bg-[var(--bg2)]"
+              class="ml-1 rounded bg-(--bg2)"
             >
 
               <option

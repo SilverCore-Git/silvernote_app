@@ -37,11 +37,11 @@
                         <div class="flex flex-col text-[12px]">
                         <span>
                             Nombre de mots :
-                            {{ isLoaded ? stats?.getWordCount() : '...' }}
+                            {{ wordCount || '...' }}
                         </span>
                         <span>
                             Nombre de caractères :
-                            {{ isLoaded ? stats?.getCharacterCount() : '...' }}
+                            {{ characterCount || '...' }}
                         </span>
                         </div>
                     </li>
@@ -92,7 +92,6 @@
 <script setup lang="ts">
 
 import { ref } from 'vue'
-import { stats, isLoaded } from '@/components/Markdown/Function/Stats'
 import { editor } from '@/components/Markdown/Editor'
 import type { Note } from '@/assets/ts/type';
 import Import from './common/Import.vue';
@@ -101,6 +100,7 @@ import NoteParamsOverlay from '../Home/components/common/NoteParamsOverlay.vue';
 import { saveNote } from '@/components/Markdown/Function/saveNote';
 import Share_menu from '@/components/popup/share_menu.vue';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
+import { useEditorStats } from '@/components/Markdown/Function/Stats';
 
 defineProps<{
   visible: boolean;
@@ -110,6 +110,7 @@ defineProps<{
 
 const emit = defineEmits(['update:visible'])
 
+const { characterCount, wordCount } = useEditorStats();
 const tagManager = ref<boolean>(false);
 const export_menu = ref<boolean>(false);
 const import_menu = ref<boolean>(false);
