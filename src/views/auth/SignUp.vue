@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 
-import { SignIn } from '@clerk/vue';
+import { SignUp } from '@clerk/vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-const redirectUrl = route.query.redirectUrl;
+const redirectUrl = '/sauth/redirect?redirectUrl=' + route.query.redirectUrl;
 
 </script>
 

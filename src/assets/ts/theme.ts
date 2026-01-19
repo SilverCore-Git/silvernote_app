@@ -1,3 +1,5 @@
+import type { Appearance } from '@clerk/types'
+
 const mediaQuery: MediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
 
 // Vérifie si le système préfère le thème sombre
@@ -55,27 +57,32 @@ mediaQuery.addEventListener("change", () => {
 });
 
 
-const clerkAppearanceSettings = {
+const clerkAppearanceSettings: Appearance = {
+
   variables: {
+
     colorPrimary: "var(--btn)",
+
+    colorTextSecondary: "var(--text)",
     colorText: "var(--text)",
+    colorTextOnPrimaryBackground: "var(--text)",
+    colorInputText: 'var(--text)',
+    colorNeutral: "var(--text)",
+
+    colorForeground: "var(--text)",
+    colorPrimaryForeground: "var(--text-strong)",
+
+    colorMutedForeground: "var(--text-little)",
+    colorMuted: "var(--bg)",
+
     colorBackground: "var(--bg)",
+    colorInputForeground: "var(--text-little)",
+    colorInput: "var(--bg2)",
 
-    colorInputBackground: "var(--bg2)",
-    colorInputBorder: "var(--shadow)",
-    colorInputText: "var(--text-strong)",
+    colorRing: "var(--btn)",
 
-    colorButtonPrimaryBackground: "var(--btn)",
-    colorButtonPrimaryText: "var(--text)",
-    colorButtonPrimaryHoverBackground: "var(--btn-hover)",
-
-    colorLinkText: "var(--btn)",
-  },
-  elements: {
-    card: {
-      borderRadius: "var(--br-card)"
-    }
   }
+
 }
 
 

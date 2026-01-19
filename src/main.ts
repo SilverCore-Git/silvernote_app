@@ -40,6 +40,7 @@ app.use(clerkPlugin, {
   publishableKey: PUBLISHABLE_KEY,
   localization: frFR,
   appearance: clerkAppearanceSettings,
+  afterSignOutUrl: '/sauth/sign-in',
   routerPush: router.push,
   routerReplace: router.replace
 });
