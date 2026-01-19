@@ -11,7 +11,7 @@
         <router-view />
 
         <div 
-          v-if="loaded"
+          v-if="loaded && isSignedIn"
           class=" z-50 relative"
         >
           <BtnOverlay />
@@ -108,12 +108,12 @@ onMounted(async () => {
 
     initTokenService({ user, isLoaded, session: clerkSession });
 
-    if (!isSignedIn.value)
+    if (!isSignedIn.value && route.path != '/sauth/sign-in' && route.path != '/sauth/sign-up')
     {
       
       status.value = 'Redirection...';
       const redirectUrl = route.query.redirectUrl || route.fullPath;
-      router.push({ path: "/auth/sign", query: { ...route.query, redirectUrl } });
+      router.push({ path: "/sauth/sign-in", query: { ...route.query, redirectUrl } });
       loader.value = false;
       return;
 

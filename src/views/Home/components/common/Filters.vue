@@ -64,13 +64,15 @@ const ShowNewTagPopup = ref<boolean>(false);
             </li>
 
             <Swiper
+                :slides-per-view="'auto'" 
                 :space-between="8"
                 :free-mode="true"
                 :modules="[FreeMode]"
+                :observer="true"
+                :observe-parents="true"
+                :watch-overflow="true"
+                class="w-full cursor-grab"
                 v-if="Tags && Tags.length"
-                class="
-                    w-full cursor-grab
-                "
             >
                 <SwiperSlide
                     v-for="tag in Tags"
