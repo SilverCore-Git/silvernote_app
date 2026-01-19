@@ -155,7 +155,7 @@ import { ref, watch } from 'vue';
 import Popup from './Popup.vue';
 import Switch from '../Switch.vue';
 import { api_url } from '@/assets/ts/backend_link';
-import { useToken } from '@/composables/useToken';
+import useToken from '@/composables/useToken';
 
 const props = defineProps<{
   uuid: string;
@@ -185,7 +185,7 @@ const create_share_link = async () => {
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',
-      'Authorization': useToken().token.value!
+      'Authorization': 'Bearer ' + await useToken()
     },
     credentials: 'include',
     body: JSON.stringify({

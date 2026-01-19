@@ -1,6 +1,6 @@
 import { api_url } from "@/assets/ts/backend_link";
-import { useToken } from "@/composables/useToken";
 import { useTools } from "./useTools"; 
+import useToken from "@/composables/useToken";
 
 const { addTool, addToolResult, failTool } = useTools();
 
@@ -33,7 +33,7 @@ export async function sendMessageStream({
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${useToken().token.value}`
+                'Authorization': `Bearer ${await useToken()}`
             },
             body: JSON.stringify({ uuid, message, note }),
         });

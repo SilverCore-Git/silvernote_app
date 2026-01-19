@@ -1,7 +1,7 @@
 import { api_url } from "@/assets/ts/backend_link";
-import { useToken } from "@/composables/useToken";
 import type { Chat } from "./SilverIAtypes";
 import { ref, type Ref } from "vue";
+import useToken from "@/composables/useToken";
 
 class useChat
 {
@@ -15,7 +15,7 @@ class useChat
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${useToken().token.value}`
+                'Authorization': `Bearer ${await useToken()}`
             },
             body: JSON.stringify({ user })
         });
@@ -34,7 +34,7 @@ class useChat
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${useToken().token.value}`,
+                'Authorization': `Bearer ${await useToken()}`,
                 'credentials': 'include'
             },
             body: JSON.stringify({ uuid })

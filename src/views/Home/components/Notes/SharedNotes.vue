@@ -6,24 +6,23 @@ import DefaultNoteCard from '../common/DefaultNoteCard.vue';
 import type { Note } from '@/assets/ts/type';
 import { onMounted, ref } from 'vue';
 import { api_url } from '@/assets/ts/backend_link';
-import { useToken } from '@/composables/useToken';
+import useToken from '@/composables/useToken';
 
 const router = useRouter();
 
 const ShareByMe = ref<Note[]>([]);
 
 onMounted(async() => {
-    const { token, waitUntilReady } = useToken();
-    await waitUntilReady();
 
     ShareByMe.value = (await fetch(`${api_url}/api/share/by/me`, {
         method: 'GET',
         credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token.value}`
+            'Authorization': `Bearer ${await useToken()}`
         }
     }).then(res => res.json())).notes as Note[];
+    
 })
 
 </script>

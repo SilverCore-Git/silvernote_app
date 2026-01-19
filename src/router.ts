@@ -4,7 +4,6 @@ import Home from './views/Home/Home.vue';
 import Edit from './views/Edit/Edit.vue';
 import Settings from './views/Settings/Settings.vue';
 import Share from './views/Share/Share.vue';
-import Chatbot from './components/chatbot/Chatbot.vue';
 import SignIn from './views/auth/SignIn.vue';
 import SignUp from './views/auth/SignUp.vue';
 import Redirect from './views/auth/Redirect.vue';
@@ -39,19 +38,6 @@ const routes = [
     props: true, 
     component: Settings,
     meta: { title: 'Settings - Silvernote' }
-  },
-  { 
-    path: '/silveria', 
-    name: 'silveria', 
-    component: Chatbot,
-    props: {
-      visible: true,
-      fullscreen: true
-    },
-    meta: { 
-      title: 'SilverIA',
-      favicon: '/assets/webp/SilverIA.webp'
-    }
   },
 
   { 

@@ -129,7 +129,7 @@ import NoteParamsOverlay from './NoteParamsOverlay.vue';
 import { Tags } from '@/assets/ts/database/Var';
 import useUser from '@/composables/useUser';
 import { api_url } from '@/assets/ts/backend_link';
-import { useToken } from '@/composables/useToken';
+import useToken from '@/composables/useToken';
 
 const props = defineProps<{
     uuid: string;
@@ -170,7 +170,7 @@ onMounted(async () => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${(useToken()).token.value}`
+                'Authorization': `Bearer ${await useToken()}`
             }
         }).then(res => res.json()).then(res => res.share);
 
