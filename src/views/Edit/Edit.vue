@@ -125,7 +125,6 @@ watch(() => props.uuid, async () => {
 
 })
 
-
 </script>
 
 <template>
