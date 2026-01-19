@@ -176,7 +176,13 @@ const visible = ref(props.modelValue);
 watch(() => props.modelValue, v => visible.value = v);
 watch(visible, v => emit('update:modelValue', v));
 
+let ll: number = 0
+
 const create_share_link = async () => {
+
+  if (ll === 1) return emit('update:modelValue', false);
+  ll++
+
   const res = await fetch(`${api_url}/api/share/create`, {
     method: 'POST',
     headers: { 
