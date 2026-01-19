@@ -5,7 +5,8 @@ import Edit from './views/Edit/Edit.vue';
 import Settings from './views/Settings/Settings.vue';
 import Share from './views/Share/Share.vue';
 import Chatbot from './components/chatbot/Chatbot.vue';
-import { signPage, ssoCallback } from './lib/silvernote-vue/index.ts';
+import SignIn from './views/auth/SignIn.vue';
+import SignUp from './views/auth/SignUp.vue';
 
 
 const routes = [
@@ -62,17 +63,18 @@ const routes = [
 
   // auth
   { 
-    path: '/auth/sign',
-    name: 'sign',
-    component: signPage,
+    path: '/sauth/sign-in',
+    name: 'Sign-in',
+    component: SignIn,
     meta: { title: 'Se connecter - Silvernote' }
   },
   { 
-    path: '/auth/sso-callback',
-    name: 'ssoCallback',
-    component: ssoCallback,
-    meta: { title: 'auth - Silvernote' }
-  }
+    path: '/sauth/sign-up',
+    name: 'Sign-up',
+    component: SignUp,
+    meta: { title: 'Se créer un compte - Silvernote' }
+  },
+
 ]
 
 const isFileProtocol = window.location.protocol === 'file:'
