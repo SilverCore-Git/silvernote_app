@@ -51,6 +51,7 @@ import { createMathCheckDebounced, clearMathCache } from './tiptap-extensions/ma
 import { createTodoInputExtension } from './tiptap-extensions/todoExtension';
 import { initializeProvider, loadDocumentContent, cleanupProvider } from './providerManager';
 import './css/DragHandler.scss';
+import getContrastColor from '@/assets/ts/utils/getContrastColor.js';
 
 const props = defineProps<{
   id: number;
@@ -80,19 +81,29 @@ const startAutoSave = () => {
   autosaveInterval = setInterval(() => saveNote(props.data.uuid), 10 * 1000);
 };
 
-const getColorByImage = async (): Promise<string> => {
-  if (colorCache.value) return colorCache.value;
-  if (!user.value?.id) return '#6200ee';
+const getColorByImage = async (): Promise<{ bg: string, text: string }> => {
+  
+  const defaultBg = '#6200ee';
+
+  const getResult = (bg: string) => ({
+    bg: bg,
+    text: getContrastColor(bg)
+  });
+
+  if (colorCache.value) return getResult(colorCache.value);
+  if (!user.value?.id) return getResult(defaultBg);
 
   try {
     const res = await fetch(`${api_url}/api/user/by/id/${user.value.id}`, { credentials: 'include' });
     const data = await res.json();
-    const color = data.imageUrl ? await getDominantColor(data.imageUrl) : '#6200ee';
+    const color = data.imageUrl ? await getDominantColor(data.imageUrl) : defaultBg;
+    
     colorCache.value = color;
-    return color;
+    return getResult(color);
   } catch {
-    return '#6200ee';
+    return getResult(defaultBg);
   }
+
 };
 
 
@@ -119,15 +130,8 @@ async function initEditor(): Promise<void>
   let userColor = defaultUserColor;
 
   console.time('User Color Fetch');
-  const colorPromise = getColorByImage()
-    .then(color => {
-      console.timeEnd('User Color Fetch');
-      return color;
-    })
-    .catch(() => {
-      console.timeEnd('User Color Fetch');
-      return defaultUserColor;
-    });
+  const colorPromise = getColorByImage();
+
 
   const socketProvider = await providerPromise;
   console.timeEnd('Provider Init');
@@ -173,14 +177,20 @@ async function initEditor(): Promise<void>
 
   console.timeEnd('Editor Init Total');
 
-  colorPromise.then((color) => {
-    userColor = color;
+  colorPromise.then(({ bg, text }) => {
+    
+    userColor = bg; 
+
     if (socketProvider?.awareness) {
       const state = socketProvider.awareness.getLocalState();
       if (state) {
         socketProvider.awareness.setLocalState({ 
           ...state, 
-          user: { ...state.user, color } 
+          user: { 
+            ...state.user, 
+            color: bg,
+            textColor: text
+          } 
         });
       }
     }
