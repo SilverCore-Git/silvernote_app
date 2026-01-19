@@ -3,12 +3,14 @@ import App from './App.vue';
 import router from './router.ts';
 import FloatingVue from 'floating-vue';
 import { clerkPlugin } from '@clerk/vue';
+import { frFR } from '@clerk/localizations'
 import pkg from '../package.json' assert { type: 'json' };
 
 
 import './style.css';
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import postError from './components/errorOverlay/postError.ts';
+import { clerkAppearanceSettings } from './assets/ts/theme.ts';
 
 const PUBLISHABLE_KEY = pkg.dev
   ? import.meta.env.VITE_CLERK_TEST_PUBLISHABLE_KEY
@@ -34,7 +36,13 @@ if (pkg.dev)
   };
 }
 
-app.use(clerkPlugin, { publishableKey: PUBLISHABLE_KEY });
+app.use(clerkPlugin, { 
+  publishableKey: PUBLISHABLE_KEY,
+  localization: frFR,
+  appearance: clerkAppearanceSettings,
+  routerPush: router.push,
+  routerReplace: router.replace
+});
 app.use(FloatingVue);
 
 app.use(router);
