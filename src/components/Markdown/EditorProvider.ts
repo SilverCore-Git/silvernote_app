@@ -69,13 +69,18 @@ export class EditorProvider
       leave(this.room);
       join({ room: this.room, userId: window.localStorage.getItem('user_id') ?? '' });
 
-      let syncDone: boolean = false;
-
       // État initial du document
       socket.on('sync', (state: Uint8Array | any) => {
-        syncDone = true;
-        console.log('📥 Received sync, state size:', state?.length || Object.keys(state || {}).length);
-        
+
+        if (this.synced) return;
+
+        const currentUpdate = Y.encodeStateAsUpdate(this.doc);
+        if (currentUpdate.length > 0) {
+          this.synced = true;
+          this.enableLocalUpdates();
+          return;
+        }
+
         const uint8State =
           state instanceof Uint8Array
             ? state

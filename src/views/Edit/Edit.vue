@@ -27,7 +27,7 @@ const { init_emoji_picker } = useEmoji();
 const emojiBtn = ref<HTMLElement | null>(null);
 const ShowDropdown = ref<boolean>(false);
 const users = ref<User[]>([]);
-const shared = ref<boolean>(false);
+const shared = ref<boolean | undefined>(undefined);
 const hide8moreTags = ref<boolean>(true);
 const note = computed(() => Notes.value.find(note => note.uuid === props.uuid));
 const titleRef = ref<HTMLInputElement | undefined>(undefined);
@@ -66,7 +66,7 @@ const initExistingNote = async () => {
     }
   }).then(res => res.json())
 
-  shared.value = await _fetch.share.uuid === note.value?.uuid
+  shared.value = _fetch.share.uuid === note.value?.uuid
 
 }
 
@@ -352,7 +352,7 @@ watch(() => props.uuid, async () => {
         />
 
         <RichMarkdownEditor
-          v-if="note"
+          v-if="note && shared != undefined"
           :editable="true"
           :id="-2" 
           :uuid="note.uuid"
