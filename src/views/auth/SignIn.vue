@@ -1,10 +1,18 @@
 <script lang="ts" setup>
 
+import isMobile from '@/assets/ts/utils/isMobile';
 import { SignIn } from '@clerk/vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-const redirectUrl = '/sauth/redirect?redirectUrl=' + route.query.redirectUrl;
+const url = new URL('/sauth/redirect', 'http://dummy.local');
+
+url.searchParams.set(
+  'redirectUrl',
+  String(route.query.redirectUrl ?? '')
+);
+
+const redirectUrl = url.pathname + url.search;
 
 </script>
 
@@ -26,7 +34,7 @@ const redirectUrl = '/sauth/redirect?redirectUrl=' + route.query.redirectUrl;
 
                 <SignIn
                     routing="path" 
-                    oauthFlow="popup"
+                    :oauthFlow="isMobile ? 'redirect' : 'popup'"
                     :forceRedirectUrl="redirectUrl"
                     path="/sauth/sign-in"
                     sign-up-url="/sauth/sign-up"
