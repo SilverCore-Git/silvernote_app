@@ -3,8 +3,6 @@ import * as awarenessProtocol from 'y-protocols/awareness';
 import { socket, socketConnected, useRoom } from '@/composables/WSocket';
 import waitFor from '@/assets/ts/utils/waitFor';
 import postError from '../errorOverlay/postError';
-import { Notes } from '@/assets/ts/database/Var';
-import { editor } from './Editor';
 
 export class EditorProvider
 {
@@ -29,8 +27,6 @@ export class EditorProvider
       this.room = room ?? '';
       this.editable = editable ?? true;
       this.awareness = new awarenessProtocol.Awareness(doc);
-
-      console.log('🔧 EditorProvider constructor, room:', this.room);
 
       if (socketConnected.value)
       {
@@ -76,7 +72,8 @@ export class EditorProvider
         if (this.synced) return;
 
         const currentUpdate = Y.encodeStateAsUpdate(this.doc);
-        if (currentUpdate.length > 0) {
+        console.log('leng : ', currentUpdate.length)
+        if (currentUpdate.length > 2) {
           this.synced = true;
           this.enableLocalUpdates();
           return;
@@ -89,7 +86,6 @@ export class EditorProvider
 
         if (uint8State.length > 0) {
           Y.applyUpdate(this.doc, uint8State, 'remote');
-          console.log('✅ Applied sync state');
         }
 
         this.synced = true;
@@ -99,7 +95,6 @@ export class EditorProvider
 
       // Updates distants du document
       socket.on('y-update', (update: Uint8Array | any) => {
-        console.log('📥 Received y-update, size:', update?.length || Object.keys(update || {}).length);
         
         const uint8Update =
           update instanceof Uint8Array
@@ -107,12 +102,11 @@ export class EditorProvider
             : new Uint8Array(Object.values(update));
 
         Y.applyUpdate(this.doc, uint8Update, 'remote');
-        console.log('✅ Applied y-update');
+        
       });
 
       // Updates distants d'awareness (curseurs)
       socket.on('awareness-update', (update: Uint8Array | any) => {
-        console.log('📥 Received awareness-update, size:', update?.length || Object.keys(update || {}).length);
         
         const uint8Update =
           update instanceof Uint8Array
@@ -124,7 +118,7 @@ export class EditorProvider
           uint8Update,
           'remote'
         );
-        console.log('✅ Applied awareness-update');
+        
       });
 
       socket.on('disconnect', () => {
@@ -146,31 +140,26 @@ export class EditorProvider
 
       // Updates locaux du document
       this.updateHandler = (update: Uint8Array, origin: any) => {
-        console.log('📤 Local y-update, origin:', origin, 'synced:', this.synced, 'editable:', this.editable, 'room:', this.room);
         
-        // ✅ Ne pas vérifier 'synced' car TipTap émet des updates dès le début
         if (origin !== 'remote' && this.editable && this.room) {
-          console.log('✅ Emitting y-update, size:', update.length);
           socket.emit('y-update', update);
         } else {
           console.log('❌ Not emitting y-update - origin:', origin, 'editable:', this.editable, 'room:', this.room);
         }
       };
+
       this.doc.on('update', this.updateHandler);
-      console.log('✅ Listening to doc updates');
 
       // Updates locales d'awareness
       this.awarenessUpdateHandler = ({ added, updated, removed }: any) => {
+
         const clients = added.concat(updated).concat(removed);
         const update = awarenessProtocol.encodeAwarenessUpdate(
           this.awareness,
           clients
         );
         
-        console.log('📤 Local awareness-update, clients:', clients.length, 'update size:', update.length);
-        
         if (this.editable && this.room) {
-          console.log('✅ Emitting awareness-update');
           socket.emit('awareness-update', update);
         } else {
           console.log('❌ Not emitting awareness-update - editable:', this.editable, 'room:', this.room);
@@ -179,6 +168,7 @@ export class EditorProvider
 
       this.awareness.on('update', this.awarenessUpdateHandler);
       console.log('✅ Local updates enabled');
+
     }
 
     private disableLocalUpdates()
@@ -198,12 +188,8 @@ export class EditorProvider
 
     destroy()
     {
-
       this.disableLocalUpdates();
       this.awareness.destroy();
-      // Ne pas déconnecter le socket global !
-      // socket.disconnect();
-      
     }
 
 }

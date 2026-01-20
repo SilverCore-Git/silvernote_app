@@ -51,6 +51,7 @@ import { createMathCheckDebounced, clearMathCache } from './tiptap-extensions/ma
 import { createTodoInputExtension } from './tiptap-extensions/todoExtension';
 import './css/DragHandler.scss';
 import getContrastColor from '@/assets/ts/utils/getContrastColor.js';
+import waitFor from '@/assets/ts/utils/waitFor.js';
 
 const props = defineProps<{
   id: number;
@@ -141,6 +142,7 @@ async function initEditor(): Promise<void>
         }
       },
     }),
+    editable: props.editable
   });
 
   await nextTick();
@@ -166,7 +168,12 @@ async function initEditor(): Promise<void>
     }
   }).catch(err => console.warn('Failed to fetch user color:', err));
 
-  if (editor.value && props.data.content && !props.isCollaborative) {
+  await nextTick();
+
+  await waitFor(() => provider.synced, 10_000);
+  
+  if (editor.value && props.data.content && editor.value.getText().length <= 0) {
+    console.log('len : ', editor.value?.getText().length)
     editor.value.commands.setContent(props.data.content);
   }
 
