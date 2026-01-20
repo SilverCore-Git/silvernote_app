@@ -92,11 +92,6 @@ button:hover.scale {
   transform: scale(1.1);
 }
 
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
 
 button.loader,
 button.loader:hover {

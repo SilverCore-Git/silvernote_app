@@ -163,7 +163,6 @@ onBeforeUnmount(async () => {
                             relative flex items-end
                             gap-2 bg-(--bg) p-2 h-full
                             rounded-xl border border-(--text)/10
-                            focus-within:border-(--btn)
                             transition-all duration-500
                         "
                     >
@@ -200,7 +199,7 @@ onBeforeUnmount(async () => {
                             v-autosize
                             class="
                                 w-full bg-transparent border-none
-                                focus:ring-0 text-sm resize-none
+                                text-sm resize-none
                                 max-h-60 py-2 px-2 outline-none
                                 auto-expand-input
                             "
