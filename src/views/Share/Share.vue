@@ -100,9 +100,9 @@
                 <button ref="emojiBtn"><a>
 
                     <img
-                        v-if="note.icon" 
+                        v-if="icon != undefined && note.icon" 
                         class="w-20 h-20 p-2 cursor-pointer" 
-                        :src="note.icon" 
+                        :src="icon"
                     />
 
                     <a 
@@ -130,7 +130,7 @@
             >
 
                 <input 
-                    v-if="note"
+                    v-if="title != undefined"
                     class="
                         text-4xl font-extrabold mb-4 
                         text-(--text-strong) w-[90%]
@@ -138,17 +138,18 @@
                     " 
                     type="text" 
                     placeholder="Titre..." 
-                    ref="title"
-                    v-model="note.title"
+                    ref="titleRef"
+                    v-model="title"
                     @keydown.enter="editor?.commands.focus()"
                 />
 
                 <RichMarkdownEditor
                     v-if="note"
-                    :editable="true"
+                    :editable="editable"
                     :id="-2" 
                     :uuid="note.uuid"
                     :data="note"
+                    :is-collaborative="true"
                 />
 
             </div>
@@ -255,9 +256,8 @@
 <script lang="ts" setup>
 
 import type { Note, User } from '@/assets/ts/type';
-import { useUser } from '@clerk/vue';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import Success from '@/components/alert/Success.vue';
 import Popup from '@/components/popup/Popup.vue';
@@ -275,7 +275,6 @@ const props = defineProps<{
 }>()
 
 const router = useRouter();
-const { user } = useUser();
 const { init_emoji_picker } = useEmoji();
 const { sendShare, initUseShare, isSuccess, successMessage } = useSendShare();
 const { init, verifyPasswd } = useInitShare();
@@ -293,22 +292,32 @@ const _success = computed(() => ({
     value: successMessage.value 
 }));
 const editable = ref<boolean>(false);
+let close: () => void = () => {};
+const title = ref<string | undefined>(undefined);
+const icon = ref<string | undefined>(undefined);
 
 
 const initShare = async () => {
-    await init(
+    title.value = note.value?.title;
+    icon.value = note.value?.icon;
+
+    const result = await init(
         props.uuid,
         passwd,
-        user,
         {
             note,
             users,
             error,
             loaded,
             need_passwd,
-            editable
+            editable,
+            title,
+            icon
         }
     )
+    
+    if (!result) return;
+    close = result.closeSocket;
 }
 
 
@@ -322,10 +331,15 @@ onMounted(async () => {
     if (!note.value) return;
 
     init_emoji_picker({
+        icon,
         note,
         ref: emojiBtn,
     });
 
+})
+
+onUnmounted(() => {
+    close();
 })
 
 </script>

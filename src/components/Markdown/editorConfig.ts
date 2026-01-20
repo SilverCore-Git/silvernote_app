@@ -27,12 +27,11 @@ import { createMathExtension } from './tiptap-extensions/mathExtension';
 import { createTodoInputExtension } from './tiptap-extensions/todoExtension';
 
 import type * as Y from 'yjs';
-import type { SocketIOProvider } from './SocketIOProvider';
 
 interface EditorConfigParams {
   editable?: boolean;
   ydoc: Y.Doc;
-  provider: SocketIOProvider | null;
+  provider: any;
   todoInputExtension: ReturnType<typeof createTodoInputExtension>;
   userColor: string;
   userName: string;

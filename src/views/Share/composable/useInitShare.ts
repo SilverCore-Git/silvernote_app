@@ -1,9 +1,9 @@
-import { ref, type Ref, unref } from 'vue';
+import { type Ref, unref } from 'vue';
 import { api_url } from "@/assets/ts/backend_link";
 import type { Note, User } from '@/assets/ts/type';
 import useUser from '@/composables/useUser';
-import useWSocket from '@/views/Edit/composable/useWSocket';
 import useToken from '@/composables/useToken';
+import { initSocket } from '@/composables/WSocket';
 
 const { getUserByUUID } = useUser();
 
@@ -15,7 +15,6 @@ function useFetchShare()
     let req = 0; 
     let _uuid: string = '';
     let _passwd: Ref<string> | string = '';
-    let _user: Ref<any>;
     let _state: ShareStateRefs | undefined;
 
     interface ShareStateRefs {
@@ -25,14 +24,16 @@ function useFetchShare()
         loaded: Ref<boolean>;
         need_passwd: Ref<boolean>;
         editable: Ref<boolean>;
+        title: Ref<string | undefined>;
+        icon: Ref<string | undefined>;
     }
 
-    async function executeFetch()
+    async function executeFetch(): Promise<{ closeSocket: () => void } | undefined>
     {
         
         if (!_state) return;
 
-        const { note, users, error, loaded, need_passwd, editable } = _state;
+        const { note, users, error, loaded, need_passwd, editable, title, icon } = _state;
         
         const passwordValue = unref(_passwd);
 
@@ -98,18 +99,21 @@ function useFetchShare()
                 editable.value = shareData.editable;
 
                 const owner_user = await getUserByUUID(shareData.user_id, 'owner');
-                if (owner_user) {
+                if (owner_user && !users.value.some(u => u.user_id === owner_user.user_id)) {
                     users.value.push(owner_user);
                 }
 
                 loaded.value = true;
-                
-                useWSocket({
-                    note,
+
+                if (!note.value) return;
+
+                const { closeSocket } = initSocket({
+                    room: note.value.uuid,
                     users,
-                    shared: ref(true),
-                    user: _user
-                });
+                    icon,
+                    title,
+                    userId: shareData.user_id
+                })
 
                 if (shareData.visitor && shareData.visitor.length > 0)
                 {
@@ -126,11 +130,14 @@ function useFetchShare()
 
                 }
 
+                return {
+                    closeSocket
+                }
+
             }
 
         } catch (e) {
             console.error("Erreur fetch share:", e);
-            // error.value = "Une erreur réseau est survenue.";
             loaded.value = true;
         }
 
@@ -140,18 +147,17 @@ function useFetchShare()
     async function init(
         uuid: string, 
         passwd: Ref<string> | string,
-        user: Ref<any>,
         state: ShareStateRefs
-    )
+    ): Promise<{ closeSocket: () => void } | undefined>
     {
         
         _uuid = uuid;
         _passwd = passwd;
-        _user = user;
         _state = state;
         req = 0;
 
-        await executeFetch();
+        return await executeFetch();
+
     }
 
     async function verifyPasswd() {
