@@ -57,6 +57,7 @@ const props = defineProps<{
   editable?: boolean;
   data: Note;
   uuid: string;
+  isCollaborative: boolean;
 }>()
 
 const loader = ref<boolean>(true);
@@ -143,10 +144,6 @@ async function initEditor(): Promise<void>
   });
 
   await nextTick();
-  
-  if (editor.value && props.data.content) {
-    editor.value.commands.setContent(props.data.content);
-  }
 
   loader.value = false;
 
@@ -168,6 +165,10 @@ async function initEditor(): Promise<void>
       }
     }
   }).catch(err => console.warn('Failed to fetch user color:', err));
+
+  if (editor.value && props.data.content && !props.isCollaborative) {
+    editor.value.commands.setContent(props.data.content);
+  }
 
   console.log('Editor initialized');
 

@@ -3,6 +3,8 @@ import * as awarenessProtocol from 'y-protocols/awareness';
 import { socket, socketConnected, useRoom } from '@/composables/WSocket';
 import waitFor from '@/assets/ts/utils/waitFor';
 import postError from '../errorOverlay/postError';
+import { Notes } from '@/assets/ts/database/Var';
+import { editor } from './Editor';
 
 export class EditorProvider
 {
@@ -62,7 +64,6 @@ export class EditorProvider
 
     private setupListeners()
     {
-      console.log('🔧 Setting up EditorProvider listeners for room:', this.room);
 
       const { join, leave } = useRoom();
 
@@ -131,8 +132,6 @@ export class EditorProvider
         this.disableLocalUpdates();
       });
 
-      // ✅ IMPORTANT : Activer les updates locales immédiatement
-      // car Collaboration utilise le doc Y.js directement
       this.enableLocalUpdates();
     }
 

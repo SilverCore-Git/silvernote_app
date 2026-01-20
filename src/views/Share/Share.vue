@@ -149,6 +149,7 @@
                     :id="-2" 
                     :uuid="note.uuid"
                     :data="note"
+                    :is-collaborative="true"
                 />
 
             </div>
