@@ -44,12 +44,11 @@ import ToolsMenu from '@/components/Markdown/ToolsMenu/toolsBar/ToolsMenu.vue';
 import SaveIndicator from './SaveIndicator.vue';
 import PhoneToolsBar from './ToolsMenu/phoneToolsBar/phoneToolsBar.vue';
 import { SearchBar } from './tiptap-extensions/searchAndReplace';
-import type { SocketIOProvider } from './SocketIOProvider';
+import { EditorProvider } from './EditorProvider';
 
 import { getEditorConfig } from './editorConfig';
 import { createMathCheckDebounced, clearMathCache } from './tiptap-extensions/mathExtension';
 import { createTodoInputExtension } from './tiptap-extensions/todoExtension';
-import { initializeProvider, loadDocumentContent, cleanupProvider } from './providerManager';
 import './css/DragHandler.scss';
 import getContrastColor from '@/assets/ts/utils/getContrastColor.js';
 
@@ -65,7 +64,6 @@ const searchBarVisible = ref<boolean>(false);
 const colorCache = ref<string | null>(null);
 const { user } = useUser();
 
-let provider: SocketIOProvider | null = null;
 let autosaveInterval: ReturnType<typeof setInterval> | null = null;
 
 const focusEditor = () => editor.value?.commands.focus();
@@ -110,34 +108,17 @@ const getColorByImage = async (): Promise<{ bg: string, text: string }> => {
 async function initEditor(): Promise<void>
 {
 
-  console.time('Editor Init Total');
+  console.time('Start init editor');
+
   const ydoc = new Y.Doc();
-  
-  console.time('Provider Init');
-  const providerPromise = initializeProvider(
-    api_url,
-    props.data.uuid,
-    user.value?.id || '',
-    ydoc,
-    (command, content) => {
-      if (command === 'insertContent' && editor.value) {
-        editor.value.commands.setContent(content, false);
-      }
-    }
-  );
 
   const defaultUserColor = '#6200ee';
   let userColor = defaultUserColor;
 
-  console.time('User Color Fetch');
   const colorPromise = getColorByImage();
 
-
-  const socketProvider = await providerPromise;
-  console.timeEnd('Provider Init');
-  provider = socketProvider;
+  const provider = new EditorProvider(ydoc);
   
-  console.time('Editor Creation');
   const mathCheckDebounced = createMathCheckDebounced();
   
   const todoInputExtension = createTodoInputExtension({
@@ -148,7 +129,7 @@ async function initEditor(): Promise<void>
     ...getEditorConfig({
       editable: props.editable,
       ydoc,
-      provider: socketProvider as any,
+      provider,
       todoInputExtension,
       userColor,
       userName: user.value?.username || 'Invité',
@@ -161,30 +142,22 @@ async function initEditor(): Promise<void>
     }),
   });
 
-  console.timeEnd('Editor Creation');
-  
-  console.time('Content Loading');
-
   await nextTick();
   
   if (editor.value && props.data.content) {
-    loadDocumentContent(editor.value as any, ydoc, props.data.content);
+    editor.value.commands.setContent(props.data.content);
   }
 
-  console.timeEnd('Content Loading');
-
   loader.value = false;
-
-  console.timeEnd('Editor Init Total');
 
   colorPromise.then(({ bg, text }) => {
     
     userColor = bg; 
 
-    if (socketProvider?.awareness) {
-      const state = socketProvider.awareness.getLocalState();
+    if (provider?.awareness) {
+      const state = provider.awareness.getLocalState();
       if (state) {
-        socketProvider.awareness.setLocalState({ 
+        provider.awareness.setLocalState({ 
           ...state, 
           user: { 
             ...state.user, 
@@ -195,6 +168,8 @@ async function initEditor(): Promise<void>
       }
     }
   }).catch(err => console.warn('Failed to fetch user color:', err));
+
+  console.log('Editor initialized');
 
 };
 
@@ -209,7 +184,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleSaveShortcut)
   if (editor.value) editor.value.destroy();
   clearMathCache();
-  cleanupProvider(provider as any, autosaveInterval);
+  autosaveInterval && clearInterval(autosaveInterval);
   saveNote(props.data.uuid);
 });
 
