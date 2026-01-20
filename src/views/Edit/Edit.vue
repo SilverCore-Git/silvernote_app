@@ -95,13 +95,15 @@ onMounted(async () => {
     room: props.uuid,
     users,
     icon,
-    title
+    title,
+    userId: window.localStorage.getItem('user_id') || ''
   })
 
   close = closeSocket;
 
   init_emoji_picker({
     note,
+    icon,
     ref: emojiBtn,
   });
   update_title();

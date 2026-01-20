@@ -117,7 +117,7 @@ async function initEditor(): Promise<void>
 
   const colorPromise = getColorByImage();
 
-  const provider = new EditorProvider(ydoc);
+  const provider = new EditorProvider(ydoc, props.uuid, props.editable ?? true);
   
   const mathCheckDebounced = createMathCheckDebounced();
   

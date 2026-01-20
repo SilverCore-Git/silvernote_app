@@ -17,19 +17,21 @@ function initSocket ({
     room,
     users,
     title,
-    icon
+    icon,
+    userId
 }: {
     room: string,
     users: Ref<User[]>,
     title: Ref<string | undefined>,
-    icon: Ref<string | undefined>
+    icon: Ref<string | undefined>,
+    userId: string
 }): { closeSocket: () => void }
 {
 
     if (initialized) return { closeSocket };
     initialized = true;
 
-    join(room);
+    join({ room, userId });
 
     const { stopIconAutoSync } = createIconAutoSync(icon);
     const { stopTitleAutoSync } = createTitleAutoSync(title);

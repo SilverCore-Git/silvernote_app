@@ -7,13 +7,15 @@ const useRoom =
 () =>
 {
 
-    const join = (room: string) => {
-        wsocket.emit('join-room', room);
-        socketConnected.value = true;
+    const join = (params: { room: string, userId: string }) => {
+        wsocket.emit('join-room', params);
+        setTimeout(() => {
+            socketConnected.value = true;
+        }, 200);
     }
 
     const leave = (room: string) => {
-        wsocket.emit('leave-room', room);
+        wsocket.emit('leave-room', { room });
         socketConnected.value = false;
     }
 

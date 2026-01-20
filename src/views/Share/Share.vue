@@ -100,9 +100,9 @@
                 <button ref="emojiBtn"><a>
 
                     <img
-                        v-if="note.icon" 
+                        v-if="icon != undefined && note.icon" 
                         class="w-20 h-20 p-2 cursor-pointer" 
-                        :src="note.icon" 
+                        :src="icon"
                     />
 
                     <a 
@@ -130,7 +130,7 @@
             >
 
                 <input 
-                    v-if="note"
+                    v-if="title != undefined"
                     class="
                         text-4xl font-extrabold mb-4 
                         text-(--text-strong) w-[90%]
@@ -138,14 +138,14 @@
                     " 
                     type="text" 
                     placeholder="Titre..." 
-                    ref="title"
-                    v-model="note.title"
+                    ref="titleRef"
+                    v-model="title"
                     @keydown.enter="editor?.commands.focus()"
                 />
 
                 <RichMarkdownEditor
                     v-if="note"
-                    :editable="true"
+                    :editable="editable"
                     :id="-2" 
                     :uuid="note.uuid"
                     :data="note"
@@ -292,9 +292,14 @@ const _success = computed(() => ({
 }));
 const editable = ref<boolean>(false);
 let close: () => void = () => {};
+const title = ref<string | undefined>(undefined);
+const icon = ref<string | undefined>(undefined);
 
 
 const initShare = async () => {
+    title.value = note.value?.title;
+    icon.value = note.value?.icon;
+
     const result = await init(
         props.uuid,
         passwd,
@@ -304,7 +309,9 @@ const initShare = async () => {
             error,
             loaded,
             need_passwd,
-            editable
+            editable,
+            title,
+            icon
         }
     )
     
@@ -323,6 +330,7 @@ onMounted(async () => {
     if (!note.value) return;
 
     init_emoji_picker({
+        icon,
         note,
         ref: emojiBtn,
     });

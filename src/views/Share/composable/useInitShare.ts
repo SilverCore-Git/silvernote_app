@@ -1,4 +1,4 @@
-import { computed, type Ref, unref } from 'vue';
+import { type Ref, unref } from 'vue';
 import { api_url } from "@/assets/ts/backend_link";
 import type { Note, User } from '@/assets/ts/type';
 import useUser from '@/composables/useUser';
@@ -24,6 +24,8 @@ function useFetchShare()
         loaded: Ref<boolean>;
         need_passwd: Ref<boolean>;
         editable: Ref<boolean>;
+        title: Ref<string | undefined>;
+        icon: Ref<string | undefined>;
     }
 
     async function executeFetch(): Promise<{ closeSocket: () => void } | undefined>
@@ -31,7 +33,7 @@ function useFetchShare()
         
         if (!_state) return;
 
-        const { note, users, error, loaded, need_passwd, editable } = _state;
+        const { note, users, error, loaded, need_passwd, editable, title, icon } = _state;
         
         const passwordValue = unref(_passwd);
 
@@ -105,14 +107,12 @@ function useFetchShare()
 
                 if (!note.value) return;
 
-                const title = computed(() => note.value?.title ?? '');
-                const icon  = computed(() => note.value?.icon ?? '');
-
                 const { closeSocket } = initSocket({
                     room: note.value.uuid,
                     users,
                     icon,
-                    title
+                    title,
+                    userId: shareData.user_id
                 })
 
                 if (shareData.visitor && shareData.visitor.length > 0)

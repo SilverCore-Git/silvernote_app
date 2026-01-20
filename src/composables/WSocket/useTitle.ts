@@ -10,6 +10,8 @@ const useTitle = () => {
 
     const createTitleAutoSync = (title: Ref<string | undefined>) =>
     {
+        
+        console.log('createTitleAutoSync')
 
         let onUpdate = false;
 
