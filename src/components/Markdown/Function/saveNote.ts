@@ -46,6 +46,7 @@ export const saveNote = async (uuid: string) =>
     window.dispatchEvent(new CustomEvent('note-saving'));
 
     try {
+        
         const newNote: Note = { 
             ...note, 
             content: newContent,

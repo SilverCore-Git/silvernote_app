@@ -255,9 +255,8 @@
 <script lang="ts" setup>
 
 import type { Note, User } from '@/assets/ts/type';
-import { useUser } from '@clerk/vue';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import Success from '@/components/alert/Success.vue';
 import Popup from '@/components/popup/Popup.vue';
@@ -275,7 +274,6 @@ const props = defineProps<{
 }>()
 
 const router = useRouter();
-const { user } = useUser();
 const { init_emoji_picker } = useEmoji();
 const { sendShare, initUseShare, isSuccess, successMessage } = useSendShare();
 const { init, verifyPasswd } = useInitShare();
@@ -293,13 +291,13 @@ const _success = computed(() => ({
     value: successMessage.value 
 }));
 const editable = ref<boolean>(false);
+let close: () => void = () => {};
 
 
 const initShare = async () => {
-    await init(
+    const result = await init(
         props.uuid,
         passwd,
-        user,
         {
             note,
             users,
@@ -309,6 +307,9 @@ const initShare = async () => {
             editable
         }
     )
+    
+    if (!result) return;
+    close = result.closeSocket;
 }
 
 
@@ -326,6 +327,10 @@ onMounted(async () => {
         ref: emojiBtn,
     });
 
+})
+
+onUnmounted(() => {
+    close();
 })
 
 </script>

@@ -4,11 +4,9 @@ import { Notes, Tags } from '@/assets/ts/database/Var';
 import BackBtn from '@/components/backBtn.vue';
 import { editor } from '@/components/Markdown/Editor';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import Dropdown from './Dropdown.vue';
 import type { Note, Tag, User } from '@/assets/ts/type';
-import useWSocket from './composable/useWSocket';
-import { useUser } from '@clerk/vue';
 import { api_url } from '@/assets/ts/backend_link';
 import waitFor from '@/assets/ts/utils/waitFor';
 import useEmoji from './composable/useEmoji';
@@ -16,6 +14,7 @@ import CreateNewNote from './composable/CreateNewNote';
 import { useRoute, useRouter } from 'vue-router';
 import database from '@/assets/ts/database/database';
 import useToken from '@/composables/useToken';
+import { initSocket } from '@/composables/WSocket';
 
 const props = defineProps<{
   uuid: string;
@@ -23,7 +22,6 @@ const props = defineProps<{
 
 const router = useRouter();
 const route = useRoute();
-const { user } = useUser();
 const { init_emoji_picker } = useEmoji();
 
 const emojiBtn = ref<HTMLElement | null>(null);
@@ -32,13 +30,15 @@ const users = ref<User[]>([]);
 const shared = ref<boolean>(false);
 const hide8moreTags = ref<boolean>(true);
 const note = computed(() => Notes.value.find(note => note.uuid === props.uuid));
-const title = ref<HTMLInputElement | undefined>(undefined);
+const titleRef = ref<HTMLInputElement | undefined>(undefined);
+const title = ref<string | undefined>(undefined);
+const icon = ref<string | undefined>(undefined);
+let close: () => void = () => {};
 
 
 const update_title = () => {
-  if (!note.value?.title) return;
-  document.title = `${note.value.title} - Silvernote edit`;
-
+  if (!title.value) return;
+  document.title = `${title.value} - Silvernote edit`;
 }
 
 const initNewNote = async () => {
@@ -68,17 +68,10 @@ const initExistingNote = async () => {
 
   shared.value = await _fetch.share.uuid === note.value?.uuid
 
-  useWSocket({
-    note,
-    users,
-    shared,
-    user
-  });
-
 }
 
 
-watch(() => note.value?.title, update_title);
+watch(() => title.value, update_title);
 
 
 onMounted(async () => {
@@ -87,14 +80,25 @@ onMounted(async () => {
   if (props.uuid == 'new')
   {
     await initNewNote(); 
-    await waitFor(() => title.value !== undefined, 5_000);
-    title.value?.focus();
+    await waitFor(() => titleRef.value !== undefined, 5_000);
+    titleRef.value?.focus();
   }
   else
   {
     await initExistingNote();
   }
 
+  title.value = note.value?.title;
+  icon.value = note.value?.icon;
+
+  const { closeSocket } = initSocket({
+    room: props.uuid,
+    users,
+    icon,
+    title
+  })
+
+  close = closeSocket;
 
   init_emoji_picker({
     note,
@@ -104,19 +108,32 @@ onMounted(async () => {
 
 })
 
-onUnmounted(async () => {
+onBeforeUnmount(async () => {
+
+  if (title.value != undefined && icon.value != undefined && note.value)
+  {
+    note.value.title = title.value;
+    note.value.icon = icon.value;
+  }
+
   if (note.value?.title == '')
   {
     note.value.title = 'Note sans nom';
   }
+
   await database.update(note.value as Note);
+
 })
 
 watch(() => props.uuid, async () => {
 
+  close();
+
   if (props.uuid == 'new')
   {
     await initNewNote();
+    await waitFor(() => title.value !== undefined, 5_000);
+    titleRef.value?.focus();
   }
   else
   {
@@ -250,9 +267,9 @@ watch(() => props.uuid, async () => {
           <button ref="emojiBtn"><a>
 
             <img
-              v-if="note.icon" 
+              v-if="icon" 
               class="w-20 h-20 p-2 cursor-pointer" 
-              :src="note.icon" 
+              :src="icon" 
             />
 
             <a 
@@ -319,7 +336,7 @@ watch(() => props.uuid, async () => {
       >
 
         <input 
-          v-if="note"
+          v-if="title != undefined"
           class="
             text-4xl font-extrabold mb-4 
             text-(--text-strong) w-[90%]
@@ -327,8 +344,8 @@ watch(() => props.uuid, async () => {
           " 
           type="text" 
           placeholder="Titre..." 
-          ref="title"
-          v-model="note.title"
+          ref="titleRef"
+          v-model="title"
           @keydown.enter="editor?.commands.focus()"
         />
 
