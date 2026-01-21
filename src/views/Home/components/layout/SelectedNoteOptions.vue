@@ -92,7 +92,7 @@
         v-model="showShareMenu"
     />
 
-    <ConfirmDialog
+    <confirm-dialog
         :visible="showConfirmDel"
         title="Supprimer les notes séléctionnées"
         message="êtes vous sur de vouloir supprimer vos note ?"
@@ -110,6 +110,7 @@ import { computed, ref } from 'vue';
 import NoteParamsOverlay from '../common/NoteParamsOverlay.vue';
 import Share_menu from '@/components/popup/share_menu.vue';
 import database from '@/assets/ts/database/database';
+import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 
 const showParamsOverlay = ref<boolean>(false);
 const showShareMenu = ref<boolean>(false);
@@ -158,7 +159,6 @@ const deleteNotes = async (state: number) => {
     if (state == 1)
     {
         showConfirmDel.value = true;
-        
     }
     else
     {
