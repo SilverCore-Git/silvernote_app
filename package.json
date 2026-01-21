@@ -1,8 +1,8 @@
 {
   "name": "silvernote",
   "productName": "Silvernote",
-  "version": "1.1.17",
-  "description": "Silvernote",
+  "version": "1.1.18",
+  "description": "Silvernote est une application de prise de notes moderne, rapide et sécurisée. Organisez vos idées, dossiers et tags, sur tous vos appareils.",
   "dev": false,
   "main": "src/app.js",
   "repository": {
@@ -24,7 +24,7 @@
     "name": "Silvercore Inc.",
     "url": "https://www.silvercore.fr"
   },
-  "license": "MIT",
+  "license": "Proprietary",
   "dependencies": {
     "discord-rpc": "^4.0.1",
     "electron-log": "^5.4.1",
@@ -89,8 +89,8 @@
       ],
       "category": "Utility",
       "icon": "resources/icons/png",
-      "maintainer": "silvercore",
-      "description": "Application de prise de note simple et intuitive."
+      "maintainer": "Silvercore Inc.",
+      "description": "Silvernote est une application de prise de notes moderne, rapide et sécurisée. Organisez vos idées, dossiers et tags, sur tous vos appareils."
     }
   }
 }
