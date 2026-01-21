@@ -14,6 +14,7 @@
 
         <!-- new note btn -->
         <button
+            v-if="!route.path.startsWith('/edit') || !route.path.startsWith('/edit')"
             @click="router.push('/edit/new')"
             class="
                 transition-all duration-300 ease-in-out
@@ -32,10 +33,10 @@
 </template>
 
 <script lang="ts" setup>
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import Silveria from '../silveria/silveria.vue';
 
-
+const route = useRoute();
 const router = useRouter();
 
 </script>

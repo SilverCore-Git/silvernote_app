@@ -11,13 +11,16 @@
                 group relative flex flex-col
                 bg-(--white)
                 rounded-2xl p-4
-                cursor-pointer overflow-hidden
-                border border-gray-200
-                hover:border-(--btn) 
+                cursor-pointer overflow-hidden 
+                hover:border-(--btn) border
                 transition-all duration-200 ease-in-out
                 max-h-40 w-full
             "
-            :class="{ 'ring-1 ring-(--btn)': note_selected }"
+            :class="
+                note_selected || isSelected(props.uuid)
+                    ? 'border-(--btn) border-dashed border-2'
+                    : 'border-gray-200'
+            "
         >
             
             <div class="flex justify-between items-start mb-3 gap-2">
@@ -95,6 +98,8 @@ import { IsPrivate } from '@/assets/ts/settings/privatMode';
 import PressAndHold from '@/components/PressAndHold.vue';
 import NoteParamsOverlay from './NoteParamsOverlay.vue';
 import { Tags } from '@/assets/ts/database/Var';
+import isMobile from '@/assets/ts/utils/isMobile';
+import { isSelected, selectedNotes, toggleNoteSelect } from '@/composables/useSelectedNotes';
 
 const props = defineProps<{
     uuid: string;
@@ -110,12 +115,21 @@ const _Tags = computed<Tag[]>(() => Tags.value.filter(tag => props.tags.includes
 const note_selected = ref<boolean>(false);
 
 const open_note = (uuid: string) => {
-  if (props.click) return props.click();
-  router.push(`/edit/${uuid}`);
+    if (isMobile && selectedNotes.value.length > 0) {
+        toggleNoteSelect(props.uuid);
+        return;
+    }
+    if (props.click) return props.click();
+    router.push(`/edit/${uuid}`);
 };
 
 const select_note = () => {
-  note_selected.value = !note_selected.value;
+    if (isMobile)
+    {
+        toggleNoteSelect(props.uuid);
+        return;
+    }
+    note_selected.value = !note_selected.value;
 };
 
 
@@ -129,10 +143,6 @@ const select_note = () => {
 .content-html :deep(h3) {
   font-size: 1em;
   font-weight: bold;
-  display: inline;
-}
-
-.content-html :deep(p) {
   display: inline;
 }
 

@@ -130,6 +130,8 @@ import { Tags } from '@/assets/ts/database/Var';
 import useUser from '@/composables/useUser';
 import { api_url } from '@/assets/ts/backend_link';
 import useToken from '@/composables/useToken';
+import isMobile from '@/assets/ts/utils/isMobile';
+import { selectedNotes, toggleNoteSelect } from '@/composables/useSelectedNotes';
 
 const props = defineProps<{
     uuid: string;
@@ -151,12 +153,21 @@ const sharerIcon = ref<string | undefined>(undefined);
 const shareVisitors = ref<User[]>([]);
 
 const open_note = (uuid: string) => {
-  if (props.click) return props.click();
-  router.push(`/${props.sharedBy ? 'share' : 'edit'}/${uuid}`);
+    if (isMobile && selectedNotes.value.length > 0) {
+        toggleNoteSelect(props.uuid);
+        return;
+    }
+    if (props.click) return props.click();
+    router.push(`/${props.sharedBy ? 'share' : 'edit'}/${uuid}`);
 };
 
 const select_note = () => {
-  note_selected.value = !note_selected.value;
+    if (isMobile)
+    {
+        toggleNoteSelect(props.uuid);
+        return;
+    }
+    note_selected.value = !note_selected.value;
 };
 
 onMounted(async () => {
@@ -198,10 +209,6 @@ onMounted(async () => {
 .content-html :deep(h3) {
   font-size: 1em;
   font-weight: bold;
-  display: inline;
-}
-
-.content-html :deep(p) {
   display: inline;
 }
 
