@@ -13,7 +13,7 @@ const toggleNoteSelect = (uuid: string) => {
 }
 
 
-const unSelectAllNotes = () => {
+const clearSelectedNotes = () => {
     selectedNotes.value = [];
 }
 
@@ -25,7 +25,7 @@ const isSelected = (uuid: string): boolean => {
 export {
     selectedNotes,
     toggleNoteSelect,
-    unSelectAllNotes,
+    clearSelectedNotes,
     isSelected
 }
 

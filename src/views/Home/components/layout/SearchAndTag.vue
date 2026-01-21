@@ -16,8 +16,8 @@ import SelectedNoteOptions from './SelectedNoteOptions.vue';
     >
 
         <Transition name="go-to-the-top" mode="out-in">
-            <SearchBar v-if="selectedNotes.length <= 0" />
-            <SelectedNoteOptions v-else />
+            <SelectedNoteOptions v-if="selectedNotes.length > 0" />
+            <SearchBar v-else />
         </Transition>
         <Filters />
 

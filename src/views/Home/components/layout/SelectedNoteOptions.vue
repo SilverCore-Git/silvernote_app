@@ -11,7 +11,10 @@
             "
         >
 
-            <div class="flex justify-center items-center gap-2">
+            <div
+                class="flex justify-center items-center gap-2"
+                @click="clearSelectedNotes"
+            >
                 <a class="p-1">
                     <i class=" bi bi-x " />
                 </a>
@@ -105,7 +108,7 @@
 
 <script lang="ts" setup>
 import { Notes } from '@/assets/ts/database/Var';
-import { selectedNotes } from '@/composables/useSelectedNotes';
+import { clearSelectedNotes, selectedNotes } from '@/composables/useSelectedNotes';
 import { computed, ref } from 'vue';
 import NoteParamsOverlay from '../common/NoteParamsOverlay.vue';
 import Share_menu from '@/components/popup/share_menu.vue';
