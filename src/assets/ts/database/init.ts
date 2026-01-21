@@ -1,5 +1,5 @@
 import { type Ref } from "vue";
-import { Notes, Tags, SharedNotes } from "./Var";
+import { Notes, Tags, SharedNotes, sortNotes } from "./Var";
 import { api_url } from '../backend_link';
 import useToken from "@/composables/useToken";
 
@@ -31,7 +31,8 @@ class InitDB {
             await Promise.all([
                 this.init_cloud_tags(),
                 this.init_cloud_notes(),
-                this.init_shared_notes()
+                this.init_shared_notes(),
+                sortNotes()
             ])
 
             this.loaded = true;

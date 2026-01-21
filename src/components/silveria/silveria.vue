@@ -51,9 +51,14 @@ onBeforeUnmount(async () => {
 
     <div
         class="
-            fixed bottom-42 md:bottom-30 right-7
+            fixed right-7
             flex flex-col items-end z-50
             gap-4 pointer-events-none
+        "
+        :class="
+            !route.path.startsWith('/edit') || !route.path.startsWith('/edit')
+                ? 'bottom-42 md:bottom-30'
+                : 'bottom-22'
         "
     >
         
