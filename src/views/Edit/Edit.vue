@@ -80,16 +80,17 @@ onMounted(async () => {
   if (props.uuid == 'new')
   {
     await initNewNote(); 
+    title.value = note.value?.title || '';
+    icon.value = note.value?.icon || '';
     await waitFor(() => titleRef.value !== undefined, 5_000);
     titleRef.value?.focus();
   }
   else
   {
     await initExistingNote();
+    title.value = note.value?.title;
+    icon.value = note.value?.icon;
   }
-
-  title.value = note.value?.title;
-  icon.value = note.value?.icon;
 
   const { closeSocket } = initSocket({
     room: props.uuid,
