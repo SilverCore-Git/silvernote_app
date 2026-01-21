@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { selectedNotes } from '@/composables/useSelectedNotes';
 import Filters from '../common/Filters.vue';
 import SearchBar from '../common/SearchBar.vue';
+import SelectedNoteOptions from './SelectedNoteOptions.vue';
 
 </script>
 
@@ -13,7 +15,10 @@ import SearchBar from '../common/SearchBar.vue';
         "
     >
 
-        <SearchBar />
+        <Transition name="go-to-the-top" mode="out-in">
+            <SearchBar v-if="selectedNotes.length <= 0" />
+            <SelectedNoteOptions v-else />
+        </Transition>
         <Filters />
 
     </div>

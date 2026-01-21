@@ -180,6 +180,34 @@ a:hover {
 }
 
 
+
+.go-to-the-top-enter-active,
+.go-to-the-top-leave-active {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.go-to-the-top-enter-from {
+  transform: translateY(-40px);
+  opacity: 0;
+}
+
+.go-to-the-top-enter-to {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.go-to-the-top-leave-from {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.go-to-the-top-leave-to {
+  transform: translateY(-40px);
+  opacity: 0;
+}
+
+
+
 /* for emoji selector */
 body .emoji-picker {
   --font: 'Inter', sans-serif;

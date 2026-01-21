@@ -12,12 +12,13 @@
                 bg-(--white) w-full
                 rounded-2xl p-4 
                 cursor-pointer overflow-hidden
-                border border-gray-200
-                hover:border-(--btn)
+                hover:border-(--btn) border
                 transition-all duration-200 ease-in-out
             "
             :class="[
-                note_selected ? 'ring-1 ring-(--btn)' : '', 
+                note_selected || isSelected(props.uuid)
+                    ? 'border-(--btn) border-dashed border-2'
+                    : 'border-gray-200', 
                 hfull ? 'h-full' : 'h-full max-h-40' 
             ]"
         >
@@ -131,7 +132,7 @@ import useUser from '@/composables/useUser';
 import { api_url } from '@/assets/ts/backend_link';
 import useToken from '@/composables/useToken';
 import isMobile from '@/assets/ts/utils/isMobile';
-import { selectedNotes, toggleNoteSelect } from '@/composables/useSelectedNotes';
+import { isSelected, selectedNotes, toggleNoteSelect } from '@/composables/useSelectedNotes';
 
 const props = defineProps<{
     uuid: string;
