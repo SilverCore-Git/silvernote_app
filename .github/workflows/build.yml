@@ -3,8 +3,7 @@ name: Build and Release Electron App
 on:
   push:
     branches:
-      - front_desktop
-      - main
+      - desktop-app
 
 permissions:
   contents: write
