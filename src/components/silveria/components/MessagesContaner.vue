@@ -8,15 +8,26 @@ const md = new MarkdownIt({ html: true, linkify: true });
 
 const getToolIcon = (toolName: string) => {
     const icons: Record<string, string> = {
-        'web_search': '🔍',
-        'calculator': '🧮',
-        'database': '💾',
-        'api_call': '🔌',
-        'image_generation': '🎨',
-        'code_execution': '💻',
-        'file_read': '📄',
+
+        'edit_note_content': '📝',
+        'edit_note_title': '✏️',
+        'edit_note_icon': '🎭',
+        
+        'create_new_note': '➕',
+        'create_new_tag': '🏷️',
+        'add_note_tag': '📌',
+        
+        'get_user_notes': '📚',
+        'get_user_tags': '🔖',
+        'get_note': '🔍',
+        'get_tag': '🏷️',
+
+        'get_user_notes_length': '🔢',
+        'get_user_tags_length': '📊',
+
         'default': '🔧'
     };
+
     return icons[toolName.toLowerCase()] || icons.default;
 };
 

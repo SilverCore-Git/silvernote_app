@@ -76,7 +76,6 @@ watch(() => title.value, update_title);
 
 onMounted(async () => {
 
-
   if (props.uuid == 'new')
   {
     await initNewNote(); 
@@ -343,9 +342,9 @@ watch(() => props.uuid, async () => {
           class="
             text-4xl font-extrabold mb-4 
             text-(--text-strong) w-[90%]
-            outline-0
+            outline-0 resize-none
           " 
-          type="text" 
+          maxlength="28"
           placeholder="Titre..." 
           ref="titleRef"
           v-model="title"

@@ -20,15 +20,15 @@ const router = useRouter();
 
         <span class=" uppercase text-md font-semibold text-(--text-little) ">
             <i class="bi bi-pin mr-1" />
-            Notes épinglés
+            NOTES ÉPINGLÉES
         </span>
 
         <ul
             class="
                 grid gap-4
                 grid-cols-1
-                sm:grid-cols-2
-                md:grid-cols-3
+                md:grid-cols-2
+                xl:grid-cols-3
             "
         >
             <li

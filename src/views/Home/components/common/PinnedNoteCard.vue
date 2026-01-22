@@ -32,9 +32,9 @@
                         class="w-8 h-8 object-contain shrink-0 opacity-80" 
                     />
                     <h2 
-                        class="font-bold text-lg sm:text-xl truncate leading-tight"
-                        v-html="utils.clean_html(title)"
-                    ></h2>
+                        class="font-bold text-lg sm:text-xl"
+                        v-text="title"
+                    />
                 </div>
 
                 <div v-if="_Tags.length > 0" class="shrink-0">

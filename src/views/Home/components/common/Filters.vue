@@ -71,7 +71,7 @@ const ShowNewTagPopup = ref<boolean>(false);
                 :observer="true"
                 :observe-parents="true"
                 :watch-overflow="true"
-                class="w-full cursor-grab"
+                class="w-full cursor-grab rounded-lg"
                 v-if="Tags && Tags.length"
             >
                 <SwiperSlide
