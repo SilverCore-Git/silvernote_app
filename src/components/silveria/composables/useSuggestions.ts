@@ -3,7 +3,7 @@ const suggestions: string[] = [
     
     "Transforme cette note en liste de tâches exploitable",
     "Organise ces pensées en un plan structuré",
-    "Génère un résumé court pour l'aperçu",
+    "Génère un résumé court",
     
     "Réécris cette note pour qu'elle soit plus concise",
     "Améliore le style pour un ton plus professionnel",
