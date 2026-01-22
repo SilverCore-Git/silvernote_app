@@ -101,8 +101,10 @@ import { saveNote } from '@/components/Markdown/Function/saveNote';
 import Share_menu from '@/components/popup/share_menu.vue';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import { useEditorStats } from '@/components/Markdown/Function/Stats';
+import { Notes } from '@/assets/ts/database/Var';
+import database from '@/assets/ts/database/database';
 
-defineProps<{
+const props = defineProps<{
   visible: boolean;
   uuid: string;
   note: Note;
@@ -125,7 +127,8 @@ const delete_note = async (state: number) => {
     if (state === 1) return showDialog.value = true;
     if (state === 2)
     {
-        
+        await database.delete(props.uuid);
+        Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
     }
 }
 

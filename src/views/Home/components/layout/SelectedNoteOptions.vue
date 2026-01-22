@@ -1,12 +1,14 @@
 <template>
 
+<div>
+
     <div class="flex justify-center items-center gap-4">
 
         <div
             class="
                 flex justify-between items-center flex-row 
-                border rounded-2xl bg-(--white)
-                py-3 px-4 w-full gap-2.5
+                border rounded-2xl bg-(--white)/50
+                py-2.5 px-4 w-full gap-2.5 border-gray-300
                 transition-all duration-300 ease-in-out
             "
         >
@@ -103,6 +105,8 @@
         @confirm="deleteNotes(2)"
     />
 
+</div>
+
 </template>
 
 
@@ -173,6 +177,8 @@ const deleteNotes = async (state: number) => {
         
 
         }
+
+        clearSelectedNotes();
 
     }
 
