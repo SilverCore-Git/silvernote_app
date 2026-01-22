@@ -27,8 +27,8 @@ const router = useRouter();
             class="
                 grid gap-4
                 grid-cols-1
-                sm:grid-cols-2
-                md:grid-cols-3
+                md:grid-cols-2
+                xl:grid-cols-3
             "
         >
             <li
