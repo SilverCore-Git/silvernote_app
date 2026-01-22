@@ -7,8 +7,16 @@
   <div>
 
       <div>
-        
-        <router-view />
+
+        <div v-if="!route.path.startsWith('/sauth')">
+          <Protect>
+            <router-view />
+          </Protect>
+        </div>
+
+        <div v-if="route.path.startsWith('/sauth')">
+          <router-view />
+        </div>
 
         <div 
           v-if="loaded && isSignedIn && !route.path.startsWith('/settings')"
@@ -65,7 +73,7 @@ import { useRoute, useRouter } from "vue-router";
 import Loader from "./components/Loader.vue";
 import { api_url, Session } from "./assets/ts/backend_link";
 import { init_theme } from "./assets/ts/theme";
-import { useAuth, useUser } from "@clerk/vue";
+import { Protect, useAuth, useUser } from "@clerk/vue";
 import { loaded } from "./assets/ts/utils";
 import InitDB from "./assets/ts/database/init";
 import waitFor from "./assets/ts/utils/waitFor";
