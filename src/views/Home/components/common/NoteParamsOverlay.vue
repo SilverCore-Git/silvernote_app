@@ -1,5 +1,7 @@
 <template>
 
+<div>
+
     <Teleport to="body">
 
         <transition name="fade-slide">
@@ -15,20 +17,23 @@
 
             <div
                 v-if="visible"
-                class="fixed inset-0 flex justify-center items-center z-100 pointer-events-none"
+                class="
+                    fixed inset-0
+                    flex justify-center items-center
+                    z-100 pointer-events-none
+                "
             >
 
                 <div
                     class="
-                        max-w-2xl max-h-140 lg:max-h-100 
-                        lg:grid lg:grid-cols-[280px_1em_300px]
-                        flex justify-center items-center
-                        w-full gap-10 
-                        pointer-events-auto
+                        max-w-2xl
+                        grid grid-cols-[280px_1em_300px]
+                        w-full gap-10
+                        pointer-events-auto relative
                     "
                 >
 
-                    <div class="w-full hidden lg:block">
+                    <div class="relative w-full">
 
                         <DefaultNoteCard
                             v-if="note && showCard"
@@ -37,16 +42,14 @@
                             :content="note.content"
                             :icon="note.icon"
                             :tags="note.tags"
-                            :lines="8"
-                            :hfull="true"
+                            inertw="h-full max-h-140"
                         />
 
                     </div>
 
                     <div
-                        class="
-                            hidden lg:flex 
-                            gap-2 mx-auto w-full 
+                        class=" 
+                            gap-2 mx-auto w-full  flex
                             flex-col justify-center items-center
                             text-4xl font-black
                         "
@@ -55,7 +58,7 @@
                         <i class="bi bi-arrow-left" />
                     </div>
 
-                    <div class="w-full h-full max-w-80 relative">
+                    <div class="w-full max-w-80 relative">
 
                         <div
                             class="
@@ -268,6 +271,8 @@
         />
 
     </Teleport>
+
+</div>
 
 </template>
 

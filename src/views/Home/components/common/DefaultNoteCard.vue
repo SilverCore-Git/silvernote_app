@@ -3,7 +3,7 @@
     <PressAndHold
         @long-press="select_note"
         @click.stop="open_note(uuid)"
-        class="h-full"
+        
     >
 
         <div
@@ -14,12 +14,13 @@
                 cursor-pointer overflow-hidden
                 hover:border-(--btn) border
                 transition-all duration-200 ease-in-out
+                h-full max-h-40
             "
             :class="[
                 note_selected || isSelected(props.uuid)
                     ? 'border-(--btn) border-dashed border-2'
                     : 'border-gray-200', 
-                hfull ? 'h-full' : 'h-full max-h-40' 
+                inertw
             ]"
         >
             
@@ -142,7 +143,7 @@ const props = defineProps<{
     tags: number[]; // Liste des IDs des tags
     click?: () => void;
     lines?: 3 | 4 | 5 | 6 | 7 | 8;
-    hfull?: boolean;
+    inertw?: string;
     sharedBy?: string;
 }>();
 
