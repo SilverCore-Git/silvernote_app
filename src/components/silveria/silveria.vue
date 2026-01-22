@@ -152,7 +152,7 @@ onBeforeUnmount(async () => {
                     "
                 >
 
-                    <Suggestion />
+                    <Suggestion v-if="isOpen" />
 
                     <MessagesContaner />
 
