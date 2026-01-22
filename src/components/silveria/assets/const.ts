@@ -1,5 +1,6 @@
 import { nextTick, ref, watch } from "vue";
 import { userInput } from "../composables/useMessage";
+import router from "@/router";
 
 const isOpen = ref<boolean>(false);
 const isMaximised = ref<boolean>(false);
@@ -38,6 +39,19 @@ const scrollToBottom = async () => {
         chatBody.value.scrollTop = chatBody.value.scrollHeight;
     }
 };
+
+watch(() => isOpen.value, () => {
+  router.push({
+    query: {
+      ...router.currentRoute.value.query,
+      silverIA: isOpen.value ? 1 : undefined,
+    }
+  })
+})
+
+watch(() => router.currentRoute.value.query.silverIA, () => {
+  isOpen.value = router.currentRoute.value.query.silverIA === '1';
+});
 
 
 export {
