@@ -27,13 +27,14 @@
                 <div
                     class="
                         max-w-2xl
-                        grid grid-cols-[280px_1em_300px]
+                        lg:grid lg:grid-cols-[280px_1em_300px]
+                        flex justify-center items-center
                         w-full gap-10
                         pointer-events-auto relative
                     "
                 >
 
-                    <div class="relative w-full">
+                    <div class="relative w-full hidden lg:block">
 
                         <DefaultNoteCard
                             v-if="note && showCard"
@@ -49,7 +50,8 @@
 
                     <div
                         class=" 
-                            gap-2 mx-auto w-full  flex
+                            hidden lg:flex
+                            gap-2 mx-auto w-full
                             flex-col justify-center items-center
                             text-4xl font-black
                         "
