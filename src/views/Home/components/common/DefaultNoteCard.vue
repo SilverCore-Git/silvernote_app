@@ -33,9 +33,9 @@
                         class="w-5 h-5 object-contain shrink-0 opacity-80" 
                     />
                     <h2 
-                        class="font-bold text-base sm:text-lg truncate leading-tight"
-                        v-html="utils.clean_html(title)"
-                    ></h2>
+                        class="font-bold text-base sm:text-lg"
+                        v-text="title"
+                    />
                 </div>
 
             </div>
