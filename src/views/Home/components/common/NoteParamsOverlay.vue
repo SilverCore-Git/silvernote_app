@@ -1,5 +1,7 @@
 <template>
 
+<div>
+
     <Teleport to="body">
 
         <transition name="fade-slide">
@@ -15,21 +17,24 @@
 
             <div
                 v-if="visible"
-                class="fixed inset-0 flex justify-center items-center z-100 pointer-events-none"
+                class="
+                    fixed inset-0
+                    flex justify-center items-center
+                    z-100 pointer-events-none
+                "
             >
 
                 <div
                     class="
-                        max-w-2xl max-h-140 lg:max-h-100 
+                        max-w-2xl
                         lg:grid lg:grid-cols-[280px_1em_300px]
                         flex justify-center items-center
-                        w-full h-full gap-10 
-                        pointer-events-auto
-                        translate-y-[-20%]
+                        w-full gap-10
+                        pointer-events-auto relative
                     "
                 >
 
-                    <div class="w-full h-full hidden lg:block">
+                    <div class="relative w-full hidden lg:block">
 
                         <DefaultNoteCard
                             v-if="note && showCard"
@@ -38,16 +43,15 @@
                             :content="note.content"
                             :icon="note.icon"
                             :tags="note.tags"
-                            :lines="8"
-                            :hfull="true"
+                            inertw="h-full max-h-140"
                         />
 
                     </div>
 
                     <div
-                        class="
-                            hidden lg:flex 
-                            gap-2 mx-auto w-full 
+                        class=" 
+                            hidden lg:flex
+                            gap-2 mx-auto w-full
                             flex-col justify-center items-center
                             text-4xl font-black
                         "
@@ -56,7 +60,7 @@
                         <i class="bi bi-arrow-left" />
                     </div>
 
-                    <div class="w-full h-full max-w-80 relative">
+                    <div class="w-full max-w-80 relative">
 
                         <div
                             class="
@@ -117,8 +121,8 @@
                                                     :id="`switch-${tag.id}`"
                                                     type="checkbox"
                                                     class="sr-only peer"
-                                                    :checked="note?.tags.includes(tag.id)"
-                                                    @change="toggleTag(tag.id)"
+                                                    :checked="justView ? note?.tags?.includes(tag.id) : tags.includes(tag.id)"
+                                                    @change="justView ? () => {} : toggleTag(tag.id)"
                                                 />
 
                                                 <div
@@ -238,7 +242,10 @@
                             <hr class="-mx-4 text-gray-300" />
 
                             <div class="">
-                                <button class="w-full primary" @click="save">Sauvegarder</button>
+                                <button 
+                                    class="w-full primary"
+                                    @click="save"
+                                >Sauvegarder</button>
                             </div>
 
                         </div>
@@ -252,6 +259,7 @@
         </transition>
 
         <Share_menu
+            v-if="uuid"
             :uuid="uuid"
             v-model="showShareMenu"
         />
@@ -266,13 +274,15 @@
 
     </Teleport>
 
+</div>
+
 </template>
 
 <script setup lang="ts">
 
 import BackdropOverlay from '@/components/common/BackdropOverlay.vue';
 import type { Note } from '@/assets/ts/type';
-import { nextTick, ref, watch } from 'vue';
+import { nextTick, onMounted, ref, watch } from 'vue';
 import { Notes, Tags } from '@/assets/ts/database/Var';
 import DefaultNoteCard from '@/views/Home/components/common/DefaultNoteCard.vue';
 import database from '@/assets/ts/database/database';
@@ -282,16 +292,22 @@ import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 
 const props = defineProps<{
     visible: Boolean;
-    uuid: string;
+    uuid?: string;
     justTags?: boolean;
+    justView?: boolean;
+    selectedTags?: number[];
 }>();
 
-const note = ref<Note | undefined>(undefined);
+const note = ref<Note | undefined | any>(undefined);
 const showCard = ref<boolean>(false);
 const showShareMenu = ref<boolean>(false);
 const showConfirmDel = ref<boolean>(false);
+const tags = ref<number[]>(props.selectedTags || []);
 
-const emit = defineEmits(['update:visible']);
+const emit = defineEmits([
+    'update:visible',
+    'TagsCallback'
+]);
 
 const emitClose = () => {
   emit('update:visible', false);
@@ -306,6 +322,7 @@ const deleteNote = async (state: number) => {
     else
     {
         showConfirmDel.value = false;
+        if (!props.uuid) return;
         await database.delete(props.uuid);
         Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
         emitClose();
@@ -313,7 +330,14 @@ const deleteNote = async (state: number) => {
 }
 
 const save = () => {
+    
     if (!note.value) return;
+
+    if (props.justView) {
+        emit('TagsCallback', tags.value);
+        emit('update:visible', false);
+        return;
+    }
 
     const index = Notes.value.findIndex(n => n.uuid === props.uuid);
 
@@ -362,15 +386,26 @@ const refrechCard = async () => {
 
 
 const mount = () => {
+    
+    if (props.justView) {
+        note.value = {};
+        tags.value = props.selectedTags || [];
+        showCard.value = true;
+        return;
+    }
+
     const _note = Notes.value.find(note => note.uuid === props.uuid);
     note.value = JSON.parse(JSON.stringify(_note));
     showCard.value = true;
     if (!note) throw new Error('Note is undefined on params overlay !')
+
 }
 
 watch(() => props.visible, () => {
     if (props.visible) mount()
 })
+
+onMounted(mount);
 
 
 </script>

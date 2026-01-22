@@ -2,10 +2,10 @@
 
     <div class="flex justify-center items-center gap-4">
 
-        <search
+        <div
             class="
                 flex justify-center items-center flex-row 
-                border rounded-2xl bg-(--white)
+                border rounded-2xl bg-(--white)/50
                 py-3 px-3.5 w-full gap-2.5
                 transition-all duration-300 ease-in-out
             "
@@ -32,7 +32,7 @@
                 @click="isFocus = false"
             />
 
-        </search>
+    </div>
 
         <div class="md:hidden block">
 

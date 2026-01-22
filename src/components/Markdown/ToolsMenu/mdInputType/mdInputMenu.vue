@@ -32,7 +32,7 @@
           <li
             v-for="o in filteredOpt"
             :key="o.name"
-            @click="exec(o.fn)"
+            @click="exec(o.fn); emit('update:show', false)"
             class="cursor-pointer hover:bg-gray-200 px-2 py-1 rounded"
           >
             {{ o.name }}
@@ -70,7 +70,7 @@ const props = defineProps<{
   query?: string;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'update:show', value: boolean): void;
 }>();
 
