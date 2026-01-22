@@ -20,7 +20,7 @@ const router = useRouter();
 
         <span class=" uppercase text-md font-semibold text-(--text-little) ">
             <i class="bi bi-pin mr-1" />
-            Notes épinglés
+            NOTES ÉPINGLÉES
         </span>
 
         <ul
