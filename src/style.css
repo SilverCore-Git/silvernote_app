@@ -81,7 +81,7 @@ a.rounded{
 }
 
 a:hover {
-  background-color: rgba(131, 131, 131, 0.15);
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .default-input {
@@ -204,6 +204,12 @@ a:hover {
 .go-to-the-top-leave-to {
   transform: translateY(-40px);
   opacity: 0;
+}
+
+
+select {
+  @apply bg-(--white) text-(--text) cursor-pointer;
+  transition: all .2s;
 }
 
 

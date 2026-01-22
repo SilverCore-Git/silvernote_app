@@ -15,8 +15,10 @@
         class="
                 h-10 flex flex-row justify-between items-center
                 fixed bottom-0 inset-x-0 z-100 overflow-hidden
-                bg-(--bg2) dropdown text-lg
-              "
+                bg-(--white) dropdown just-UL-LI text-lg 
+                border border-(--btn) border-b-0
+                rounded-t-lg
+        "
       >
 
         <ul
@@ -51,7 +53,6 @@
             <select
               v-else-if="'actions' in action"
               @change="onSelectAction($event, action.actions)"
-              class="ml-1 rounded bg-(--bg2)"
             >
 
               <option

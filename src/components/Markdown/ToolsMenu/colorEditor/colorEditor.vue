@@ -105,7 +105,7 @@ defineProps<{
   show: boolean;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'update:show', value: boolean): void;
 }>();
 
@@ -133,7 +133,7 @@ const applyColor = (color: string, type: 'text' | 'bg') => {
       editor.value?.chain().focus().toggleHighlight({ color: color }).run();
     }
   }
-
+  emit('update:show', false);
 }
 
 const darken = (hex: string, amount = 60) => {
