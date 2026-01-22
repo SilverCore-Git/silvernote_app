@@ -134,7 +134,7 @@
                     class="
                         text-4xl font-extrabold mb-4 
                         text-(--text-strong) w-[90%]
-                        outline-0 resize-none bg-amber-400
+                        outline-0 resize-none
                     " 
                     maxlength="28"
                     placeholder="Titre..." 
