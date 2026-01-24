@@ -3,6 +3,7 @@ import * as awarenessProtocol from 'y-protocols/awareness';
 import { socket, socketConnected, useRoom } from '@/composables/WSocket';
 import waitFor from '@/assets/ts/utils/waitFor';
 import postError from '../errorOverlay/postError';
+import { editor } from './Editor';
 
 export class EditorProvider
 {
@@ -119,6 +120,16 @@ export class EditorProvider
           'remote'
         );
         
+      });
+
+      socket.on('ai-content-update', (data: { content: { html: string, pos: number }, room: string }) => {
+
+        if (data.room !== this.room) return;
+
+        if (editor.value) {
+          editor.value.commands.insertContentAt(data.content.pos, data.content.html);
+        }
+
       });
 
       socket.on('disconnect', () => {
