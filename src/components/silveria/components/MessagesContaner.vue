@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { messages } from '../composables/useMessage';
-import { tools } from '../composables/useSilveriaAPI/useTools';
+import { tools, type Tool } from '../composables/useSilveriaAPI/useTools';
 import MarkdownIt from 'markdown-it';
 
 const md = new MarkdownIt({ html: true, linkify: true });
@@ -31,7 +31,7 @@ const getToolIcon = (toolName: string) => {
     return icons[toolName.toLowerCase()] || icons.default;
 };
 
-const getToolsForMessage = (messageId: number) => {
+const getToolsForMessage = (messageId: number): Tool[] => {
   return tools.value.filter(tool => tool.id.startsWith(String(messageId)));
 };
 
