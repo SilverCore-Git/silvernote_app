@@ -2,6 +2,8 @@ import { ref } from "vue";
 import { isLoading, scrollToBottom } from "../assets/const";
 import sendToSilverIA from "./useSilveriaAPI/sendToSilverIA";
 import useChat from "./useSilveriaAPI/useChat";
+import { tools } from "./useSilveriaAPI/useTools";
+import { reload_list } from "@/views/Home/composables/Reload";
 
 type Message = {
   id: number;
@@ -66,6 +68,10 @@ const sendMessage = async ({
             onComplete: () => {
                 messages.value[assistantMessageIndex].isThinking = false;
                 console.log("Réponse terminée");
+                if (tools.value.length > 0)
+                {
+                    reload_list('cloud');
+                }
             },
 
             onError: (err) => {

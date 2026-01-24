@@ -3,6 +3,8 @@ import * as awarenessProtocol from 'y-protocols/awareness';
 import { socket, socketConnected, useRoom } from '@/composables/WSocket';
 import waitFor from '@/assets/ts/utils/waitFor';
 import postError from '../errorOverlay/postError';
+import { editor } from './Editor';
+import { saveNote } from './Function/saveNote';
 
 export class EditorProvider
 {
@@ -119,6 +121,33 @@ export class EditorProvider
           'remote'
         );
         
+      });
+
+      socket.on('ai-content-update', (data: { content: { html: string, pos: number }, room: string }) => {
+
+          if (data.room !== this.room) return;
+
+          if (!editor.value) return;
+
+          let targetPos = data.content.pos;
+
+          // Traduction du -1 en position réelle de fin de document
+          if (targetPos === -1) {
+              // .size donne la position juste après le dernier caractère du document
+              targetPos = editor.value.state.doc.content.size; 
+          }
+
+          // Sécurité supplémentaire : s'assurer que la position n'est pas négative
+          const safePos = Math.max(0, Math.min(targetPos, editor.value.state.doc.content.size));
+
+          try {
+              editor.value.commands.insertContentAt(safePos, data.content.html);
+              saveNote(this.room);
+          }
+          catch (e) {
+              console.error("Erreur lors de l'insertion Tiptap:", e);
+          }
+          
       });
 
       socket.on('disconnect', () => {

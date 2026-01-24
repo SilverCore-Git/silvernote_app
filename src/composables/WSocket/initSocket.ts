@@ -3,6 +3,7 @@ import { useIcon } from "./useIcon";
 import { useRoom } from "./useRoom";
 import { useTitle } from "./useTitle";
 import { useUsers } from "./useUsers";
+import { createAIListener } from "./useAIListener";
 import type { User } from "@/assets/ts/type";
 
 const { join, leave } = useRoom();
@@ -35,6 +36,11 @@ function initSocket ({
 
     const { stopIconAutoSync } = createIconAutoSync(icon);
     const { stopTitleAutoSync } = createTitleAutoSync(title);
+    const { stopAIListener } = createAIListener({
+        room,
+        title,
+        icon
+    })
     const { start, close } = useUsers(users);
     start();
 
@@ -44,6 +50,7 @@ function initSocket ({
         close();
         stopIconAutoSync();
         stopTitleAutoSync();
+        stopAIListener();
         leave(room);
         initialized = false;
         console.log('Socket closed !');

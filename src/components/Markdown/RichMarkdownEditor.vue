@@ -23,7 +23,7 @@
   />
 
   <SaveIndicator />
-
+  
 </template>
 
 <script setup lang="ts">
