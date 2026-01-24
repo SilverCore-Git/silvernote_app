@@ -9,12 +9,12 @@ import { isOpen, toggleChat } from '../assets/const';
         @click="toggleChat"
         class="
             pointer-events-auto
-            bg-(--white) hover:bg-(--bg2) border-gray-200
-            hover:text-(--btn) hover:border
+            bg-(--white) hover:bg-(--bg2) border-(--btn)
+            hover:text-(--btn) border hover:ring-2
             transition-all duration-300 ease-in-out
             w-14 h-14 rounded-full
             flex justify-center items-center
-            text-2xl shadow-lg bounce-hover
+            text-2xl shadow-2xl bounce-hover
             cursor-pointer
         "
     >

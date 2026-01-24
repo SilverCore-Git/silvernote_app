@@ -19,9 +19,9 @@
             class="
                 transition-all duration-300 ease-in-out
                 bg-(--btn) text-(--white)
-                w-16 h-16 rounded-2xl
+                w-16 h-16 rounded-2xl shadow-2xl
                 flex justify-center items-center
-                text-5xl shadow-lg cursor-pointer
+                text-5xl cursor-pointer
                 hover:rotate-180 hover:bg-(--btn-hover)
             "
         >
