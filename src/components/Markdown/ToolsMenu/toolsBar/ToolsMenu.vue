@@ -85,6 +85,7 @@
 import { ref, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+import useSilverIA from '@/components/silveria/composables/useSilverIA';
 import type { Categories } from '../ToolsMenuTypes';
 import config from './ToolsMenuConfig.json';
 import { editor } from '../../Editor';
@@ -93,6 +94,7 @@ import colorEditor from '../colorEditor/colorEditor.vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 
 
+const { sendToSilverIA } = useSilverIA();
 const route = useRoute();
 const router = useRouter();
 const _config = config as any;
@@ -211,13 +213,8 @@ const AskToAI = (prompt: string) => {
   const { from, to } = editor.value.state.selection;
   const selectedText = editor.value.state.doc.textBetween(from, to, ' ');
 
-  router.push({
-    query: {
-      ...route.query,
-      aiquery: `${prompt} : ${selectedText}`,
-      chatbot: 'fixed'
-    }
-  });
+  sendToSilverIA({ text: `${prompt} : ${selectedText}`, route });
+
 };
 
 const insertImageFromFile = () => {
