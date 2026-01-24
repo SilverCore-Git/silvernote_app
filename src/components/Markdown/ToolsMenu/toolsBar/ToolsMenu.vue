@@ -8,7 +8,7 @@
 
       <div
         v-if="showMenu || mdInputeMenu || IfcolorEditor"
-        class="fixed inset-0 z-998"
+        class="fixed inset-0 z-500"
         @click="closeAll"
       />
 
@@ -63,18 +63,25 @@
 
       </div>
 
+    </teleport>
+
+    <Teleport to="body">
+
       <MdInputeMenu 
         v-model:show="mdInputeMenu" 
-        :top="posY" 
-        :left="posX"
-      />
-      <colorEditor 
-        v-model:show="IfcolorEditor" 
-        :top="posY" 
-        :left="posX" 
+        :top="menuPosY" 
+        :left="menuPosX"
+        class="z-700"
       />
 
-    </teleport>
+      <colorEditor 
+        v-model:show="IfcolorEditor" 
+        :top="menuPosY" 
+        :left="menuPosX"
+        class="z-700" 
+      />
+
+    </Teleport>
 
   </div>
 
@@ -82,8 +89,8 @@
 
 <script setup lang="ts">
 
-import { ref, computed, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { useRoute } from 'vue-router';
 
 import useSilverIA from '@/components/silveria/composables/useSilverIA';
 import type { Categories } from '../ToolsMenuTypes';
@@ -96,7 +103,6 @@ import isMobile from '@/assets/ts/utils/isMobile';
 
 const { sendToSilverIA } = useSilverIA();
 const route = useRoute();
-const router = useRouter();
 const _config = config as any;
 
 const showMenu = ref<boolean>(false);
@@ -104,6 +110,10 @@ const mdInputeMenu = ref<boolean>(false);
 const IfcolorEditor = ref<boolean>(false);
 const posX = ref<number>(0);
 const posY = ref<number>(0);
+const menuPosX = ref<number>(0);
+const menuPosY = ref<number>(0);
+const mouseX = ref<number>(0);
+const mouseY = ref<number>(0);
 const editorTick = ref<number>(0);
 
 const fnCache = new Map<string, Function>();
@@ -160,13 +170,13 @@ const execAction = (actionStr: string) => {
     return closeAll();
   }
   if (actionStr.includes('openMdInputMenu')) {
-    mdInputeMenu.value = true;
-    showMenu.value = false;
+    IfcolorEditor.value = false;
+    mdInputeMenu.value = !mdInputeMenu.value;
     return;
   }
   if (actionStr.includes('openColorEditor')) {
-    IfcolorEditor.value = true;
-    showMenu.value = false;
+    mdInputeMenu.value = false;
+    IfcolorEditor.value = !IfcolorEditor.value;
     return;
   }
   if (actionStr.includes('AskToAI')) {
@@ -194,6 +204,12 @@ const closeAll = () => {
   mdInputeMenu.value = false;
   IfcolorEditor.value = false;
 };
+
+const trackMouse = (e: MouseEvent) => {
+  mouseX.value = e.clientX;
+  mouseY.value = e.clientY;
+};
+
 
 const execCheck = (checkStr: string): boolean => {
   try {
@@ -239,6 +255,24 @@ const handleUpdate = () => {
   editorTick.value++;
   updateMenuPosition();
 };
+
+watch(() => mdInputeMenu.value, () => {
+  menuPosX.value = mouseX.value - 80;
+  menuPosY.value = mouseY.value + 25;
+});
+
+watch(() => IfcolorEditor.value, () => {
+  menuPosX.value = mouseX.value - 80;
+  menuPosY.value = mouseY.value + 25;
+});
+
+onMounted(() => {
+  window.addEventListener('mousemove', trackMouse);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('mousemove', trackMouse);
+});
 
 watch(() => editor.value?.state.selection, handleUpdate);
 

@@ -2,8 +2,8 @@
 
   <div 
     :style="{
-      top: `${top ? top + 50 : undefined}px`,
-      left: `${left ? left + 455 : undefined}px`
+      top: `${top ? top : undefined}px`,
+      left: `${left ? left : undefined}px`
     }" 
     class="absolute z-50"
   >
