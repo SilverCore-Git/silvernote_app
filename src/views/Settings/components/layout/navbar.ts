@@ -1,3 +1,4 @@
+import { dev } from '@/../package.json';
 
 interface Page {
     path: string;
@@ -32,10 +33,14 @@ const pages: Page[] = [
         icon: "bi-shield-check", // Juridique / sécurité
         name: "Juridique"
     },
-    {
+    dev ? {
         path: '/developpeurs',
         icon: "bi-code-slash",
         name: "Développeurs"
+    } : {
+        path: '',
+        icon: "",
+        name: ""
     },
 ]
 

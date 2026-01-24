@@ -3,7 +3,6 @@ import { isLoading, scrollToBottom } from "../assets/const";
 import sendToSilverIA from "./useSilveriaAPI/sendToSilverIA";
 import useChat from "./useSilveriaAPI/useChat";
 import { tools } from "./useSilveriaAPI/useTools";
-import router from "@/router";
 import { reload_list } from "@/views/Home/composables/Reload";
 
 type Message = {

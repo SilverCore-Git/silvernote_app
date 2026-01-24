@@ -33,12 +33,13 @@
                 v-for="page in pages"
                 @click="router.push('/settings' + page.path)"
                 class="li px-4 py-2 rounded-xl cursor-pointer"
-                :class="
+                :class="[
+                    page.name == '' ? 'hidden' : '',
                     route.params.page == page.path.replace('/', '')
                     || page.path == '/' && !route.params.page
                         ? 'bg-(--btn) text-white' 
                         : ''
-                "
+                ]"
             >
                 <i 
                     :class="
