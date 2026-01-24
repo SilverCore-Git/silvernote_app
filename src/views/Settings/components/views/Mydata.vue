@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { Notes, Tags } from '@/assets/ts/database/Var';
+import { Notes, SharedNotes, Tags } from '@/assets/ts/database/Var';
 import { ref } from 'vue';
 import DownloadDBToSnote from '../../utils/DownloadDBToSNOTE';
 import DownloadDBToJSON from '../../utils/DownloadDBToJSON';
@@ -69,6 +69,7 @@ const resetDB = async (state: 1 | 2) => {
         await database.reset();
         Notes.value = [];
         Tags.value = [];
+        SharedNotes.value = [];
     
         Loader.value = '';
     }
@@ -189,7 +190,7 @@ const resetDB = async (state: 1 | 2) => {
 
     <ConfirmDialog
         :visible="ShowConfirmDialog"
-        title="Réinitialiser la db"
+        title="Réinitialiser la base de données"
         message="Cette action est irréversible. Êtes-vous sûr de vouloir réinitialiser votre base de données ? Toutes vos notes et tags seront supprimés définitivement."
         @cancel="ShowConfirmDialog = false"
         @confirm="resetDB(2); ShowConfirmDialog = false"
