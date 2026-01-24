@@ -1,105 +1,157 @@
 <template>
 
   <div 
-    :style="{ top: `${top ? top + 50 : undefined}px`, left: `${left ? left + 455 : undefined}px` }" 
-    class="absolute"
+    :style="{
+      top: `${top ? top + 50 : undefined}px`,
+      left: `${left ? left + 455 : undefined}px`
+    }" 
+    class="absolute z-50"
   >
 
     <transition name="fade-slide">
 
       <div
         v-if="show"
-        class="w-48 dropdown bg-(--bg2) border border-(--btn)"
+        class="
+          w-52 bg-(--white) 
+          border border-(--btn)
+          border-b-0 rounded-b-none
+          rounded-lg p-3
+        "
       >
 
-        <span class="text-xs text-(--text-little)">
+        <span
+          class="
+            text-xs font-semibold
+            text-(--text-little)
+            uppercase tracking-wide
+            mb-2 block
+          "
+        >
           Couleur du texte
         </span>
 
-        <div
-          class="grid grid-cols-4 gap-2 mx-1 my-2"
-        >
+        <div class="grid grid-cols-6 gap-2 mb-4">
 
           <div
 
             v-for="e in colors"
-            @click="applyColor(e.color == 'default' ? 'default' : e.color, 'text')"
+
+            :key="'text-' + e.color"
+            @click="applyColor(e.color === 'default' ? 'default' : e.color, 'text')"
             v-tooltip.bottom="e.name"
 
             class="
-              w-6 h-6 border rounded-sm cursor-pointer
+              w-6 h-6 rounded-md cursor-pointer
               flex justify-center items-center
+              transition-all duration-200
             "
+
+            :class="[
+              isActiveColor(e.color, 'text') 
+                ? 'ring-2 ring-(--btn) ring-offset-2 ring-offset-(--bg2) scale-110 font-bold' 
+                : 'border border-gray-300 hover:scale-110'
+            ]"
+
             :style="{ 
-              color: e.color == 'default' ? 'var(--text)' : e.color, 
-              borderColor: darken(e.color == 'default' ? 'var(--text)' : e.color)
+              color: e.color === 'default' ? 'var(--text)' : e.color,
+              borderColor: e.color === 'default' ? '' : darken(e.color)
             }"
 
           >
-            <strong>A</strong>
+
+            <span class="text-sm">A</span>
+
           </div>
 
         </div>
 
-        <hr />
+        <hr class="border-gray-200 my-3 opacity-50" />
 
-        <span class="text-xs text-(--text-little)">
-          Couleur d'arrière plan
+        <span
+          class="
+            text-xs font-semibold
+            text-(--text-little)
+            uppercase tracking-wide
+            mb-2 block
+          "
+        >
+          Surlignage
         </span>
 
-        <div
-          class="grid grid-cols-4 gap-2 mx-1 my-2"
-        >
+        <div class="grid grid-cols-6 gap-2">
 
           <div
 
             v-for="e in colors"
-            @click="applyColor(e.color == 'default' ? 'default' : e.color, 'bg')"
+            :key="'bg-' + e.color"
+            @click="applyColor(e.color === 'default' ? 'default' : e.color, 'bg')"
             v-tooltip.bottom="e.name"
 
             class="
-              w-6 h-6 border rounded-sm cursor-pointer
-              flex justify-center items-center hover:border-2
+              w-6 h-6 rounded-md cursor-pointer
+              flex justify-center items-center
+              transition-all duration-200
             "
+
+            :class="[
+              isActiveColor(e.color, 'bg') 
+                ? 'ring-2 ring-(--btn) ring-offset-2 ring-offset-(--bg2)' 
+                : 'border hover:border-gray-400'
+            ]"
+
             :style="{ 
-              backgroundColor: e.color == 'default' ? '' : e.color, 
-              borderColor: darken(e.color == 'default' ? '' : e.color)
+              backgroundColor: e.color === 'default' ? 'transparent' : e.color,
+              borderColor: e.color === 'default' ? 'var(--text-little)' : darken(e.color),
+              position: 'relative'
             }"
 
-          ></div>
+          >
+
+            <i 
+              v-if="isActiveColor(e.color, 'bg') && e.color !== 'default'" 
+              class="bi bi-check text-white drop-shadow-md text-lg"
+            ></i>
+
+            <div 
+              v-if="e.color === 'default'" 
+              class="w-full h-px bg-red-400 absolute rotate-45"
+            ></div>
+
+          </div>
 
         </div>
 
       </div>
 
     </transition>
-    
+
   </div>
 
 </template>
 
 <script lang="ts" setup>
 
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { editor } from '../../Editor';
 
-const colors: { color: string, name: string }[] = [
+
+const colors = [
   { color: 'default', name: 'Par défaut' },
+  { color: '#000000', name: 'Noir' },
+  { color: '#555555', name: 'Gris' },
   { color: '#FF0000', name: 'Rouge' },
   { color: '#F39C12', name: 'Orange' },
   { color: '#F1C40F', name: 'Jaune' },
   { color: '#2ECC71', name: 'Vert' },
-  { color: '#4FC3F7', name: 'Bleu' },
-  { color: '#2980B9', name: 'Bleu foncé' },
+  { color: '#2980B9', name: 'Bleu' },
   { color: '#9B59B6', name: 'Violet' },
   { color: '#FF69B4', name: 'Rose' },
   { color: '#1ABC9C', name: 'Turquoise' },
-  { color: '#95A5A6', name: 'Gris' },
-  { color: '#7F8C8D', name: 'Gris foncé' },
+  { color: '#FFFFFF', name: 'Blanc' },
 ];
 
-
-
-defineProps<{
+const props = defineProps<{
   top?: number;
   left?: number;
   show: boolean;
@@ -110,33 +162,76 @@ const emit = defineEmits<{
 }>();
 
 
-const applyColor = (color: string, type: 'text' | 'bg') => {
+const currentTextColor = ref<string>('default');
+const currentHighlightColor = ref<string>('default');
+
+  
+
+const updateActiveColors = () => {
+
+  if (!editor.value) return;
+
+  const textStyle = editor.value.getAttributes('textStyle');
+  currentTextColor.value = textStyle.color || 'default';
+
+  const highlight = editor.value.getAttributes('highlight');
+  currentHighlightColor.value = highlight.color || 'default';
+
+};
+
+
+const isActiveColor = (color: string, type: 'text' | 'bg') => {
+
   if (type === 'text')
   {
-    if (color === 'default')
-    {
-      editor.value?.chain().focus().unsetColor().run();
-    }
-    else
-    {
-      editor.value?.chain().focus().setColor(color).run();
+    if (color === 'default' && !currentTextColor.value) return true;
+    return currentTextColor.value === color;
+  }
+  else
+  {
+    if (color === 'default' && !currentHighlightColor.value) return true;
+    return currentHighlightColor.value === color;
+  }
+
+};
+
+
+
+const applyColor = (color: string, type: 'text' | 'bg') => {
+
+  if (!editor.value) return;
+
+  editor.value.chain().focus();
+
+  if (type === 'text')
+  {
+    if (color === 'default') {
+      editor.value.chain().unsetColor().run();
+    } else {
+      editor.value.chain().setColor(color).run();
     }
   }
   else
   {
-    if (color === 'default')
-    {
-      editor.value?.chain().focus().unsetHighlight().run();
-    }
-    else
-    {
-      editor.value?.chain().focus().toggleHighlight({ color: color }).run();
+    if (color === 'default') {
+      editor.value.chain().unsetHighlight().run();
+    } else {
+      editor.value.chain().setHighlight({ color }).run();
     }
   }
-  emit('update:show', false);
-}
 
-const darken = (hex: string, amount = 60) => {
+  updateActiveColors();
+  
+  emit('update:show', false);
+
+};
+
+
+
+const darken = (hex: string, amount = 40) => {
+  
+  if (!hex || !hex.startsWith('#')) return 'rgba(0,0,0,0.1)';
+
   hex = hex.replace('#', '');
   const num = parseInt(hex, 16);
 
@@ -149,7 +244,27 @@ const darken = (hex: string, amount = 60) => {
   b = Math.max(b, 0);
 
   return `rgb(${r}, ${g}, ${b})`;
-}
 
+};
+
+
+onMounted(() => {
+  if (editor.value) {
+    editor.value.on('transaction', updateActiveColors);
+    editor.value.on('selectionUpdate', updateActiveColors);
+  }
+  updateActiveColors();
+});
+
+onUnmounted(() => {
+  if (editor.value) {
+    editor.value.off('transaction', updateActiveColors);
+    editor.value.off('selectionUpdate', updateActiveColors);
+  }
+});
+
+watch(() => props.show, (newVal) => {
+  if (newVal) updateActiveColors();
+});
 
 </script>

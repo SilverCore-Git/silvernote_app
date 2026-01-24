@@ -3,6 +3,7 @@ export interface SimpleAction {
     name: string;
     action: string; // Function
     tooltip: string;
+    isActive: string;
 }
 
 interface SelectedAction {

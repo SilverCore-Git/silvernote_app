@@ -4,66 +4,54 @@
 
     <teleport to="body">
 
-      <div 
-        v-if="isMobile && mdInputeMenu || IfcolorEditor"
-        class="fixed inset-0 z-10"
-        @click="closeAll"
-      ></div>
-
       <div
         v-if="isMobile"
         class="
-                h-10 flex flex-row justify-between items-center
-                fixed bottom-0 inset-x-0 z-100 overflow-hidden
-                bg-(--white) dropdown just-UL-LI text-lg 
-                border border-(--btn) border-b-0
-                rounded-t-lg
+          h-12 flex flex-row justify-between items-center
+          fixed bottom-0 inset-x-0 z-100 overflow-x-auto overflow-y-hidden
+          bg-(--white) text-xl shadow-[0_-2px_10px_rgba(0,0,0,0.05)]
+          border-t border-(--btn) rounded-t-xl px-2
+          scrollbar-hide
         "
       >
 
         <ul
-          v-for="(list, cat) in actions"
+          v-for="(list, cat) in menuWithState"
           :key="cat"
-          class="flex flex-row"
-          :class="cat == 'MdInputMenu' ? '' : ''"
+          class="flex flex-row items-center gap-1 mx-1"
+          :class="{ 'border-l border-gray-200 pl-2': cat !== 'text' }"
         >
 
           <li
             v-for="action in list"
             :key="action.id"
-            :class="cat == 'MdInputMenu' ? 'nohover' : ''"
           >
-          
-            <div
-              v-if="'action' in action"
-              :class="
-                cat == 'MdInputMenu' || action.id == 764532
-                  ? `
-                      border border-gray-400 hover:border-(--text)
-                      transition-all duration-200 rounded-lg px-1.5
-                    ` 
-                  : ''
+
+            <button
+              v-if="'action' in action && editor"
+              class="
+                flex items-center justify-center
+                min-w-9 h-9 rounded-lg
+                transition-all duration-200
+                active:scale-95
+                cursor-pointer
               "
-              @click="exec(action.action)"
+              :class="[
+                action.isActiveState
+                  ? 'bg-(--btn) text-(--bg)' 
+                  : 'text-(--text) hover:bg-gray-100',
+
+                (cat === 'MdInputMenu' || action.id === 764532)
+                  ? 'border border-gray-300' 
+                  : '',
+                curentColor ? `text-[${curentColor}]` : '',
+                curentHighlight ? `bg-[${curentHighlight}]` : ''
+              ]"
+
+              @click="execAction(action.action)"
               v-html="action.name"
-              v-tooltip.bottom="action.tooltip"
-            ></div>
-
-            
-            <select
-              v-else-if="'actions' in action"
-              @change="onSelectAction($event, action.actions)"
-            >
-
-              <option
-                v-for="act in action.actions"
-                :key="act.id"
-                :value="act.id"
-              >
-                {{ act.name }}
-              </option>
-
-            </select>
+              v-tooltip.top="action.tooltip"
+            />
 
           </li>
 
@@ -73,13 +61,13 @@
 
       <MdInputeMenu 
         v-model:show="mdInputeMenu"
-        class="fixed bottom-10 right-0 z-20"
+        class="fixed bottom-14 right-2 z-60"
         search-type="props"
       />
 
       <colorEditor 
         v-model:show="IfcolorEditor"
-        class="fixed bottom-10 right-35 z-20"
+        class="fixed bottom-12 right-12 z-110"
       />
       
     </teleport>
@@ -88,101 +76,166 @@
 
 </template>
 
-
 <script setup lang="ts">
 
-import { Editor } from '@tiptap/vue-3';
-import { ref } from 'vue';
-
-import type { Categories, SimpleAction } from '../ToolsMenuTypes';
-import config from './phoneToolsBarConfig.json';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { editor } from '../../Editor';
+import isMobile from '@/assets/ts/utils/isMobile';
+
 import MdInputeMenu from '../mdInputType/mdInputMenu.vue';
 import colorEditor from '../colorEditor/colorEditor.vue';
-import isMobile from '@/assets/ts/utils/isMobile';
-const _config: any = config; // i can't assign categories type
 
-const IfcolorEditor = ref<boolean>(false);
-const mdInputeMenu = ref<boolean>(false);
-const actions = ref<Categories>(_config);
+import config from './phoneToolsBarConfig.json';
 
-
-const exec = (action: string) => {
-
-  if (action.startsWith('getImageFile')) return insertImageFromFile(editor.value as Editor);
-  if (action.startsWith('openMdInputMenu')) return openMdInputMenu();
-  if (action.startsWith('openColorEditor')) return openColorEditor();
-
-  const fn = new Function("editor", `return (${action})()`);
-  fn(editor.value);
-
+interface ToolAction {
+  id: number;
+  name: string;
+  action: string;
+  isActive?: string;
+  tooltip?: string;
+  isActiveState?: boolean; 
 }
 
-const onSelectAction = (event: Event, actionsList: SimpleAction[]) => {
-  const select = event.target as HTMLSelectElement;
-  const act: SimpleAction | undefined = actionsList.find(a => a.id == Number(select.value));
-  if (act) exec(act.action);
+type ConfigType = Record<string, ToolAction[]>;
+
+const _config = config as ConfigType;
+const IfcolorEditor = ref<boolean>(false);
+const mdInputeMenu = ref<boolean>(false);
+const editorTick = ref<number>(0);
+const curentColor = ref<string | undefined>(undefined);
+const curentHighlight = ref<string | undefined>(undefined);
+
+  
+const menuWithState = computed(() => {
+  
+  editorTick.value;
+
+  if (!editor.value) return _config;
+
+  const computedConfig: any = {};
+
+  Object.keys(_config).forEach((cat) => {
+    computedConfig[cat] = _config[cat].map((item) => {
+      return {
+        ...item,
+        isActiveState: item.isActive ? execCheck(item.isActive) : false
+      };
+    });
+  });
+
+  return computedConfig as ConfigType & { isActiveState: boolean };
+
+});
+
+
+
+const fnCache = new Map<string, Function>();
+
+
+const execAction = (actionStr: string): any => {
+
+  if (!editor.value) return;
+
+  if (actionStr.startsWith('colorParams : '))
+  {
+    const action = actionStr.replace('colorParams : ', '');
+    const { color, highlight } = execAction(action);
+    curentColor.value = color;
+    curentHighlight.value = highlight;
+    return;
+  }
+  if (actionStr.includes('getImageFile')) return insertImageFromFile();
+  if (actionStr.includes('openMdInputMenu')) return openMdInputMenu();
+  if (actionStr.includes('openColorEditor')) return openColorEditor();
+
+  
+  try {
+
+    if (!fnCache.has(actionStr)) {
+      fnCache.set(actionStr, new Function("editor", `return (${actionStr})(editor)`));
+    }
+    const fn = fnCache.get(actionStr);
+    fn?.(editor.value);
+    
+    editorTick.value++; 
+
+  } catch (e) {
+    console.error("Action Error:", e);
+  }
+
 };
+
+
+const execCheck = (checkStr: string): boolean => {
+
+  if (!editor.value) return false;
+
+  try {
+
+    if (!fnCache.has(checkStr)) {
+      fnCache.set(checkStr, new Function("editor", `return (${checkStr})(editor)`));
+    }
+    const fn = fnCache.get(checkStr);
+    return !!fn?.(editor.value);
+
+  } catch {
+    return false;
+  }
+
+};
+
+
+const updateTick = () => { editorTick.value++; };
+
+onMounted(() => {
+  if (editor.value) {
+    editor.value.on('transaction', updateTick);
+    editor.value.on('selectionUpdate', updateTick);
+  }
+});
+
+onUnmounted(() => {
+  if (editor.value) {
+    editor.value.off('transaction', updateTick);
+    editor.value.off('selectionUpdate', updateTick);
+  }
+});
 
 const openMdInputMenu = () => {
   mdInputeMenu.value = !mdInputeMenu.value;
   IfcolorEditor.value = false;
-}
+};
 
 const openColorEditor = () => {
   IfcolorEditor.value = !IfcolorEditor.value;
   mdInputeMenu.value = false;
-}
+};
 
-const closeAll = () => {
-  mdInputeMenu.value = false;
-  IfcolorEditor.value = false;
-}
-
-const insertImageFromFile = (editor: Editor) => {
-  
+const insertImageFromFile = () => {
   const input = document.createElement("input");
   input.type = "file";
   input.accept = "image/*";
-
   input.onchange = () => {
     const file = input.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const url = reader.result as string;
-      editor.chain().focus().setImage({ src: url }).run();
-    };
-    reader.readAsDataURL(file);
+    if (file && editor.value) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        editor.value?.chain().focus().setImage({ src: reader.result as string }).run();
+      };
+      reader.readAsDataURL(file);
+    }
   };
-
   input.click();
 };
 
 </script>
 
 <style scoped>
-
-.category-section {
-  margin-bottom: 12px;
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
 }
-
-.category-section h3 {
-  font-size: 14px;
-  margin: 0 0 8px 0;
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
-
-.category-section ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.category-section li {
-  padding: 4px 8px;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
 </style>
