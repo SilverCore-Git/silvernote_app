@@ -15,7 +15,6 @@
         class="
           w-52 bg-(--white) 
           border border-(--btn)
-          border-b-0 rounded-b-none
           rounded-lg p-3
         "
       >
