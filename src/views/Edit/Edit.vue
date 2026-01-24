@@ -1,12 +1,12 @@
 <script setup lang="ts">
 
-import { Notes, Tags } from '@/assets/ts/database/Var';
+import { Notes } from '@/assets/ts/database/Var';
 import BackBtn from '@/components/backBtn.vue';
 import { editor } from '@/components/Markdown/Editor';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import Dropdown from './Dropdown.vue';
-import type { Note, Tag, User } from '@/assets/ts/type';
+import type { Note, User } from '@/assets/ts/type';
 import { api_url } from '@/assets/ts/backend_link';
 import waitFor from '@/assets/ts/utils/waitFor';
 import useEmoji from './composable/useEmoji';
@@ -28,7 +28,6 @@ const emojiBtn = ref<HTMLElement | null>(null);
 const ShowDropdown = ref<boolean>(false);
 const users = ref<User[]>([]);
 const shared = ref<boolean | undefined>(undefined);
-const hide8moreTags = ref<boolean>(true);
 const note = computed(() => Notes.value.find(note => note.uuid === props.uuid));
 const titleRef = ref<HTMLInputElement | undefined>(undefined);
 const title = ref<string | undefined>(undefined);
@@ -254,16 +253,11 @@ watch(() => props.uuid, async () => {
 
       <div
         class="w-full h-full flex justify-center items-center"
-        v-if="note && note.tags"
+        v-if="note"
       >
 
         <div 
-          class="flex w-[90%] mb-2 items-end"
-          :class="
-            note?.icon && Tags.filter((tag: Tag) => note?.tags.includes(tag.id))[0] 
-              ? 'justify-between' 
-              : 'justify-start gap-2'
-          "  
+          class="flex w-[90%] mb-2 items-end justify-start gap-2"
         >
 
           <button ref="emojiBtn"><a>
@@ -282,52 +276,6 @@ watch(() => props.uuid, async () => {
             </a>
 
           </a></button>
-
-          <div
-            v-if="note.tags.length > 0"
-            class="flex flex-col items-center max-w-80 w-full"
-          >
-
-            <span class="text-lg font-semibold tracking-wide mb-1">Tags</span>
-
-            <ul class="flex flex-wrap justify-center gap-2 max-w-80">
-              <li
-                v-for="
-                  tag in hide8moreTags
-                    ? Tags.filter((t: any) => note?.tags.includes(t.id)).slice(0, 7)
-                    : Tags.filter((t: any) => note?.tags.includes(t.id))
-                "
-                :key="tag.id"
-                :style="{ backgroundColor: tag.color }"
-                class="px-2.5 py-1 rounded-lg text-white border text-sm shadow-sm"
-              >
-                {{ tag.name }}
-              </li>
-
-              <li
-                v-if="hide8moreTags && note.tags.length > 7"
-                class="px-2.5 py-1 rounded-lg text-sm font-bold bg-(--bg2)"
-              >
-                ...
-              </li>
-            </ul>
-
-            <button
-              v-if="note.tags.length > 7"
-              @click="hide8moreTags = !hide8moreTags"
-              class="mt-1 text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium"
-            >
-              {{ hide8moreTags ? 'Voir plus' : 'Voir moins' }}
-            </button>
-
-          </div>
-
-          <!-- <div
-            v-else
-            @click="tagManager = true"
-          >
-            <a class="px-1">Ajouter un tag</a>
-          </div> -->
         
         </div>
 
