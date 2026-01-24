@@ -44,7 +44,7 @@
                 v-if="'action' in action"
                 class="menu-btn transition-all duration-200 px-2 py-1 rounded-md text-sm font-medium"
                 :class="[
-                  action.isActiveState ? 'bg-(--btn) text-(--bg)' : 'hover:bg-gray-100',
+                  action.isActiveState ? 'bg-(--btn) text-(--bg)' : 'hover:bg-(--bg)',
                   (cat === 'MdInputMenu' || action.id === 764532) ? 'border border-gray-400' : ''
                 ]"
 

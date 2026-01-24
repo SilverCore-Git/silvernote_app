@@ -39,7 +39,7 @@
               :class="[
                 action.isActiveState
                   ? 'bg-(--btn) text-(--bg)' 
-                  : 'text-(--text) hover:bg-gray-100',
+                  : 'text-(--text) hover:bg-(--bg)',
 
                 (cat === 'MdInputMenu' || action.id === 764532)
                   ? 'border border-gray-300' 
