@@ -43,9 +43,7 @@
 
                 (cat === 'MdInputMenu' || action.id === 764532)
                   ? 'border border-gray-300' 
-                  : '',
-                curentColor ? `text-[${curentColor}]` : '',
-                curentHighlight ? `bg-[${curentHighlight}]` : ''
+                  : ''
               ]"
 
               @click="execAction(action.action)"
@@ -102,8 +100,6 @@ const _config = config as ConfigType;
 const IfcolorEditor = ref<boolean>(false);
 const mdInputeMenu = ref<boolean>(false);
 const editorTick = ref<number>(0);
-const curentColor = ref<string | undefined>(undefined);
-const curentHighlight = ref<string | undefined>(undefined);
 
   
 const menuWithState = computed(() => {
@@ -132,18 +128,10 @@ const menuWithState = computed(() => {
 const fnCache = new Map<string, Function>();
 
 
-const execAction = (actionStr: string): any => {
+const execAction = (actionStr: string) => {
 
   if (!editor.value) return;
 
-  if (actionStr.startsWith('colorParams : '))
-  {
-    const action = actionStr.replace('colorParams : ', '');
-    const { color, highlight } = execAction(action);
-    curentColor.value = color;
-    curentHighlight.value = highlight;
-    return;
-  }
   if (actionStr.includes('getImageFile')) return insertImageFromFile();
   if (actionStr.includes('openMdInputMenu')) return openMdInputMenu();
   if (actionStr.includes('openColorEditor')) return openColorEditor();
