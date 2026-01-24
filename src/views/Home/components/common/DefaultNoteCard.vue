@@ -164,6 +164,7 @@ const open_note = (uuid: string) => {
 };
 
 const select_note = () => {
+    if (props.sharedBy) return;
     if (isMobile)
     {
         toggleNoteSelect(props.uuid);

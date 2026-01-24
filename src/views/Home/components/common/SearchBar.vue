@@ -29,7 +29,7 @@
                     cursor-pointer text-3xl
                     -my-3
                 "
-                @click="isFocus = false"
+                @click="query = ''; isFocus = false"
             />
 
     </div>

@@ -85,7 +85,7 @@
 
             <div
                 class="w-full h-full flex justify-center items-center"
-                v-if="note && note.tags"
+                v-if="note"
             >
 
                 <div 
@@ -113,13 +113,6 @@
                     </a>
 
                 </a></button>
-
-                <!-- <div
-                    v-else
-                    @click="tagManager = true"
-                >
-                    <a class="px-1">Ajouter un tag</a>
-                </div> -->
                 
                 </div>
 

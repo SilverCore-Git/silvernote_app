@@ -97,7 +97,7 @@ watch(currentTheme, (newTheme) => {
 
                 </div>
                 
-                <div @click.prevent>
+                <div class=" pointer-events-none">
                     <DefaultNoteCard
                         title="Ma super note"
                         content="Lorem ipsum dolor sit amet. Ut reiciendis voluptatem hic quibusdam alias qui galisum exercitationem in voluptas ullam cum ipsa fugit quo fuga omnis qui itaque sunt. Aut sunt dicta aut iure libero vel quia veritatis! Est corporis nobis sit optio omnis ab repudiandae fugiat qui voluptatem incidunt aut quas distinctio."

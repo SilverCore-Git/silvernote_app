@@ -31,7 +31,7 @@ const ShowNewTagPopup = ref<boolean>(false);
 
             <span 
                 class=" uppercase opacity-60 text-sm whitespace-nowrap"
-            >Filtres :</span>
+            >Tags :</span>
 
             <div
                 class="

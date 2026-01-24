@@ -18,7 +18,7 @@ import { SignOutButton, UserProfile, useUser } from '@clerk/vue';
     <header>
     
       <h1 class="font-bold text-3xl">
-          Paramettre du compte
+          Paramètres du compte
       </h1>
 
     </header>
