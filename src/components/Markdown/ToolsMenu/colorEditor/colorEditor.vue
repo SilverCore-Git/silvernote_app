@@ -13,7 +13,7 @@
       >
 
         <span class="text-xs text-(--text-little)">
-          Couleurs du texte
+          Couleur du texte
         </span>
 
         <div
