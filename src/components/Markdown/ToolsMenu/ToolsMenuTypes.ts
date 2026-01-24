@@ -4,6 +4,7 @@ export interface SimpleAction {
     action: string; // Function
     tooltip: string;
     isActive: string;
+    isActiveState?: boolean;
 }
 
 interface SelectedAction {

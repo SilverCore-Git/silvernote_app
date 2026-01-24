@@ -1,281 +1,270 @@
 <template>
 
-  <div>
+  <div class="relative">
 
     <slot />
 
     <teleport to="body">
 
       <div
-        v-if="!isMobile"
-        v-show="showMenu"
-        class="context-menu dropdown h-10 flex flex-row bg-[var(--bg2)] overflow-auto "
+        v-if="showMenu || mdInputeMenu || IfcolorEditor"
+        class="fixed inset-0 z-998"
+        @click="closeAll"
+      />
+
+      <div
+        v-if="!isMobile && showMenu && editor"
+        class="context-menu"
         :style="{ top: `${posY}px`, left: `${posX}px` }"
       >
 
-        <ul
-          v-for="(list, cat) in actions"
-          :key="cat"
-          class="flex flex-row"
-          :class="cat == 'MdInputMenu' ? '' : 'pr-1 border-r'"
+        <div
+          class="
+            flex flex-row h-10 items-center
+            px-1 bg-(--white) shadow-xl
+            rounded-lg border border-(--btn)
+          "
         >
 
-          <li
-            v-for="action in list"
-            :key="action.id"
-            :class="cat == 'MdInputMenu' ? 'nohover' : ''"
+          <ul
+            v-for="(list, cat) in menuWithState"
+            :key="cat"
+            class="flex flex-row items-center h-full px-1"
+            :class="cat !== 'MdInputMenu' ? 'border-r border-gray-200 mr-1' : ''"
           >
-          
-            <div
-              v-if="'action' in action"
-              :class="
-                cat == 'MdInputMenu' || action.id == 764532
-                  ? `
-                      border border-gray-400 hover:border-[var(--text)] 
-                      transition-all duration-200 rounded-lg px-1.5
-                    ` 
-                  : ''
-              "
-              @click="exec(action.action)"
-              v-html="action.name"
-              v-tooltip.bottom="action.tooltip"
-            ></div>
 
-            
-            <select
-              v-else-if="'actions' in action"
-              @change="onSelectAction($event, action.actions)"
-              class="ml-1 rounded bg-[var(--bg2)]"
+            <li
+              v-for="action in list"
+              :key="action.id"
+              class="px-0.5"
             >
 
-              <option
-                v-for="act in action.actions"
-                :key="act.id"
-                :value="act.id"
-              >
-                {{ act.name }}
-              </option>
+              <button
 
-            </select>
+                v-if="'action' in action"
+                class="menu-btn transition-all duration-200 px-2 py-1 rounded-md text-sm font-medium"
+                :class="[
+                  action.isActiveState ? 'bg-(--btn) text-(--bg)' : 'hover:bg-gray-100',
+                  (cat === 'MdInputMenu' || action.id === 764532) ? 'border border-gray-400' : ''
+                ]"
 
-          </li>
+                @click="execAction(action.action)"
+                v-html="action.name"
+                v-tooltip.bottom="action.tooltip"
 
-        </ul>
+              />
+
+
+            </li>
+
+          </ul>
+
+        </div>
 
       </div>
 
       <MdInputeMenu 
-        v-model:show="mdInputeMenu"
-        :top="posY"
+        v-model:show="mdInputeMenu" 
+        :top="posY" 
         :left="posX"
+      />
+      <colorEditor 
+        v-model:show="IfcolorEditor" 
+        :top="posY" 
+        :left="posX" 
       />
 
-      <colorEditor 
-        v-model:show="IfcolorEditor"
-        :top="posY"
-        :left="posX"
-      />
-      
     </teleport>
 
   </div>
 
 </template>
 
-
 <script setup lang="ts">
 
-import { Editor } from '@tiptap/vue-3';
-import { nextTick, ref, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import type { Categories, SimpleAction } from '../ToolsMenuTypes';
+import type { Categories } from '../ToolsMenuTypes';
 import config from './ToolsMenuConfig.json';
 import { editor } from '../../Editor';
-import { onDragIconLoaded } from '../../tiptap-extensions/dragHandle';
 import MdInputeMenu from '../mdInputType/mdInputMenu.vue';
 import colorEditor from '../colorEditor/colorEditor.vue';
 import isMobile from '@/assets/ts/utils/isMobile';
-const _config: any = config; // i can't assign categories type
+
 
 const route = useRoute();
 const router = useRouter();
+const _config = config as any;
 
-const IfcolorEditor = ref<boolean>(false);
+const showMenu = ref<boolean>(false);
 const mdInputeMenu = ref<boolean>(false);
-const actions = ref<Categories>(_config);
-const showMenu = ref<boolean> (false);
+const IfcolorEditor = ref<boolean>(false);
 const posX = ref<number>(0);
 const posY = ref<number>(0);
+const editorTick = ref<number>(0);
 
-const openSelectionMenu = (withEditorSelect: boolean) => {
+const fnCache = new Map<string, Function>();
 
-  if (withEditorSelect) {
 
-    if (!editor.value) return;
 
-    const { from, to } = editor.value.state.selection;
-    if (from === to) {
-      showMenu.value = false;
-      mdInputeMenu.value = false;
-      IfcolorEditor.value = false;
-      return;
-    }
+const menuWithState = computed(() => {
+  editorTick.value; 
+  if (!editor.value) return _config as Categories;
 
-    const middle = from;
-    const coords = editor.value.view.coordsAtPos(middle);
-
-    posX.value = coords.left + window.scrollX;
-    posY.value = coords.top + window.scrollY - 40;
-
+  const newState = JSON.parse(JSON.stringify(_config));
+  for (const cat in newState) {
+    newState[cat].forEach((item: any) => {
+      if (item.isActive) {
+        item.isActiveState = execCheck(item.isActive);
+      }
+    });
   }
-  else {
+  return newState as Categories & Record<string, any>;
+});
 
 
-  }
+const updateMenuPosition = () => {
+  if (!editor.value) return;
 
-  setTimeout(() => {
-    showMenu.value = true;
-  }, 500)
-
-}
-
-const exec = (action: string) => {
-
-  if (action.startsWith('getImageFile')) return insertImageFromFile(editor.value as Editor);
-  if (action.startsWith('openMdInputMenu')) return openMdInputMenu();
-  if (action.startsWith('openColorEditor')) return openColorEditor();
-  if (action.startsWith('AskToAI')) {
-    AskToAI(
-        action.replace('AskToAI', '').startsWith('(') 
-          ? action
-              .replace(/AskToAI/g, '')
-              .replace(/[()']/g, '')
-              .trim()
-          : undefined
-      );
-  }
-
-  const fn = new Function("editor", `return (${action})()`);
-  fn(editor.value);
-
-}
-
-const onSelectAction = (event: Event, actionsList: SimpleAction[]) => {
-  const select = event.target as HTMLSelectElement;
-  const act: SimpleAction | undefined = actionsList.find(a => a.id == Number(select.value));
-  if (act) exec(act.action);
-};
-
-const openMdInputMenu = () => {
-  mdInputeMenu.value = !mdInputeMenu.value;
-}
-
-const openColorEditor = () => {
-  IfcolorEditor.value = !IfcolorEditor.value;
-}
-
-const insertImageFromFile = (editor: Editor) => {
+  const { from, to } = editor.value.state.selection;
   
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = "image/*";
+  if (from === to) {
+    if (!mdInputeMenu.value && !IfcolorEditor.value) showMenu.value = false;
+    return;
+  }
 
-  input.onchange = () => {
-    const file = input.files?.[0];
-    if (!file) return;
+  const { view } = editor.value;
+  const start = view.coordsAtPos(from);
+  const end = view.coordsAtPos(to);
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const url = reader.result as string;
-      editor.chain().focus().setImage({ src: url }).run();
-    };
-    reader.readAsDataURL(file);
-  };
+  const centerX = (start.left + end.left) / 2;
 
-  input.click();
+  posX.value = centerX + window.scrollX;
+  posY.value = start.top + window.scrollY - 10; // Positionné juste au dessus du texte
+
+  showMenu.value = true;
+
 };
 
 
-const AskToAI = (prompt?: string) => {
+const execAction = (actionStr: string) => {
+
+  if (!actionStr) return;
+
+
+  if (actionStr.includes('getImageFile')) {
+    insertImageFromFile();
+    return closeAll();
+  }
+  if (actionStr.includes('openMdInputMenu')) {
+    mdInputeMenu.value = true;
+    showMenu.value = false;
+    return;
+  }
+  if (actionStr.includes('openColorEditor')) {
+    IfcolorEditor.value = true;
+    showMenu.value = false;
+    return;
+  }
+  if (actionStr.includes('AskToAI')) {
+      const prompt = actionStr.match(/'([^']+)'/)?.[1] || "";
+      AskToAI(prompt);
+      return closeAll();
+  }
+
+  try {
+
+    if (!fnCache.has(actionStr)) {
+      fnCache.set(actionStr, new Function("editor", `return (${actionStr})(editor)`));
+    }
+    fnCache.get(actionStr)!(editor.value);
+    editorTick.value++;
+
+  } catch (e) {
+    console.error("Exec error:", e);
+  }
+
+};
+
+const closeAll = () => {
+  showMenu.value = false;
+  mdInputeMenu.value = false;
+  IfcolorEditor.value = false;
+};
+
+const execCheck = (checkStr: string): boolean => {
+  try {
+    if (!fnCache.has(checkStr)) {
+      fnCache.set(checkStr, new Function("editor", `return (${checkStr})(editor)`));
+    }
+    return !!fnCache.get(checkStr)!(editor.value);
+  } catch {
+    return false;
+  }
+};
+
+
+
+const AskToAI = (prompt: string) => {
+  if (!editor.value) return;
+  const { from, to } = editor.value.state.selection;
+  const selectedText = editor.value.state.doc.textBetween(from, to, ' ');
 
   router.push({
     query: {
       ...route.query,
-      aiquery: undefined,
-      chatbot: undefined
+      aiquery: `${prompt} : ${selectedText}`,
+      chatbot: 'fixed'
     }
   });
+};
 
-  setTimeout(() => {
-
-    if (!editor.value) return;
-
-    const { from, to } = editor.value.state.selection;
-    router.push({
-      query: {
-        ...route.query,
-        aiquery: prompt?.replace('undefined', '').trim() + editor.value.state.doc.textBetween(from, to, ' '),
-        chatbot: 'fixed'
-      }
-    });
-
-    showMenu.value = false;
-    mdInputeMenu.value = false;
-    IfcolorEditor.value = false;
-
-  }, 100);
-
-}
+const insertImageFromFile = () => {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+  input.onchange = () => {
+    const file = input.files?.[0];
+    if (file && editor.value) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        editor.value?.chain().focus().setImage({ src: reader.result as string }).run();
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  input.click();
+};
 
 
-watch(
-  () => editor.value?.state.selection,
-  async () => {
-    await nextTick()
-    openSelectionMenu(true)
-  }
-)
+const handleUpdate = () => {
+  editorTick.value++;
+  updateMenuPosition();
+};
 
-onDragIconLoaded(() => {
-  const doc = document.querySelector('.drag-icon');
-  if (!doc) return;
-  doc.addEventListener('click', () => {
-    openSelectionMenu(false);
-  })
-})
+watch(() => editor.value?.state.selection, handleUpdate);
 
 </script>
 
 <style scoped>
-
 .context-menu {
   position: absolute;
-  min-width: 30em;
   z-index: 1000;
-  border: 1px solid var(--btn);
-  transition: all 0.3s;
+  pointer-events: auto;
+  transform: translate(-50%, -100%); /* Centre horizontalement et place au dessus du point Y */
 }
 
-.category-section {
-  margin-bottom: 12px;
-}
-
-.category-section h3 {
-  font-size: 14px;
-  margin: 0 0 8px 0;
-}
-
-.category-section ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.category-section li {
-  padding: 4px 8px;
+.menu-btn {
   cursor: pointer;
-  border-radius: 4px;
+  white-space: nowrap;
 }
 
+.overflow-auto {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.overflow-auto::-webkit-scrollbar {
+  display: none;
+}
 </style>
