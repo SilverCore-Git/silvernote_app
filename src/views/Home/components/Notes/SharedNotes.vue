@@ -95,6 +95,7 @@ onMounted(async() => {
                         :content="note.content"
                         :icon="note.icon"
                         :tags="note.tags"
+                        :sharedBy="note.user_id"
                     />
                 </li>
             </ul>
