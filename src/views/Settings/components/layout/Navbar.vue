@@ -6,10 +6,11 @@
             p-4 
             min-w-55
             xl:min-w-70
+            bg-(--bg2)
         "
     >
 
-       <ul class="w-full flex flex-col gap-2  mt-4">
+       <ul class="w-full flex flex-col gap-2 mt-4">
 
             <li
                 @click="router.push('/')"
