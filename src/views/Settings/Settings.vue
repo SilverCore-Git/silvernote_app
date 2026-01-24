@@ -8,6 +8,7 @@ import Appearance from './components/views/Appearance.vue';
 import Legal from './components/views/Legal.vue';
 import Mydata from './components/views/Mydata.vue';
 import Preferences from './components/views/Preferences.vue';
+import Developpeurs from './components/views/developpeurs/Developpeurs.vue';
 
 defineProps<{
   page: string;
@@ -34,6 +35,7 @@ defineProps<{
       <Mydata v-else-if="page == 'mydata'" />
       <Appearance v-else-if="page == 'appearance'" />
       <Preferences v-else-if="page == 'preferences'" />
+      <Developpeurs v-else-if="page == 'developpeurs'" />
       <Account v-else />
 
     </div>
