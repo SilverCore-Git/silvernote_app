@@ -32,6 +32,11 @@ const pages: Page[] = [
         icon: "bi-shield-check", // Juridique / sécurité
         name: "Juridique"
     },
+    {
+        path: '/developpeurs',
+        icon: "bi-code-slash",
+        name: "Développeurs"
+    },
 ]
 
 export { pages, type Page };
