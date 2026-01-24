@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useRouter } from 'vue-router';
-import { Notes } from '@/assets/ts/database/Var';
+import { Notes, Tags } from '@/assets/ts/database/Var';
 import { computed } from 'vue';
 import DefaultNoteCard from '../common/DefaultNoteCard.vue';
 import useFilter from '../../composables/useFilter';
@@ -10,7 +10,10 @@ const { selectedFilter } = useFilter();
 
 const notes = computed(() =>
     Notes.value.filter(note => note.tags.includes(selectedFilter.value || 0))
-)
+);
+const tag = computed(() =>
+    Tags.value.filter(tag => tag.id === selectedFilter.value)[0]
+);
 const router = useRouter();
 
 </script>
@@ -21,8 +24,24 @@ const router = useRouter();
         class="flex flex-col gap-4 relative h-full"
     >
 
-        <span class=" uppercase text-md font-semibold text-(--text-little) ">
-            Notes filtrées
+        <span
+            class="
+                uppercase text-md font-semibold text-(--text-little)
+                 flex flex-row gap-2 justify-start items-center
+            "
+        >
+            Notes taguées avec
+            <div
+                class="
+                    border-2 rounded-full px-1.5 py-0.5
+                    text-(--text-strong) text-sm font-semibold
+                "
+                :style="{
+                    borderColor: tag.color
+                }"
+            >
+                {{ tag.name }}
+            </div>
         </span>
 
         <ul
