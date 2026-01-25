@@ -55,7 +55,7 @@ onMounted(async() => {
                     v-for="(note, index) in SharedNotes"
                     :key="index"
                     @click.stop="router.push('/share/'+note.uuid)"
-                    class="w-[250px]"
+                    class="sm:max-w-[250px]"
                 >
                     <DefaultNoteCard
                         :uuid="note.uuid"

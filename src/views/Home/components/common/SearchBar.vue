@@ -16,7 +16,7 @@
 
             <input 
                 type="text"
-                placeholder="Rechercher vôtre note..."
+                placeholder="Rechercher une note..."
                 class="w-full outline-none"
                 v-model="query"
                 @focus="isFocus = true"

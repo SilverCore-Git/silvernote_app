@@ -20,12 +20,12 @@
                     v-for="(page, index) in pages"
                     :key="index" 
                     @click="router.push('/settings' + page.path)"
-                    :class="
+                    :class="[
                         route.params.page == page.path.replace('/', '')
                         || page.path == '/' && !route.params.page 
                             ? 'text-(--btn)'
                             : ''
-                    "
+                    ]"
                     class="p-1"
                 >
                     <i class="bi" :class="page.icon" />
