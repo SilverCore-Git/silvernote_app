@@ -10,8 +10,7 @@
           h-12 flex flex-row justify-between items-center
           fixed bottom-0 inset-x-0 z-100 overflow-x-auto overflow-y-hidden
           bg-(--white) text-xl shadow-[0_-2px_10px_rgba(0,0,0,0.05)]
-          border-t border-(--btn) rounded-t-xl px-2
-          scrollbar-hide
+          border-t border-(--btn) rounded-t-xl scrollbar-hide
         "
       >
 

@@ -8,9 +8,9 @@
 
                 <ul @click="emit('update:visible')">
 
-                    <li @click="tagManager = true">Gérer les tags</li>
+                    <!-- <li @click="tagManager = true">Gérer les tags</li>
 
-                    <hr />
+                    <hr /> -->
 
                     <li v-if="editor" @click="undo">Annuler</li>
                     <li v-if="editor" @click="redo">Rétablir</li>

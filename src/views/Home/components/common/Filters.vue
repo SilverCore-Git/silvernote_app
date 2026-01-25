@@ -46,7 +46,7 @@ const ShowNewTagPopup = ref<boolean>(false);
                 
                 <span  class=" text-xs">
                     <i class="bi bi-plus" />
-                    Filtre
+                    Tag
                 </span>
             </div>
 

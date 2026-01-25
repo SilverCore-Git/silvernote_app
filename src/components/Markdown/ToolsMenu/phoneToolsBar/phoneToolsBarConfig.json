@@ -37,12 +37,6 @@
     },
     {
       "id": 876452,
-      "name": "H3",
-      "action": "()=> editor.chain().focus().toggleHeading({ level: 3 }).run()",
-      "isActive": "()=> editor.isActive('heading', { level: 3 })"
-    },
-    {
-      "id": 876452,
       "name": "Aa",
       "action": "()=> editor.chain().focus().setParagraph().run()",
       "isActive": "()=> editor.isActive('paragraph')"
