@@ -101,7 +101,7 @@
     <confirm-dialog
         :visible="showConfirmDel"
         title="Supprimer les notes séléctionnées"
-        message="êtes vous sur de vouloir supprimer vos note ?"
+        message="Êtes-vous sûr de vouloir supprimer ces notes ?"
         @cancel="showConfirmDel = false"
         @confirm="deleteNotes(2)"
     />

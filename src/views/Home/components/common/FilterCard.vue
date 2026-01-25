@@ -61,8 +61,8 @@
 
     <ConfirmDialog
         :visible="verifyDelete"
-        title="Supprimer un tag"
-        message="Etes vous sur de vouloir supprimer ce tag ?"
+        title="Supprimer le tag sélectionné"
+        message="Êtes-vous sûr de vouloir supprimer ce tag ?"
         @cancel="verifyDelete = false; tagDel = false"
         @confirm="deleteTag(2)"
     />
