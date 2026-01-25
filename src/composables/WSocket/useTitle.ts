@@ -31,8 +31,13 @@ const useTitle = () => {
             }
         );
 
+        let firstEmit: number = 0;
+
         const socketHandler = (newTitle: string) =>
         {
+
+            if (firstEmit === 0 && newTitle === "") return;
+            firstEmit++;
 
             onUpdate = true;
             title.value = newTitle;

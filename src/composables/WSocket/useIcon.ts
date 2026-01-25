@@ -29,8 +29,13 @@ const useIcon = () => {
             }
         );
 
+        let firstEmit: number = 0;
+
         const socketHandler = (newIcon: string) =>
         {
+
+            if (firstEmit === 0 && newIcon === "") return;
+            firstEmit++;
 
             onUpdate = true;
             icon.value = newIcon;
