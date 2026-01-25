@@ -1,4 +1,4 @@
-import { dev } from '@/../package.json';
+
 
 interface Page {
     path: string;
