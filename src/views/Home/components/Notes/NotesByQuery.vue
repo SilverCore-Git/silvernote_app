@@ -57,7 +57,7 @@ const notes = computed(() => {
 
         <div
             v-else
-            class="flex flex-col justify-center items-center absolute inset-0 text-gray-400 -translate-y-20"
+            class="flex flex-col justify-center items-center absolute inset-0"
         >
             <i class="bi bi-search text-6xl mb-4 opacity-20"></i>
             <h3 class="text-2xl font-bold">Aucun résultat trouvé</h3>

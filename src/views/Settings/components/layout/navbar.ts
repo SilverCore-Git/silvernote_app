@@ -33,15 +33,15 @@ const pages: Page[] = [
         icon: "bi-shield-check", // Juridique / sécurité
         name: "Juridique"
     },
-    dev ? {
-        path: '/developpeurs',
-        icon: "bi-code-slash",
-        name: "Développeurs"
-    } : {
-        path: '',
-        icon: "",
-        name: ""
-    },
+    // dev ? {
+    //     path: '/developpeurs',
+    //     icon: "bi-code-slash",
+    //     name: "Développeurs"
+    // } : {
+    //     path: '',
+    //     icon: "",
+    //     name: ""
+    // },
 ]
 
 export { pages, type Page };
