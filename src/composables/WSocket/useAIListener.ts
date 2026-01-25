@@ -21,7 +21,7 @@ const createAIListener = (
           
         try {
               
-            if (title.value) {
+            if (title.value !== undefined) {
                 title.value = data.title;
             }
 
@@ -35,10 +35,10 @@ const createAIListener = (
     const iconHandler = (data: { icon: string, room: string }) => {
 
         if (data.room !== room) return;
-
+        
         try {
-              
-            if (icon.value) {
+
+            if (icon.value !== undefined) {
                 icon.value = data.icon;
             }
 

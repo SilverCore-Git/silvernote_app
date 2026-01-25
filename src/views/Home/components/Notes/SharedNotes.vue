@@ -33,7 +33,7 @@ onMounted(async() => {
 
         <div 
             class="flex flex-col gap-4 h-full "
-            v-if="SharedNotes || ShareByMe"
+            v-if="SharedNotes.length || ShareByMe.length"
         >
 
             <span 
@@ -106,8 +106,8 @@ onMounted(async() => {
             v-else
             class="flex flex-col justify-center items-center my-20"
         >
-            <i class="bi bi-search text-6xl mb-4 opacity-20"></i>
-            <h3 class="text-2xl font-bold">Aucun résultat trouvé</h3>
+            <i class="bi bi-search text-6xl mb-4 opacity-20" />
+            <h3 class="text-2xl font-bold">Aucune note partagée</h3>
         </div>
 
     </div>

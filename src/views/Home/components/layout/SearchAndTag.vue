@@ -3,6 +3,9 @@ import { selectedNotes } from '@/composables/useSelectedNotes';
 import Filters from '../common/Filters.vue';
 import SearchBar from '../common/SearchBar.vue';
 import SelectedNoteOptions from './SelectedNoteOptions.vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 
 </script>
 
@@ -25,7 +28,7 @@ import SelectedNoteOptions from './SelectedNoteOptions.vue';
                 key="search-mode" 
             />
         </Transition>
-        <Filters />
+        <Filters v-if="route.query.page !== 'shared'" />
 
     </div>
 

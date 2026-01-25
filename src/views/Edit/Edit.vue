@@ -86,8 +86,8 @@ onMounted(async () => {
   else
   {
     await initExistingNote();
-    title.value = note.value?.title;
-    icon.value = note.value?.icon;
+    title.value = note.value?.title || '';
+    icon.value = note.value?.icon || '';
   }
 
   const { closeSocket } = initSocket({
