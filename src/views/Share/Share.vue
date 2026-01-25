@@ -291,8 +291,6 @@ const icon = ref<string | undefined>(undefined);
 
 
 const initShare = async () => {
-    title.value = note.value?.title;
-    icon.value = note.value?.icon;
 
     const result = await init(
         props.uuid,
@@ -308,6 +306,9 @@ const initShare = async () => {
             icon
         }
     )
+
+    title.value = note.value?.title;
+    icon.value = note.value?.icon;
     
     if (!result) return;
     close = result.closeSocket;
