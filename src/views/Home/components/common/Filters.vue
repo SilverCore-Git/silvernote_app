@@ -60,7 +60,7 @@ const ShowNewTagPopup = ref<boolean>(false);
         >
 
             <li class="md:block hidden">
-                <span class=" uppercase opacity-60 text-sm whitespace-nowrap">Filtres :</span>
+                <span class=" uppercase opacity-60 text-sm whitespace-nowrap">Tags :</span>
             </li>
 
             <Swiper
@@ -103,7 +103,7 @@ const ShowNewTagPopup = ref<boolean>(false);
 
                     <span  class=" text-xs">
                         <i class="bi bi-plus" />
-                        Filtre
+                        Tag
                     </span>
                 </div>
             </li>
