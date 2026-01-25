@@ -15,7 +15,7 @@
             <i class="bi bi-search opacity-50" />
 
             <input 
-                type="text"
+                type="search"
                 placeholder="Rechercher une note..."
                 class="w-full outline-none"
                 v-model="query"
@@ -94,3 +94,21 @@ watch(() => isFocus.value, () => {
 })
 
 </script>
+
+<style scoped>
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
+
+input[type="search"]::-ms-clear,
+input[type="search"]::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+</style>
