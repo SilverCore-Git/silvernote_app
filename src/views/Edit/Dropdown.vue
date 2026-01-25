@@ -103,6 +103,7 @@ import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import { useEditorStats } from '@/components/Markdown/Function/Stats';
 import { Notes } from '@/assets/ts/database/Var';
 import database from '@/assets/ts/database/database';
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{
   visible: boolean;
@@ -112,6 +113,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:visible'])
 
+const router = useRouter();
 const { characterCount, wordCount } = useEditorStats();
 const tagManager = ref<boolean>(false);
 const export_menu = ref<boolean>(false);
@@ -129,6 +131,7 @@ const delete_note = async (state: number) => {
     {
         await database.delete(props.uuid);
         Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
+        router.push('/');
     }
 }
 
