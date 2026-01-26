@@ -46,7 +46,7 @@ import PressAndHold from '@/components/PressAndHold.vue';
 import { ref } from 'vue';
 import FilterParams from './FilterParams.vue';
 
-const props = defineProps<{
+defineProps<{
     uuid: string;
     color: string;
     name: string;
