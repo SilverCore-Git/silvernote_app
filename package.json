@@ -1,7 +1,7 @@
 {
   "name": "silvernote",
   "productName": "Silvernote",
-  "version": "1.2.18",
+  "version": "1.2.19",
   "description": "Silvernote est une application de prise de notes moderne, rapide et sécurisée. Organisez vos idées, dossiers et tags, sur tous vos appareils.",
   "dev": false,
   "main": "src/app.js",

@@ -28,7 +28,7 @@ module.exports = function create_main_window()
 
       Menu.setApplicationMenu(null);
 
-      window.loadURL("http://localhost:5173");
+      window.loadURL("https://app.silvernote.fr");
 
 
       // Activer les popups
