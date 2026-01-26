@@ -11,11 +11,13 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-defineProps<{
+const props = defineProps<{
   white?: boolean;
+  href?: string;
 }>();
 
 const goBack = () => {
+  if (props.href) return router.push(props.href);
   return router.push({ name: 'Home' });
   if (window.history.length > 1) {
     router.back();

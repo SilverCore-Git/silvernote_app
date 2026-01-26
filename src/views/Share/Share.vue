@@ -1,235 +1,255 @@
 <template>
 
+<div
+    class="
+        overflow-y-auto fixed
+        inset-0 flex flex-col
+        h-full w-full
+    "
+>
+
     <div
-        class="fixed z-40 inset-x-0 top-0 h-30 pointer-events-none"
+        class="fixed top-0 inset-x-0 bg-(--bg2) z-9999"
+    >
+        <DesktopAppTitleBar />
+    </div>
+
+    <div
+        class="fixed z-40 inset-x-0 h-30 pointer-events-none"
+        :class="isElectron ? 'top-10' : 'top-0'"
         style="background: linear-gradient(to top, transparent 0%, var(--bg2) 100%);"
     ></div>
 
-    <header
-        class="
-            flex justify-center items-center flex-row
-            fixed inset-x-4 top-8 z-50 
-            md:inset-x-[10%] xl:inset-x-[20%]
-            2xl:inset-x-[25vw]
-        "
-    >
+    <div>
+
+        <header
+            class="
+                flex justify-center items-center flex-row
+                fixed inset-x-4 z-50 
+                md:inset-x-[10%] xl:inset-x-[20%]
+                2xl:inset-x-[25vw]
+            "
+            :class="isElectron ? 'top-18' : 'top-8'"
+        >
+
+            <div
+                class="
+                    flex justify-between items-center
+                "
+            >
+
+                <BackBtn href="/?page=shared" />
+
+                <div 
+                    class="
+                        absolute right-0
+                        flex flex-row justify-center items-center
+                        space-x-5
+                    " 
+                >
+
+                    <div
+                        class="flex -space-x-3"
+                    >
+
+                        <img
+                            v-if="users.length > 0"
+                            v-for="user in users"
+                            class="w-8 h-8  rounded-full border border-gray-200"
+                            :src="user.imageUrl"
+                        />
+
+                    </div>
+
+                    <a 
+                        class="px-2 rounded"
+                        :class="share_menu ? 'bg-gray-200 ' : ''"
+                        @click="share_menu = !share_menu"
+                    >Partage</a>
+
+                </div>
+
+
+
+                <transition name="fade-slide">
+                        
+                    <Dropdown
+                        v-if="share_menu"
+                        @click="share_menu = false"
+                        :users="users"
+                        :send_share="sendShare"
+                    />
+                    
+                </transition>
+
+            </div>
+
+        </header>
 
         <div
             class="
-                flex justify-between items-center
+            flex flex-col justify-start items-center 
+            overflow-hidden w-screen mt-22
             "
         >
 
-            <BackBtn />
-
-            <div 
+            <div
                 class="
-                    absolute right-0
-                    flex flex-row justify-center items-center
-                    space-x-5
-                " 
+                    flex flex-col justify-start items-center 
+                    md:max-w-[70vw] lg:max-w-[60vw] xl:max-w-[50vw]
+                    2xl:max-w-[40vw] max-w-[90%] w-full h-full
+                "
             >
 
                 <div
-                    class="flex -space-x-3"
-                >
-
-                    <img
-                        v-if="users.length > 0"
-                        v-for="user in users"
-                        class="w-8 h-8  rounded-full border border-gray-200"
-                        :src="user.imageUrl"
-                    />
-
-                </div>
-
-                <a 
-                    class="px-2 rounded"
-                    :class="share_menu ? 'bg-gray-200 ' : ''"
-                    @click="share_menu = !share_menu"
-                >Partage</a>
-
-            </div>
-
-
-
-            <transition name="fade-slide">
-                    
-                <Dropdown
-                    v-if="share_menu"
-                    @click="share_menu = false"
-                    :users="users"
-                    :send_share="sendShare"
-                />
-                
-            </transition>
-
-        </div>
-
-    </header>
-
-    <div
-        class="
-        flex flex-col justify-start items-center 
-        overflow-hidden w-screen mt-22
-        "
-    >
-
-        <div
-            class="
-                flex flex-col justify-start items-center 
-                md:max-w-[70vw] lg:max-w-[60vw] xl:max-w-[50vw]
-                2xl:max-w-[40vw] max-w-[90%] w-full h-full
-            "
-        >
-
-            <div
-                class="w-full h-full flex justify-center items-center"
-                v-if="note"
-            >
-
-                <div 
-                    class="flex w-[90%] mb-2 items-end"
-                    :class="
-                        note?.icon
-                            ? 'justify-between' 
-                            : 'justify-start gap-2'
-                    "  
-                >
-
-                <button ref="emojiBtn"><a>
-
-                    <img
-                        v-if="icon != undefined && note.icon" 
-                        class="w-20 h-20 p-2 cursor-pointer" 
-                        :src="icon"
-                    />
-
-                    <a 
-                        v-else
-                        class="px-1"
-                    >
-                        Ajouter une icon
-                    </a>
-
-                </a></button>
-                
-                </div>
-
-            </div>
-
-            <div
-                class="w-full h-full flex justify-center items-center flex-col"
-            >
-
-                <input 
-                    v-if="title != undefined"
-                    class="
-                        text-4xl font-extrabold mb-4 
-                        text-(--text-strong) w-[90%]
-                        outline-0 resize-none
-                    " 
-                    maxlength="28"
-                    placeholder="Titre..." 
-                    ref="titleRef"
-                    v-model="title"
-                    @keydown.enter="editor?.commands.focus()"
-                />
-
-                <RichMarkdownEditor
+                    class="w-full h-full flex justify-center items-center"
                     v-if="note"
-                    :editable="editable"
-                    :id="-2" 
-                    :uuid="note.uuid"
-                    :data="note"
-                    :is-collaborative="true"
-                />
+                >
 
-            </div>
+                    <div 
+                        class="flex w-[90%] mb-2 items-end"
+                        :class="
+                            note?.icon
+                                ? 'justify-between' 
+                                : 'justify-start gap-2'
+                        "  
+                    >
 
-        </div>
+                    <button ref="emojiBtn"><a>
 
-    </div>
+                        <img
+                            v-if="icon != undefined && note.icon" 
+                            class="w-20 h-20 p-2 cursor-pointer" 
+                            :src="icon"
+                        />
 
+                        <a 
+                            v-else
+                            class="px-1"
+                        >
+                            Ajouter une icon
+                        </a>
 
-    <Popup
-        v-model:visible="need_passwd"
-    >
+                    </a></button>
+                    
+                    </div>
 
-        <div
-            @click.stop
-        >
+                </div>
 
-            <h2 class="text-center text-xl font-semibold mb-6">
-                🔒 Saisir le mot de passe
-            </h2>
+                <div
+                    class="w-full h-full flex justify-center items-center flex-col"
+                >
 
-            <div class="flex flex-col gap-6">
+                    <input 
+                        v-if="title != undefined"
+                        class="
+                            text-4xl font-extrabold mb-4 
+                            text-(--text-strong) w-[90%]
+                            outline-0 resize-none
+                        " 
+                        maxlength="28"
+                        placeholder="Titre..." 
+                        ref="titleRef"
+                        v-model="title"
+                        @keydown.enter="editor?.commands.focus()"
+                    />
 
-                <div class="rounded-xl p-4 border">
-
-                    <label class="block text-base font-medium mb-2">
-                        Mot de passe :
-                    </label>
-
-                    <input
-                        v-model="passwd"
-                        type="password"
-                        placeholder="Entrez votre mot de passe..."
-                        class="py-1 rounded-xl bg-(--bg2)/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none transition"
+                    <RichMarkdownEditor
+                        v-if="note"
+                        :editable="editable"
+                        :id="-2" 
+                        :uuid="note.uuid"
+                        :data="note"
+                        :is-collaborative="true"
                     />
 
                 </div>
 
-                <p v-if="error" class="text-red-500 text-sm text-center">
-                    ❌ {{ error }}
-                </p>
-
-                <div class="flex justify-end gap-3 mt-4">
-                    <button
-                        class="primary danger"
-                        @click="router.push('/')"
-                    >
-                        Annuler
-                    </button>
-
-                    <button
-                        class="primary"
-                        @click="verifyPasswd"
-                    >
-                        Confirmer
-                    </button>
-                </div>
-
             </div>
 
         </div>
 
-    </Popup>
 
+        <Popup
+            v-model:visible="need_passwd"
+        >
 
-    <div
-        v-if="error !== '' && error !== 'Mot de passe incorect.'"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
-    >
+            <div
+                @click.stop
+            >
+
+                <h2 class="text-center text-xl font-semibold mb-6">
+                    🔒 Saisir le mot de passe
+                </h2>
+
+                <div class="flex flex-col gap-6">
+
+                    <div class="rounded-xl p-4 border">
+
+                        <label class="block text-base font-medium mb-2">
+                            Mot de passe :
+                        </label>
+
+                        <input
+                            v-model="passwd"
+                            type="password"
+                            placeholder="Entrez votre mot de passe..."
+                            class="py-1 rounded-xl bg-(--bg2)/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none transition"
+                        />
+
+                    </div>
+
+                    <p v-if="error" class="text-red-500 text-sm text-center">
+                        ❌ {{ error }}
+                    </p>
+
+                    <div class="flex justify-end gap-3 mt-4">
+                        <button
+                            class="primary danger"
+                            @click="router.push('/')"
+                        >
+                            Annuler
+                        </button>
+
+                        <button
+                            class="primary"
+                            @click="verifyPasswd"
+                        >
+                            Confirmer
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </Popup>
+
 
         <div
-            class="bg-(--bg2) rounded-2xl shadow-xl p-6 m-4 w-full max-w-md text-sm border border-gray-300 dark:border-zinc-700"
+            v-if="error !== '' && error !== 'Mot de passe incorect.'"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
         >
-            <h2 class="text-2xl font-semibold text-red-600 dark:text-red-500 mb-4">
-                {{ error }}
-            </h2>
 
-            <div class="flex flex-col gap-5">
+            <div
+                class="bg-(--bg2) rounded-2xl shadow-xl p-6 m-4 w-full max-w-md text-sm border border-gray-300 dark:border-zinc-700"
+            >
+                <h2 class="text-2xl font-semibold text-red-600 dark:text-red-500 mb-4">
+                    {{ error }}
+                </h2>
 
-                <div class="flex justify-end gap-3 mt-6">
+                <div class="flex flex-col gap-5">
 
-                    <button
-                        class="primary"
-                        @click="router.push('/')"
-                    >
-                        Accueil
-                    </button>
+                    <div class="flex justify-end gap-3 mt-6">
+
+                        <button
+                            class="primary"
+                            @click="router.push('/')"
+                        >
+                            Accueil
+                        </button>
+
+                    </div>
 
                 </div>
 
@@ -243,6 +263,8 @@
         v-if="_success?.active"
         :value="_success.value"
     />
+
+</div>
 
 </template>
 
@@ -261,6 +283,8 @@ import useEmoji from '../Edit/composable/useEmoji';
 import waitFor from '@/assets/ts/utils/waitFor';
 import useSendShare from './composable/useSendShare';
 import useInitShare from './composable/useInitShare';
+import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
+import isElectron from '@/assets/ts/utils/isElectron';
 
 
 const props = defineProps<{

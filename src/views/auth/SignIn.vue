@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 
 import isMobile from '@/assets/ts/utils/isMobile';
+import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
 import { SignIn } from '@clerk/vue';
 import { useRoute } from 'vue-router';
 
@@ -18,7 +19,17 @@ const redirectUrl = url.pathname + url.search;
 
 <template>
 
-    <div class="w-screen h-screen bg-signin flex justify-center items-center">
+<div
+    class="
+        overflow-y-auto fixed
+        inset-0 flex flex-col
+        h-full w-full
+    "
+>
+
+    <DesktopAppTitleBar />
+
+    <div class="w-full h-full bg-signin flex justify-center items-center">
 
         <div
             class="
@@ -45,6 +56,8 @@ const redirectUrl = url.pathname + url.search;
         </div>
 
     </div>
+
+</div>
 
 </template>
 

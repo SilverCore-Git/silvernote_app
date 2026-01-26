@@ -1,12 +1,21 @@
 @import "tailwindcss";
 
 @import './assets/css/fonts.css';
-@import './assets/css/switch.css';
 @import './assets/css/theme.css';
+@theme {
+  --color-bg: var(--bg);
+  --color-bg2: var(--bg2);
+  --color-btn: var(--btn);
+  --color-text: var(--text);
+  --color-text-little: var(--text-little);
+}
+
+@import './assets/css/switch.css';
 @import './assets/css/dropdown.css';
 @import './assets/css/button.css';
 @import './assets/css/ToolTip.css';
 @import './assets/css/responsive.css';
+
 
 
 p, span {
