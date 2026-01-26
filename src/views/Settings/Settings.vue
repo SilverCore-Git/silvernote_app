@@ -9,6 +9,7 @@ import Legal from './components/views/Legal.vue';
 import Mydata from './components/views/Mydata.vue';
 import Preferences from './components/views/Preferences.vue';
 import Developpeurs from './components/views/developpeurs/Developpeurs.vue';
+import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
 
 defineProps<{
   page: string;
@@ -17,6 +18,16 @@ defineProps<{
 </script>
 
 <template>
+
+<div
+    class="
+        overflow-y-auto fixed
+        inset-0 flex flex-col
+        h-full w-full
+    "
+>
+
+  <DesktopAppTitleBar />
 
   <div
     :key="page"
@@ -41,5 +52,7 @@ defineProps<{
     </div>
 
   </div>
+
+</div>
 
 </template>

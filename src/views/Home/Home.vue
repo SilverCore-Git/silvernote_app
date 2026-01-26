@@ -5,9 +5,12 @@
 <div
     class="
         overflow-y-auto fixed
-        inset-0 flex
+        inset-0 flex flex-col
+        h-full w-full
     "
 >
+
+    <DesktopAppTitleBar />
 
     <!-- conteneur alignement x -->
     <div
@@ -68,6 +71,7 @@
 
 <script lang="ts" setup>
 
+import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
 import AllNotes from './components/layout/AllNotes.vue';
 import MobileNavBar from './components/layout/MobileNavBar.vue';
 import NavBar from './components/layout/Navbar.vue';
