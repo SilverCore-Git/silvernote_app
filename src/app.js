@@ -3,6 +3,16 @@ const initializeDiscordRPC = require("./assets/dicord_rpc");
 const create_main_window = require('./windows/main/mainWindow.js');
 const create_update_window = require('./windows/update/updateWindow');
 
+const originalUserAgent = app.userAgentFallback;
+app.userAgentFallback = `${originalUserAgent} Silvernote/${app.getVersion()}`;
+app.disableHardwareAcceleration();
+
+// 2. Forcer le profil sRGB (Empêche les gris de devenir blancs/brûlés)
+app.commandLine.appendSwitch('force-color-profile', 'srgb');
+
+// 3. Empêcher Chromium d'ignorer les profils de couleurs
+app.commandLine.appendSwitch('ignore-gpu-blacklist');
+
 app.whenReady().then(async () => {
 
   let setActivity = () => {};

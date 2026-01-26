@@ -12,38 +12,48 @@ module.exports = function create_main_window()
         width: 1200,
         height: 675,
         frame: false,
+        backgroundColor: '#0f0f0f',
+
         webPreferences: {
-          nodeIntegration: true,
-          contextIsolation: false,
-          webviewTag: true,
+          preload: path.join(__dirname, 'preload.js'),
+          nodeIntegration: false,
+          contextIsolation: true,
         },
+
         show: false,
-      });
+      })
+
 
       new Console(window);
 
       Menu.setApplicationMenu(null);
 
-      window.loadFile(path.join(__dirname, "./index.html"));
+      window.loadURL("http://localhost:5173");
+
 
       // Activer les popups
       window.webContents.setWindowOpenHandler(({ url }) => {
-        // Ici on ouvre dans une nouvelle BrowserWindow
-        const popup = new BrowserWindow({
-          width: 800,
-          height: 600,
-          parent: window, // optionnel : fenêtre enfant
-          modal: false,   // pas modal
-          webPreferences: {
-            nodeIntegration: false,
-            contextIsolation: true,
-            webviewTag: true,
-            preload: path.join(__dirname, 'preload.js')
-          },
-        });
 
-        popup.loadURL(url);
-        return { action: 'deny' }; // empêche Electron de créer sa propre popup
+        console.log("Ouverture d'une popup vers :", url);
+
+        return {
+          action: 'allow',
+          overrideBrowserWindowOptions: {
+            width: 600,
+            height: 800,
+            parent: window,
+            modal: false,
+            title: "Silvernote - Connexion",
+            autoHideMenuBar: true,
+            webPreferences: {
+              nodeIntegration: false,
+              contextIsolation: true,
+              preload: path.join(__dirname, 'preload.js'),
+              session: window.webContents.session 
+            }
+          }
+        };
+
       });
 
       globalShortcut.register("CommandOrControl+Shift+I", () => {
