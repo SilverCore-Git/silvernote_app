@@ -1,17 +1,18 @@
 import { watch, type Ref } from "vue";
 import { wsocket } from "./useWebSocket";
 
+let titleValue: any;
 
 const useTitle = () => {
 
     const updateTitle = (title: string) => {
+        titleValue.value = title;
         wsocket.emit('title-update', title);
     }
 
     const createTitleAutoSync = (title: Ref<string | undefined>) =>
     {
-        
-        console.log('createTitleAutoSync')
+        titleValue = title;
 
         let onUpdate = false;
 

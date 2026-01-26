@@ -174,7 +174,7 @@ watch(() => props.uuid, async () => {
     <header
       class="
         flex justify-center items-center flex-row
-        fixed inset-x-4 z-50 
+        fixed inset-x-4 z-60
         md:inset-x-[10%] xl:inset-x-[20%]
         2xl:inset-x-[25vw] bg-transparent
       "
@@ -233,19 +233,13 @@ watch(() => props.uuid, async () => {
             <i class="bi bi-three-dots-vertical" />
           </div>
 
-          <div>
+          <div class="z-60">
             <Dropdown
               v-model:visible="ShowDropdown"
               :note="note"
               :uuid="props.uuid"
             />
-            <Teleport to="body">
-              <div 
-                class="absolute inset-0 " 
-                @click="ShowDropdown = false"
-                v-if="ShowDropdown"
-              />
-            </Teleport>
+
           </div>
 
 
@@ -254,6 +248,12 @@ watch(() => props.uuid, async () => {
       </div>
 
     </header>
+
+    <div 
+      class="absolute inset-0 z-50" 
+      @click="ShowDropdown = false"
+      v-if="ShowDropdown"
+    />
 
     <div
       class="

@@ -2,7 +2,7 @@
 
     <transition name="fade-slide">
 
-        <div v-if="visible">
+        <div v-if="visible" class="z-100 pointer-events-auto">
                 
             <div class="dropdown absolute right-0 top-14">
 
@@ -17,10 +17,10 @@
 
                     <hr />
 
-                    <!-- <li @click="export_menu = true">Exporter</li>
+                    <li @click="export_menu = true">Exporter</li>
                     <li @click="import_menu = true">Importer</li>
 
-                    <hr /> -->
+                    <hr />
 
                     <li @click="share_menu = true">Partager</li>
                     <li @click="saveNote(uuid)">Sauvegarder</li>
@@ -79,7 +79,6 @@
     <import
         v-model:visible="import_menu"
         :uuid="uuid"
-        :note="note"
     />
 
     <export
