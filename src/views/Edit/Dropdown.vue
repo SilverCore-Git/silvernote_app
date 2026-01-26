@@ -2,7 +2,7 @@
 
     <transition name="fade-slide">
 
-        <div v-if="visible">
+        <div v-if="visible" class="z-100 pointer-events-auto">
                 
             <div class="dropdown absolute right-0 top-14">
 

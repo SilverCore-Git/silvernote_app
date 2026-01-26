@@ -97,11 +97,9 @@ class Database {
     }
 
     /**
-     * Mise à jour de la couleur d'un tag
+     * Mise à jour d'un tag
      */
-    public async save_tag_color(tag: Tag, color: string) {
-        if (!color) return;
-        tag.color = color;
+    public async updateTag(tag: Tag) {
         
         await fetch(`${api_url}/api/db/update/a/tag`, {
             method: 'POST',
@@ -109,6 +107,7 @@ class Database {
             credentials: 'include',
             body: JSON.stringify({ tag }),
         });
+        
     }
 
     /**
