@@ -30,7 +30,8 @@
 
       <!-- loader -->
       <div v-if="loader" class="fixed inset-0 bg-(--bg) z-50">
-        <div class="flex justify-center items-center w-screen h-screen">
+        <DesktopAppTitleBar />
+        <div class="flex justify-center items-center w-full h-full">
           <Loader :icon="false" />
           <span class="absolute bottom-6 inset-x-0 z-500 flex justify-center items-center">
             {{ status }}
@@ -81,6 +82,7 @@ import ShortsCut from "./components/shortsCut.vue";
 import ErrorOverlay from "./components/errorOverlay/errorOverlay.vue";
 import postError from "./components/errorOverlay/postError";
 import BtnOverlay from "./components/common/BtnOverlay.vue";
+import DesktopAppTitleBar from "./components/DesktopAppTitleBar.vue";
 
 const loader = ref<boolean>(true);
 const status = ref<string>('Chargement de l\'app...');

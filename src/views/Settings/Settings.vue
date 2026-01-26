@@ -10,6 +10,7 @@ import Mydata from './components/views/Mydata.vue';
 import Preferences from './components/views/Preferences.vue';
 import Developpeurs from './components/views/developpeurs/Developpeurs.vue';
 import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
+import isElectron from '@/assets/ts/utils/isElectron';
 
 defineProps<{
   page: string;
@@ -21,9 +22,10 @@ defineProps<{
 
 <div
     class="
-        overflow-y-auto fixed
+        overflow-y-hidden fixed
         inset-0 flex flex-col
         h-full w-full
+        bg-(--bg2)
     "
 >
 
@@ -31,7 +33,7 @@ defineProps<{
 
   <div
     :key="page"
-    class="flex flex-raw h-screen w-screen"
+    class="flex flex-raw h-full w-full"
   >
 
     <NavBar class="lg:block hidden" />
@@ -39,7 +41,8 @@ defineProps<{
     <BackBtn class="absolute top-4 left-4 lg:hidden" />
 
     <div
-      class="w-full h-full xl:px-10 py-10 overflow-y-auto pb-20"
+      class="w-full h-full xl:px-10 py-10 overflow-y-auto pb-20 bg-(--bg)"
+      :class="isElectron ? 'rounded-tl-xl border-t border-l border-(--text-little)/20' : ''"
     >
 
       <Legal v-if="page == 'legal'" />

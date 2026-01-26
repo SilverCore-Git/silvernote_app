@@ -2,8 +2,7 @@
 
     <div
         class="
-            h-screen
-            p-4 
+            h-full p-4 
             min-w-55
             xl:min-w-70
             bg-(--bg2)

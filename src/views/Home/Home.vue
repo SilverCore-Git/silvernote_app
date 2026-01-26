@@ -7,15 +7,17 @@
         overflow-y-auto fixed
         inset-0 flex flex-col
         h-full w-full
+        bg-(--bg2)
     "
 >
 
-    <DesktopAppTitleBar />
+    <DesktopAppTitleBar class="w-full h-full" />
 
     <!-- conteneur alignement x -->
     <div
         class="
-            flex flex-row w-full h-full
+            flex flex-row 
+            h-full w-full
         "
     >
 
@@ -47,7 +49,9 @@
         <div
             class="
                 flex-1 flex flex-col p-4 gap-4 md:p-8 md:gap-8 overflow-hidden
+                bg-(--bg)
             "
+            :class="isElectron ? 'rounded-tl-xl border-t border-l border-(--text-little)/20' : ''"
         >
 
             <!-- search + tags -->
@@ -77,5 +81,6 @@ import MobileNavBar from './components/layout/MobileNavBar.vue';
 import NavBar from './components/layout/Navbar.vue';
 import SearchAndTag from './components/layout/SearchAndTag.vue';
 import { isRotating, reload_list } from './composables/Reload';
+import isElectron from '@/assets/ts/utils/isElectron';
 
 </script>

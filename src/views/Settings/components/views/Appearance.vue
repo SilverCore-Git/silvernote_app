@@ -25,7 +25,7 @@ watch(currentTheme, (newTheme) => {
 
 <template>
         
-    <div class="min-h-screen w-full p-8 transition-colors duration-300">
+    <div class="min-h-full w-full p-8 transition-colors duration-300">
         
         <header class="mb-8">
 

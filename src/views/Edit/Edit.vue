@@ -15,6 +15,8 @@ import { useRoute, useRouter } from 'vue-router';
 import database from '@/assets/ts/database/database';
 import useToken from '@/composables/useToken';
 import { initSocket } from '@/composables/WSocket';
+import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
+import isElectron from '@/assets/ts/utils/isElectron';
 
 const props = defineProps<{
   uuid: string;
@@ -147,171 +149,192 @@ watch(() => props.uuid, async () => {
 
 <template>
 
+<div
+    class="
+        overflow-y-auto fixed
+        inset-0 flex flex-col
+        h-full w-full
+    "
+>
+
   <div
-    class="fixed z-40 inset-x-0 top-0 h-30 pointer-events-none"
+    class="fixed top-0 inset-x-0 bg-(--bg2) z-9999"
+  >
+    <DesktopAppTitleBar />
+  </div>
+
+  <div
+    class="fixed z-40 inset-x-0 h-30 pointer-events-none"
+    :class="isElectron ? 'top-10' : 'top-0'"
     style="background: linear-gradient(to top, transparent 0%, var(--bg2) 100%);"
   ></div>
 
+  <div>
 
-  <header
-    class="
-      flex justify-center items-center flex-row
-      fixed inset-x-4 top-8 z-50 
-      md:inset-x-[10%] xl:inset-x-[20%]
-      2xl:inset-x-[25vw]
-    "
-  >
+    <header
+      class="
+        flex justify-center items-center flex-row
+        fixed inset-x-4 z-50 
+        md:inset-x-[10%] xl:inset-x-[20%]
+        2xl:inset-x-[25vw] bg-transparent
+      "
+      :class="isElectron ? 'top-18' : 'top-8'"
+    >
+
+      <div
+        class="
+            flex justify-between items-center
+        "
+      >
+
+        <BackBtn />
+
+        <div
+          class="flex flex-row gap-4 absolute right-0"
+          v-if="note"
+        >
+          
+          <div
+            v-if="shared"
+            class="flex justify-center items-center flex-row gap-4"
+          >
+
+            <div
+              class="flex -space-x-3"
+            >
+
+              <img
+                  v-for="(user, index) in users"
+                  :key="index"
+                  class="w-8 h-8 rounded-full border border-gray-200"
+                  :src="user.imageUrl"
+              />
+
+            </div>
+
+          </div>
+
+        
+          <div
+            class="cursor-pointer text-(--btn) text-3xl"
+            v-tooltip="note?.pinned ? 'Désépingler' : 'Épingler'"
+            @click="note.pinned = !note.pinned"
+          >
+            <i 
+              class="bi"
+              :class="note?.pinned ? 'bi-pin-angle-fill' : 'bi-pin-angle'"
+            />
+          </div>
+
+          <div
+            class="cursor-pointer text-(--btn) text-3xl"
+            @click="ShowDropdown = !ShowDropdown"
+          >
+            <i class="bi bi-three-dots-vertical" />
+          </div>
+
+          <div>
+            <Dropdown
+              v-model:visible="ShowDropdown"
+              :note="note"
+              :uuid="props.uuid"
+            />
+            <Teleport to="body">
+              <div 
+                class="absolute inset-0 " 
+                @click="ShowDropdown = false"
+                v-if="ShowDropdown"
+              />
+            </Teleport>
+          </div>
+
+
+        </div>
+
+      </div>
+
+    </header>
 
     <div
       class="
-          flex justify-between items-center
+        flex flex-col justify-start items-center 
+        overflow-hidden w-screen mt-22
       "
     >
 
-      <BackBtn />
-
       <div
-        class="flex flex-row gap-4 absolute right-0"
-        v-if="note"
+        class="
+            flex flex-col justify-start items-center 
+            md:max-w-[70vw] lg:max-w-[60vw] xl:max-w-[50vw]
+            2xl:max-w-[40vw] max-w-[90%] w-full h-full
+        "
       >
-        
+
         <div
-          v-if="shared"
-          class="flex justify-center items-center flex-row gap-4"
+          class="w-full h-full flex justify-center items-center"
+          v-if="note"
         >
 
-          <div
-            class="flex -space-x-3"
+          <div 
+            class="flex w-[90%] mb-2 items-end justify-start gap-2"
           >
 
-            <img
-                v-for="(user, index) in users"
-                :key="index"
-                class="w-8 h-8 rounded-full border border-gray-200"
-                :src="user.imageUrl"
-            />
+            <button ref="emojiBtn"><a>
 
+              <img
+                v-if="icon" 
+                class="w-20 h-20 p-2 cursor-pointer" 
+                :src="icon" 
+              />
+
+              <a 
+                v-else
+                class="px-1"
+              >
+                Ajouter une icon
+              </a>
+
+            </a></button>
+          
           </div>
 
         </div>
 
-      
         <div
-          class="cursor-pointer text-(--btn) text-3xl"
-          v-tooltip="note?.pinned ? 'Désépingler' : 'Épingler'"
-          @click="note.pinned = !note.pinned"
+          class="w-full h-full flex justify-center items-center flex-col"
         >
-          <i 
-            class="bi"
-            :class="note?.pinned ? 'bi-pin-angle-fill' : 'bi-pin-angle'"
+
+          <input 
+            v-if="title != undefined"
+            class="
+              text-4xl font-extrabold mb-4 
+              text-(--text-strong) w-[90%]
+              outline-0 resize-none
+            " 
+            maxlength="28"
+            placeholder="Titre..." 
+            ref="titleRef"
+            v-model="title"
+            @keydown.enter="editor?.commands.focus()"
           />
-        </div>
 
-        <div
-          class="cursor-pointer text-(--btn) text-3xl"
-          @click="ShowDropdown = !ShowDropdown"
-        >
-          <i class="bi bi-three-dots-vertical" />
-        </div>
-
-        <div>
-          <Dropdown
-            v-model:visible="ShowDropdown"
-            :note="note"
-            :uuid="props.uuid"
+          <RichMarkdownEditor
+            v-if="note && shared != undefined"
+            :editable="true"
+            :id="-2" 
+            :uuid="note.uuid"
+            :data="note"
+            :is-collaborative="shared"
           />
-          <Teleport to="body">
-            <div 
-              class="absolute inset-0 " 
-              @click="ShowDropdown = false"
-              v-if="ShowDropdown"
-            />
-          </Teleport>
+
         </div>
-
-
-      </div>
-
-  </div>
-
-  </header>
-
-  <div
-    class="
-      flex flex-col justify-start items-center 
-      overflow-hidden w-screen mt-22
-    "
-  >
-
-    <div
-      class="
-          flex flex-col justify-start items-center 
-          md:max-w-[70vw] lg:max-w-[60vw] xl:max-w-[50vw]
-          2xl:max-w-[40vw] max-w-[90%] w-full h-full
-      "
-    >
-
-      <div
-        class="w-full h-full flex justify-center items-center"
-        v-if="note"
-      >
-
-        <div 
-          class="flex w-[90%] mb-2 items-end justify-start gap-2"
-        >
-
-          <button ref="emojiBtn"><a>
-
-            <img
-              v-if="icon" 
-              class="w-20 h-20 p-2 cursor-pointer" 
-              :src="icon" 
-            />
-
-            <a 
-              v-else
-              class="px-1"
-            >
-              Ajouter une icon
-            </a>
-
-          </a></button>
-        
-        </div>
-
-      </div>
-
-      <div
-        class="w-full h-full flex justify-center items-center flex-col"
-      >
-
-        <input 
-          v-if="title != undefined"
-          class="
-            text-4xl font-extrabold mb-4 
-            text-(--text-strong) w-[90%]
-            outline-0 resize-none
-          " 
-          maxlength="28"
-          placeholder="Titre..." 
-          ref="titleRef"
-          v-model="title"
-          @keydown.enter="editor?.commands.focus()"
-        />
-
-        <RichMarkdownEditor
-          v-if="note && shared != undefined"
-          :editable="true"
-          :id="-2" 
-          :uuid="note.uuid"
-          :data="note"
-          :is-collaborative="shared"
-        />
 
       </div>
 
     </div>
 
   </div>
+
+</div>
 
 </template>
