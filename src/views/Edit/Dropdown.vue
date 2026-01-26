@@ -17,10 +17,10 @@
 
                     <hr />
 
-                    <!-- <li @click="export_menu = true">Exporter</li>
+                    <li @click="export_menu = true">Exporter</li>
                     <li @click="import_menu = true">Importer</li>
 
-                    <hr /> -->
+                    <hr />
 
                     <li @click="share_menu = true">Partager</li>
                     <li @click="saveNote(uuid)">Sauvegarder</li>
