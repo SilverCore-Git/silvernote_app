@@ -20,7 +20,7 @@
             "
         >
 
-            <BackBtn />
+            <BackBtn href="/?page=shared" />
 
             <div 
                 class="
