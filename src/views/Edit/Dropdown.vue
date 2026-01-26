@@ -79,7 +79,6 @@
     <import
         v-model:visible="import_menu"
         :uuid="uuid"
-        :note="note"
     />
 
     <export

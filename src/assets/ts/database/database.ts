@@ -62,6 +62,7 @@ class Database {
      * Mise à jour globale d'une note
      */
     public async update(note: Note) {
+        note._id = undefined;
         await this.push_note(note);
     }
 
@@ -101,6 +102,7 @@ class Database {
      */
     public async updateTag(tag: Tag) {
         
+        tag._id = undefined;
         await fetch(`${api_url}/api/db/update/a/tag`, {
             method: 'POST',
             headers: await this.getHeaders(),

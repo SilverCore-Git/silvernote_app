@@ -1,16 +1,19 @@
 import { watch, type Ref } from "vue";
 import { wsocket } from "./useWebSocket";
 
+let iconValue: any;
 
 const useIcon = () => {
 
     const updateIcon = (icon: string) => {
+        iconValue.value = icon;
         wsocket.emit('icon-update', icon);
     }
 
     const createIconAutoSync = (icon: Ref<string | undefined>) =>
     {
 
+        iconValue = icon;
         let onUpdate = false;
 
         const stopWatch = watch(
