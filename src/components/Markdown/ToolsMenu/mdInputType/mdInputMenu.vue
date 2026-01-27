@@ -2,7 +2,7 @@
 
   <div 
     :style="{ top: `${top ? top : undefined}px`, left: `${left ? left : undefined}px` }" 
-    class="absolute"
+    class="fixed"
   >
 
     <transition name="fade-slide">
@@ -30,10 +30,15 @@
         <ul class="overflow-auto max-h-60">
 
           <li
-            v-for="o in filteredOpt"
+            v-for="(o, index) in filteredOpt"
             :key="o.name"
             @click="exec(o.fn); emit('update:show', false)"
-            class="cursor-pointer hover:bg-gray-200 px-2 py-1 rounded"
+            @mouseenter="selectedIndex = index"
+            class="cursor-pointer px-2 py-1 rounded"
+            :class="[
+              'cursor-pointer px-2 py-1 rounded',
+              selectedIndex === index ? 'bg-(--btn) text-white is-selected' : '' 
+            ]"
           >
             {{ o.name }}
           </li>
@@ -93,6 +98,10 @@ const insertName: string[] = [
 ]
 
 const search = ref<string>('');
+const selectedIndex = ref(0);
+watch(search, () => {
+  selectedIndex.value = 0;
+});
 const opt = ref<Opt[]>(
   props.type 
     ? props.type == 'insert'
@@ -133,10 +142,9 @@ const convertToBase64 = (file: File): Promise<string> => {
 
 const insertImageFromFile = () => {
 
-  // 1. Créer un input de fichier invisible
   const input = document.createElement('input');
   input.type = 'file';
-  input.accept = 'image/*'; // Accepter uniquement les images
+  input.accept = 'image/*';
 
   input.onchange = async (event) => {
     
@@ -171,6 +179,33 @@ const insertImageFromFile = () => {
 
 };
 
+
+const onKeyDown = ({ event }: { event: KeyboardEvent }) => {
+
+  if (event.key === 'ArrowDown') {
+    selectedIndex.value = (selectedIndex.value + 1) % filteredOpt.value.length;
+    scrollToSelected();
+    return true;
+  } 
+  
+  if (event.key === 'ArrowUp') {
+    selectedIndex.value = (selectedIndex.value - 1 + filteredOpt.value.length) % filteredOpt.value.length;
+    scrollToSelected();
+    return true;
+  } 
+
+  if (event.key === 'Enter') {
+    const currentOpt = filteredOpt.value[selectedIndex.value];
+    if (currentOpt) {
+      exec(currentOpt.fn);
+      return true;
+    }
+  }
+
+  return false;
+
+};
+
 onMounted(() => {
   if (props.searchType == 'props')
   {
@@ -181,6 +216,18 @@ onMounted(() => {
       })
     }
   }
-})
+});
+
+const scrollToSelected = () => {
+  nextTick(() => {
+    const el = document.querySelector('.is-selected');
+    el?.scrollIntoView({ block: 'nearest' });
+  });
+};
+
+
+defineExpose({
+  onKeyDown
+});
 
 </script>
