@@ -8,36 +8,40 @@
 
       <div>
 
-        <div v-if="!route.path.startsWith('/sauth')">
-          <Protect>
+          <div v-if="!route.path.startsWith('/sauth')">
+            <Protect>
+              <router-view />
+            </Protect>
+          </div>
+
+          <div v-if="route.path.startsWith('/sauth')">
             <router-view />
-          </Protect>
-        </div>
+          </div>
 
-        <div v-if="route.path.startsWith('/sauth')">
-          <router-view />
-        </div>
-
-        <div 
-          v-show="loaded && isSignedIn && !route.path.startsWith('/settings')"
-          class=" z-50 relative"
-        >
-          <BtnOverlay />
-        </div>
+          <div 
+            v-show="loaded && isSignedIn && !route.path.startsWith('/settings')"
+            class=" z-50 relative"
+          >
+            <BtnOverlay />
+          </div>
 
       </div>
 
 
-      <!-- loader -->
-      <div v-if="loader" class="fixed inset-0 bg-(--bg) z-50">
-        <DesktopAppTitleBar />
-        <div class="flex justify-center items-center w-full h-full">
-          <Loader :icon="false" />
-          <span class="absolute bottom-6 inset-x-0 z-500 flex justify-center items-center">
-            {{ status }}
-          </span>
+      <transition name="fade-app" appear>
+
+        <!-- loader -->
+        <div v-if="loader" class="fixed inset-0 bg-black z-50">
+          <DesktopAppTitleBar />
+          <div class="flex justify-center items-center w-full h-full">
+            <IconLoader />
+            <span class="absolute bottom-6 inset-x-0 z-500 flex justify-center items-center">
+              {{ status }}
+            </span>
+          </div>
         </div>
-      </div>
+
+      </transition>
 
       <div v-if="is_offline" class="fixed inset-0 bg-(--bg) z-50">
         <div class="flex justify-center items-center flex-col w-screen h-screen">
@@ -71,7 +75,6 @@
 
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import Loader from "./components/Loader.vue";
 import { api_url, Session } from "./assets/ts/backend_link";
 import { init_theme } from "./assets/ts/theme";
 import { Protect, useAuth, useUser } from "@clerk/vue";
@@ -83,6 +86,7 @@ import ErrorOverlay from "./components/errorOverlay/errorOverlay.vue";
 import postError from "./components/errorOverlay/postError";
 import BtnOverlay from "./components/common/BtnOverlay.vue";
 import DesktopAppTitleBar from "./components/DesktopAppTitleBar.vue";
+import IconLoader from "./components/iconLoader.vue";
 
 const loader = ref<boolean>(true);
 const status = ref<string>('Chargement de l\'app...');
@@ -169,3 +173,27 @@ const reload = () => {
 }
 
 </script>
+
+<style>
+
+.fade-app-leave-from {
+  opacity: 1;
+  animation: circle-reveal 1000ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fade-app-leave-active {
+  transition: opacity 300ms ease-out;
+  opacity: 0;
+}
+
+
+@keyframes circle-reveal {
+  from {
+    clip-path: circle(0% at 50% 50%);
+  }
+  to {
+    clip-path: circle(150% at 50% 50%);
+  }
+}
+
+</style>

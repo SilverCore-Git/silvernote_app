@@ -2,14 +2,6 @@
 
 @import './assets/css/fonts.css';
 @import './assets/css/theme.css';
-@theme {
-  --color-bg: var(--bg);
-  --color-bg2: var(--bg2);
-  --color-btn: var(--btn);
-  --color-text: var(--text);
-  --color-text-little: var(--text-little);
-}
-
 @import './assets/css/switch.css';
 @import './assets/css/dropdown.css';
 @import './assets/css/button.css';
@@ -24,7 +16,11 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Inter', sans-serif;
 }
 
-
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+}
 
 .scrollbar-none::-webkit-scrollbar {
   display: none;
