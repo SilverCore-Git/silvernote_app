@@ -62,9 +62,5 @@
     {
         "name": "Lien vers une note",
         "fn": "() => editor.chain().focus().setNoteBtnLink({ noteId: -3 }).run()"
-    },
-    {
-        "name": "Tableau",
-        "fn": "() => editor.chain().focus().insertTable({ rows: 3, cols: 3 }).run()"
     }
 ]

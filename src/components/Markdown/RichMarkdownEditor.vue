@@ -11,7 +11,7 @@
       <EditorContent
         v-if="editor && !loader"
         :editor="editor as Editor"
-        class="prose h-full mb-20"
+        class="prose h-full"
       />
       <div v-else class="animate-pulse bg-gray-300 h-80 w-full rounded-xl"></div>
     </div>
@@ -237,7 +237,6 @@ onBeforeUnmount(() => {
   overflow-wrap: break-word;
   font-family: system-ui, sans-serif;
   color: var(--text);
-  margin-bottom: 10em;
   outline: none;
 }
 

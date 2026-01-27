@@ -327,6 +327,14 @@ watch(() => props.uuid, async () => {
             :is-collaborative="shared"
           />
 
+          <div
+            v-if="editor"
+            class="
+              h-80 w-full
+            "
+            @click="editor.chain().focus('end').run();"
+          ></div>
+
         </div>
 
       </div>

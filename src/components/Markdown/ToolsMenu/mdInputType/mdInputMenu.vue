@@ -122,6 +122,15 @@ watch(() => props.show, async (val) => {
   }
 })
 
+const convertToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = (error) => reject(error);
+  });
+};
+
 const insertImageFromFile = () => {
 
   // 1. Créer un input de fichier invisible
@@ -129,7 +138,7 @@ const insertImageFromFile = () => {
   input.type = 'file';
   input.accept = 'image/*'; // Accepter uniquement les images
 
-  input.onchange = (event) => {
+  input.onchange = async (event) => {
     
     const target: EventTarget | null = event.target;
     const as = target as HTMLInputElement;
@@ -138,7 +147,7 @@ const insertImageFromFile = () => {
     console.log(file || 'no file')
     if (file) {
       
-      const url = URL.createObjectURL(file);
+      const url = await convertToBase64(file);
 
       editor.value
         ?.chain()
