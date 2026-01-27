@@ -110,7 +110,7 @@ const filteredOpt = computed(() => {
 
 
 const exec = (action: string) => {
-  if (action.startsWith('getImageFile')) return insertImageFromFile(editor);
+  if (action.startsWith('getImageFile')) return insertImageFromFile();
   const fn = new Function("editor", `return (${action})()`);
   fn(editor.value);
 };
@@ -122,16 +122,43 @@ watch(() => props.show, async (val) => {
   }
 })
 
-const insertImageFromFile = (editor: any) => {
+const insertImageFromFile = () => {
+
+  // 1. Créer un input de fichier invisible
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*'; // Accepter uniquement les images
+
+  input.onchange = (event) => {
     
-  editor.value.chain().focus().insertContent({
-    type: 'imageUpload',
-    attrs: {
-      accept: 'image/*',
-      limit: 3,
-      maxSize: 10 * 1024 * 1024, // 10 MB
-    },
-  }).run()
+    const target: EventTarget | null = event.target;
+    const as = target as HTMLInputElement;
+
+    const file = as.files?.[0];
+    console.log(file || 'no file')
+    if (file) {
+      
+      const url = URL.createObjectURL(file);
+
+      editor.value
+        ?.chain()
+        .focus()
+        .setImage({ src: url, alt: file.name })
+        .createParagraphNear()
+        .run();
+    }
+  };
+
+  input.click();
+    
+  // editor.value.chain().focus().insertContent({
+  //   type: 'imageUpload',
+  //   attrs: {
+  //     accept: 'image/*',
+  //     limit: 3,
+  //     maxSize: 10 * 1024 * 1024, // 10 MB
+  //   },
+  // }).run()
 
 };
 
