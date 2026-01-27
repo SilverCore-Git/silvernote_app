@@ -1,6 +1,5 @@
 <script setup lang="ts">
 
-import { useRouter } from 'vue-router';
 import { Notes } from '@/assets/ts/database/Var';
 import { computed } from 'vue';
 import DefaultNoteCard from '../common/DefaultNoteCard.vue';
@@ -8,7 +7,6 @@ import DefaultNoteCard from '../common/DefaultNoteCard.vue';
 const notes = computed(() =>
     Notes.value.filter(note => !note.pinned)
 )
-const router = useRouter();
 
 </script>
 
@@ -32,7 +30,6 @@ const router = useRouter();
             <li
                 v-for="(note, index) in notes"
                 :key="index"
-                @click="router.push('/edit/'+note.uuid)"
                 class="sm:max-w-[250px]"
             >
                 <DefaultNoteCard

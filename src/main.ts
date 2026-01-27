@@ -44,6 +44,7 @@ app.use(clerkPlugin, {
   routerPush: router.push,
   routerReplace: router.replace
 });
+
 app.use(FloatingVue);
 
 app.use(router);

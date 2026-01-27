@@ -155,6 +155,7 @@ watch(() => props.uuid, async () => {
         inset-0 flex flex-col
         h-full w-full
     "
+    :style="{ 'view-transition-name': `note-${uuid}` }"
 >
 
   <div

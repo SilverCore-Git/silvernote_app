@@ -2,8 +2,7 @@
 
     <PressAndHold
         @long-press="select_note"
-        @click.stop="open_note(uuid)"
-        
+        @click.stop="openNote"
     >
 
         <div
@@ -17,11 +16,12 @@
                 h-full max-h-40
             "
             :class="[
-                note_selected || isSelected(props.uuid)
+                note_selected || isSelected(uuid)
                     ? 'border-(--btn) border-dashed border-2'
                     : 'border-gray-200', 
                 inertw
             ]"
+            :style="{ 'view-transition-name': `note-${uuid}` }"
         >
             
             <div class="flex justify-between items-start mb-3 gap-2">
@@ -121,7 +121,7 @@
 
 <script lang="ts" setup>
 
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import utils from '@/assets/ts/utils';
 import type { User, Tag } from '@/assets/ts/type';
@@ -154,13 +154,24 @@ const note_selected = ref<boolean>(false);
 const sharerIcon = ref<string | undefined>(undefined);
 const shareVisitors = ref<User[]>([]);
 
-const open_note = (uuid: string) => {
+
+const openNote = () => {
     if (isMobile && selectedNotes.value.length > 0) {
         toggleNoteSelect(props.uuid);
         return;
     }
     if (props.click) return props.click();
-    router.push(`/${props.sharedBy ? 'share' : 'edit'}/${uuid}`);
+
+    if (!document.startViewTransition) {
+        router.push(`/${props.sharedBy ? 'share' : 'edit'}/${props.uuid}`);
+        return;
+    }
+
+    document.startViewTransition(async () => {
+        await router.push(`/${props.sharedBy ? 'share' : 'edit'}/${props.uuid}`);
+        // Attendre que Vue ait fini de monter le nouveau composant
+        await nextTick(); 
+    });
 };
 
 const select_note = () => {

@@ -15,7 +15,7 @@
         <!-- new note btn -->
         <button
             v-if="!route.path.startsWith('/edit') || !route.path.startsWith('/edit')"
-            @click="router.push('/edit/new')"
+            @click="openEditNewNote"
             class="
                 transition-all duration-300 ease-in-out
                 bg-(--btn) text-(--white)
@@ -24,6 +24,7 @@
                 text-5xl cursor-pointer
                 hover:rotate-180 hover:bg-(--btn-hover)
             "
+            :style="{ 'view-transition-name': `note-new` }"
         >
             <i class="bi bi-plus" />
         </button>
@@ -35,8 +36,22 @@
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router';
 import Silveria from '../silveria/silveria.vue';
+import { nextTick } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
+
+const openEditNewNote = () => {
+
+    if (!document.startViewTransition) {
+        router.push(`/edit/new`);
+        return;
+    }
+
+    document.startViewTransition(async () => {
+        await router.push(`/edit/new`);
+        await nextTick(); 
+    });
+};
 
 </script>
