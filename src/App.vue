@@ -31,14 +31,24 @@
       <transition name="fade-app" appear>
 
         <!-- loader -->
-        <div v-if="loader" class="fixed inset-0 bg-black z-50">
+        <div
+          v-if="loader" 
+          class="
+            fixed inset-0 z-50
+            dark:bg-black bg-white
+            dark:text-white text-black
+          "
+        >
+
           <DesktopAppTitleBar />
+
           <div class="flex justify-center items-center w-full h-full">
             <IconLoader />
             <span class="absolute bottom-6 inset-x-0 z-500 flex justify-center items-center">
               {{ status }}
             </span>
           </div>
+
         </div>
 
       </transition>

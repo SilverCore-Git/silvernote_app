@@ -169,7 +169,6 @@ const openNote = () => {
 
     document.startViewTransition(async () => {
         await router.push(`/${props.sharedBy ? 'share' : 'edit'}/${props.uuid}`);
-        // Attendre que Vue ait fini de monter le nouveau composant
         await nextTick(); 
     });
 };

@@ -18,9 +18,9 @@
         content="Silvernote est une application de prise de notes simple, rapide et sécurisée, accessible sur le web, mobile et ordinateur." />
 
   <meta name="robots" content="index, follow" />
-  <meta name="author" content="SilverCore" />
-  <meta name="publisher" content="SilverCore" />
-  <meta name="copyright" content="© 2025 SilverCore" />
+  <meta name="author" content="Silvercore" />
+  <meta name="publisher" content="Silvercore" />
+  <meta name="copyright" content="© 2026 Silvernote All rights reserved" />
   <meta name="language" content="fr" />
   <meta name="rating" content="general" />
   <meta name="format-detection" content="telephone=no" />
@@ -59,7 +59,7 @@
   <meta name="apple-mobile-web-app-title" content="Silvernote" />
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" href="https://app.silvernote.fr/apple-touch-icon.png" />
 
   <!-- ========================= -->
   <!-- Performance -->
@@ -100,9 +100,16 @@
     }
 
     body {
-      background-color: #000;
-      color: #FFF;
+      background-color: #fff;
+      color: #000;
       font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #000;
+        color: #FFF;
+      }
     }
 
     .centered-container {
