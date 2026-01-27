@@ -17,12 +17,19 @@ const props = defineProps<{
 }>();
 
 const goBack = () => {
-  if (props.href) return router.push(props.href);
-  return router.push({ name: 'Home' });
-  if (window.history.length > 1) {
-    router.back();
-  } else {
-    router.push({ name: 'Home' });
+  
+  const navigate = () => {
+    if (props.href) return router.push(props.href);
+    return router.push({ name: 'Home' });
+  };
+
+  if (!document.startViewTransition) {
+    return navigate();
   }
+
+  document.startViewTransition(() => {
+    navigate();
+  });
+  
 };
 </script>

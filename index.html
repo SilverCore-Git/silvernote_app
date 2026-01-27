@@ -18,9 +18,9 @@
         content="Silvernote est une application de prise de notes simple, rapide et sécurisée, accessible sur le web, mobile et ordinateur." />
 
   <meta name="robots" content="index, follow" />
-  <meta name="author" content="SilverCore" />
-  <meta name="publisher" content="SilverCore" />
-  <meta name="copyright" content="© 2025 SilverCore" />
+  <meta name="author" content="Silvercore" />
+  <meta name="publisher" content="Silvercore" />
+  <meta name="copyright" content="© 2026 Silvernote All rights reserved" />
   <meta name="language" content="fr" />
   <meta name="rating" content="general" />
   <meta name="format-detection" content="telephone=no" />
@@ -59,13 +59,15 @@
   <meta name="apple-mobile-web-app-title" content="Silvernote" />
 
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" href="https://app.silvernote.fr/apple-touch-icon.png" />
 
   <!-- ========================= -->
   <!-- Performance -->
   <!-- ========================= -->
   <link rel="preconnect" href="https://api.silvernote.fr" crossorigin />
   <link rel="preload" as="image" href="/assets/img/sign-bg.jpg" />
+  <link rel="preload" as="image" href="/favicon.svg" />
+  <link rel="preload" as="image" href="/favicon.png" />
 
   <!-- ========================= -->
   <!-- Session cleanup -->
@@ -98,11 +100,16 @@
     }
 
     body {
-      margin: 0;
-      background-color: var(--bg);
-      color: var(--text);
+      background-color: #fff;
+      color: #000;
       font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      transition: background-color 900ms;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #000;
+        color: #FFF;
+      }
     }
 
     .centered-container {
@@ -114,94 +121,27 @@
       gap: 1rem;
     }
 
-    ._spinner {
-      position: relative;
-      width: 90px;
-      height: 90px;
+    .loader-icon {
+        width: 80px;
+        height: 80px;
+        animation: flash 2.5s ease-in-out infinite;
     }
 
-    .spiner {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      border: 4px solid transparent;
+    @keyframes flash {
+        0% { opacity: 0.5; }
+        50% { opacity: 1; }
+        100% { opacity: 0.5; }
     }
 
-    .spiner1 {
-      width: 40px;
-      height: 40px;
-      border-right-color: #F28C28;
-      animation: spinner-rotate 0.6s linear infinite;
-    }
-
-    .spiner2 {
-      width: 60px;
-      height: 60px;
-      border-right-color: #F28C28;
-      opacity: 0.9;
-      animation: spinner-rotate 1s linear infinite;
-      animation-delay: 0.3s;
-    }
-
-    .spiner3 {
-      width: 77px;
-      height: 77px;
-      border: 6px solid #F28C28;
-      border-right-color: transparent;
-      border-top-color: transparent;
-      opacity: 0.6;
-      animation: spinner-reverse 1.5s linear infinite;
-    }
-
-    .spiner4 {
-      border: 6px solid #F28C28;
-      animation: spinner-flash 3s ease-in-out infinite;
-    }
-
-    @keyframes spinner-rotate {
-      to {
-        transform: translate(-50%, -50%) rotate(360deg);
-      }
-    }
-
-    @keyframes spinner-reverse {
-      to {
-        transform: translate(-50%, -50%) rotate(-360deg);
-      }
-    }
-
-    @keyframes spinner-flash {
-      0% { width: 70px; height: 70px; opacity: 0; }
-      15% { width: 97px; height: 97px; opacity: 1; }
-      30% { width: 70px; height: 70px; opacity: 0.1; }
-      100% { opacity: 0; }
-    }
-
-    .loading-text {
-      font-size: 0.9rem;
-      opacity: 0.75;
-    }
   </style>
 
 </head>
 
 <body>
 
-  <noscript>
-    Silvernote nécessite JavaScript pour fonctionner correctement.
-  </noscript>
-
   <div id="app" role="application" aria-label="Application Silvernote">
     <div class="centered-container">
-      <div class="_spinner" aria-hidden="true">
-        <div class="spiner spiner1"></div>
-        <div class="spiner spiner2"></div>
-        <div class="spiner spiner3"></div>
-        <div class="spiner spiner4"></div>
-      </div>
-      <span class="loading-text">Chargement de l’application…</span>
+      <img src="/favicon.svg" class="loader-icon" />
     </div>
   </div>
 

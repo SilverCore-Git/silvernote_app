@@ -2,7 +2,7 @@
 
     <PressAndHold
         @long-press="select_note"
-        @click.stop="open_note(uuid)"
+        @click.stop="open_note"
         class="h-full"
     >
 
@@ -21,6 +21,7 @@
                     ? 'border-(--btn) border-dashed border-2'
                     : 'border-gray-200'
             "
+            :style="{ 'view-transition-name': `note-${uuid}` }"
         >
             
             <div class="flex justify-between items-start mb-3 gap-2">
@@ -90,7 +91,7 @@
 
 <script lang="ts" setup>
 
-import { computed, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import utils from '@/assets/ts/utils';
 import type { Tag } from '@/assets/ts/type';
@@ -114,13 +115,23 @@ const router = useRouter();
 const _Tags = computed<Tag[]>(() => Tags.value.filter(tag => props.tags.includes(tag.id)));
 const note_selected = ref<boolean>(false);
 
-const open_note = (uuid: string) => {
+const open_note = () => {
     if (isMobile && selectedNotes.value.length > 0) {
         toggleNoteSelect(props.uuid);
         return;
     }
     if (props.click) return props.click();
-    router.push(`/edit/${uuid}`);
+
+    if (!document.startViewTransition) {
+        router.push(`/edit/${props.uuid}`);
+        return;
+    }
+
+    document.startViewTransition(async () => {
+        await router.push(`/edit/${props.uuid}`);
+        await nextTick(); 
+    });
+
 };
 
 const select_note = () => {

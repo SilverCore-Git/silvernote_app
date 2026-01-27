@@ -22,7 +22,8 @@
 
 }
 
-.dark, :root[class~="dark"] {
+
+body.dark {
     --bg: #121212; 
     --bg2: #1E1E1E; 
     --white: #252525; 

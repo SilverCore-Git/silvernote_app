@@ -203,7 +203,6 @@ onBeforeUnmount(async () => {
                                                     : '2'
                                                 : '1'
                             "
-                            v-autosize
                             class="
                                 w-full bg-transparent border-none
                                 text-sm resize-none

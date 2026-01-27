@@ -2,14 +2,6 @@
 
 @import './assets/css/fonts.css';
 @import './assets/css/theme.css';
-@theme {
-  --color-bg: var(--bg);
-  --color-bg2: var(--bg2);
-  --color-btn: var(--btn);
-  --color-text: var(--text);
-  --color-text-little: var(--text-little);
-}
-
 @import './assets/css/switch.css';
 @import './assets/css/dropdown.css';
 @import './assets/css/button.css';
@@ -24,7 +16,11 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Inter', sans-serif;
 }
 
-
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+}
 
 .scrollbar-none::-webkit-scrollbar {
   display: none;
@@ -247,3 +243,31 @@ body .emoji-picker__search {
   border-radius: 8px !important;
 
 }
+
+
+
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-group(*) {
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::view-transition-old(*) {
+  animation: fade-out 150ms ease-out forwards;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(*) {
+  animation: fade-in 400ms ease-out both;
+  mix-blend-mode: normal;
+  object-fit: cover;
+}
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }

@@ -155,6 +155,7 @@ watch(() => props.uuid, async () => {
         inset-0 flex flex-col
         h-full w-full
     "
+    :style="{ 'view-transition-name': `note-${uuid}` }"
 >
 
   <div
@@ -326,6 +327,14 @@ watch(() => props.uuid, async () => {
             :data="note"
             :is-collaborative="shared"
           />
+
+          <div
+            v-if="editor"
+            class="
+              h-80 w-full
+            "
+            @click="editor.chain().focus('end').run();"
+          ></div>
 
         </div>
 

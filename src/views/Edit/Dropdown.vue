@@ -33,7 +33,9 @@
 
                     <hr />
 
-                    <li class="flex flex-col">
+                    <li
+                        class="flex flex-col"
+                    >
                         <div class="flex flex-col text-[12px]">
                         <span>
                             Nombre de mots :

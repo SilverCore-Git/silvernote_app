@@ -7,6 +7,7 @@ import Share from './views/Share/Share.vue';
 import SignIn from './views/auth/SignIn.vue';
 import SignUp from './views/auth/SignUp.vue';
 import Redirect from './views/auth/Redirect.vue';
+import { nextTick } from 'vue';
 
 
 const routes = [
@@ -77,7 +78,43 @@ const router = createRouter({
   history: isFileProtocol
     ? createWebHashHistory(import.meta.env.BASE_URL)  // pour Electron local
     : createWebHistory(import.meta.env.BASE_URL),    // pour Web/Express
-  routes
+  routes,
+  scrollBehavior(_to, _from, savedPosition) {
+    return savedPosition || { top: 0 }
+  },
+});
+
+router.beforeResolve((to, from) => {
+  
+  if (
+    from.query.silverIA == undefined
+    && to.query.silverIA != undefined
+    ||
+    from.query.silverIA != undefined
+    && to.query.silverIA == undefined
+    ||
+    from.query.page != undefined
+    && to.query.page != undefined
+    ||
+    to.path.startsWith("/settings")
+    ||
+    from.path.startsWith("/settings")
+  ) return;
+
+  if (
+    from.path.startsWith("/edit/")
+    && to.path == "/edit/new"
+  ) return router.push('/');
+
+  if (!document.startViewTransition) return;
+
+  return new Promise((resolve) => {
+    document.startViewTransition(async () => {
+      resolve();
+      await nextTick();
+    });
+  });
+
 });
 
 router.beforeEach((to: any, _from: any, next: any) => {

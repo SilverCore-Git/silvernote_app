@@ -31,6 +31,7 @@ export const SlashCommand = Extension.create<SlashCommandOptions>({
                     searchType: 'props',
                     query: 'test'
                 },
+                
                 editor: props.editor,
               });
 
@@ -66,9 +67,20 @@ export const SlashCommand = Extension.create<SlashCommandOptions>({
             },
 
             onKeyDown(props: any) {
-              if (props.event.key === 'Escape') {
+              if (
+                  props.event.key === 'Escape'
+                  || props.event.key === 'Tab'
+                ) {
                 popup?.hide();
                 return true;
+              }
+
+              if (props.event.key === 'Enter')
+              {
+                setTimeout(() => {
+                  popup?.hide();
+                  return true;
+                }, 100)
               }
 
               return component.ref?.onKeyDown?.(props) || false;
