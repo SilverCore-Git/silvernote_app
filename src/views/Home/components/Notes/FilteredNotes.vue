@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useRouter } from 'vue-router';
-import { Notes, Tags } from '@/assets/ts/database/Var';
+import { sortedNotes, Tags } from '@/assets/ts/database/Var';
 import { computed } from 'vue';
 import DefaultNoteCard from '../common/DefaultNoteCard.vue';
 import useFilter from '../../composables/useFilter';
@@ -9,7 +9,7 @@ import useFilter from '../../composables/useFilter';
 const { selectedFilter } = useFilter();
 
 const notes = computed(() =>
-    Notes.value.filter(note => note.tags.includes(selectedFilter.value || 0))
+    sortedNotes.value.filter(note => note.tags.includes(selectedFilter.value || 0))
 );
 const tag = computed(() =>
     Tags.value.filter(tag => tag.id === selectedFilter.value)[0]

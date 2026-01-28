@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
-import { Notes } from '@/assets/ts/database/Var';
+import { sortedNotes } from '@/assets/ts/database/Var';
 import { computed } from 'vue';
 import DefaultNoteCard from '../common/DefaultNoteCard.vue';
 
@@ -11,9 +11,9 @@ const notes = computed(() => {
 
     const searchQuery = route.query.q ? String(route.query.q).toLowerCase().trim() : '';
 
-    if (!searchQuery) return Notes.value;
+    if (!searchQuery) return sortedNotes.value;
 
-    return Notes.value.filter(note => {
+    return sortedNotes.value.filter(note => {
         const titleMatch = note.title.toLowerCase().includes(searchQuery);
         const contentMatch = note.content.toLowerCase().includes(searchQuery);
         

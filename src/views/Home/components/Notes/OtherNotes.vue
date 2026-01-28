@@ -1,11 +1,11 @@
 <script setup lang="ts">
 
-import { Notes } from '@/assets/ts/database/Var';
+import { sortedNotes } from '@/assets/ts/database/Var';
 import { computed } from 'vue';
 import DefaultNoteCard from '../common/DefaultNoteCard.vue';
 
 const notes = computed(() =>
-    Notes.value.filter(note => !note.pinned)
+    sortedNotes.value.filter(note => !note.pinned)
 )
 
 </script>
