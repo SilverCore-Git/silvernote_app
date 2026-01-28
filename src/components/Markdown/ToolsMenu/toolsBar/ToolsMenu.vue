@@ -2,7 +2,9 @@
 
   <div class="relative">
 
-    <slot />
+    <div class="min-h-200">
+      <slot />
+    </div>
 
     <teleport to="body">
 

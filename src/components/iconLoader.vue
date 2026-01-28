@@ -12,10 +12,4 @@
     animation: flash 2.5s ease-in-out infinite;
 }
 
-@keyframes flash {
-    0% { opacity: 0.5; }
-    50% { opacity: 1; }
-    100% { opacity: 0.5; }
-}
-
 </style>
