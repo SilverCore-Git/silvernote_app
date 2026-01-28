@@ -87,24 +87,11 @@ const router = createRouter({
 router.beforeResolve((to, from) => {
   
   if (
-    from.query.silverIA == undefined
-    && to.query.silverIA != undefined
+    !to.path.startsWith('/edit')
     ||
-    from.query.silverIA != undefined
-    && to.query.silverIA == undefined
-    ||
-    from.query.page != undefined
-    && to.query.page != undefined
-    ||
-    to.path.startsWith("/settings")
-    ||
-    from.path.startsWith("/settings")
+    from.path.startsWith('/edit')
+    && to.path.startsWith('/edit/new')
   ) return;
-
-  if (
-    from.path.startsWith("/edit/")
-    && to.path == "/edit/new"
-  ) return router.push('/');
 
   if (!document.startViewTransition) return;
 
