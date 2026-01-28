@@ -259,8 +259,9 @@ watch(() => props.uuid, async () => {
     <div
       class="
         flex flex-col justify-start items-center 
-        overflow-hidden w-screen mt-22
+        overflow-hidden w-screen
       "
+      :class="isElectron ? 'mt-30' : 'mt-22'"
     >
 
       <div

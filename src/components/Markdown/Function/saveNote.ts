@@ -39,6 +39,7 @@ export const saveNote = async (uuid: string, { force = false } = {}) =>
     try {
         
         note.content = newContent;
+        Notes.value.splice(Notes.value.indexOf(note), 1, note);
         await database.update(note);
 
         window.dispatchEvent(new CustomEvent('note-saved', {

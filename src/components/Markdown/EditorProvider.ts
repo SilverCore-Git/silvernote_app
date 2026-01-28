@@ -6,6 +6,9 @@ import postError from '../errorOverlay/postError';
 import { editor } from './Editor';
 import { saveNote } from './Function/saveNote';
 
+let isOffline = false;
+
+
 export class EditorProvider
 {
 
@@ -150,9 +153,24 @@ export class EditorProvider
           
       });
 
+      socket.on('connect', async () => {
+        console.log('✅ Socket connected');
+        this.enableLocalUpdates();
+        if (isOffline) 
+        {
+          isOffline = false;
+          window.dispatchEvent(new CustomEvent('note-save-online'));
+          setTimeout(async () => {
+            await saveNote(this.room, { force: true });
+          }, 4500);
+        }
+      });
+
       socket.on('disconnect', () => {
+        isOffline = true;
         console.log('❌ Socket disconnected');
         this.disableLocalUpdates();
+        window.dispatchEvent(new CustomEvent('note-save-offline'));
       });
 
       this.enableLocalUpdates();
