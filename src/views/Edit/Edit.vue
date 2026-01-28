@@ -331,10 +331,11 @@ watch(() => props.uuid, async () => {
 
           <div
             v-if="editor"
+            ref=""
             class="
               h-80 w-full
             "
-            @click="editor.chain().focus('end').run();"
+            @click="editor.commands.focus('end');"
           ></div>
 
         </div>
