@@ -1,23 +1,19 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import type { Tag, Note } from "../type";
-import parseFrenchDate from "../utils/parseFrenchDate";
 
 
 const Tags = ref<Tag[]>([]);
 const Notes = ref<Note[]>([]);
+const sortedNotes = computed(() =>
+  [...Notes.value].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  )
+)
 const SharedNotes = ref<Note[]>([]);
-
-
-function sortNotes() {
-    Notes.value.sort((a, b) => {
-        return parseFrenchDate(b.date) - parseFrenchDate(a.date);
-    });
-}
-
 
 export {
     Notes,
     Tags,
     SharedNotes,
-    sortNotes
+    sortedNotes
 }

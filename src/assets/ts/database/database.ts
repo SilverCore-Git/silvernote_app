@@ -50,6 +50,8 @@ class Database {
      */
     public async create(note: Note): Promise<void> {
 
+        note.date = new Date().toISOString();
+
         await fetch(`${api_url}/api/db/new/note`, {
             method: 'POST',
             headers: await this.getHeaders(),

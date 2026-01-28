@@ -1,20 +1,39 @@
 <template>
 
-  <PhoneToolsBar />
-
   <ToolsMenu
       class="editor-container h-full overflow-hidden" 
       @click="focusEditor"
   >
 
-    <div class="h-full">
+    <div
+      v-if="editor"
+      v-show="!loader"
+      class="h-full"
+    >
+
       <EditorContent
-        v-if="editor && !loader"
         :editor="editor as Editor"
         class="prose h-full"
       />
-      <div v-else class="animate-pulse bg-gray-300 h-80 w-full rounded-xl"></div>
+
     </div>
+
+    <div
+      v-if="loader"
+      class="
+        z-100 h-full w-full absolute
+        rounded-xl bg-(--text-little)/30
+      "
+      style="animation: flash 2.5s ease-in-out infinite;"
+    />
+
+    <div
+      v-if="loader"
+      class="
+        z-80 h-full w-full absolute
+        rounded-xl bg-(--bg)
+      "
+    />
 
   </ToolsMenu>
 
@@ -23,6 +42,8 @@
   />
 
   <SaveIndicator />
+
+  <PhoneToolsBar />
   
 </template>
 
@@ -147,8 +168,6 @@ async function initEditor(): Promise<void>
 
   await nextTick();
 
-  loader.value = false;
-
   colorPromise.then(({ bg, text }) => {
     
     userColor = bg; 
@@ -178,6 +197,7 @@ async function initEditor(): Promise<void>
   }
 
   console.log('Editor initialized');
+  loader.value = false;
 
 };
 

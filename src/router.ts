@@ -85,24 +85,24 @@ const router = createRouter({
 });
 
 router.beforeResolve((to, from) => {
-  
-  if (
-    !to.path.startsWith('/edit')
-    ||
-    from.path.startsWith('/edit')
-    && to.path.startsWith('/edit/new')
-  ) return;
 
-  if (!document.startViewTransition) return;
+  const fromEdit = from.path.startsWith('/edit')
+  const toEdit = to.path.startsWith('/edit')
+  const isEditNew = to.path.startsWith('/edit/new')
+
+  if (!(fromEdit || toEdit) || isEditNew) return
+
+  if (!document.startViewTransition) return
 
   return new Promise((resolve) => {
     document.startViewTransition(async () => {
-      resolve();
-      await nextTick();
-    });
-  });
+      resolve()
+      await nextTick()
+    })
+  })
+  
+})
 
-});
 
 router.beforeEach((to: any, _from: any, next: any) => {
   const title = to.meta.title as string;
