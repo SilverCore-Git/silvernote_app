@@ -8,58 +8,90 @@ button {
   overflow: hidden;
 }
 
+button.default {
+  @apply hover:bg-white/5 transition;
+  padding: 0.4em 1rem;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+}
 
 
 button.primary {
-  border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.4em 1rem;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
   background-color: var(--btn);
+  color: white;
+  cursor: pointer;
+  transition: all 0.25s;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+button.primary.green {
+  border: 1px solid transparent;
+  padding: 0.4em 1rem;
+  font-size: 1em;
+  font-weight: 500;
+  background-color: var(--color-green-600);
+  color: white;
+  cursor: pointer;
+  transition: all 0.25s;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+button.primary.green:hover {
+  border: 1px solid transparent;
+  padding: 0.4em 1rem;
+  font-size: 1em;
+  font-weight: 500;
+  background-color: var(--color-green-800);
   color: white;
   cursor: pointer;
   transition: all 0.25s;
 }
 
 button.second {
-  border-radius: 8px;
   border: 2px solid var(--btn);
   padding: 0.4em 1em;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
   background-color: transparent;
   color: var(--text);
   cursor: pointer;
   transition: all 0.25s;
+  cursor: pointer;
+  border-radius: 8px;
 }
 
 button.primary.danger {
-  border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.4em 1rem;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
   background-color: rgb(255, 72, 0);
   color: white;
   cursor: pointer;
   transition: all 0.25s;
+  cursor: pointer;
+  border-radius: 8px;
 }
 
 button.second.danger {
-  border-radius: 8px;
   border: 2px solid rgb(255, 72, 0);
   padding: 0.4em 1em;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
   background-color: transparent;
   color: var(--text);
   cursor: pointer;
   transition: all 0.25s;
+  cursor: pointer;
+  border-radius: 8px;
 }
 
 button:hover.primary {
