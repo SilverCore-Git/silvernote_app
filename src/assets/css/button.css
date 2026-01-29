@@ -6,6 +6,7 @@ button {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  cursor: pointer;
 }
 
 button.default {
@@ -15,6 +16,16 @@ button.default {
   font-weight: 500;
   cursor: pointer;
   border-radius: 8px;
+}
+
+button.default-primary {
+  @apply w-full sm:w-auto bg-(--text)/5
+          border border-(--text)/10
+          hover:bg-(--text)/10 transition-all;
+  border-radius: 8px;
+  padding: 0.4em 1rem;
+  font-size: 1em;
+  font-weight: 500;
 }
 
 

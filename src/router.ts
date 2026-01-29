@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
+import { nextTick } from 'vue';
 
 import Home from './views/Home/Home.vue';
 import Edit from './views/Edit/Edit.vue';
@@ -7,7 +8,8 @@ import Share from './views/Share/Share.vue';
 import SignIn from './views/auth/SignIn.vue';
 import SignUp from './views/auth/SignUp.vue';
 import Redirect from './views/auth/Redirect.vue';
-import { nextTick } from 'vue';
+import NotFound from './views/errors/404.vue';
+
 
 
 const routes = [
@@ -69,6 +71,13 @@ const routes = [
     component: SignUp,
     meta: { title: 'Se créer un compte - Silvernote' }
   },
+
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFound,
+    meta: { title: '404 - Silvernote' }
+  }
 
 ]
 

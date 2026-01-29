@@ -19,7 +19,12 @@
           </div>
 
           <div 
-            v-show="loaded && isSignedIn && !route.path.startsWith('/settings')"
+            v-show="
+              loaded 
+              && isSignedIn 
+              && !route.path.startsWith('/settings')
+              && route.name !== 'NotFound'
+            "
             class=" z-50 relative"
           >
             <BtnOverlay />
