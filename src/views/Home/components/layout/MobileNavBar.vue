@@ -6,7 +6,7 @@
             class="
                 absolute bottom-0 inset-x-0 
                 bg-(--bg2) shadow-2xl
-                text-4xl py-4 px-8
+                text-2xl py-3 px-10
                 md:hidden
             "
         >

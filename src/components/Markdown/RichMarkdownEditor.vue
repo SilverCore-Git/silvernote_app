@@ -79,7 +79,6 @@ const props = defineProps<{
   editable?: boolean;
   data: Note;
   uuid: string;
-  isCollaborative: boolean;
 }>()
 
 const loader = ref<boolean>(true);

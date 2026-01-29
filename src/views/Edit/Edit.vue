@@ -67,6 +67,8 @@ const initExistingNote = async () => {
     }
   }).then(res => res.json())
 
+  if (!_fetch.success) return shared.value = false;
+
   shared.value = _fetch.share.uuid === note.value?.uuid
 
 }

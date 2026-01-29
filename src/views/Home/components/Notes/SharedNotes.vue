@@ -1,16 +1,14 @@
 <script setup lang="ts">
 
 import { useRouter } from 'vue-router';
-import { SharedNotes } from '@/assets/ts/database/Var';
+import { ShareByMe, SharedNotes } from '@/assets/ts/database/Var';
 import DefaultNoteCard from '../common/DefaultNoteCard.vue';
 import type { Note } from '@/assets/ts/type';
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import { api_url } from '@/assets/ts/backend_link';
 import useToken from '@/composables/useToken';
 
 const router = useRouter();
-
-const ShareByMe = ref<Note[]>([]);
 
 onMounted(async() => {
 

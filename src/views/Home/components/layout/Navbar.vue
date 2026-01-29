@@ -3,13 +3,13 @@
     <div
         class="
             h-full bg-(--bg2) shadow-2xl
-            p-4 min-w-65
+            p-4 min-w-65 relative
         "
     >
 
         <ul class="w-full">
             
-            <li class="flex-col phone-hidden-flex">
+            <li class="flex-col">
 
                 <div class="flex flex-row gap-2 items-center justify-center">
 
@@ -50,6 +50,7 @@
 
             <div
                 class="
+                        my-2
                         flex flex-row justify-between items-center
                         w-full px-4 z-30 max-w-50 mx-auto
                     "
@@ -117,6 +118,37 @@
 
         </ul>
 
+        <!-- <ul
+            class="
+                absolute bottom-4 inset-x-4 gap-2 flex flex-col
+            "
+        >
+
+  
+            <li class="flex justify-start items-center flex-row w-full gap-3">
+
+                <UserAvatar />
+
+                <div class="flex flex-col">
+                    <span class="text-md">{{ user?.fullName }}</span>
+                    <span class="text-xs">Free</span>
+                </div>
+
+            </li>
+
+            <li class=" w-full">
+
+                <button
+                    class="second w-full"
+                >
+                    Devenir premium
+                </button>
+
+            </li>
+
+
+        </ul> -->
+
     </div>
 
 </template>
@@ -128,10 +160,11 @@ import { useRoute, useRouter } from 'vue-router';
 import { version, dev } from '../../../../../package.json';
 import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
-import { UserButton } from '@clerk/vue';
+import { UserButton, useUser } from '@clerk/vue';
 import { clerkAppearanceSettings } from '@/assets/ts/theme';
+import UserAvatar from '@/components/user/UserAvatar.vue';
 
-
+const { user } = useUser();
 const router = useRouter();
 const route = useRoute();
 const selectedNote = ref<string>('');
