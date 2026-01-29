@@ -117,6 +117,12 @@
         :uuid="uuid"
     />
 
+    <share_menu
+        :uuid="uuid"
+        :title="title"
+        v-model="share_menu"
+    />
+
 </template>
 
 <script lang="ts" setup>
@@ -134,6 +140,7 @@ import { api_url } from '@/assets/ts/backend_link';
 import useToken from '@/composables/useToken';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { isSelected, selectedNotes, toggleNoteSelect } from '@/composables/useSelectedNotes';
+import Share_menu from '@/components/popup/share_menu.vue';
 
 const props = defineProps<{
     uuid: string;
@@ -147,12 +154,14 @@ const props = defineProps<{
     sharedBy?: string;
 }>();
 
+
 const { getUserByUUID } = useUser();
 const router = useRouter();
 const _Tags = computed<Tag[]>(() => Tags.value.filter(tag => props.tags.includes(tag.id)));
 const note_selected = ref<boolean>(false);
 const sharerIcon = ref<string | undefined>(undefined);
 const shareVisitors = ref<User[]>([]);
+const share_menu = ref<boolean>(false);
 
 
 const openNote = () => {
@@ -174,7 +183,7 @@ const openNote = () => {
 };
 
 const select_note = () => {
-    if (props.sharedBy) return;
+    if (props.sharedBy) return share_menu.value = !share_menu.value;
     if (isMobile)
     {
         toggleNoteSelect(props.uuid);
