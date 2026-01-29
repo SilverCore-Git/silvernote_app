@@ -160,11 +160,9 @@ import { useRoute, useRouter } from 'vue-router';
 import { version, dev } from '../../../../../package.json';
 import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
-import { UserButton, useUser } from '@clerk/vue';
+import { UserButton } from '@clerk/vue';
 import { clerkAppearanceSettings } from '@/assets/ts/theme';
-import UserAvatar from '@/components/user/UserAvatar.vue';
 
-const { user } = useUser();
 const router = useRouter();
 const route = useRoute();
 const selectedNote = ref<string>('');
