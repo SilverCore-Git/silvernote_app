@@ -23,7 +23,7 @@
                     <hr />
 
                     <li @click="share_menu = true">Partager</li>
-                    <li @click="saveNote(uuid)">Sauvegarder</li>
+                    <li @click="saveNote(uuid, { force: true })">Sauvegarder</li>
 
                     <hr />
 
@@ -33,18 +33,17 @@
 
                     <hr />
 
-                    <li
-                        class="flex flex-col"
-                    >
+                    <li>
+                        <span class="font-semibold">Statistiques</span>
                         <div class="flex flex-col text-[12px]">
-                        <span>
-                            Nombre de mots :
-                            {{ wordCount || '...' }}
-                        </span>
-                        <span>
-                            Nombre de caractères :
-                            {{ characterCount || '...' }}
-                        </span>
+                            <span>
+                                Mots :
+                                {{ wordCount || '...' }}
+                            </span>
+                            <span>
+                                Cractères :
+                                {{ characterCount || '...' }}
+                            </span>
                         </div>
                     </li>
 

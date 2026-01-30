@@ -5,11 +5,14 @@ import DefaultNoteCard from '@/views/Home/components/common/DefaultNoteCard.vue'
 import { IsPrivate, setPrivate } from '@/assets/ts/settings/privatMode';
 import { ref, watch } from 'vue';
 import Switch from '@/components/Switch.vue';
+import Popup from '@/components/popup/Popup.vue';
+import darkenHex from '@/assets/ts/utils/darkenHex';
 
 type Theme = 'light' | 'dark' | 'default';
 
 const savedTheme = window.localStorage.getItem('theme') as Theme | null;
 const currentTheme = ref<Theme>(savedTheme || 'default');
+const eggMenu = ref<boolean>(false);
 
 const themes = [
   { id: 'light', label: 'Clair', icon: 'bi-sun' },
@@ -17,9 +20,28 @@ const themes = [
   { id: 'default', label: 'Système', icon: 'bi-display' },
 ];
 
+let pressCount: number = 0
+const handleEgg = (e?: Event) => {
+
+    pressCount++
+
+    if (pressCount > 5)
+    {
+        if (e)
+        {
+            const target = e.target as HTMLSelectElement;
+            document.documentElement.style.setProperty('--btn', target.value);
+            document.documentElement.style.setProperty('--btn-hover', darkenHex(target.value));
+        }
+        else eggMenu.value = true;
+    }
+
+}
+
 watch(currentTheme, (newTheme) => {
     setThemePreference(newTheme);
 });
+
 
 </script>
 
@@ -91,7 +113,7 @@ watch(currentTheme, (newTheme) => {
 
                     <span class="font-medium">Bouton Principal</span>
 
-                    <button class="primary">
+                    <button @click="handleEgg()" class="primary">
                         Action
                     </button>
 
@@ -112,5 +134,9 @@ watch(currentTheme, (newTheme) => {
         </section>
 
     </div>
+
+    <Popup v-model:visible="eggMenu">
+        <input type="color" @change="handleEgg($event)">
+    </Popup>
 
 </template>
