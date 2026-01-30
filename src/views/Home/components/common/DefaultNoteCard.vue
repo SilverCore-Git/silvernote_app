@@ -185,9 +185,13 @@ const openNote = () => {
 };
 
 const select_note = () => {
-    if (props.sharedBy && isMyShare)
+    if (props.sharedBy && isMyShare.value)
     {
         share_menu.value = !share_menu.value;
+        return;
+    }
+    else if (props.sharedBy && !isMyShare.value)
+    {
         return;
     }
     if (isMobile)
@@ -214,7 +218,7 @@ onMounted(async () => {
         }).then(res => res.json()).then(res => res.share);
 
         const visitors = shareData.visitor;
-        isMyShare.value = shareData.owner_id === window.localStorage.getItem('user_id');
+        isMyShare.value = shareData.owner_id !== window.localStorage.getItem('user_id');
         
         for (const visitor of visitors)
         {
