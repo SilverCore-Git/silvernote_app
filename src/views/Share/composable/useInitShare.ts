@@ -97,6 +97,10 @@ function useFetchShare()
 
                 note.value = shareData.note;
                 editable.value = shareData.editable;
+                if (shareData.user_id === window.localStorage.getItem('user_id'))
+                {
+                    editable.value = true;
+                }
 
                 const owner_user = await getUserByUUID(shareData.user_id, 'owner');
                 if (owner_user && !users.value.some(u => u.user_id === owner_user.user_id)) {
