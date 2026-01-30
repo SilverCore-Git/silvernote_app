@@ -3,7 +3,7 @@
     <div 
         class="
             fixed inset-0 z-90
-            backdrop-blur-xs
+            backdrop-blur-sm
             bg-black/40
         "
         @click="emit('emitClick')"

@@ -40,6 +40,6 @@ body.light {
     --white: #FFF;
     --text: #000;
     --text-strong: rgb(51, 51, 51);
-    --text-little: #6e6e6ea2;
+    --text-little: #444444d2;
     --shadow: #33333381;
 }
