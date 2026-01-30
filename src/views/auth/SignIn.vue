@@ -2,7 +2,8 @@
 
 import isMobile from '@/assets/ts/utils/isMobile';
 import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
-import { SignIn } from '@clerk/vue';
+import IconLoader from '@/components/iconLoader.vue';
+import { ClerkLoaded, ClerkLoading, SignIn } from '@clerk/vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -43,13 +44,23 @@ const redirectUrl = url.pathname + url.search;
                 "
             >
 
-                <SignIn
-                    routing="path" 
-                    :oauthFlow="isMobile ? 'redirect' : 'popup'"
-                    :forceRedirectUrl="redirectUrl"
-                    path="/sauth/sign-in"
-                    sign-up-url="/sauth/sign-up"
-                />
+                <ClerkLoaded>
+
+                    <SignIn
+                        routing="path" 
+                        :oauthFlow="isMobile ? 'redirect' : 'popup'"
+                        :forceRedirectUrl="redirectUrl"
+                        path="/sauth/sign-in"
+                        sign-up-url="/sauth/sign-up"
+                    />
+
+                </ClerkLoaded>
+
+                <ClerkLoading>
+
+                    <IconLoader />
+
+                </ClerkLoading>
 
             </div>
 
