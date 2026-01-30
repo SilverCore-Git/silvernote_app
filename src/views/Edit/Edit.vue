@@ -14,7 +14,7 @@ import CreateNewNote from './composable/CreateNewNote';
 import { useRoute, useRouter } from 'vue-router';
 import database from '@/assets/ts/database/database';
 import useToken from '@/composables/useToken';
-import { initSocket } from '@/composables/WSocket';
+import { initSocket, socket } from '@/composables/WSocket';
 import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
 import isElectron from '@/assets/ts/utils/isElectron';
 
@@ -127,6 +127,7 @@ onBeforeUnmount(async () => {
   }
 
   await database.update(note.value as Note);
+  socket.emit('leave-room', { room: props.uuid });
 
 })
 

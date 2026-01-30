@@ -208,11 +208,11 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
+  saveNote(props.data.uuid);
   window.removeEventListener('keydown', handleSaveShortcut)
   if (editor.value) editor.value.destroy();
   clearMathCache();
   autosaveInterval && clearInterval(autosaveInterval);
-  saveNote(props.data.uuid);
 });
 
 </script>
