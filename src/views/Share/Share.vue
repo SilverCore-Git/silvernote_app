@@ -62,11 +62,13 @@
 
                     </div>
 
-                    <a 
-                        class="px-2 rounded"
-                        :class="share_menu ? 'bg-gray-200 ' : ''"
+                    <button
+                        class="px-2 default-primary"
+                        :class="share_menu ? 'bg-(--text)/10' : ''"
                         @click="share_menu = !share_menu"
-                    >Partage</a>
+                    >
+                        Partage
+                    </button>
 
                 </div>
 

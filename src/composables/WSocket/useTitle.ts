@@ -5,6 +5,8 @@ let titleValue: any;
 
 const useTitle = () => {
 
+    const getTitle = () => titleValue.value;
+
     const updateTitle = (title: string) => {
         titleValue.value = title;
         wsocket.emit('title-update', title);
@@ -65,7 +67,8 @@ const useTitle = () => {
 
     return {
         updateTitle,
-        createTitleAutoSync
+        createTitleAutoSync,
+        getTitle
     }
 
 }

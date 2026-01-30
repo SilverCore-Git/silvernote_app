@@ -68,7 +68,7 @@ onMounted(async() => {
 
             <span 
                 v-if="ShareByMe && ShareByMe.length"
-                class=" uppercase text-md font-semibold text-gray-500 "
+                class=" uppercase text-md font-semibold text-(--text-little) "
             >
                 Mes notes partagées
             </span>

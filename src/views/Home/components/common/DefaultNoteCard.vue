@@ -162,6 +162,8 @@ const note_selected = ref<boolean>(false);
 const sharerIcon = ref<string | undefined>(undefined);
 const shareVisitors = ref<User[]>([]);
 const share_menu = ref<boolean>(false);
+const isMyShare = ref<boolean>(false);
+
 
 
 const openNote = () => {
@@ -183,7 +185,11 @@ const openNote = () => {
 };
 
 const select_note = () => {
-    if (props.sharedBy) return share_menu.value = !share_menu.value;
+    if (props.sharedBy && isMyShare)
+    {
+        share_menu.value = !share_menu.value;
+        return;
+    }
     if (isMobile)
     {
         toggleNoteSelect(props.uuid);
@@ -208,6 +214,7 @@ onMounted(async () => {
         }).then(res => res.json()).then(res => res.share);
 
         const visitors = shareData.visitor;
+        isMyShare.value = shareData.owner_id === window.localStorage.getItem('user_id');
         
         for (const visitor of visitors)
         {

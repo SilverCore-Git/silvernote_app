@@ -93,7 +93,10 @@
                 <li 
                     class="li"
                     @click="setPage('all')"
-                    :class="route.query.page !== 'shared' ? 'bg-(--btn) text-white' : ''"
+                    :class="
+                        route.query.page !== 'shared' 
+                            ? 'bg-(--btn) text-white hover:text-(--btn)'
+                            : ''"
                 >
                     <i 
                         :class="route.query.page !== 'shared' ? '' : 'text-(--btn)'"
@@ -105,7 +108,10 @@
                 <li 
                     class="li"
                     @click="setPage('shared')"
-                    :class="route.query.page == 'shared' ? 'bg-(--btn) text-white' : ''"
+                    :class="
+                        route.query.page == 'shared' 
+                            ? 'bg-(--btn) text-white hover:text-(--btn)'
+                            : ''"
                 >
                     <i 
                         :class="route.query.page == 'shared' ? '' : 'text-(--btn)'"
@@ -207,16 +213,17 @@ const closeNoteSettings = () => {
 }
 
 .li:not(.nohover2):hover {
-    padding-left: 1.5em;
+    padding-left: 2rem;
 }
 
 ul li {
   cursor: pointer;
   display: flex;
   align-items: center;
-  padding: 0.5rem;
+  padding: .5rem;
+  padding-left: .8rem;
   border-radius: 6px;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 ul hr {
