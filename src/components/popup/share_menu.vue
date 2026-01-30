@@ -30,7 +30,6 @@
             class="
               bg-(--bg)/40 rounded-2xl
               p-4 border border-white/5
-              shadow-inner
             "
           >
 

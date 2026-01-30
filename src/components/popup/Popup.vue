@@ -17,7 +17,7 @@
             >
                 <div
                     class="
-                        bg-(--bg2) rounded-2xl shadow-2xl
+                        bg-(--white) rounded-2xl shadow-2xl
                         border border-(--text)/10 p-6 w-full
                         max-w-sm relative pointer-events-auto
                         overflow-hidden
@@ -28,7 +28,7 @@
                     <a
                         class="
                             absolute top-4 right-4 p-2
-                            rounded-full text-(--text-little)
+                            rounded-full text-(--text)
                             transition-colors z-100
                         "
                         aria-label="Fermer"
