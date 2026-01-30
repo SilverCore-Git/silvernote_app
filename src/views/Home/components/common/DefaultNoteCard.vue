@@ -204,7 +204,8 @@ const select_note = () => {
 
 onMounted(async () => {
 
-    if (props.sharedBy) {
+    if (props.sharedBy)
+    {
 
         const _sharer = await getUserByUUID(props.sharedBy)
         sharerIcon.value = _sharer?.imageUrl;

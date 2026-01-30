@@ -441,8 +441,6 @@ const mount = async () => {
 
 };
 
-onMounted(mount);
-
 </script>
 
 <style scoped>
