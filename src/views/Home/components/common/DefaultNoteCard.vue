@@ -185,9 +185,13 @@ const openNote = () => {
 };
 
 const select_note = () => {
-    if (props.sharedBy && isMyShare)
+    if (props.sharedBy && isMyShare.value)
     {
         share_menu.value = !share_menu.value;
+        return;
+    }
+    else if (props.sharedBy && !isMyShare.value)
+    {
         return;
     }
     if (isMobile)
@@ -200,7 +204,8 @@ const select_note = () => {
 
 onMounted(async () => {
 
-    if (props.sharedBy) {
+    if (props.sharedBy)
+    {
 
         const _sharer = await getUserByUUID(props.sharedBy)
         sharerIcon.value = _sharer?.imageUrl;

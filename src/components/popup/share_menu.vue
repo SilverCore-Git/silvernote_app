@@ -29,15 +29,15 @@
           <div
             class="
               bg-(--bg)/40 rounded-2xl
-              p-4 border border-white/5
+              p-4 border border-(--text)/5
             "
           >
 
             <h3
               class="
                 text-xs font-bold uppercase
-                tracking-wider text-(--text-little)
-                mb-3 flex items-center gap-2
+                tracking-wider mb-3
+                flex items-center gap-2
               "
             >
 
@@ -51,7 +51,7 @@
               <div
                 class="
                   flex-1 flex items-center bg-(--bg2)/60
-                  rounded-xl border border-white/5 px-3
+                  rounded-xl border border-(--text)/5 px-3
                   focus-within:border-(--btn)/50 transition
                 "
               >
@@ -73,7 +73,7 @@
               <div
                 class="
                   flex-1 flex items-center bg-(--bg2)/60
-                  rounded-xl border border-white/5 px-3
+                  rounded-xl border border-(--text)/5 px-3
                   focus-within:border-(--btn)/50 transition
                 "
               >
@@ -99,7 +99,7 @@
           <div
             class="
               bg-(--bg)/40 rounded-2xl p-4
-              border border-white/5
+              border border-(--text)/5
               flex items-center justify-between
             "
           >
@@ -128,7 +128,7 @@
 
           </div>
 
-          <div class="bg-(--bg)/40 rounded-2xl p-4 border border-white/5">
+          <div class="bg-(--bg)/40 rounded-2xl p-4 border border-(--text)/5">
 
             <div class="flex justify-between items-center">
 
@@ -138,7 +138,7 @@
                   <i class="bi bi-shield-lock" />
                 </div>
 
-                <h3 class="text-sm font-semibold text-(--text-little)">
+                <h3 class="text-sm font-semibold">
                   Protection
                 </h3>
 
@@ -159,7 +159,7 @@
                   placeholder="Définir un mot de passe..."
                   class="
                     w-full px-4 py-2.5 rounded-xl
-                    bg-(--bg2)/60 border border-white/5
+                    bg-(--bg2)/60 border border-(--text)/5
                     focus:border-(--btn)/50 outline-none
                     text-sm transition
                   "
@@ -187,7 +187,7 @@
                 <input
                   :value="share_link"
                   readonly
-                  class="flex-1 rounded-lg px-3 py-2 bg-black/20 border border-white/5 text-xs outline-none text-orange-200"
+                  class="default-input"
                 />
 
                 <button
@@ -440,8 +440,6 @@ const mount = async () => {
   }
 
 };
-
-onMounted(mount);
 
 </script>
 
