@@ -252,7 +252,7 @@
 
 <script setup lang="ts">
 
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 import Popup from './Popup.vue';
 import Switch from '../Switch.vue';
 import { api_url } from '@/assets/ts/backend_link';
