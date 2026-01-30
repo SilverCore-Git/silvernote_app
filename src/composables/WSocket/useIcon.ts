@@ -5,6 +5,8 @@ let iconValue: any;
 
 const useIcon = () => {
 
+    const getIcon = () => iconValue.value;
+
     const updateIcon = (icon: string) => {
         iconValue.value = icon;
         wsocket.emit('icon-update', icon);
@@ -65,7 +67,8 @@ const useIcon = () => {
 
     return {
         updateIcon,
-        createIconAutoSync
+        createIconAutoSync,
+        getIcon
     }
 
 }
