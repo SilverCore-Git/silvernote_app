@@ -218,7 +218,7 @@ onMounted(async () => {
         }).then(res => res.json()).then(res => res.share);
 
         const visitors = shareData.visitor;
-        isMyShare.value = shareData.owner_id !== window.localStorage.getItem('user_id');
+        isMyShare.value = shareData.owner_id === window.localStorage.getItem('user_id');
         
         for (const visitor of visitors)
         {
