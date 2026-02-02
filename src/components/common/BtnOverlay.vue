@@ -14,7 +14,7 @@
 
         <!-- new note btn -->
         <button
-            v-if="!route.path.startsWith('/edit') || !route.path.startsWith('/share')"
+            v-if="!route.path.startsWith('/edit') && !route.path.startsWith('/share')"
             @click="openEditNewNote"
             class="
                 transition-all duration-300 ease-in-out
