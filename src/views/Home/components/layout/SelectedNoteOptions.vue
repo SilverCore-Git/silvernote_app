@@ -106,6 +106,18 @@
         @confirm="deleteNotes(2)"
     />
 
+    <div
+        class="
+            fixed inset-x-0 bottom-10 h-16 z-40
+            flex justify-center items-center
+        "
+        v-if="showConfirmDel"
+    >
+        <button class="primary" @click="clearSelectedNotes()">
+            Déséléctionner tout
+        </button>
+    </div>
+
 </div>
 
 </template>
