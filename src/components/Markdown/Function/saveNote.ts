@@ -27,6 +27,7 @@ export const saveNote = async (uuid: string, { force = false } = {}) =>
     
     if (!newContent || !newTitle || !newIcon) {
         console.warn('No content or title or icon to save');
+        console.warn({ newContent, newTitle, newIcon });
         return;
     }
 
