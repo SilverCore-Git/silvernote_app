@@ -166,6 +166,15 @@
                         :is-collaborative="true"
                     />
 
+                    <div
+                        v-if="editor"
+                        ref=""
+                        class="
+                            h-80 w-full
+                        "
+                        @click="editor.commands.focus('end');"
+                    ></div>
+
                 </div>
 
             </div>
