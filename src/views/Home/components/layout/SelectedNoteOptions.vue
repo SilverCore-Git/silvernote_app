@@ -33,7 +33,7 @@
                 <a 
                     class="p-1"
                     v-if="selectedNotes.length <= 1"
-                    @click="selectedNote[0].pinned = !selectedNote[0].pinned"
+                    @click="togglePinned()"
                 >
                     <i 
                         class="bi"
@@ -182,6 +182,17 @@ const deleteNotes = async (state: number) => {
         clearSelectedNotes();
 
     }
+
+}
+
+
+const togglePinned = async () => {
+
+    Notes.value[0].pinned = !Notes.value[0].pinned;
+
+    await database.update(Notes.value[0]);
+
+    clearSelectedNotes();
 
 }
 
