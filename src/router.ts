@@ -99,11 +99,10 @@ router.beforeResolve((to, from) => {
   const toEdit = to.path.startsWith('/edit')
   const isEditNew = to.path.startsWith('/edit/new')
 
-  console.log({fromEdit, toEdit, isEditNew})
 
-  if (!(fromEdit || toEdit) || isEditNew) return;
-  if (fromEdit && isEditNew) {
-    console.log('redirect to home from edit new')
+  if (!(fromEdit || toEdit)) return;
+  if (fromEdit && isEditNew)
+  {
     router.push('/');
     return;
   }
