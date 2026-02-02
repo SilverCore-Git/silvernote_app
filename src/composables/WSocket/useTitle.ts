@@ -5,7 +5,7 @@ let titleValue: any;
 
 const useTitle = () => {
 
-    const getTitle = () => titleValue.value;
+    const getTitle = () => titleValue.value || "";
 
     const updateTitle = (title: string) => {
         titleValue.value = title;

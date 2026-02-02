@@ -25,8 +25,9 @@ export const saveNote = async (uuid: string, { force = false } = {}) =>
     const newTitle = useTitle().getTitle();
     const newIcon = useIcon().getIcon();
     
-    if (!newContent || !newTitle || !newIcon) {
+    if (newContent == undefined || newTitle == undefined || newIcon == undefined) {
         console.warn('No content or title or icon to save');
+        console.warn({ newContent, newTitle, newIcon });
         return;
     }
 

@@ -5,7 +5,7 @@ let iconValue: any;
 
 const useIcon = () => {
 
-    const getIcon = () => iconValue.value;
+    const getIcon = () => iconValue.value || "";
 
     const updateIcon = (icon: string) => {
         iconValue.value = icon;
