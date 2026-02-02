@@ -99,9 +99,13 @@ router.beforeResolve((to, from) => {
   const toEdit = to.path.startsWith('/edit')
   const isEditNew = to.path.startsWith('/edit/new')
 
-  if (!(fromEdit || toEdit) || isEditNew) return
+  if (!(fromEdit || toEdit) || isEditNew) return;
+  if (fromEdit && isEditNew) {
+    router.push('/');
+    return;
+  }
 
-  if (!document.startViewTransition) return
+  if (!document.startViewTransition) return;
 
   return new Promise((resolve) => {
     document.startViewTransition(async () => {

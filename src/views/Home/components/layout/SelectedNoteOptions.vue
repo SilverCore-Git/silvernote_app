@@ -110,7 +110,7 @@
 
         <div
             class="
-                fixed inset-x-0 bottom-10 h-16 z-40
+                fixed inset-x-0 bottom-10 h-16 z-1000
                 flex justify-center items-center
             "
         >
