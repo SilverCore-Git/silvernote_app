@@ -123,6 +123,12 @@ onBeforeUnmount(async () => {
 
   if (note.value?.title == '')
   {
+    if (note.value?.content == '' || note.value?.content == '<p></p>')
+    {
+      await database.delete(note.value?.uuid);
+      Notes.value = Notes.value.filter(_note => _note.uuid !== note.value?.uuid);
+      return;
+    }
     note.value.title = 'Note sans nom';
   }
 

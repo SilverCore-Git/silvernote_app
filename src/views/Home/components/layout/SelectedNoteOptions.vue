@@ -33,7 +33,7 @@
                 <a 
                     class="p-1"
                     v-if="selectedNotes.length <= 1"
-                    @click="selectedNote[0].pinned = !selectedNote[0].pinned"
+                    @click="togglePinned()"
                 >
                     <i 
                         class="bi"
@@ -105,6 +105,21 @@
         @cancel="showConfirmDel = false"
         @confirm="deleteNotes(2)"
     />
+
+    <teleport to="body">
+
+        <div
+            class="
+                fixed inset-x-0 bottom-10 h-16 z-1000
+                flex justify-center items-center
+            "
+        >
+            <button class="primary" @click="clearSelectedNotes()">
+                Déséléctionner tout
+            </button>
+        </div>
+
+    </teleport>
 
 </div>
 
@@ -182,6 +197,17 @@ const deleteNotes = async (state: number) => {
         clearSelectedNotes();
 
     }
+
+}
+
+
+const togglePinned = async () => {
+
+    Notes.value[0].pinned = !Notes.value[0].pinned;
+
+    await database.update(Notes.value[0]);
+
+    clearSelectedNotes();
 
 }
 
