@@ -162,7 +162,7 @@ watch(() => props.uuid, async () => {
     class="
         overflow-y-auto fixed
         inset-0 flex flex-col
-        h-full w-full
+        h-full w-full overflow-x-hidden
     "
     :style="{ 'view-transition-name': `note-${uuid}` }"
 >
