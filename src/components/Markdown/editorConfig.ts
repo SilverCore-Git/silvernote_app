@@ -13,7 +13,6 @@ import { Markdown } from 'tiptap-markdown';
 import { Collaboration } from '@tiptap/extension-collaboration';
 import CollaborationCaret from '@tiptap/extension-collaboration-caret';
 import FileHandler from '@tiptap/extension-file-handler';
-import { DrawingNode } from "tiptap-extension-freehand";
 
 import { noteBtnLink } from './tiptap-extensions/noteBtnLink';
 import SlashCommand from '@/components/Markdown/tiptap-extensions/SlachCommand.js';
@@ -98,7 +97,6 @@ export function buildEditorExtensions(params: EditorConfigParams) {
         avatar: userAvatar,
       },
     }),
-    DrawingNode.configure({ features: { globalOverlay: true } }),
     createMathExtension(),
   ].concat(DragHandle as any);
 }
