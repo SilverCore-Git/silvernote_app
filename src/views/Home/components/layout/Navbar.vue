@@ -168,7 +168,7 @@ import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { UserButton } from '@clerk/vue';
 import { clerkAppearanceSettings } from '@/assets/ts/theme';
-
+ 
 const router = useRouter();
 const route = useRoute();
 const selectedNote = ref<string>('');
