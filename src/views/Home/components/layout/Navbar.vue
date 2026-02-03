@@ -11,7 +11,10 @@
             
             <li class="flex-col">
 
-                <div class="flex flex-row gap-2 items-center justify-center">
+                <div 
+                    class="flex flex-row gap-2 items-center justify-center"
+                    @click="openScore"
+                >
 
                     <img src="/favicon.svg" class="w-8 rounded-md" />
 
@@ -194,6 +197,10 @@ const closeNoteSettings = () => {
             selectedNote: undefined
         }
     });
+}
+
+const openScore = () => {
+    window.open('https://www.silvercore.fr?utm_source=silvernote&utm_medium=title-btn', '_blank');
 }
 
 </script>

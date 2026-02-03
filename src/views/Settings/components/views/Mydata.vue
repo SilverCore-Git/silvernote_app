@@ -192,6 +192,8 @@ const resetDB = async (state: 1 | 2) => {
         :visible="ShowConfirmDialog"
         title="Réinitialiser la base de données"
         message="Cette action est irréversible. Êtes-vous sûr de vouloir réinitialiser votre base de données ? Toutes vos notes et tags seront supprimés définitivement."
+        :checkbox="true"
+        checkbox-text="Je comprends que cette action est irréversible"
         @cancel="ShowConfirmDialog = false"
         @confirm="resetDB(2); ShowConfirmDialog = false"
     />

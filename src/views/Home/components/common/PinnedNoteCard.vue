@@ -34,7 +34,7 @@
                     />
                     <h2 
                         class="font-bold text-lg sm:text-xl"
-                        v-text="title"
+                        v-text="title.length > 0 ? title : 'Note sans titre'"
                     />
                 </div>
 
