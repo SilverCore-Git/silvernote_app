@@ -1,3 +1,15 @@
+<style scoped>
+.pulse {
+  animation: pulse-animation 200ms infinite ease-in-out;
+}
+
+@keyframes pulse-animation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+</style>
+
 <template>
 
   <teleport to="body">
@@ -17,9 +29,23 @@
             @click.stop=""
           >
 
-              <div class="mb-5">
+              <div :class="checkbox ? '' : 'mb-5'">
                 <h2 class="text-lg font-black tracking-tight text-(--text) mb-2">{{ title || 'Confirmation' }}</h2>
                 <p class="text-(--text-little) leading-relaxed">{{ message }}</p>
+              </div>
+
+              <div v-if="checkbox" class="my-4">
+
+                <checkbox
+                  v-model="checkboxVal"
+                >
+
+                  <span 
+                    :class="enterWithNoCheckbox ? 'text-red-500 transition-all duration-200 pulse' : ''"
+                  >{{ checkbox }}</span>
+
+                </checkbox>
+
               </div>
 
               <div class="flex justify-end gap-3 mt-8">
@@ -49,13 +75,16 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import BackdropOverlay from '../common/BackdropOverlay.vue';
+import Checkbox from '../inputs/Checkbox.vue';
 
 
-defineProps<{
+const props = defineProps<{
   visible: boolean;
   title?: string;
   message: string;
+  checkbox?: string;
 }>()
 
 const emits = defineEmits<{
@@ -63,7 +92,18 @@ const emits = defineEmits<{
   (e: 'cancel'): void
 }>()
 
-const confirm = () => emits('confirm')
+const checkboxVal = ref<boolean>(false);
+const enterWithNoCheckbox = ref<boolean>(false);
+
+const confirm = () => {
+  if (props.checkbox && !checkboxVal.value)
+  {
+    enterWithNoCheckbox.value = true;
+    setTimeout(() => enterWithNoCheckbox.value = false, 400);
+    return;
+  }
+  emits('confirm')
+}
 const cancel = () => emits('cancel')
 
 </script>
