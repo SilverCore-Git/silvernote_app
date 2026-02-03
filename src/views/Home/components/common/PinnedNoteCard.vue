@@ -14,7 +14,7 @@
                 cursor-pointer overflow-hidden 
                 hover:border-(--btn) border
                 transition-all duration-200 ease-in-out
-                max-h-40 w-full
+                w-full
             "
             :class="
                 note_selected || isSelected(props.uuid)
@@ -34,7 +34,7 @@
                     />
                     <h2 
                         class="font-bold text-lg sm:text-xl"
-                        v-text="title"
+                        v-text="title.length > 0 ? title : 'Note sans titre'"
                     />
                 </div>
 

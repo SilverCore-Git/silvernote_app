@@ -93,7 +93,7 @@ const focusEditor = () => editor.value?.commands.focus();
 const handleSaveShortcut = (e: KeyboardEvent) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
     e.preventDefault();
-    saveNote(props.data.uuid);
+    saveNote(props.data.uuid, { force: true });
   }
 };
 
