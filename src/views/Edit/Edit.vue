@@ -4,9 +4,9 @@ import { Notes } from '@/assets/ts/database/Var';
 import BackBtn from '@/components/backBtn.vue';
 import { editor } from '@/components/Markdown/Editor';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import Dropdown from './Dropdown.vue';
-import type { Note, User } from '@/assets/ts/type';
+import type { User } from '@/assets/ts/type';
 import { api_url } from '@/assets/ts/backend_link';
 import waitFor from '@/assets/ts/utils/waitFor';
 import useEmoji from './composable/useEmoji';
@@ -73,6 +73,27 @@ const initExistingNote = async () => {
 
 }
 
+const saveNote = async () => {
+  
+  const index = Notes.value.findIndex(n => n.uuid === props.uuid);
+
+  if (index !== -1)
+  {
+    Notes.value[index].title = title.value || Notes.value[index].title;
+    Notes.value[index].icon = icon.value || Notes.value[index].icon;
+  }
+
+  if (note.value?.title == '' && (note.value?.content == '' || note.value?.content == '<p></p>'))
+  {
+    await database.delete(Notes.value[index].uuid);
+    Notes.value = Notes.value.filter(_note => _note.uuid !== Notes.value[index].uuid);
+    return;
+  }
+
+  await database.update(Notes.value[index]);
+
+}
+
 
 watch(() => title.value, update_title);
 
@@ -113,26 +134,16 @@ onMounted(async () => {
 
 })
 
-onBeforeUnmount(async () => {
 
+onUnmounted(async () => {
+  
   if (title.value != undefined && icon.value != undefined && note.value)
   {
-    note.value.title = title.value;
-    note.value.icon = icon.value;
+    note.value.title = title.value || '';
+    note.value.icon = icon.value || '';
   }
 
-  if (note.value?.title == '')
-  {
-    if (note.value?.content == '' || note.value?.content == '<p></p>')
-    {
-      await database.delete(note.value?.uuid);
-      Notes.value = Notes.value.filter(_note => _note.uuid !== note.value?.uuid);
-      return;
-    }
-    note.value.title = 'Note sans nom';
-  }
-
-  await database.update(note.value as Note);
+  await saveNote();
   socket.emit('leave-room', { room: props.uuid });
 
 })
