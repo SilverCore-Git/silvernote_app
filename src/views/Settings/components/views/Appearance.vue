@@ -4,7 +4,7 @@ import { setThemePreference } from '@/assets/ts/theme';
 import DefaultNoteCard from '@/views/Home/components/common/DefaultNoteCard.vue';
 import { IsPrivate, setPrivate } from '@/assets/ts/settings/privatMode';
 import { ref, watch } from 'vue';
-import Switch from '@/components/Switch.vue';
+import Switch from '@/components/inputs/Switch.vue';
 import Popup from '@/components/popup/Popup.vue';
 import darkenHex from '@/assets/ts/utils/darkenHex';
 

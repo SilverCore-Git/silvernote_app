@@ -62,7 +62,6 @@ onMounted(async() => {
                         :icon="note.icon"
                         :tags="note.tags"
                         :sharedBy="note.user_id"
-                        inertw="max-h-50"
                     />
                 </li>
             </ul>
@@ -95,7 +94,6 @@ onMounted(async() => {
                         :icon="note.icon"
                         :tags="note.tags"
                         :sharedBy="note.user_id"
-                        inertw="max-h-50"
                     />
                 </li>
             </ul>

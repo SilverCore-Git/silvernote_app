@@ -119,36 +119,50 @@ router.beforeResolve((to, from) => {
 })
 
 
-router.beforeEach((to: any, _from: any, next: any) => {
+router.beforeEach((to, _from, next) => {
+  
+  if (to.query.silverIA) {
+    const { silverIA, ...remainingQuery } = to.query;
+    
+    return next({
+      params: to.params, 
+      query: remainingQuery, 
+      hash: to.hash,
+      replace: true
+    });
+  }
+
   const title = to.meta.title as string;
   const favicon = to.meta.favicon as string;
 
-  if (title) {
+  if (title)
+  {
+
     document.title = title;
 
-    const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) {
-      ogTitle.setAttribute('content', title);
-    } else {
-      const meta = document.createElement('meta');
-      meta.setAttribute('property', 'og:title');
-      meta.setAttribute('content', title);
-      document.head.appendChild(meta);
+    let ogTitle = document.querySelector('meta[property="og:title"]');
+    if (!ogTitle) {
+      ogTitle = document.createElement('meta');
+      ogTitle.setAttribute('property', 'og:title');
+      document.head.appendChild(ogTitle);
     }
+    ogTitle.setAttribute('content', title);
+
   }
 
-  if (favicon) {
+  if (favicon)
+  {
     let link = document.querySelector("link[rel~='icon']");
     if (!link) {
       link = document.createElement('link');
       link.setAttribute('rel', 'icon');
       document.head.appendChild(link);
     }
-
     link.setAttribute('href', favicon);
   }
 
   next();
+  
 });
 
 
