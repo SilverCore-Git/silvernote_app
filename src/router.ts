@@ -124,8 +124,7 @@ router.beforeEach((to, _from, next) => {
   if (to.query.silverIA) {
     const { silverIA, ...remainingQuery } = to.query;
     
-    return next({ 
-      path: to.path, 
+    return next({
       params: to.params, 
       query: remainingQuery, 
       hash: to.hash,
