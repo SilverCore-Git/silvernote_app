@@ -315,7 +315,7 @@ watch(() => props.uuid, async () => {
           class="w-full h-full flex justify-center items-center flex-col"
         >
 
-          <textarea 
+          <input 
             v-if="title != undefined"
             class="
               text-4xl font-extrabold mb-4 
