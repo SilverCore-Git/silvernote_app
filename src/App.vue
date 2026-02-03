@@ -115,7 +115,7 @@ const is_offline = ref<boolean>(false);
 
 
 onMounted(async () => {
-
+console.log('test 030226')
   try {
 
     init_theme();
