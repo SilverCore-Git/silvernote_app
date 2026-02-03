@@ -57,9 +57,9 @@ onBeforeUnmount(async () => {
             gap-4 pointer-events-none
         "
         :class="
-            !route.path.startsWith('/edit') || !route.path.startsWith('/edit')
+            !route.path.startsWith('/edit') && !route.path.startsWith('/share')
                 ? 'bottom-42 md:bottom-30'
-                : 'bottom-22'
+                : 'bottom-22 md:bottom-10'
         "
     >
         

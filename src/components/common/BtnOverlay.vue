@@ -34,6 +34,7 @@
 </template>
 
 <script lang="ts" setup>
+
 import { useRoute, useRouter } from 'vue-router';
 import Silveria from '../silveria/silveria.vue';
 import { nextTick } from 'vue';
