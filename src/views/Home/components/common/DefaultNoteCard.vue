@@ -40,20 +40,20 @@
 
             </div>
 
-            <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed wrap-break-word">
+            <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed wrap-break-word max-h-30">
                 <p
                     v-if="IsPrivate"
                     class=" font-mono text-[10px] tracking-widest opacity-50"
                     :class="lines ? `line-clamp-${lines}` : 'line-clamp-3'"
                 >
-                    {{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 150) }}
+                    {{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 500) + ' ...' }}
                 </p>
 
                 <div
                     v-else
                     class=" content-html"
                     :class="lines ? `line-clamp-${lines}` : 'line-clamp-3'"
-                    v-html="utils.clean_html(content)"
+                    v-html="utils.clean_html(content).slice(0, 500) + ' ...'"
                 ></div>
             </div>
 

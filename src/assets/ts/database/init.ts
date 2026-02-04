@@ -56,7 +56,7 @@ class InitDB {
         }).then(res => res.json());
         if (data) {
             const notes: Note[] = data.notes;
-            Notes.value = notes;
+            Notes.value = notes || [];
         }
     }
 
@@ -71,7 +71,7 @@ class InitDB {
             }
         }).then(res => res.json());
         if (data) {
-            Tags.value = data.tags;
+            Tags.value = data.tags || [];
         }
     }
 
@@ -95,7 +95,7 @@ class InitDB {
             return;
         }
 
-        const resNotes: any[] = res.notes;
+        const resNotes: any[] = res.notes || [];
         SharedNotes.value = resNotes.filter(note => note.user_id != this.user?.value.id);
         return;
     }

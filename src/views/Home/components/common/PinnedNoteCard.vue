@@ -54,18 +54,18 @@
                 </div>
             </div>
 
-            <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed break-words ">
+            <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed break-words max-h-30">
                 <p
                     v-if="IsPrivate"
                     class="line-clamp-3 font-mono text-[10px] tracking-widest opacity-50"
                 >
-                    {{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 150) }}
+                    {{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 500) + ' ...' }}
                 </p>
 
                 <div
                     v-else
                     class="line-clamp-3 content-html"
-                    v-html="utils.clean_html(content)"
+                    v-html="utils.clean_html(content).slice(0, 500) + ' ...'"
                 ></div>
             </div>
 
