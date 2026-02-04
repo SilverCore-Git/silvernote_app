@@ -141,7 +141,7 @@
                 </span>
 
                 <span 
-                    v-if="news" 
+                    v-if="news?.length > 0 && !viewAllNews" 
                     class="text-[10px] bg-(--btn) px-1.5 rounded-full"
                 >
                     {{ todayNews.length }}
@@ -326,7 +326,17 @@ const closeNoteSettings = () => {
 }
 
 onMounted(async () => {
-    news.value = await (await fetch(`${api_url}/api/notifications`)).json();
+    
+    let notif = [];
+    try {
+        const res = await (await fetch(`${api_url}/api/notifications`));
+        if (res.ok) notif = await res.json();
+    } catch (e) {
+        console.error(e);
+    }
+
+    news.value = notif || [];
+    
 })
 
 </script>
