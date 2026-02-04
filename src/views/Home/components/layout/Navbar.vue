@@ -2,8 +2,8 @@
 
     <div
         class="
-            h-full bg-(--bg2) shadow-2xl
-            p-4 min-w-65 relative
+            h-full bg-(--bg2) shadow-2xl 
+            p-4 min-w-65 max-w-75 relative
         "
     >
 
@@ -91,7 +91,9 @@
 
                 <hr class="mt-3 mb-4 text-gray-400 -mx-4" />
 
-                <span class="text-xs text-(--text-little) uppercase font-semibold">Onglets</span>
+                <span class="text-xs text-(--text-little) uppercase font-semibold">
+                    Onglets
+                </span>
 
                 <li 
                     class="li"
@@ -126,6 +128,9 @@
             </div>
 
         </ul>
+
+        <!-- news -->
+        <News v-if="!isMobile" />
 
         <!-- <ul
             class="
@@ -174,11 +179,14 @@ import isMobile from '@/assets/ts/utils/isMobile';
 import { UserButton } from '@clerk/vue';
 import { clerkAppearanceSettings } from '@/assets/ts/theme';
 import App2048Popup from '@/components/2048/App2048Popup.vue';
+import News from '../../../../components/notifications/Notifications.vue';
+
  
 const router = useRouter();
 const route = useRoute();
 const selectedNote = ref<string>('');
 const showGame = ref<boolean>(false);
+
 
 const setPage = (a: 'shared' | 'all'): void => {
     router.push({
@@ -202,6 +210,7 @@ const closeNoteSettings = () => {
         }
     });
 }
+
 
 </script>
 

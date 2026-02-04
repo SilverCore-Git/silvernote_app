@@ -27,7 +27,7 @@
             v-if="isSignedIn"
             class=" z-50 relative"
           >
-            <BtnOverlay />
+            <BtnOverlay v-if="loaded" />
           </div>
 
       </div>
@@ -102,6 +102,7 @@ import postError from "./components/errorOverlay/postError";
 import BtnOverlay from "./components/common/BtnOverlay.vue";
 import DesktopAppTitleBar from "./components/DesktopAppTitleBar.vue";
 import IconLoader from "./components/iconLoader.vue";
+import { initNotifications } from "./components/notifications/notifications";
 
 const loader = ref<boolean>(true);
 const status = ref<string>('Chargement de l\'app...');
@@ -167,6 +168,7 @@ console.log('test 030226')
     loaded.value = true;
 
     await session.create(user.value);
+    await initNotifications();
 
   } catch (err: any) {
 

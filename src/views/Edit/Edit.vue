@@ -4,7 +4,7 @@ import { Notes } from '@/assets/ts/database/Var';
 import BackBtn from '@/components/backBtn.vue';
 import { editor } from '@/components/Markdown/Editor';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import Dropdown from './Dropdown.vue';
 import type { User } from '@/assets/ts/type';
 import { api_url } from '@/assets/ts/backend_link';
@@ -36,6 +36,13 @@ const title = ref<string | undefined>(undefined);
 const icon = ref<string | undefined>(undefined);
 let close: () => void = () => {};
 
+const resizeTitle = () => {
+  const el = titleRef.value;
+  if (el) {
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+  }
+};
 
 const update_title = () => {
   if (!title.value) return;
@@ -97,6 +104,14 @@ const saveNote = async () => {
 
 watch(() => title.value, update_title);
 
+watch(title, async () => {
+  await nextTick();
+  resizeTitle();
+});
+
+onMounted(() => {
+  resizeTitle();
+});
 
 onMounted(async () => {
 
@@ -326,18 +341,20 @@ watch(() => props.uuid, async () => {
           class="w-full h-full flex justify-center items-center flex-col"
         >
 
-          <input 
-            v-if="title != undefined"
+          <textarea 
+            v-if="title !== undefined"
+            ref="titleRef"
+            v-model="title"
             class="
               text-4xl font-extrabold mb-4 
               text-(--text-strong) w-[90%]
               outline-0 resize-none
-            " 
-            maxlength="28"
+              overflow-hidden bg-transparent
+              min-h-[1.2em]
+            "
             placeholder="Titre..." 
-            ref="titleRef"
-            v-model="title"
-            @keydown.enter="editor?.commands.focus()"
+            rows="1"
+            @keydown.enter.prevent="editor?.commands.focus()"
           />
 
           <RichMarkdownEditor
