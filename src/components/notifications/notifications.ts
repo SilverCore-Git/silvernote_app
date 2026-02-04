@@ -1,6 +1,7 @@
 import { computed, ref } from "vue";
 import type { NotificationItem } from "./NotifTypes";
 import { api_url } from "@/assets/ts/backend_link";
+import useToken from "@/composables/useToken";
 
 const notifications = ref<NotificationItem[] | undefined>(undefined);
 const todayNotifications = computed(() => {
@@ -24,7 +25,12 @@ const initNotifications = async () => {
     try {
 
         const res = await fetch(`${api_url}/api/notifications`, {
-            credentials: 'include'
+            credentials: 'include',
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${await useToken()}`
+            }
         });
 
         if (res.ok)
