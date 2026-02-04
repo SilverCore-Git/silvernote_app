@@ -158,9 +158,9 @@
 
         </ul> -->
 
-    </div>
+        <App2048Popup v-model:show="showGame" />
 
-    <App2048Popup v-model:show="showGame" />
+    </div>
 
 </template>
 
