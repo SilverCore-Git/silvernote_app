@@ -78,6 +78,7 @@ import { ref } from 'vue';
 import { api_url } from '@/assets/ts/backend_link';
 import NotifCard from './NotifCard.vue';
 import { notifications as news, todayNotifications as todayNews } from './notifications';
+import useToken from '@/composables/useToken';
 
 
 const userId = localStorage.getItem('user_id') || '';
@@ -90,7 +91,8 @@ const markRead = async (id: string) => {
             method: 'POST',
             credentials: 'include',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${await useToken()}`
             }
         });
         if (res.ok) {
