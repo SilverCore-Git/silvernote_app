@@ -9,6 +9,7 @@ import SignIn from './views/auth/SignIn.vue';
 import SignUp from './views/auth/SignUp.vue';
 import Redirect from './views/auth/Redirect.vue';
 import NotFound from './views/errors/404.vue';
+import App2048 from './components/2048/App2048.vue';
 
 
 
@@ -49,6 +50,13 @@ const routes = [
     component: Share,
     props: true,
     meta: { title: 'Partage - Silvernote' }
+  },
+
+  { 
+    path: '/tools/2048', 
+    name: '2048', 
+    component: App2048,
+    meta: { title: '2048 - Silvernote' }
   },
 
   // auth

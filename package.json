@@ -1,9 +1,9 @@
 {
   "name": "silvernote_front",
   "private": true,
-  "version": "1.7.20-beta",
+  "version": "1.8.20-beta",
   "description": "A simple note taking app",
-  "dev": false,
+  "dev": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -47,6 +47,7 @@
     "@tiptap/starter-kit": "^2.12.0",
     "@tiptap/suggestion": "^3.3.0",
     "@tiptap/vue-3": "^2.27.1",
+    "@vueuse/core": "^14.2.0",
     "bootstrap-icons": "^1.13.1",
     "dompurify": "^3.2.6",
     "floating-vue": "^5.2.2",

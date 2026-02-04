@@ -11,7 +11,10 @@
             
             <li class="flex-col">
 
-                <div class="flex flex-row gap-2 items-center justify-center">
+                <div
+                    @click="showGame = !showGame"
+                    class="flex flex-row gap-2 items-center justify-center"
+                >
 
                     <img src="/favicon.svg" class="w-8 rounded-md" />
 
@@ -157,6 +160,8 @@
 
     </div>
 
+    <App2048Popup v-model:show="showGame" />
+
 </template>
 
 
@@ -168,10 +173,12 @@ import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { UserButton } from '@clerk/vue';
 import { clerkAppearanceSettings } from '@/assets/ts/theme';
+import App2048Popup from '@/components/2048/App2048Popup.vue';
  
 const router = useRouter();
 const route = useRoute();
 const selectedNote = ref<string>('');
+const showGame = ref<boolean>(false);
 
 const setPage = (a: 'shared' | 'all'): void => {
     router.push({
