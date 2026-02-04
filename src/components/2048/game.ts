@@ -1,18 +1,22 @@
 import { computed, ref } from 'vue';
 import { uuid } from './utils';
 
-export enum Direction {
-  UP = 1,
-  DOWN,
-  LEFT,
-  RIGHT,
-}
+export const Direction = {
+  UP: 1,
+  DOWN: 2,
+  LEFT: 3,
+  RIGHT: 4,
+} as const;
 
-export enum CellState {
-  NORMAL = 1,
-  MERGE,
-  NEW
-}
+export type Direction = typeof Direction[keyof typeof Direction];
+
+export const CellState = {
+  NORMAL: 1,
+  MERGE: 2,
+  NEW: 3
+} as const;
+
+export type CellState = typeof CellState[keyof typeof CellState];
 
 export interface Cell {
   id: number;

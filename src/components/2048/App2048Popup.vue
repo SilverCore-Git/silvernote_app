@@ -1,10 +1,10 @@
 <script setup lang="ts">
 
 import { ref } from 'vue';
-import { transition, useDraggable } from '@vueuse/core';
+import { useDraggable } from '@vueuse/core';
 import App2048 from './App2048.vue';
 
-const props = defineProps<{
+defineProps<{
   show: boolean
 }>();
 

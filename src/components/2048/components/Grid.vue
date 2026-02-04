@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch, onUnmounted, onMounted, computed } from 'vue';
-import { useGrid, Direction, CellState, CellWithPosition } from '../game';
+import { useGrid, Direction, CellState, type CellWithPosition } from '../game';
 import { useLocalStorage, uuid } from '../utils';
 import Heading from '../components/Heading.vue';
 
