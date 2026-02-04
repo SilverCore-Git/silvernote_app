@@ -121,8 +121,8 @@
                                                     :id="`switch-${tag.id}`"
                                                     type="checkbox"
                                                     class="sr-only peer"
-                                                    :checked="justView ? note?.tags?.includes(tag.id) : tags.includes(tag.id)"
-                                                    @change="justView ? () => {} : toggleTag(tag.id)"
+                                                    :checked="justView == true ? note.tags.includes(tag.id) : tags.includes(tag.id)"
+                                                    @change="justView == true ? () => {} : toggleTag(tag.id)"
                                                 />
 
                                                 <div

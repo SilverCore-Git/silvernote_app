@@ -115,6 +115,7 @@
     <NoteParamsOverlay
         v-model:visible="note_selected"
         :uuid="uuid"
+        :selected-tags="tags"
     />
 
     <share_menu

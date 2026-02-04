@@ -84,6 +84,7 @@
 
     <NoteParamsOverlay
         v-model:visible="note_selected"
+        :selected-tags="tags"
         :uuid="uuid"
     />
 
