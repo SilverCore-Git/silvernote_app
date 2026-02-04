@@ -1,16 +1,19 @@
 <script setup lang="ts">
 
 import { Notes, SharedNotes, Tags } from '@/assets/ts/database/Var';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import DownloadDBToSnote from '../../utils/DownloadDBToSNOTE';
 import DownloadDBToJSON from '../../utils/DownloadDBToJSON';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import database from '@/assets/ts/database/database';
 import UploadFromSNOTE from '../../utils/UploadFromSNOTE';
+import { api_url } from '@/assets/ts/backend_link';
 
 const Loader = ref<string>('');
 const ShowConfirmDialog = ref<boolean>(false);
 const file_input = ref<HTMLInputElement | undefined>(undefined);
+const fingerPrint = ref<string>('');
+const showFingerprint = ref<boolean>(false);
 
 
 const exportFormats = [
@@ -74,6 +77,18 @@ const resetDB = async (state: 1 | 2) => {
         Loader.value = '';
     }
 }
+
+
+onMounted(async () => {
+    fingerPrint.value = await fetch(`${api_url}/api/db/get/scrypto/fingerprint`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    }).then(res => res.json()).then(data => data.fingerprint || '');
+});
 
 </script>
 
@@ -166,7 +181,7 @@ const resetDB = async (state: 1 | 2) => {
             <div class="p-6 rounded-xl border border-red-500/20 bg-red-500/5">
 
                 <h2 class="text-red-500 font-semibold text-lg mb-2 flex items-center gap-2">
-                    <i class="bi bi-exclamation-triangle" /> Zone de danger
+                    <i class="bi bi-exclamation-triangle" /> Réinitialiser la base de données
                 </h2>
 
                 <div class="flex flex-col items-start  gap-4">
@@ -182,6 +197,73 @@ const resetDB = async (state: 1 | 2) => {
                     </button>
                 </div>
 
+            </div>
+
+        </section>
+
+        <section 
+            class="mb-8 p-6 rounded-xl bg-(--bg2) border border-(--white)/10 overflow-hidden relative"
+            v-if="fingerPrint && fingerPrint != ''"
+        >
+
+            <i class="bi bi-shield-lock-fill absolute -right-4 -top-4 text-4xl opacity-5 text-(--btn)" />
+
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+
+                <div>
+                    <h2 class="font-semibold text-lg mb-1 flex items-center gap-2">
+                        <i class="bi bi-shield-check text-(--btn)" /> Chiffrement des données
+                    </h2>
+                    <p class="text-xs opacity-60 max-w-md">
+                        Vos notes sont protégées par un chiffrement <strong>AES-256-GCM</strong>. 
+                        Chaque utilisateur possède une clé d'isolation unique dérivée de notre clé maître.
+                    </p>
+                </div>
+
+                <div class="flex flex-col items-end">
+                    
+                    <div class="text-[10px] opacity-40 uppercase tracking-widest mb-1 font-bold">
+                        Code de sécurité (Fingerprint)
+                    </div>
+                    
+                    <div 
+                        class="flex items-center gap-2 bg-(--bg) px-4 py-2 rounded-lg border border-(--white)/5 group relative"
+                        title="Ceci est une empreinte unique de votre clé de sécurité."
+                    >
+                        
+                        <code 
+                            v-if="showFingerprint" 
+                            class="text-(--btn) font-mono font-bold tracking-wider text-sm cursor-help"
+                        >
+                            {{ fingerPrint }}
+                        </code>
+
+                        <div 
+                            v-else 
+                            class="
+                                h-5 w-full bg-(--white)/5 animate-pulse
+                                rounded text-(--text)/80 font-mono font-bold
+                                tracking-wider text-sm cursor-pointer
+                            "
+                            @click="showFingerprint = true"
+                        >
+                            <span class="text-transparent">A-AAAA-AAAA</span>
+                            voir le code
+                            <span class="text-transparent">A-AAAA-AAAA</span>
+                        </div>
+                        
+                        <i 
+                            class="bi bi-info-circle text-xs opacity-30 group-hover:opacity-100 transition-opacity" 
+                        />
+
+                    </div>
+
+                    <p class="text-[9px] opacity-40 mt-2 italic text-right">
+                        Vérifié par Silvernote Security Stack
+                    </p>
+            
+                </div>
+            
             </div>
 
         </section>
