@@ -3,7 +3,7 @@
     <div
         class="
             h-full bg-(--bg2) shadow-2xl
-            p-4 min-w-65 relative
+            p-4 min-w-65 max-w-75 relative max-h-screen
         "
     >
 
@@ -91,7 +91,9 @@
 
                 <hr class="mt-3 mb-4 text-gray-400 -mx-4" />
 
-                <span class="text-xs text-(--text-little) uppercase font-semibold">Onglets</span>
+                <span class="text-xs text-(--text-little) uppercase font-semibold">
+                    Onglets
+                </span>
 
                 <li 
                     class="li"
@@ -126,6 +128,109 @@
             </div>
 
         </ul>
+
+        <!-- news -->
+        <div class="flex flex-col max-h-2/3">
+            
+            <hr class="mt-6 mb-4 text-gray-400 -mx-4 opacity-50" />
+            
+            <div class="flex items-center justify-between mb-2">
+
+                <span class="text-xs text-(--text-little) uppercase font-bold tracking-wider">
+                    Notifications
+                </span>
+
+                <span 
+                    v-if="news" 
+                    class="text-[10px] bg-(--btn) px-1.5 rounded-full"
+                >
+                    {{ todayNews.length }}
+                </span>
+
+            </div>
+
+            <div class="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar">
+                
+                <div v-if="!news" class="text-sm text-(--text-little) italic p-2">
+                    Chargement des news...
+                </div>
+
+                <div v-else-if="news.length === 0" class="text-sm text-(--text-little) italic p-2">
+                    Aucune notification pour le moment.
+                </div>
+
+                <div 
+                    v-if="!viewAllNews"
+                    v-for="(n, index) in todayNews" 
+                    :key="'today-news-' + index" 
+                    class="
+                        news-card border-l-2 border-(--btn) transition-colors
+                        bg-(--white)/50 p-3 rounded-r-lg hover:bg-(--white)/80
+                    "
+                >
+
+                    <div class="flex justify-between items-start mb-1">
+
+                        <span class="font-bold text-sm leading-tight">
+                            {{ n.title }}
+                        </span>
+
+                        <span v-if="n.date" class="text-[9px] opacity-60">
+                            {{ new Date(n.date).toLocaleDateString() }}
+                        </span>
+
+                    </div>
+                    
+                    <div 
+                        class="text-xs text-(--text-little prose-tight" 
+                        v-html="md.render(n.content)"
+                    />
+
+                </div>
+
+                <div 
+                    v-else
+                    v-for="(n, index) in news" 
+                    :key="'all-news-' + index" 
+                    class="
+                        news-card border-l-2 border-(--btn) transition-colors
+                        bg-(--white)/50 p-3 rounded-r-lg hover:bg-(--white)/80
+                    "
+                >
+
+                    <div class="flex justify-between items-start mb-1">
+
+                        <span class="font-bold text-sm leading-tight">
+                            {{ n.title }}
+                        </span>
+
+                        <span v-if="n.date" class="text-[9px] opacity-60">
+                            {{ new Date(n.date).toLocaleDateString() }}
+                        </span>
+
+                    </div>
+                    
+                    <div 
+                        class="text-xs text-(--text-little prose-tight" 
+                        v-html="md.render(n.content)"
+                    />
+
+                </div>
+
+                <button
+                    v-if="news && news.length > todayNews.length"
+                    @click="viewAllNews = !viewAllNews"
+                    class="
+                        w-full h-full text-sm
+                        text-(--btn) mt-2 default
+                    "
+                >
+                    {{ viewAllNews ? 'Voir moins' : 'Voir toutes les notifications' }}
+                </button>
+
+            </div>
+
+        </div>
 
         <!-- <ul
             class="
@@ -169,16 +274,33 @@
 
 import { useRoute, useRouter } from 'vue-router';
 import { version, dev } from '../../../../../package.json';
-import { ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { UserButton } from '@clerk/vue';
 import { clerkAppearanceSettings } from '@/assets/ts/theme';
 import App2048Popup from '@/components/2048/App2048Popup.vue';
+import { api_url } from '@/assets/ts/backend_link';
+import MarkdownIt from 'markdown-it';
  
 const router = useRouter();
 const route = useRoute();
 const selectedNote = ref<string>('');
 const showGame = ref<boolean>(false);
+const md = new MarkdownIt({ html: false, linkify: true });
+const viewAllNews = ref<boolean>(false);
+const news = ref<any[] | undefined>(undefined);
+const todayNews = computed(() => {
+
+    if (!news.value) return [];
+    
+    const today = new Date().toLocaleDateString();
+    
+    return news.value.filter(n => {
+        if (!n.date) return false; 
+        return new Date(n.date).toLocaleDateString() === today;
+    });
+
+});
 
 const setPage = (a: 'shared' | 'all'): void => {
     router.push({
@@ -202,6 +324,10 @@ const closeNoteSettings = () => {
         }
     });
 }
+
+onMounted(async () => {
+    news.value = await (await fetch(`${api_url}/api/notifications`)).json();
+})
 
 </script>
 
@@ -239,6 +365,32 @@ ul hr {
 
 ul li:not(.nohover):hover {
   background-color: rgba(131, 131, 131, 0.15);
+}
+
+
+.news-card :deep(p) {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.news-card :deep(a) {
+    color: var(--btn);
+    text-decoration: underline;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--btn);
+    border-radius: 10px;
+    opacity: 0.3;
+}
+
+.prose-tight :deep(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
 }
 
 </style>
