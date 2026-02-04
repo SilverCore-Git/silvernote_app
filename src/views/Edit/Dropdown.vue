@@ -27,6 +27,10 @@
 
                     <hr />
 
+                    <li @click="showGame = true">2048</li>
+
+                    <hr />
+
                     <li class="text-red-600" @click="showDialog = true">
                         Supprimer
                     </li>
@@ -87,6 +91,8 @@
         :note="note"
     />
 
+    <app2048-popup v-model:show="showGame" />
+
 </template>
 
 <script setup lang="ts">
@@ -104,6 +110,7 @@ import { useEditorStats } from '@/components/Markdown/Function/Stats';
 import { Notes } from '@/assets/ts/database/Var';
 import database from '@/assets/ts/database/database';
 import { useRouter } from 'vue-router';
+import App2048Popup from '@/components/2048/App2048Popup.vue';
 
 const props = defineProps<{
   visible: boolean;
@@ -120,6 +127,7 @@ const export_menu = ref<boolean>(false);
 const import_menu = ref<boolean>(false);
 const share_menu = ref<boolean>(false);
 const showDialog = ref<boolean>(false);
+const showGame = ref<boolean>(false);
 
 
 const undo = () => editor.value?.chain().focus().undo().run()
