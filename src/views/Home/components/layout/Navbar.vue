@@ -141,7 +141,7 @@
                 </span>
 
                 <span 
-                    v-if="news?.length > 0 && !viewAllNews" 
+                    v-if="news && news.length > 0 && !viewAllNews" 
                     class="text-[10px] bg-(--btn) px-1.5 rounded-full"
                 >
                     {{ todayNews.length }}
@@ -327,10 +327,26 @@ const closeNoteSettings = () => {
 
 onMounted(async () => {
     
-    let notif = [];
+    let notif: any[] = [];
+
     try {
-        const res = await (await fetch(`${api_url}/api/notifications`));
-        if (res.ok) notif = await res.json();
+
+        const res = await fetch(`${api_url}/api/notifications`, {
+            credentials: 'include'
+        });
+        const res2 = await fetch(`${api_url}/api/news`);
+
+        if (res.ok && res2.ok) {
+            const data = await res.json();
+            const data2 = await res2.json();
+            notif = [...data, ...data2];
+            notif.sort((a, b) => {
+                const dateA = a.date ? new Date(a.date).getTime() : 0;
+                const dateB = b.date ? new Date(b.date).getTime() : 0;
+                return dateB - dateA;
+            });
+        }
+
     } catch (e) {
         console.error(e);
     }
