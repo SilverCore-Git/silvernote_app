@@ -209,7 +209,7 @@ onMounted(async () => {
 
             <i class="bi bi-shield-lock-fill absolute -right-4 -top-4 text-4xl opacity-5 text-(--btn)" />
 
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-6">
 
                 <div>
                     <h2 class="font-semibold text-lg mb-1 flex items-center gap-2">
