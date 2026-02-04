@@ -11,6 +11,7 @@
             'ring-1 ring-(--btn)/30 bg-(--white)/90 shadow-sm': !read,
             'opacity-70': read
         }"
+        title="Cliquer pour marquer comme lu"
     >
 
         <div class="flex justify-between items-start mb-1">

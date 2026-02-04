@@ -22,7 +22,7 @@
 
             </div>
 
-            <div class="flex flex-col gap-4 overflow-y-auto pr-2 pt-2 custom-scrollbar">
+            <div class="flex flex-col gap-4 overflow-y-auto pr-2 py-2 custom-scrollbar">
                 
                 <div
                     v-if="!news" 
