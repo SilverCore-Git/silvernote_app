@@ -1,0 +1,37 @@
+:root {
+  --color: #776e65;
+  --bg-color: #faf8ef;
+  --cell-color: #776e65;
+  --btn-color: #f9f6f2;
+  --btn-bg-color: #8f7a66;
+  --score-bg-color: #bbada0;
+  --score-label-color: #eee4da;
+  --score-value-color: #fff;
+  --dialog-bg-color: rgba(238, 228, 218, 0.73);
+  --select-color: #222;
+  --select-bg-color: #fff;
+  --theme-color: #333;
+}
+
+:root [theme='dark'] {
+  --color: rgba(246, 243, 243, 0.9);
+  --bg-color: rgba(0, 0, 0, 0.9);
+  --cell-color: rgba(0, 0, 0, 0.5);
+  --btn-color: rgba(246, 243, 243, 0.9);
+  --btn-bg-color: rgba(0, 0, 0, 0.7);
+  --score-bg-color: rgba(0, 0, 0, 0.7);
+  --score-label-color: rgba(255, 255, 255, 0.6);
+  --score-value-color: rgba(255, 255, 255, 0.8);
+  --dialog-bg-color: rgba(17, 17, 16, 0.73);
+  --select-color: rgba(246, 243, 243, 0.9);
+  --select-bg-color: rgba(0, 0, 0, 0.6);
+  --theme-color: #fff;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--color);
+}
