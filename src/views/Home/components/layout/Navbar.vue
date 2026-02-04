@@ -298,7 +298,7 @@ const todayNews = computed(() => {
     return news.value.filter(n => {
         if (!n.date) return false; 
         return new Date(n.date).toLocaleDateString() === today;
-    });
+    }) || [];
 
 });
 
