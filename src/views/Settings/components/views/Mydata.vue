@@ -8,6 +8,7 @@ import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import database from '@/assets/ts/database/database';
 import UploadFromSNOTE from '../../utils/UploadFromSNOTE';
 import { api_url } from '@/assets/ts/backend_link';
+import useToken from '@/composables/useToken';
 
 const Loader = ref<string>('');
 const ShowConfirmDialog = ref<boolean>(false);
@@ -83,7 +84,7 @@ onMounted(async () => {
     fingerPrint.value = await fetch(`${api_url}/api/db/get/scrypto/fingerprint`, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
+            'Authorization': `Bearer ${await useToken() || ''}`,
             'Content-Type': 'application/json'
         },
         credentials: 'include'
