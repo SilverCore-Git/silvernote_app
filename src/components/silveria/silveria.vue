@@ -76,7 +76,7 @@ onBeforeUnmount(async () => {
                 "
                 :class="[
                     isMaximised 
-                        ? 'fixed inset-0 z-50 md:absolute md:inset-auto md:right-0 bottom-10 md:w-[800px] md:h-[700px] rounded-none md:rounded-2xl' 
+                        ? 'fixed inset-0 z-50 md:absolute md:inset-auto md:right-0 bottom-0 md:w-[800px] md:h-[700px] rounded-none md:rounded-2xl' 
                         : 'w-[90vw] h-[500px] sm:w-[400px] absolute bottom-20 right-0 ',
                     isMaximised && isMobile ? 'shadow-none' : 'shadow-2xl'
                 ]"
