@@ -24,7 +24,10 @@
 
             <div class="flex flex-col gap-4 overflow-y-auto pr-2 pt-2 custom-scrollbar">
                 
-                <div v-if="!news" class="text-sm text-(--text-little) italic p-2">
+                <div
+                    v-if="!news" 
+                    class="text-sm text-(--text) italic p-2 animate-pulse"
+                >
                     Chargement des news...
                 </div>
 
@@ -71,27 +74,14 @@
 
 <script lang="ts" setup>
 
-import { computed, onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import { api_url } from '@/assets/ts/backend_link';
-import type { NotificationItem } from './NotifTypes';
 import NotifCard from './NotifCard.vue';
+import { notifications as news, todayNotifications as todayNews } from './notifications';
 
 
 const userId = localStorage.getItem('user_id') || '';
 const viewAllNews = ref<boolean>(false);
-const news = ref<NotificationItem[] | undefined>(undefined);
-const todayNews = computed(() => {
-
-    if (!news.value) return [];
-    
-    const today = new Date().toLocaleDateString();
-    
-    return news.value.filter(n => {
-        if (!n.date) return false; 
-        return new Date(n.date).toLocaleDateString() === today;
-    }) || [];
-
-});
 
 
 const markRead = async (id: string) => {
@@ -111,43 +101,6 @@ const markRead = async (id: string) => {
         console.error(e);
     }
 }
-
-
-const mount = async () => {
-
-    let notif: NotificationItem[] = [];
-
-    try {
-
-        const res = await fetch(`${api_url}/api/notifications`, {
-            credentials: 'include'
-        });
-
-        if (res.ok)
-        {
-
-            const data = await res.json();
-            notif = data;
-
-            notif.sort((a, b) => {
-                const dateA = a.date ? new Date(a.date).getTime() : 0;
-                const dateB = b.date ? new Date(b.date).getTime() : 0;
-                return dateB - dateA;
-            });
-
-        }
-
-    } catch (e) {
-        console.error(e);
-    }
-
-    news.value = notif || [];
-
-}
-
-onMounted(async () => {
-    await mount();
-});
 
 </script>
 
