@@ -17,6 +17,10 @@ const todayNotifications = computed(() => {
 
 });
 
+const NotifImportant = computed(
+    () => todayNotifications.value.filter(n => !n.readBy.includes(localStorage.getItem('user_id') || ''))
+);
+
 
 const initNotifications = async () => {
 
@@ -56,4 +60,9 @@ const initNotifications = async () => {
 };
 
 
-export { notifications, todayNotifications, initNotifications };
+export { 
+    notifications,
+    todayNotifications,
+    NotifImportant,
+    initNotifications
+};
