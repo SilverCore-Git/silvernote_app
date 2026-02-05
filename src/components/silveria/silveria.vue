@@ -70,13 +70,13 @@ onBeforeUnmount(async () => {
                 class="
                     pointer-events-auto
                     bg-(--bg) border border-(--text)/10
-                    rounded-2xl overflow-hidden
+                    rounded-2xl overflow-hidden z-50
                     flex flex-col transition-all duration-500
                     ease-in-out origin-bottom-right
                 "
                 :class="[
                     isMaximised 
-                        ? 'fixed inset-0 z-50 md:absolute md:inset-auto md:right-0 bottom-0 md:w-[800px] md:h-[700px] rounded-none md:rounded-2xl' 
+                        ? 'fixed inset-0 rounded-none md:absolute md:inset-auto md:right-0 md:bottom-20 md:w-[800px] md:max-w-[90vw] md:max-h-[80vh] md:h-[700px] md:rounded-2xl' 
                         : 'w-[90vw] h-[500px] sm:w-[400px] absolute bottom-20 right-0 ',
                     isMaximised && isMobile ? 'shadow-none' : 'shadow-2xl'
                 ]"
@@ -121,7 +121,7 @@ onBeforeUnmount(async () => {
 
                         <button 
                             @click="toggleMaximise" 
-                            class="header-btn" 
+                            class="default" 
                             :title="isMaximised ? 'Réduire' : 'Agrandir'"
                         >
                             <i :class="isMaximised ? 'bi bi-fullscreen-exit' : 'bi bi-fullscreen'" />
@@ -129,7 +129,7 @@ onBeforeUnmount(async () => {
 
                         <button 
                             @click="messages = []" 
-                            class="header-btn"
+                            class="default"
                             title="Effacer"
                         >
                             <i class="bi bi-eraser" />
@@ -137,7 +137,7 @@ onBeforeUnmount(async () => {
 
                         <button 
                             @click="toggleChat" 
-                            class="header-btn"
+                            class="default hover:text-red-500 transcition-colors duration-300"
                         >
                             <i class="bi bi-x-lg" />
                         </button>
@@ -208,6 +208,7 @@ onBeforeUnmount(async () => {
                                 text-sm resize-none
                                 max-h-60 py-2 px-2 outline-none
                                 auto-expand-input
+                                transition-all duration-500
                             "
                         />
 
@@ -221,7 +222,7 @@ onBeforeUnmount(async () => {
                             <button 
                                 v-if="isUserInputMaximised == 'can' || isUserInputMaximised == 'yes'"
                                 @click="toggleUserInputMaximise" 
-                                class="header-btn" 
+                                class="default" 
                                 :title="isUserInputMaximised == 'yes' ? 'Réduire' : 'Agrandir'"
                             >
                                 <i :class="isUserInputMaximised == 'yes' ? 'bi bi-fullscreen-exit' : 'bi bi-fullscreen'" />
