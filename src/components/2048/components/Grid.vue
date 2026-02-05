@@ -142,6 +142,7 @@ onMounted(async () => {
     gridRef.value?.scrollIntoView({ behavior: 'smooth' });
 
     bestScore.value = await fetch(`${api_url}/api/2048/player/${window.localStorage.getItem('user_id')}`, {
+      credentials: 'include',
       headers: {
         'Authorization': `Bearer ${await getToken()}`
       }

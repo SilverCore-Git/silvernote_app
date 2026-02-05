@@ -2,6 +2,7 @@
 
 import { api_url } from '@/assets/ts/backend_link';
 import App2048Popup from '@/components/2048/App2048Popup.vue';
+import getToken from '@/composables/useToken';
 import { onMounted, ref } from 'vue';
 
 
@@ -62,7 +63,11 @@ onMounted(async () => {
 
         isLoading.value = true;
 
-        const res = await fetch(`${api_url}/api/2048/leaderboard`);
+        const res = await fetch(`${api_url}/api/2048/leaderboard`, {
+            headers: {
+                'Authorization': `Bearer ${await getToken()}`
+            }
+        });
         const json = await res.json();
 
         data.value = json.leaderboard;
