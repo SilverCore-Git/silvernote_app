@@ -26,3 +26,12 @@ let seed = 1;
 export const uuid = () => {
   return seed++;
 }
+
+export interface UserItem {
+    id: string;
+    best_score: number;
+    total_score: number;
+    max_tile: number;
+    lastPlayed: Date | null;
+    partiesCount: number;
+}

@@ -3,6 +3,8 @@ import { ref, watch, onUnmounted, onMounted, computed } from 'vue';
 import { useGrid, Direction, CellState, type CellWithPosition } from '../game';
 import { useLocalStorage, uuid } from '../utils';
 import Heading from '../components/Heading.vue';
+import { api_url } from '@/assets/ts/backend_link';
+import getToken from '@/composables/useToken';
 
 
 // init
@@ -162,6 +164,35 @@ const handleNewGame = () => {
   start();
 };
 
+watch(() => isEnd.value, async (newVal) => {
+  if (newVal) {
+    await onEnd();
+  }
+});
+
+const onEnd = async () => {
+
+  console.log('game end');
+
+  const data = {
+    id: window.localStorage.getItem('user_id') || '',
+    best_score: bestScore.value,
+    max_tile: cells.value.reduce((max, cell) => Math.max(max, cell.value), 0),
+    lastPlayed: new Date(),
+  };
+
+  await fetch(`${api_url}/api/2048/update`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${await getToken()}`
+    },
+    body: JSON.stringify({
+      data
+    })
+  });
+  
+};
 
 // start game
 start();
