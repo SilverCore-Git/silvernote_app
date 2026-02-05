@@ -1,20 +1,18 @@
 <script lang="ts" setup>
 import { ref, watch, onUnmounted, onMounted, computed } from 'vue';
 import { useGrid, Direction, CellState, type CellWithPosition } from '../game';
-import { useLocalStorage, uuid } from '../utils';
+import { uuid } from '../utils';
 import Heading from '../components/Heading.vue';
 import { api_url } from '@/assets/ts/backend_link';
 import getToken from '@/composables/useToken';
 
 
 // init
-const size = ref(4);
+const size = ref<number>(4);
 
 const { cells, score, isEnd, move, undo, init, start } = useGrid(size.value);
 
-const { setItem, getItem } = useLocalStorage();
-const storageKey = computed(() => `size${size.value}_best`);
-const bestScore = ref(getItem(storageKey.value) ?? 0);
+const bestScore = ref<number>(0);
 
 const scoreDiff = ref({ id: uuid(), value: 0 });
 watch(score, (newVal, oldVal) => {
@@ -25,12 +23,11 @@ watch(score, (newVal, oldVal) => {
   // update best score
   if (newVal > bestScore.value) {
     bestScore.value = newVal;
-    setItem(storageKey.value, bestScore.value);
   }
 });
 
 const gap = 8;
-const gridSize = ref(0);
+const gridSize = ref<number>(0);
 const cellSize = computed(() => {
   return (gridSize.value - ((size.value + 1) * gap)) / size.value;
 });
@@ -128,7 +125,7 @@ const onKeyup = () => {
   playing = false;
 };
 
-onMounted(() => {
+onMounted(async () => {
   document.addEventListener('keydown', onKeydown, false);
   document.addEventListener('keyup', onKeyup, false);
 
@@ -143,6 +140,12 @@ onMounted(() => {
     observer.observe(el);
 
     gridRef.value?.scrollIntoView({ behavior: 'smooth' });
+
+    bestScore.value = await fetch(`${api_url}/api/2048/player/${window.localStorage.getItem('user_id')}`, {
+      headers: {
+        'Authorization': `Bearer ${await getToken()}`
+      }
+    }).then(res => res.json()).then(data => data.player.best_score) ?? 0;
   }
 });
 
