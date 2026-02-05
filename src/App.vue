@@ -169,6 +169,9 @@ console.log('test 030226')
 
     await session.create(user.value);
     await initNotifications();
+    setInterval(async () => {
+      await initNotifications();
+    }, 15 * 60 * 1000); // Refresh notif every 15 minutes
 
   } catch (err: any) {
 
