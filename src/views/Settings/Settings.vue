@@ -11,6 +11,7 @@ import Preferences from './components/views/Preferences.vue';
 import Developpeurs from './components/views/developpeurs/Developpeurs.vue';
 import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
 import isElectron from '@/assets/ts/utils/isElectron';
+import Game from './components/views/Game.vue';
 
 defineProps<{
   page: string;
@@ -50,6 +51,7 @@ defineProps<{
       <Appearance v-else-if="page == 'appearance'" />
       <Preferences v-else-if="page == 'preferences'" />
       <Developpeurs v-else-if="page == 'developpeurs'" />
+      <Game v-else-if="page == '2048'" />
       <Account v-else />
 
     </div>

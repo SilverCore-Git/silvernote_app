@@ -10,7 +10,7 @@ interface Page {
 const pages: Page[] = [
     {
         path: '/',
-        icon: "bi-person", // Compte utilisateur
+        icon: "bi-person-fill", // Compte utilisateur
         name: "Compte"
     },
     // {
@@ -27,6 +27,11 @@ const pages: Page[] = [
         path: '/mydata',
         icon: "bi-database-fill", // Mes données / données personnelles
         name: "Mes données"
+    },
+    {
+        path: '/2048',
+        icon: "bi-grid-3x3", // Juridique / sécurité
+        name: "Jeu 2048"
     },
     {
         path: '/legal',
