@@ -179,7 +179,7 @@ const onEnd = async () => {
 
   const data = {
     id: window.localStorage.getItem('user_id') || '',
-    best_score: bestScore.value,
+    best_score: score.value,
     max_tile: cells.value.reduce((max, cell) => Math.max(max, cell.value), 0),
     lastPlayed: new Date(),
   };
