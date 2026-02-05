@@ -18,7 +18,7 @@
                     <div 
                         class="
                             bg-(--bg) border border-(--text)/20 
-                            shadow-lg rounded-lg p-4 h-full pt-10
+                            shadow-lg rounded-xl p-4 h-full pt-10
                         "
                     >
 

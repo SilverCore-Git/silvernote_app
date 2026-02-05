@@ -8,6 +8,20 @@
   hyphens: none;
 }
 
+  .prose p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    color: var(--text-little);
+    float: left;
+    height: 0;
+    pointer-events: none;
+    font-style: italic;
+    opacity: 0.6;
+  }
+
+.prose p {
+  line-height: 1.6;
+}
+
 .prose .ytb-viewer {
   width: 100%;
 }

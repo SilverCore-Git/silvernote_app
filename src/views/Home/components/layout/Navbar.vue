@@ -96,7 +96,7 @@
                 </span>
 
                 <li 
-                    class="li"
+                    class="li rounded-xl"
                     @click="setPage('all')"
                     :class="
                         route.query.page !== 'shared' 
@@ -111,7 +111,7 @@
                 </li>
 
                 <li 
-                    class="li"
+                    class="li rounded-xl"
                     @click="setPage('shared')"
                     :class="
                         route.query.page == 'shared' 
@@ -238,7 +238,6 @@ ul li {
   align-items: center;
   padding: .5rem;
   padding-left: .8rem;
-  border-radius: 6px;
   transition: all 0.2s ease;
 }
 

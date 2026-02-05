@@ -148,7 +148,7 @@ export class EditorProvider
               saveNote(this.room);
           }
           catch (e) {
-              console.error("Erreur lors de l'insertion Tiptap:", e);
+              console.error("Erreur lors de l'insertion Tiptap : ", e);
           }
           
       });

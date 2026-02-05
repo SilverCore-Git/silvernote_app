@@ -33,7 +33,7 @@ const legalLinks = [
                 Juridique
             </h1>
             <p class="opacity-60 text-sm">
-                Consultez les documents officiels et les engagements de SilverNote.
+                Consultez les documents officiels et les engagements de Silvernote.
             </p>
         </header>
 

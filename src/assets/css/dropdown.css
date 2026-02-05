@@ -19,7 +19,7 @@
 .dropdown ul li {
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: 6px;
+  border-radius: 12px;
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
 

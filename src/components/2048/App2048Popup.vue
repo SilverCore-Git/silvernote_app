@@ -26,7 +26,7 @@ const close = () => emit('update:show', false);
   <Teleport to="body">
     <transition name="fade-slide">
         <div v-if="show" ref="el" :style="style" class="popup-container shadow-lg border border-(--text)/20">
-            <div ref="handle" class="popup-header px-3 py-1.5 bg-(--white)">
+            <div ref="handle" class="popup-header px-3 py-1.5 bg-(--bg) border-b border-(--text)/20">
                 <span class="title">🎮 2048 - Game</span>
                 <button class="default" @click="close">✕</button>
             </div>
