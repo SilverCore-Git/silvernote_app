@@ -226,7 +226,7 @@ start();
           <button 
             class="primary danger" 
             @click="undo; returnUsage--"
-            :class="returnUsage < 1 ? ' grayscale-0 pointer-events-none' : ''"
+            :class="returnUsage < 1 ? ' grayscale-100 pointer-events-none' : ''"
           >
             annuler ({{ returnUsage }})</button>
         </div>
