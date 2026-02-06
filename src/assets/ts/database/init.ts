@@ -2,13 +2,13 @@ import { type Ref } from "vue";
 import { Notes, Tags, SharedNotes } from "./Var";
 import { api_url } from '../backend_link';
 import useToken from "@/composables/useToken";
-import type { Note } from "../type";
 
 
 class InitDB {
 
     private user: Ref<any> | undefined;
     private loaded: boolean;
+    private pubLoaded: boolean = false;
 
     constructor () {
 
@@ -45,19 +45,63 @@ class InitDB {
 
     }
 
-    public async init_cloud_notes (): Promise<void> 
+    public async init_cloud_notes(): Promise<void>
     {
-        const data = await fetch(`${api_url}/api/db/get/user/notes?user_id=${this.user?.value?.id}`, {
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${await useToken()}`
+
+        // Prioritary load : pinned notes and 40 first notes
+        const [pinnedRes, firstNotesRes] = await Promise.all([
+            fetch(`${api_url}/api/db/notes/pinned`, {
+                credentials: 'include',
+                headers: { 'Authorization': `Bearer ${await useToken()}` }
+            }).then(res => res.json()),
+            fetch(`${api_url}/api/db/notes/start/0/end/40?noPinned=1`, {
+                credentials: 'include',
+                headers: { 'Authorization': `Bearer ${await useToken()}` }
+            }).then(res => res.json())
+        ]);
+
+        // init for UI
+        Notes.value = [...pinnedRes.notes, ...firstNotesRes.notes].sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
+
+        this.pubLoaded = true;
+
+        this.fetchRemainingNotes(firstNotesRes.total, 40);
+
+    }
+
+    private async fetchRemainingNotes(total: number, startIndex: number): Promise<void>
+    {
+
+        let actualIndex = startIndex;
+        const step = 40;
+
+        while (Notes.value.length < total)
+        {
+
+            try {
+
+                const res = await fetch(`${api_url}/api/db/notes/start/${actualIndex}/end/${actualIndex + step}?noPinned=1`, {
+                    credentials: 'include',
+                    headers: { 'Authorization': `Bearer ${await useToken()}` }
+                }).then(res => res.json());
+
+                if (!res.notes || res.notes.length === 0) break;
+
+                Notes.value = [...Notes.value, ...res.notes].sort(
+                    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+                );
+
+                actualIndex += step;
+
+            } catch (err) {
+                console.error("Background sync failed : ", err);
+                break; 
             }
-        }).then(res => res.json());
-        if (data) {
-            const notes: Note[] = data.notes;
-            Notes.value = notes || [];
+
         }
+
     }
 
 
@@ -90,7 +134,7 @@ class InitDB {
             return;
         }
 
-        if (res.length < 1) { // .lenght est dans la rep json
+        if (res.length < 1) {
             SharedNotes.value = [];
             return;
         }
@@ -102,6 +146,10 @@ class InitDB {
 
     public isLoaded (): boolean {
         return this.loaded;
+    }
+
+    public isPubLoaded (): boolean {
+        return this.pubLoaded;
     }
  
 }

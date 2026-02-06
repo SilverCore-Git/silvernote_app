@@ -152,9 +152,9 @@ console.log('test 030226')
       localStorage.setItem('user_id', user.value.id);
       
       await InitDB.init(user);
-      await InitDB.main();
+      InitDB.main();
 
-      const dbReady = await waitFor(() => InitDB.isLoaded(), 5000);
+      const dbReady = await waitFor(() => InitDB.isPubLoaded(), 5000);
       
       if (!dbReady) {
         throw new Error("InitDB timeout");
