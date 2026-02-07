@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { useRouter } from 'vue-router';
 import { sortedNotes } from '@/assets/ts/database/Var';
 import { computed } from 'vue';
@@ -9,18 +8,14 @@ const pinned_notes = computed(() =>
     sortedNotes.value.filter(note => note.pinned)
 )
 const router = useRouter();
-
 </script>
 
 <template>
+    <div v-if="pinned_notes.length" class="flex flex-col gap-4 shrink-0">
 
-    <div 
-        class="flex flex-col gap-4 "
-    >
-
-        <span class=" uppercase text-md font-semibold text-(--text-little) ">
-            <i class="bi bi-pin mr-1" />
-            NOTES ÉPINGLÉES
+        <span class="uppercase text-md font-semibold text-(--text-little) flex items-center">
+            <i class="bi bi-pin-fill mr-2 text-orange-400" />
+            Notes épinglées
         </span>
 
         <ul
@@ -32,9 +27,10 @@ const router = useRouter();
             "
         >
             <li
-                v-for="(note, index) in pinned_notes"
-                :key="index"
+                v-for="note in pinned_notes"
+                :key="note.uuid"
                 @click="router.push('/edit/'+note.uuid)"
+                class="cursor-pointer"
             >
                 <PinnedNoteCard
                     :uuid="note.uuid"
@@ -45,7 +41,5 @@ const router = useRouter();
                 />
             </li>
         </ul>
-
     </div>
-
 </template>

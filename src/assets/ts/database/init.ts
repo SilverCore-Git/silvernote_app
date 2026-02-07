@@ -54,7 +54,7 @@ class InitDB {
                 credentials: 'include',
                 headers: { 'Authorization': `Bearer ${await useToken()}` }
             }).then(res => res.json()),
-            fetch(`${api_url}/api/db/notes/start/0/end/40?noPinned=1`, {
+            fetch(`${api_url}/api/db/notes/start/0/end/50?noPinned=1`, {
                 credentials: 'include',
                 headers: { 'Authorization': `Bearer ${await useToken()}` }
             }).then(res => res.json())
@@ -75,7 +75,7 @@ class InitDB {
     {
 
         let actualIndex = startIndex;
-        const step = 40;
+        const step = 100;
 
         while (Notes.value.length < total)
         {
