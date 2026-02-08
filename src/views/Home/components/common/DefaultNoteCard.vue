@@ -31,11 +31,11 @@
                     <img 
                         v-if="icon && icon != ''" 
                         :src="icon" 
-                        class="w-5 h-5 object-contain shrink-0 opacity-80" 
+                        class="w-6 h-6 object-contain shrink-0 opacity-80" 
                         loading="lazy"
                     />
                     <h2 
-                        class="font-bold text-base sm:text-lg truncate"
+                        class="font-bold text-lg sm:text-xl "
                         v-text="title || 'Note sans titre'"
                     />
                 </div>

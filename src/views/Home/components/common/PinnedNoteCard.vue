@@ -33,7 +33,7 @@
                         class="w-8 h-8 object-contain shrink-0 opacity-80" 
                     />
                     <h2 
-                        class="font-bold text-lg sm:text-xl"
+                        class="font-bold text-xl sm:text-2xl"
                         v-text="title.length > 0 ? title : 'Note sans titre'"
                     />
                 </div>
