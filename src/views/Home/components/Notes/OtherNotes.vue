@@ -1,10 +1,11 @@
 <script setup lang="ts">
 
-import { sortedNotes } from '@/assets/ts/database/Var';
+import { Notes, sortedNotes } from '@/assets/ts/database/Var';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { RecycleScroller } from 'vue3-virtual-scroller';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
 import DefaultNoteCard from '../common/DefaultNoteCard.vue';
+
 
 const columns = ref<number>(3);
 const updateColumns = () => {
@@ -23,38 +24,51 @@ onMounted(() => {
 onUnmounted(() => window.removeEventListener('resize', updateColumns));
 
 const noteRows = computed(() => {
-    const others = sortedNotes.value.filter(n => !n.pinned);
+
+    const others = sortedNotes.value?.filter(n => !n.pinned) || [];
     const rows = [];
-    for (let i = 0; i < others.length; i += columns.value) {
-        const rowItems = others.slice(i, i + columns.value);
-        rows.push({
-            id: rowItems[0].uuid, 
-            items: rowItems
-        });
+    const colCount = columns.value || 1;
+
+    for (let i = 0; i < others.length; i += colCount)
+    {
+    
+        const rowItems = others.slice(i, i + colCount);
+        
+        if (rowItems.length > 0)
+        {
+            rows.push({
+                id: `row-${rowItems[0].uuid}`,
+                items: [...rowItems] 
+            });
+        }
+
     }
+
     return rows;
+
 });
 
 </script>
 
 <template>
 
-    <div class="flex flex-col w-full">
+    <div class="flex flex-col w-full pb-100">
     
         <span class="uppercase text-md font-semibold text-(--text-little) mb-4 shrink-0 px-1">
             Notes récentes
         </span>
 
         <RecycleScroller
+            v-if="noteRows.length > 0"
+            :key="noteRows.length"
             :items="noteRows"
             :item-size="220"
             key-field="id"
             page-mode
             class="w-full"
-            :buffer="3000" 
-            :prerender="10"
+            :buffer="600" 
         >
-        
+
             <template #default="{ item: row }">
                 
                 <div 
@@ -78,7 +92,10 @@ const noteRows = computed(() => {
 
         </RecycleScroller>
 
-        <div class="mt-40 mb-60 flex flex-col items-center justify-center gap-4 group">
+        <div 
+            v-if="Notes.length > 16"
+            class="mt-40 flex flex-col items-center justify-center gap-4 group"
+        >
             
             <div class="relative">
                 <i class="bi bi-rocket-takeoff text-4xl text-(--btn) inline-block animate-bounce-slow group-hover:animate-rocket"></i>
@@ -122,15 +139,6 @@ const noteRows = computed(() => {
 
 .animate-bounce-slow {
     animation: bounce-slow 3s infinite ease-in-out;
-}
-
-.group-hover\:animate-rocket {
-    /* Se déclenche quand on survole la section de fin */
-    transition: all 0.5s;
-}
-
-.group:hover .group-hover\:animate-rocket {
-    animation: rocket 0.8s forwards ease-in;
 }
 
 </style>
