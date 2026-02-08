@@ -8,9 +8,12 @@ import DefaultNoteCard from '../common/DefaultNoteCard.vue';
 
 const columns = ref<number>(3);
 const updateColumns = () => {
-    if (window.innerWidth < 640) columns.value = 1;
+    if (window.innerWidth < 640) columns.value = 1
     else if (window.innerWidth < 1024) columns.value = 2;
-    else columns.value = 3;
+    else if (window.innerWidth < 1400) columns.value = 3;
+    else if (window.innerWidth < 1800) columns.value = 4;
+    else if (window.innerWidth < 2000) columns.value = 5;
+    else columns.value = 6;
 };
 
 onMounted(() => {
