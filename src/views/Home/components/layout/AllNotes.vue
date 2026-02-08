@@ -14,20 +14,48 @@
     </template>
 
     <template v-else>
+
       <div class="flex flex-col gap-8">
-        <PinnedNotes v-if="hasPinnedNotes" />
         
+        <PinnedNotes v-if="hasPinnedNotes" />
         <OtherNotes v-if="hasNotPinnedNotes" />
+
       </div>
+
     </template>
 
+  </div>
+
+<div 
+    v-else 
+    class="h-full flex flex-col items-center justify-center text-center p-8"
+  >
+    <div class="bg-(--white)/50 w-24 h-24 flex items-center justify-center rounded-3xl mb-6 animate-bounce-slow">
+      <i class="bi bi-sticky text-5xl text-(--btn)"></i>
+    </div>
+    
+    <h3 class="text-2xl font-bold">
+      C'est bien vide ici...
+    </h3>
+    
+    <p class="text-(--text-little) mt-2 max-w-[300px] leading-relaxed">
+      Toutes vos grandes idées commencent par une simple note. Pourquoi ne pas en créer une maintenant ?
+    </p>
+
+    <button 
+      @click="createNote"
+      class="mt-8 premium xl gap-2"
+    >
+      <i class="bi bi-plus-lg"></i>
+      Créer une note
+    </button>
   </div>
 
 </template>
 
 <script setup lang="ts">
 
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { computed } from 'vue';
 import { Notes } from '@/assets/ts/database/Var';
 import PinnedNotes from '../Notes/PinnedNotes.vue';
@@ -36,16 +64,23 @@ import SharedNotes from '../Notes/SharedNotes.vue';
 import NotesByQuery from '../Notes/NotesByQuery.vue';
 
 const route = useRoute();
+const router = useRouter();
 const searchQuery = computed(() => (route.query.q ? String(route.query.q).trim() : ''));
 const pageQuery = computed(() => (route.query.page ? String(route.query.page).trim() : ''));
 const hasPinnedNotes = computed(() => Notes.value.some(note => note.pinned));
 const hasNotPinnedNotes = computed(() => Notes.value.some(note => !note.pinned));
 
+const createNote = () => {
+  router.push('/edit/new');
+}
+
 </script>
 
 
 <style scoped>
+
 .custom-scroll {
     height: 100%;
 }
+
 </style>

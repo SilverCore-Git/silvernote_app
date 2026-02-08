@@ -1,27 +1,16 @@
 import { watch, type Ref } from "vue";
 import { wsocket } from "./useWebSocket";
 
-let titleValue: any;
-
 const useTitle = () => {
 
-    const getTitle = () => titleValue.value || "";
-
-    const updateTitle = (title: string) => {
-        titleValue.value = title;
-        wsocket.emit('title-update', title);
-    }
-
-    const createTitleAutoSync = (title: Ref<string | undefined>) =>
-    {
-        titleValue = title;
-
+    const createTitleAutoSync = (title: Ref<string | undefined>) => {
+        
         let onUpdate = false;
-
+        let firstEmit = 0;
+        
         const stopWatch = watch(
             () => title.value,
             (newVal, oldVal) => {
-
                 if (newVal === oldVal || onUpdate) return;
 
                 onUpdate = true;
@@ -30,15 +19,10 @@ const useTitle = () => {
                 setTimeout(() => {
                     onUpdate = false;
                 }, 200);
-
             }
         );
 
-        let firstEmit: number = 0;
-
-        const socketHandler = (newTitle: string) =>
-        {
-
+        const socketHandler = (newTitle: string) => {
             if (firstEmit === 0 && newTitle === "") return;
             firstEmit++;
 
@@ -48,13 +32,11 @@ const useTitle = () => {
             setTimeout(() => {
                 onUpdate = false;
             }, 200);
-
         };
 
         wsocket.on('title-update', socketHandler);
 
-        const stopTitleAutoSync = () =>
-        {
+        const stopTitleAutoSync = () => {
             stopWatch();
             wsocket.off('title-update', socketHandler);
         };
@@ -62,17 +44,13 @@ const useTitle = () => {
         return {
             stopTitleAutoSync
         };
-
+    
     };
 
     return {
-        updateTitle,
-        createTitleAutoSync,
-        getTitle
+        createTitleAutoSync
     }
 
 }
 
-export {
-    useTitle
-}
+export { useTitle }

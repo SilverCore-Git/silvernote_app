@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import { useUser } from '@clerk/vue';
 
@@ -187,7 +187,6 @@ async function initEditor(): Promise<void>
   }).catch(err => console.warn('Failed to fetch user color:', err));
 
   await nextTick();
-
   await waitFor(() => provider.synced, 10_000);
   
   if (editor.value && props.data.content && editor.value.getText().length <= 0) {
@@ -200,6 +199,18 @@ async function initEditor(): Promise<void>
 
 };
 
+watch(() => props.uuid, async () => {
+  
+  if (editor.value) {
+    editor.value.destroy();
+    editor.value = undefined;
+  }
+  
+  loader.value = true;
+  
+  await initEditor();
+
+}, { immediate: false });
 
 onMounted(async () => {
   window.addEventListener('keydown', handleSaveShortcut)

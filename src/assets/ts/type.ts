@@ -53,4 +53,5 @@ export interface Tag {
     active: boolean;
     name: string;
     color: string;
+    user_id: string;
 };

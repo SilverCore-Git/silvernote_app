@@ -164,7 +164,23 @@ onUnmounted(async () => {
 })
 
 watch(() => props.uuid, async () => {
-
+  
+  if (
+    title.value !== undefined 
+    && icon.value !== undefined
+    && note.value
+  )
+  {
+    note.value.title = title.value || '';
+    note.value.icon = icon.value || '';
+    await saveNote();
+  }
+  
+  // Réinitialiser l'état
+  title.value = undefined;
+  icon.value = undefined;
+  shared.value = undefined;
+  
   close();
 
   if (props.uuid == 'new')
@@ -176,7 +192,20 @@ watch(() => props.uuid, async () => {
   else
   {
     await initExistingNote();
+    title.value = note.value?.title || '';
+    icon.value = note.value?.icon || '';
   }
+  
+  const { closeSocket } = initSocket({
+    room: props.uuid,
+    users,
+    icon,
+    title,
+    userId: window.localStorage.getItem('user_id') || ''
+  });
+  
+  close = closeSocket;
+  update_title();
 
 })
 
