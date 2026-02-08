@@ -15,7 +15,8 @@ async function
         content: '',
         date: utils.date(),
         pinned: false,
-        tags: []
+        tags: [],
+        content_type: 'text/html/crypted'
     };
 
     Notes.value.push(note);

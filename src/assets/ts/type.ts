@@ -44,6 +44,7 @@ export interface Note {
     tags: number[];
     selected?: boolean;
     updated_at?: number;
+    content_type?: "text/plain" | "text/markdown" | "text/html" | "text/html/crypted";
 };
 
 export interface Tag {

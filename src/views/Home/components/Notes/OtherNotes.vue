@@ -98,7 +98,7 @@ const noteRows = computed(() => {
                 @click="(e: any) => e.currentTarget.closest('.overflow-y-auto').scrollTo({ top: 0, behavior: 'smooth' })"
                 class="primary second"
             >
-                REMONTER EN VRILLE
+                REMONTER
             </button>
 
         </div>
