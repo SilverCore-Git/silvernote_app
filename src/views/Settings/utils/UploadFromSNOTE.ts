@@ -3,7 +3,7 @@ import db from '@/assets/ts/database/database';
 import { Notes, Tags } from "@/assets/ts/database/Var";
 
 export default async function
-(event: Event): Promise<void>
+(event: Event, onEnd: () => void): Promise<void>
 {
 
   const input = event.target as HTMLInputElement;
@@ -79,6 +79,7 @@ export default async function
         }
 
         console.log('Database eat end !');
+        onEnd();
 
       }
 
