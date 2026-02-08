@@ -1,9 +1,14 @@
 <template>
-  <div 
-    class="left-arrow absolute left-0 cursor-pointer z-50" 
-    :class="white ? 'white' : ''"
+  <i 
+    class="
+      absolute left-0 cursor-pointer z-50 
+      bi bi-arrow-left-short 
+      text-5xl hover:text-6xl
+       transition-all duration-300
+    " 
+    :class="white ? 'text-(--white)' : ' text-(--btn)'"
     @click="goBack"
-  ></div>
+  />
 </template>
 
 <script lang="ts" setup>

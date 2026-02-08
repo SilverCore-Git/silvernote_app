@@ -22,7 +22,7 @@
                     hover:-translate-x-2
                 "
             >
-                <div class="left-arrow" />
+                <i class="bi bi-arrow-left-short text-4xl text-(--btn) " />
                 Accueil
             </li>
 

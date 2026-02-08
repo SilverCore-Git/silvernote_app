@@ -26,12 +26,13 @@
 
   </div>
 
-<div 
+  <div 
     v-else 
-    class="h-full flex flex-col items-center justify-center text-center p-8"
+    class="h-full flex flex-col items-center justify-center text-center -translate-y-10"
   >
+
     <div class="bg-(--white)/50 w-24 h-24 flex items-center justify-center rounded-3xl mb-6 animate-bounce-slow">
-      <i class="bi bi-sticky text-5xl text-(--btn)"></i>
+      <i class="bi bi-sticky text-5xl text-(--btn)" />
     </div>
     
     <h3 class="text-2xl font-bold">
@@ -46,9 +47,10 @@
       @click="createNote"
       class="mt-8 premium xl gap-2"
     >
-      <i class="bi bi-plus-lg"></i>
+      <i class="bi bi-plus-lg" />
       Créer une note
     </button>
+
   </div>
 
 </template>

@@ -60,7 +60,7 @@ body {
 
 a {
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: var(--br-btn);
   transition: all .2s;
 }
 
