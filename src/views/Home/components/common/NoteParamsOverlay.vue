@@ -16,7 +16,7 @@
         <transition name="fade-slide">
 
             <div
-                v-if="visible"
+                v-if="visible && !showShareMenu && !showConfirmDel"
                 class="
                     fixed inset-0
                     flex justify-center items-center
@@ -231,7 +231,7 @@
                                     Supprimer
                                 </button>
                                 <button
-                                    @click="showShareMenu = true; emitClose()"
+                                    @click="showShareMenu = true"
                                     class="w-full primary flex gap-1"
                                 >
                                     <i class="bi bi-share-fill" />
@@ -258,9 +258,10 @@
 
         </transition>
 
-        <Share_menu
-            v-if="uuid"
-            :uuid="uuid"
+        <share_menu
+            v-if="showShareMenu"
+            :uuid="uuid || note.uuid"
+            :title="note.title"
             v-model="showShareMenu"
         />
 
@@ -286,7 +287,7 @@ import { nextTick, onMounted, ref, watch } from 'vue';
 import { Notes, Tags } from '@/assets/ts/database/Var';
 import DefaultNoteCard from '@/views/Home/components/common/DefaultNoteCard.vue';
 import database from '@/assets/ts/database/database';
-import Share_menu from '@/components/popup/share_menu.vue';
+import share_menu from '@/components/popup/share_menu.vue';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 
 

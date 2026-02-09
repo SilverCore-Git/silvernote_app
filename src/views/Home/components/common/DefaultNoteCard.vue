@@ -97,20 +97,19 @@
         </div>
     </PressAndHold>
 
-    <Teleport to="body">
-        <NoteParamsOverlay
-            v-if="note_selected"
-            v-model:visible="note_selected"
-            :uuid="uuid"
-            :selected-tags="tags"
-        />
-        <share_menu
-            v-if="share_menu"
-            :uuid="uuid"
-            :title="title"
-            v-model="share_menu"
-        />
-    </Teleport>
+    <NoteParamsOverlay
+        v-if="note_selected"
+        v-model:visible="note_selected"
+        :uuid="uuid"
+        :selected-tags="tags"
+    />
+    
+    <share_menu
+        v-if="share_menu"
+        :uuid="uuid"
+        :title="title"
+        v-model="share_menu"
+    />
 
 </template>
 
@@ -146,11 +145,11 @@ const props = defineProps<{
 const { getUserByUUID } = useUser();
 const router = useRouter();
 
-const note_selected = ref(false);
-const share_menu = ref(false);
+const note_selected = ref<boolean>(false);
+const share_menu = ref<boolean>(false);
 const sharerIcon = ref<string | undefined>(undefined);
 const shareVisitors = ref<User[]>([]);
-const isMyShare = ref(false);
+const isMyShare = ref<boolean>(false);
 
 const _Tags = computed<Tag[]>(() => Tags.value.filter(tag => props.tags.includes(tag.id)));
 
