@@ -69,7 +69,6 @@ import { EditorProvider } from './EditorProvider';
 
 import { getEditorConfig } from './editorConfig';
 import { createMathCheckDebounced, clearMathCache } from './tiptap-extensions/mathExtension';
-import { createTodoInputExtension } from './tiptap-extensions/todoExtension';
 import './css/DragHandler.scss';
 import './css/CodeBlock.scss';
 import getContrastColor from '@/assets/ts/utils/getContrastColor.js';
@@ -144,16 +143,11 @@ async function initEditor(): Promise<void>
   
   const mathCheckDebounced = createMathCheckDebounced();
   
-  const todoInputExtension = createTodoInputExtension({
-    value: editor,
-  } as any);
-
   editor.value = new Editor({
     ...getEditorConfig({
       editable: props.editable,
       ydoc,
       provider,
-      todoInputExtension,
       userColor,
       userName: user.value?.username || 'Invité',
       userAvatar: user.value?.imageUrl,

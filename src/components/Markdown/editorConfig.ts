@@ -3,6 +3,7 @@ import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
 import Link from '@tiptap/extension-link';
 import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
 import Image from '@tiptap/extension-image';
 import { CharacterCount, UndoRedo } from '@tiptap/extensions';
 import Youtube from '@tiptap/extension-youtube';
@@ -16,7 +17,6 @@ import FileHandler from '@tiptap/extension-file-handler';
 
 import { noteBtnLink } from './tiptap-extensions/noteBtnLink';
 import SlashCommand from '@/components/Markdown/tiptap-extensions/SlachCommand.js';
-import { IndentExtension } from './tiptap-extensions/IndentExtension.js';
 import { handleImageUpload, MAX_FILE_SIZE, imageUploadNode } from './tiptap-extensions/image-upload-node/';
 import DragHandle from './tiptap-extensions/dragHandle';
 import FileHandler_configure from './tiptap-extensions/FileHandler_configure.js';
@@ -26,7 +26,6 @@ import { Table, TableCell, TableRow, TableHeader } from '@tiptap/extension-table
 import { SearchAndReplace } from './tiptap-extensions/searchAndReplace';
 import Emoji, { gitHubEmojis } from '@tiptap/extension-emoji';
 import { createMathExtension } from './tiptap-extensions/mathExtension';
-import { createTodoInputExtension } from './tiptap-extensions/todoExtension';
 
 import type * as Y from 'yjs';
 import lowlight from './utils/lowlight.js';
@@ -35,11 +34,11 @@ import { VueNodeViewRenderer } from '@tiptap/vue-3';
 import suggestion from './tiptap-extensions/Emoji/suggestions.js';
 import ImageComponent from './tiptap-extensions/components/ImageComponent.vue';
 
+
 interface EditorConfigParams {
   editable?: boolean;
   ydoc: Y.Doc;
   provider: any;
-  todoInputExtension: ReturnType<typeof createTodoInputExtension>;
   userColor: string;
   userName: string;
   userAvatar: string | undefined;
@@ -50,7 +49,6 @@ export function buildEditorExtensions(params: EditorConfigParams) {
   const {
     ydoc,
     provider,
-    todoInputExtension,
     userColor,
     userName,
     userAvatar,
@@ -62,14 +60,20 @@ export function buildEditorExtensions(params: EditorConfigParams) {
       codeBlock: false,
       code: false,
       blockquote: false,
+      bulletList: {
+        keepMarks: true,
+        keepAttributes: false,
+      },
+      orderedList: {
+        keepMarks: true,
+        keepAttributes: false,
+      },
     }),
-    TaskList,
     Emoji.configure({
       emojis: gitHubEmojis,
       enableEmoticons: true,
       suggestion: suggestion,
     }),
-    todoInputExtension,
     noteBtnLink,
     Blockquote,
     SlashCommand,
@@ -112,10 +116,13 @@ export function buildEditorExtensions(params: EditorConfigParams) {
     TableCell,
     TableRow,
     TableHeader,
-    IndentExtension,
     Markdown.configure({ html: true }),
     Placeholder.configure({ placeholder: 'Commencez à écrire ici...' }),
     FileHandler.configure(FileHandler_configure),
+    TaskItem.configure({
+      nested: true,
+    }),
+    TaskList,
     Collaboration.configure({
       document: ydoc,
       field: 'prosemirror',
