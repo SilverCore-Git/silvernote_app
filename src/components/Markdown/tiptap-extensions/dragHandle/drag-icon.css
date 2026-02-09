@@ -3,7 +3,8 @@
     transform: translateY(6px);
     padding-right: 0.5em;
     height: 5em;
-    display: inline-block; 
+    display: none;
+     /* inline-block  */
     z-index: 1000;
 
     &::after {
