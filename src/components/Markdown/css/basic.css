@@ -26,7 +26,6 @@
   width: 100%;
 }
 
-.prose img,
 .prose .ytb-viewer {
   border-radius: 12px;
 }
@@ -93,8 +92,6 @@
 }
 
 .prose a {
-  text-decoration: underline;
-  color: #555;
   cursor: pointer;
 }
 

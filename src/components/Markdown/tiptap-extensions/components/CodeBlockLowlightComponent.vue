@@ -60,7 +60,7 @@ const copyContent = () => {
 
 <style scoped>
 
-@import '../../../style.css';
+@import '../../../../style.css';
 
 .code-block {
   position: relative;

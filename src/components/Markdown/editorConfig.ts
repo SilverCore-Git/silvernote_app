@@ -30,9 +30,10 @@ import { createTodoInputExtension } from './tiptap-extensions/todoExtension';
 
 import type * as Y from 'yjs';
 import lowlight from './utils/lowlight.js';
-import CodeBlockLowlightComponent from './tiptap-extensions/CodeBlockLowlightComponent.vue';
+import CodeBlockLowlightComponent from './tiptap-extensions/components/CodeBlockLowlightComponent.vue';
 import { VueNodeViewRenderer } from '@tiptap/vue-3';
 import suggestion from './tiptap-extensions/Emoji/suggestions.js';
+import ImageComponent from './tiptap-extensions/components/ImageComponent.vue';
 
 interface EditorConfigParams {
   editable?: boolean;
@@ -75,7 +76,14 @@ export function buildEditorExtensions(params: EditorConfigParams) {
     SearchAndReplace,
     Link.configure({ openOnClick: true, autolink: true, linkOnPaste: true }),
     Underline,
-    Image.configure({ inline: false, allowBase64: true }),
+    Image
+      .extend({
+        selectable: false,
+        addNodeView() {
+          return VueNodeViewRenderer(ImageComponent)
+        }
+      })
+      .configure({ inline: false, allowBase64: true }),
     Youtube.configure({ HTMLAttributes: { class: 'ytb-viewer' } }),
     UndoRedo,
     CodeBlockLowlight
