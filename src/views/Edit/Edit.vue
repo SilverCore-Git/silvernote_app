@@ -429,11 +429,6 @@ watch(() => props.uuid, async () => {
           
         </div>
 
-        <div 
-          v-else
-          class="animate-pulse bg-gray-300 w-full h-200 rounded-(--br-card)"
-        />
-
       </div>
 
     </div>
