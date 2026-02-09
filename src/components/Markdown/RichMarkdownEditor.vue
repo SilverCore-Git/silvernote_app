@@ -71,6 +71,7 @@ import { getEditorConfig } from './editorConfig';
 import { createMathCheckDebounced, clearMathCache } from './tiptap-extensions/mathExtension';
 import { createTodoInputExtension } from './tiptap-extensions/todoExtension';
 import './css/DragHandler.scss';
+import './css/CodeBlock.scss';
 import getContrastColor from '@/assets/ts/utils/getContrastColor.js';
 import waitFor from '@/assets/ts/utils/waitFor.js';
 

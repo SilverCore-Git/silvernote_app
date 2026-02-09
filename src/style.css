@@ -213,7 +213,12 @@ a:hover {
 
 select {
   @apply bg-(--white) text-(--text) cursor-pointer;
-  transition: all .2s;
+}
+
+select option:checked,
+select option:hover {
+  background-color: var(--btn) !important;
+  color: white;
 }
 
 @keyframes flash {

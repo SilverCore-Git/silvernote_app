@@ -85,16 +85,11 @@ interface Opt {
 }
 
 const insertName: string[] = [
-  'Image',
-  'Lien vers une note',
-  'Liste à puces',
-  'Liste numérotée',
-  'Liste de tâches',
-  'Code inline',
-  'Titre h1',
-  'Titre h2',
-  'Titre h3',
-  'Tableau'
+  'Gras',
+  'Italique',
+  'Souligner',
+  'Barrer',
+  'Lien'
 ]
 
 const search = ref<string>('');
@@ -105,7 +100,7 @@ watch(search, () => {
 const opt = ref<Opt[]>(
   props.type 
     ? props.type == 'insert'
-      ? config.filter(c => insertName.includes(c.name))
+      ? config.filter(c => !insertName.includes(c.name))
       : config
     : config);
 const searchInput = ref<HTMLInputElement | null>(null)
