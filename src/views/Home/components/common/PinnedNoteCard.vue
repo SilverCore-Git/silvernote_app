@@ -8,20 +8,23 @@
 
         <div
             class="
-                group relative flex flex-col
-                bg-(--white)
-                rounded-2xl p-4
-                cursor-pointer overflow-hidden 
+                group relative flex flex-col 
+                rounded-2xl p-4 w-full h-[205px]
+                cursor-pointer overflow-hidden
                 hover:border-(--btn) border
                 transition-all duration-200 ease-in-out
-                w-full
             "
             :class="
                 note_selected || isSelected(props.uuid)
                     ? 'border-(--btn) border-dashed border-2'
                     : 'border-gray-200'
             "
-            :style="{ 'view-transition-name': `note-${uuid}` }"
+            :style="{ 
+                'view-transition-name': `note-${uuid}`,
+                'content-visibility': 'auto',
+                'contain-intrinsic-size': '1px 205px',
+                background: bgColor
+            }"
         >
             
             <div class="flex justify-between items-start mb-3 gap-2">
@@ -92,7 +95,7 @@
 
 <script lang="ts" setup>
 
-import { computed, nextTick, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import utils from '@/assets/ts/utils';
 import type { Tag } from '@/assets/ts/type';
@@ -102,6 +105,7 @@ import NoteParamsOverlay from './NoteParamsOverlay.vue';
 import { Tags } from '@/assets/ts/database/Var';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { isSelected, selectedNotes, toggleNoteSelect } from '@/composables/useSelectedNotes';
+import { getDominantColor } from '@/assets/ts/GetColorByImage';
 
 const props = defineProps<{
     uuid: string;
@@ -112,6 +116,7 @@ const props = defineProps<{
     click?: () => void;
 }>();
 
+const bgColor = ref<string>('var(--white)');
 const router = useRouter();
 const _Tags = computed<Tag[]>(() => Tags.value.filter(tag => props.tags.includes(tag.id)));
 const note_selected = ref<boolean>(false);
@@ -144,6 +149,10 @@ const select_note = () => {
     note_selected.value = !note_selected.value;
 };
 
+onMounted(async () => {
+    if (props.icon && props.icon !== '')
+        bgColor.value = await getDominantColor(props.icon) + '22';
+})
 
 </script>
 

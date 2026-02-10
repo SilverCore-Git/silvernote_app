@@ -6,13 +6,11 @@
     >
         <div
             class="
-                group relative flex flex-col
-                bg-(--white) w-full
-                rounded-2xl p-4 
+                group relative flex flex-col 
+                rounded-2xl p-4 w-full h-[205px]
                 cursor-pointer overflow-hidden
                 hover:border-(--btn) border
                 transition-all duration-200 ease-in-out
-                h-[205px]
             "
             :class="[
                 note_selected || isSelected(uuid)
@@ -22,8 +20,7 @@
             ]"
             :style="{ 
                 'view-transition-name': `note-${uuid}`,
-                'content-visibility': 'auto',
-                'contain-intrinsic-size': '1px 205px'
+                background: bgColor
             }"
         >
             <div class="flex justify-between items-start mb-3 gap-2">
@@ -129,6 +126,7 @@ import useToken from '@/composables/useToken';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { isSelected, toggleNoteSelect, selectedNotes } from '@/composables/useSelectedNotes';
 import Share_menu from '@/components/popup/share_menu.vue';
+import { getDominantColor } from '@/assets/ts/GetColorByImage'
 
 const props = defineProps<{
     uuid: string;
@@ -145,6 +143,7 @@ const props = defineProps<{
 const { getUserByUUID } = useUser();
 const router = useRouter();
 
+const bgColor = ref<string>('var(--white)');
 const note_selected = ref<boolean>(false);
 const share_menu = ref<boolean>(false);
 const sharerIcon = ref<string | undefined>(undefined);
@@ -178,6 +177,11 @@ const openNote = () => {
     });
 };
 
+const addOpacityToHex = (hex: string, opacity: number) => {
+    const alpha = Math.round(opacity * 255).toString(16).padStart(2, '0');
+    return `${hex}${alpha}`;
+};
+
 const select_note = () => {
     if (props.sharedBy) {
         if (isMyShare.value) share_menu.value = !share_menu.value;
@@ -191,6 +195,7 @@ const select_note = () => {
 };
 
 onMounted(async () => {
+
     if (props.sharedBy) {
         const _sharer = await getUserByUUID(props.sharedBy);
         sharerIcon.value = _sharer?.imageUrl;
@@ -214,6 +219,10 @@ onMounted(async () => {
             console.error(e);
         }
     }
+
+    if (props.icon && props.icon !== '')
+        bgColor.value = await getDominantColor(props.icon) + '22';
+
 });
 
 </script>
