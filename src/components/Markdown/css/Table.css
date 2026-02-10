@@ -1,0 +1,34 @@
+.prose table {
+    width: 100%;
+    color: var(--text);
+    background: var(--white);
+    border: 1px solid var(--text-little);
+}
+
+.prose thead {
+    background-color: var(--bg2);
+    border: 1px solid var(--text-little);
+    color: var(--text-strong);
+}
+
+.prose th {
+    padding: 0px 12px;
+    text-align: left;
+    border: 1px solid var(--text-little);
+}
+
+.prose td {
+    padding: 0px 12px;
+    border: 1px solid var(--text-little);
+    vertical-align: middle;
+}
+
+.prose tbody tr:hover {
+    background-color: var(--bg);
+    transition: background-color 0.15s ease;
+}
+
+.prose tr:first-child th { border-top: none; }
+.prose tr:last-child td { border-bottom: none; }
+.prose tr td:first-child, .prose tr th:first-child { border-left: none; }
+.prose tr td:last-child, .prose tr th:last-child { border-right: none; }

@@ -33,6 +33,7 @@ import CodeBlockLowlightComponent from './tiptap-extensions/components/CodeBlock
 import { VueNodeViewRenderer } from '@tiptap/vue-3';
 import suggestion from './tiptap-extensions/Emoji/suggestions.js';
 import ImageComponent from './tiptap-extensions/components/ImageComponent.vue';
+import TableComponent from './tiptap-extensions/components/TableComponent.vue';
 
 
 interface EditorConfigParams {
@@ -82,7 +83,6 @@ export function buildEditorExtensions(params: EditorConfigParams) {
     Underline,
     Image
       .extend({
-        selectable: false,
         addNodeView() {
           return VueNodeViewRenderer(ImageComponent)
         }
@@ -112,7 +112,14 @@ export function buildEditorExtensions(params: EditorConfigParams) {
       multicolor: true,
     }),
     CharacterCount,
-    Table,
+    Table
+      .extend({
+        addNodeView() {
+          return VueNodeViewRenderer(TableComponent)
+        },
+      }).configure({
+        resizable: true
+      }),
     TableCell,
     TableRow,
     TableHeader,

@@ -226,7 +226,6 @@ onBeforeUnmount(() => {
 
 <style>
 
-@import './tiptap-extensions/table/table-styles.css';
 @import './css/basic.css';
 @import './css/ToDoList.css';
 @import './css/tiptap_carets.css';

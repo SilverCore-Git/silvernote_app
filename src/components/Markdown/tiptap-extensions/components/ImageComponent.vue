@@ -18,6 +18,7 @@
                     -translate-y-10 group-hover:translate-y-0
                     pointer-events-none group-hover:pointer-events-auto
                 "
+                :class="{ 'pointer-events-auto translate-y-0 opacity-100': selected }"
             >
 
                 <div class="flex items-center gap-0.5">
@@ -61,6 +62,7 @@
                     max-w-full h-auto
                     group-hover:opacity-80
                 "
+                :class="{ 'opacity-80': selected }"
             >
 
         </div>
