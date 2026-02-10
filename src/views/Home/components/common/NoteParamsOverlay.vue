@@ -66,7 +66,7 @@
                             class="
                                 bg-(--white) rounded-2xl shadow-xl
                                 p-4 w-full text-sm h-full gap-4 flex flex-col
-                                border border-[#F28C28]/60 relative
+                                border border-(--btn)/60 relative
                             "
                         >
                     
