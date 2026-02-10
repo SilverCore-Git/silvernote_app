@@ -63,30 +63,28 @@ const copyContent = () => {
 @import '../../../../style.css';
 
 .code-block {
-  position: relative;
-  background: var(--white);
-  border-radius: 0.75rem;
-  margin: 1.5rem 0;
-  color: #fff;
+    position: relative;
+    background: var(--white);
+    border-radius: 0.75rem;
+    margin: 1.5rem 0;
 }
 
 .code-block-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem 1rem;
-  background: var(--white);
-  border-top-left-radius: 0.75rem;
-  border-top-right-radius: 0.75rem;
-  font-family: sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+    background: var(--white);
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+    font-family: sans-serif;
 }
 
 select {
-  background: transparent;
-  color: #ccc;
-  border: 1px solid #444;
-  border-radius: 4px;
-  outline: none;
+    background: transparent;
+    border: 1px solid #444;
+    border-radius: 4px;
+    outline: none;
 }
 
 </style>
