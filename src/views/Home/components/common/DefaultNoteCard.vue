@@ -11,6 +11,7 @@
                 cursor-pointer overflow-hidden
                 hover:border-(--btn) border
                 transition-all duration-200 ease-in-out
+                backdrop-blur-3xl
             "
             :class="[
                 note_selected || isSelected(uuid)
@@ -20,6 +21,8 @@
             ]"
             :style="{ 
                 'view-transition-name': `note-${uuid}`,
+                'content-visibility': 'auto',
+                'contain-intrinsic-size': '1px 205px',
                 background: bgColor
             }"
         >
