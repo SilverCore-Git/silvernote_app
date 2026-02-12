@@ -11,7 +11,7 @@ import { SignOutButton, UserProfile, useUser } from '@clerk/vue';
     class="
       min-h-full w-full p-4 lg:p-8
       transition-colors duration-300
-      space-y-8 
+      space-y-8 max-w-5xl mx-auto
     "
   >
         
@@ -26,7 +26,7 @@ import { SignOutButton, UserProfile, useUser } from '@clerk/vue';
     <UserProfile :fallback="Loader" />
 
     <SignOutButton>
-      <button class="primary danger w-full max-w-4xl">
+      <button class="primary danger w-full max-w-[55em]">
         Se déconnecter
       </button>
     </SignOutButton>

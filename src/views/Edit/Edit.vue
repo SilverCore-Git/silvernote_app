@@ -17,6 +17,7 @@ import useToken from '@/composables/useToken';
 import { initSocket, socket } from '@/composables/WSocket';
 import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
 import isElectron from '@/assets/ts/utils/isElectron';
+import { icon, title } from './composable/useTitleIcon';
 
 const props = defineProps<{
   uuid: string;
@@ -30,10 +31,10 @@ const emojiBtn = ref<HTMLElement | null>(null);
 const ShowDropdown = ref<boolean>(false);
 const users = ref<User[]>([]);
 const shared = ref<boolean | undefined>(undefined);
-const note = computed(() => Notes.value.find(note => note.uuid === props.uuid));
+const isNewNote = ref<boolean>(false);
+const notFound = ref<boolean>(false);
+const note = computed(() => Notes.value.find(note => note.uuid == props.uuid && props.uuid != 'new'));
 const titleRef = ref<HTMLInputElement | undefined>(undefined);
-const title = ref<string | undefined>(undefined);
-const icon = ref<string | undefined>(undefined);
 let close: () => void = () => {};
 
 const resizeTitle = () => {
@@ -50,6 +51,8 @@ const update_title = () => {
 }
 
 const initNewNote = async () => {
+  isNewNote.value = true;
+  shared.value = false;
   
   const _note = await CreateNewNote();
 
@@ -64,7 +67,14 @@ const initNewNote = async () => {
 
 const initExistingNote = async () => {
 
-  await waitFor(() => note.value !== undefined, 5_000);
+  const found = await waitFor(() => note.value !== undefined, 5_000);
+  
+  if (!found || !note.value) {
+    notFound.value = true;
+    return;
+  }
+
+  isNewNote.value = false;
 
   const _fetch = await fetch(`${api_url}/api/share/${note.value?.uuid}/info`, {
     method: 'GET',
@@ -101,53 +111,76 @@ const saveNote = async () => {
 
 }
 
+const setupNote = async () => {
 
-watch(() => title.value, update_title);
-
-watch(title, async () => {
-  await nextTick();
-  resizeTitle();
-});
-
-onMounted(() => {
-  resizeTitle();
-});
-
-onMounted(async () => {
+  notFound.value = false;
+  
+  if (
+    title.value !== undefined 
+    && icon.value !== undefined
+    && note.value
+  )
+  {
+    note.value.title = title.value || '';
+    note.value.icon = icon.value || '';
+    await saveNote();
+  }
+  
+  // Réinitialiser l'état
+  title.value = undefined;
+  icon.value = undefined;
+  shared.value = undefined;
+  isNewNote.value = false;
+  
+  close();
 
   if (props.uuid == 'new')
   {
-    await initNewNote(); 
-    title.value = note.value?.title || '';
-    icon.value = note.value?.icon || '';
-    await waitFor(() => titleRef.value !== undefined, 5_000);
+    await initNewNote();
+    await waitFor(() => title.value !== undefined, 5_000);
     titleRef.value?.focus();
   }
   else
   {
     await initExistingNote();
+    
+    if (notFound.value) {
+      return;
+    }
+    
     title.value = note.value?.title || '';
     icon.value = note.value?.icon || '';
   }
-
+  
   const { closeSocket } = initSocket({
     room: props.uuid,
     users,
     icon,
     title,
     userId: window.localStorage.getItem('user_id') || ''
-  })
-
+  });
+  
   close = closeSocket;
+  update_title();
 
+}
+
+watch(() => title.value, update_title);
+
+watch(title, async () => {
+  await nextTick();
+  resizeTitle();
   init_emoji_picker({
     note,
     icon,
     ref: emojiBtn,
   });
-  update_title();
+});
 
-})
+onMounted(async () => {
+  await setupNote();
+  resizeTitle();
+});
 
 
 onUnmounted(async () => {
@@ -161,23 +194,13 @@ onUnmounted(async () => {
   await saveNote();
   socket.emit('leave-room', { room: props.uuid });
 
+  title.value = undefined;
+  icon.value = undefined;
+
 })
 
 watch(() => props.uuid, async () => {
-
-  close();
-
-  if (props.uuid == 'new')
-  {
-    await initNewNote();
-    await waitFor(() => title.value !== undefined, 5_000);
-    titleRef.value?.focus();
-  }
-  else
-  {
-    await initExistingNote();
-  }
-
+  await setupNote();
 })
 
 </script>
@@ -338,6 +361,7 @@ watch(() => props.uuid, async () => {
         </div>
 
         <div
+          v-if="note"
           class="w-full h-full flex justify-center items-center flex-col"
         >
 
@@ -358,12 +382,12 @@ watch(() => props.uuid, async () => {
           />
 
           <RichMarkdownEditor
-            v-if="note && shared != undefined"
+            v-if="note && (shared !== undefined || isNewNote)"
             :editable="true"
             :id="-2" 
             :uuid="note.uuid"
             :data="note"
-            :is-collaborative="shared"
+            :is-collaborative="shared || false"
           />
 
           <div
@@ -375,6 +399,34 @@ watch(() => props.uuid, async () => {
             @click="editor.commands.focus('end');"
           ></div>
 
+        </div>
+
+        <div
+          v-else-if="notFound"
+          class="
+            flex flex-col justify-center items-center
+            h-full w-full gap-8 mt-20
+          "
+        >
+
+          <div class="text-center flex flex-col justify-center items-center">
+        
+            <div class="text-8xl font-bold text-(--btn) mb-4">404</div>
+            <div class="text-3xl font-bold text-(--text-strong) mb-2">Note introuvable</div>
+            <div class="text-(--text) text-lg max-w-md">
+              Oups ! La note que vous cherchez n'existe pas ou a été supprimée.
+            </div>
+
+            <button 
+              @click.stop="router.push('/edit/new')"
+              class="mt-8 premium gap-2"
+            >
+              <i class="bi bi-plus-lg" />
+              Créer une note
+            </button>
+        
+          </div>
+          
         </div>
 
       </div>

@@ -15,6 +15,8 @@ const ShowConfirmDialog = ref<boolean>(false);
 const file_input = ref<HTMLInputElement | undefined>(undefined);
 const fingerPrint = ref<string>('');
 const showFingerprint = ref<boolean>(false);
+const eatNotesTotal = ref<number | undefined>(undefined);
+const eatNotesCurent = ref<number | undefined>(undefined);
 
 
 const exportFormats = [
@@ -53,12 +55,24 @@ const exportData = (format: string) => {
 
 const uploadData = (event: Event) => {
     Loader.value = 'upload';
-    UploadFromSNOTE(event)
-        .then(() => {
+
+    eatNotesTotal.value = 0;
+    eatNotesCurent.value = 0;
+
+    UploadFromSNOTE({
+        event,
+        onEnd: () => {
+            eatNotesTotal.value = undefined;
+            eatNotesCurent.value = undefined;
             setTimeout(() => {
                 Loader.value = '';
             }, 200)
-        });
+        },
+        onProgress: (current, total) => {
+            eatNotesCurent.value = current;
+            eatNotesTotal.value = total;
+        }
+    })
 }
 
 const resetDB = async (state: 1 | 2) => {
@@ -95,7 +109,7 @@ onMounted(async () => {
 
 <template>
 
-    <div class="min-h-full w-full p-8 bg-(--bg) transition-colors duration-300">
+    <div class="min-h-full max-w-5xl mx-auto w-full p-8 bg-(--bg) transition-colors duration-300">
         
         <header class="mb-8">
             <h1 class="font-bold text-3xl mb-2 tracking-tight">
@@ -155,7 +169,12 @@ onMounted(async () => {
             <div class="p-6 rounded-xl bg-(--bg2) border border-(--white)/10">
 
                 <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
-                    <i class="bi bi-box-arrow-down text-(--btn)" /> Importer
+                    <i class="bi bi-box-arrow-down text-(--btn)" />
+                    {{ 
+                        eatNotesCurent && eatNotesTotal 
+                            ? `Importation des notes : ${eatNotesCurent}/${eatNotesTotal}` 
+                            : 'Importer' 
+                        }}
                 </h2>
 
                 <p class="text-sm opacity-60 mb-4">Fusionnez vos notes depuis un fichier .snote.</p>

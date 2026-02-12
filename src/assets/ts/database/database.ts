@@ -48,16 +48,19 @@ class Database {
     /**
      * Création d'une nouvelle note
      */
-    public async create(note: Note): Promise<void> {
+    public async create(note: Note): Promise<Note> {
 
         note.date = new Date().toISOString();
 
-        await fetch(`${api_url}/api/db/new/note`, {
+        const _note = await fetch(`${api_url}/api/db/new/note`, {
             method: 'POST',
             headers: await this.getHeaders(),
             credentials: 'include',
             body: JSON.stringify({ note }),
-        });
+        }).then(res => res.json()).then(res => res.note);
+
+        return _note;
+
     }
 
     /**
@@ -89,14 +92,19 @@ class Database {
     /**
      * Création d'un tag
      */
-    public async create_tag(tag: Tag): Promise<void> {
+    public async create_tag(tag: Tag): Promise<Tag> {
+
         tag.id = parseInt(Date.now() + Math.floor(Math.random() * 1000).toString());
-        await fetch(`${api_url}/api/db/new/tag`, {
+
+        const _tag = await fetch(`${api_url}/api/db/new/tag`, {
             method: 'POST',
             headers: await this.getHeaders(),
             credentials: 'include',
             body: JSON.stringify({ tag }),
-        });
+        }).then(res => res.json()).then(res => res.tag);
+    
+        return _tag
+
     }
 
     /**
@@ -128,9 +136,21 @@ class Database {
     /**
      * Reset des données sur le cloud
      */
-    public async reset(): Promise<void> {
-        for (const tag of Tags.value) await this.delete_tag(tag.uuid);
-        for (const note of Notes.value) await this.delete(note.uuid);
+    public async reset(): Promise<void>
+    {
+
+        await fetch(`${api_url}/api/db/delete/tags`, {
+            method: 'POST',
+            headers: await this.getHeaders(),
+            credentials: 'include',
+        });
+
+        await fetch(`${api_url}/api/db/delete/notes`, {
+            method: 'POST',
+            headers: await this.getHeaders(),
+            credentials: 'include',
+        });
+
     }
     
 }

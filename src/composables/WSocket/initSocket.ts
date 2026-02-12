@@ -1,18 +1,10 @@
-import { onUnmounted, type Ref } from "vue";
+import { type Ref } from "vue";
 import { useIcon } from "./useIcon";
 import { useRoom } from "./useRoom";
 import { useTitle } from "./useTitle";
 import { useUsers } from "./useUsers";
 import { createAIListener } from "./useAIListener";
 import type { User } from "@/assets/ts/type";
-
-const { join, leave } = useRoom();
-const { createIconAutoSync } = useIcon();
-const { createTitleAutoSync } = useTitle();
-
-let initialized = false;
-let closeSocket: () => void = () => {};
-
 
 function initSocket ({
     room,
@@ -29,8 +21,9 @@ function initSocket ({
 }): { closeSocket: () => void }
 {
 
-    if (initialized) return { closeSocket };
-    initialized = true;
+    const { join, leave } = useRoom();
+    const { createIconAutoSync } = useIcon();
+    const { createTitleAutoSync } = useTitle();
 
     join({ room, userId });
 
@@ -44,29 +37,19 @@ function initSocket ({
     const { start, close } = useUsers(users);
     start();
 
-    console.log('Socket initialized !');
+    console.log(`Socket initialized for room ${room}!`);
 
-    closeSocket = () => {
+    const closeSocket = () => {
+        console.log(`Closing socket for room ${room}...`);
         close();
         stopIconAutoSync();
         stopTitleAutoSync();
         stopAIListener();
         leave(room);
-        initialized = false;
-        console.log('Socket closed !');
+        console.log(`Socket closed for room ${room}!`);
     }
 
-    onUnmounted(() => {
-        closeSocket();
-    });
-
-    return {
-        closeSocket
-    }
-
+    return { closeSocket }
 }
 
-
-export {
-    initSocket
-}
+export { initSocket }

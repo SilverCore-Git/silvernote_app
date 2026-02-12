@@ -1,7 +1,7 @@
 import { editor } from "../Editor";
 import { Notes } from "@/assets/ts/database/Var";
 import database from "@/assets/ts/database/database";
-import { useIcon, useTitle } from "@/composables/WSocket";
+import { icon, title } from "@/views/Edit/composable/useTitleIcon";
 
 
 let isSaving = false;
@@ -22,8 +22,8 @@ export const saveNote = async (uuid: string, { force = false } = {}) =>
     }
 
     const newContent = editor.value?.getHTML();
-    const newTitle = useTitle().getTitle();
-    const newIcon = useIcon().getIcon();
+    const newTitle = title.value;
+    const newIcon = icon.value;
     
     if (newContent == undefined || newTitle == undefined || newIcon == undefined) {
         console.warn('No content or title or icon to save');

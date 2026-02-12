@@ -36,8 +36,8 @@
         "fn": "() => editor.chain().focus().toggleBlockquote().run()"
     },
     {
-        "name": "Code inline",
-        "fn": "() => editor.chain().focus().toggleCode().run()"
+        "name": "Code block",
+        "fn": "() => editor.chain().focus().toggleCodeBlock().run()"
     },
     {
         "name": "Liste à puces",
@@ -58,6 +58,10 @@
     {
         "name": "Image",
         "fn": "getImageFile"
+    },
+    {
+        "name": "Tableau",
+        "fn": "() => editor.chain().focus().insertTable({ rows: 3, cols: 3 }).run()"
     },
     {
         "name": "Lien vers une note",

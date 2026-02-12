@@ -1,14 +1,14 @@
 import type { Note } from "../type";
 import { version } from '@/../package.json';
 
-import TableStyle from '@/components/Markdown/tiptap-extensions/table/table-styles.css?inline';
 import Basic from '@/components/Markdown/css/basic.css?inline';
 import ToDoList from '@/components/Markdown/css/ToDoList.css?inline';
+import Table from '@/components/Markdown/css/Table.css?inline';
 
 const css = `
-    ${TableStyle}
     ${Basic}
     ${ToDoList}
+    ${Table}
 `
 
 export default function(note: Note, user?: any): string {
@@ -33,7 +33,7 @@ export default function(note: Note, user?: any): string {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${note.title}</title>
-    <link rel="icon" href="${note.icon}" />
+    ${ note.icon !== '' ? `<link rel="icon" href="${note.icon}" />` : '' }
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -60,6 +60,12 @@ export default function(note: Note, user?: any): string {
             --text: #000000;
             --text-dim: #6e6e6ea2;
             --border: rgba(242, 140, 40, 0.2);
+
+            --bg2: #EFE9E0;
+            --white: #FFFFFF;
+            --text-strong: #2A2724;
+            --text-little: #8D857E;
+            --shadow: #322B241A; 
         }
 
         @media (prefers-color-scheme: dark) {
@@ -68,6 +74,12 @@ export default function(note: Note, user?: any): string {
                 --text: #ffffff;
                 --text-dim: #A0A0A0;
                 --border: rgba(242, 140, 40, 0.2);
+
+                --bg2: #1E1E1E; 
+                --white: #252525;
+                --text-strong: #FFFFFF; 
+                --text-little: #A0A0A0; 
+                --shadow: #000000CC;
             }
         }
 
@@ -162,7 +174,7 @@ export default function(note: Note, user?: any): string {
         <header>
             <div class="meta">
                 <div class="icon-wrapper">
-                    <img src="${note.icon}" width="64" height="64">
+                    ${ note.icon !== '' ? `<img src="${note.icon}" width="64" height="64"/>` : '' }
                     <h1>${note.title}</h1>
                 </div>
             </div>
