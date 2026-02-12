@@ -1,7 +1,6 @@
 import type { Note, Tag } from '../type';
 import { api_url } from '../backend_link';
 import type { Socket } from 'socket.io-client';
-import { Notes, Tags } from './Var';
 import useToken from '@/composables/useToken';
 
 class Database {

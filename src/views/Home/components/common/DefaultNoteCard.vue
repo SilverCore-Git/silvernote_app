@@ -180,11 +180,6 @@ const openNote = () => {
     });
 };
 
-const addOpacityToHex = (hex: string, opacity: number) => {
-    const alpha = Math.round(opacity * 255).toString(16).padStart(2, '0');
-    return `${hex}${alpha}`;
-};
-
 const select_note = () => {
     if (props.sharedBy) {
         if (isMyShare.value) share_menu.value = !share_menu.value;
