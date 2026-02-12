@@ -53,7 +53,7 @@ import { Notes } from '@/assets/ts/database/Var';
 import database from '@/assets/ts/database/database';
 import type { Note } from '@/assets/ts/type';
 import { editor } from '@/components/Markdown/Editor';
-import { useIcon, useTitle } from '@/composables/WSocket';
+import { updateIcon, updateTitle } from '@/views/Edit/composable/useTitleIcon';
 
 const props = defineProps<{
   uuid: string;
@@ -84,12 +84,10 @@ const onImportFile = (e: Event) => {
 }
 
 const importFile = async () => {
+
   if (!import_file.value) return
 
   loaded.value = true;
-
-  const { updateTitle } = useTitle();
-  const { updateIcon } = useIcon();
 
   try {
 
