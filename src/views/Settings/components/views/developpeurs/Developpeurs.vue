@@ -1,7 +1,9 @@
 <script setup lang="ts">
+
+import useCSSVar from '@/composables/useCSSVar';
 import downloadEditorSchema from './utils/downloadEditorSchema';
 
-
+const { setValue, cssVar } = useCSSVar();
 
 </script>
 
@@ -29,6 +31,34 @@ import downloadEditorSchema from './utils/downloadEditorSchema';
                 <div class="p-4 rounded-lg border border-(--white)/10 bg-(--bg) flex justify-between items-center">
                     <span>Download prosemirroir schéma</span>
                     <button class="primary" @click="downloadEditorSchema">Download</button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="mb-8 p-6 rounded-xl bg-(--bg2) border border-(--white)/10">
+                
+            <h2 class="font-semibold text-lg mb-6 flex items-center gap-2">
+                <i class="bi bi-palette text-(--btn)" /> CSS var
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+                <div 
+                    v-for="(v, index) in cssVar"
+                    :key="'settings-dev-cssvar-' + index"
+                    class="
+                        p-4 rounded-lg border border-(--white)/10
+                        bg-(--bg) flex justify-between items-center
+                    "
+                >
+                    <span>{{ v.name }}</span>
+                    <input 
+                        type="color" 
+                        :value="v.value" 
+                        @change="setValue(v.name, ($event.target as HTMLSelectElement).value)"
+                    />
                 </div>
 
             </div>

@@ -1,9 +1,18 @@
 import utils from "@/assets/ts/utils";
 import db from '@/assets/ts/database/database';
 import { Notes, Tags } from "@/assets/ts/database/Var";
+import type { Note, Tag } from "@/assets/ts/type";
 
 export default async function
-(event: Event): Promise<void>
+({
+  event, 
+  onEnd,
+  onProgress
+}:{
+  event: Event, 
+  onEnd: () => void,
+  onProgress: (current: number, total: number) => void
+}): Promise<void>
 {
 
   const input = event.target as HTMLInputElement;
@@ -25,10 +34,13 @@ export default async function
 
           const data = JSON.parse(contenu)
 
-          const tags_hash_ok: boolean = await utils.hash(data.tags) === data.hash.tags;
-          const notes_hash_ok: boolean = await utils.hash(data.notes) === data.hash.notes;
-          const sender_info_hash_ok: boolean = await utils.hash(data.sender_info) === data.hash.sender_info;
-          const data_info_hash_ok: boolean = await utils.hash(data.data_info) === data.hash.data_info;
+          const [tags_hash_ok, notes_hash_ok, sender_info_hash_ok, data_info_hash_ok] = 
+            await Promise.all([
+              utils.hash(data.tags).then(h => h === data.hash.tags),
+              utils.hash(data.notes).then(h => h === data.hash.notes),
+              utils.hash(data.sender_info).then(h => h === data.hash.sender_info),
+              utils.hash(data.data_info).then(h => h === data.hash.data_info)
+            ]);
 
           if (tags_hash_ok) console.log('Hash tags ok !'); else console.warn('Hash tags incorect !');
           if (notes_hash_ok) console.log('Hash notes ok !'); else console.warn('Hash notes incorect !');
@@ -42,30 +54,44 @@ export default async function
 
             const user_id = window.localStorage.getItem('user_id');
 
-            for (const note of data.notes)
+            const BATCH_SIZE = 10;
+            const totalCount: number = data.notes.length;
+
+            for (let i = 0; i < data.notes.length; i += BATCH_SIZE)
             {
-              note.user_id = user_id;
-              note.uuid = await utils.UUID();
-              note.id = parseInt(Date.now() + Math.floor(Math.random() * 1000).toString());
-              note._id = undefined;
-              await Promise.all([
-                db.create(note),
-                Notes.value.push(note)
-              ]);
-              console.log(`Eat : ${note.uuid}`);
+
+              const batch = data.notes.slice(i, i + BATCH_SIZE);
+              await Promise.all(
+                batch.map(async (note: Note) => {
+                  note.user_id = user_id!;
+                  note.uuid = await utils.UUID();
+                  note.id = parseInt(Date.now() + Math.floor(Math.random() * 1000).toString());
+                  note._id = undefined;
+                  const _note = await db.create(note);
+                  Notes.value.push(_note);
+                })
+              );
+
+              onProgress(i, totalCount);
+              
             }
 
-            for (const tag of data.tags)
+            onProgress(totalCount, totalCount);
+
+            for (let i = 0; i < data.tags.length; i += BATCH_SIZE)
             {
-              tag.user_id = user_id;
-              tag.uuid = await utils.UUID();
-              tag.id = parseInt(Date.now() + Math.floor(Math.random() * 1000).toString());
-              tag._id = undefined;
-              await Promise.all([
-                db.create_tag(tag),
-                Tags.value.push(tag)
-              ]);
-              console.log(`Eat : ${tag.uuid}`);
+
+              const batch = data.tags.slice(i, i + BATCH_SIZE);
+              await Promise.all(
+                batch.map(async (tag: Tag) => {
+                  tag.user_id = user_id!;
+                  tag.uuid = await utils.UUID();
+                  tag.id = parseInt(Date.now() + Math.floor(Math.random() * 1000).toString());
+                  const _tag = await db.create_tag(tag);
+                  Tags.value.push(_tag);
+                })
+              );
+
             }
 
           }
@@ -79,6 +105,7 @@ export default async function
         }
 
         console.log('Database eat end !');
+        onEnd();
 
       }
 

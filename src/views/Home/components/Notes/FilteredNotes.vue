@@ -5,6 +5,8 @@ import { sortedNotes, Tags } from '@/assets/ts/database/Var';
 import { computed } from 'vue';
 import DefaultNoteCard from '../common/DefaultNoteCard.vue';
 import useFilter from '../../composables/useFilter';
+import VirtualScroller from 'vue3-virtual-scroller';
+import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
 
 const { selectedFilter } = useFilter();
 
@@ -44,29 +46,36 @@ const router = useRouter();
             </div>
         </span>
 
-        <ul
+        <div
             v-if="notes.length"
             class="
-                sm:flex sm:flex-wrap
                 grid grid-cols-2
                 gap-4
+                h-full overflow-hidden
             "
         >
-            <li
-                v-for="(note, index) in notes"
-                :key="index"
-                @click="router.push('/edit/'+note.uuid)"
-                class="sm:max-w-[250px]"
+            <VirtualScroller
+                :items="notes"
+                :item-height="280"
+                class="h-full"
+                :buffer="5"
             >
-                <DefaultNoteCard
-                    :uuid="note.uuid"
-                    :title="note.title"
-                    :content="note.content"
-                    :icon="note.icon"
-                    :tags="note.tags"
-                />
-            </li>
-        </ul>
+                <template #default="{ item: note }">
+                    <div 
+                        class="overflow-hidden cursor-pointer"
+                        @click="router.push('/edit/'+note.uuid)"
+                    >
+                        <DefaultNoteCard
+                            :uuid="note.uuid"
+                            :title="note.title"
+                            :content="note.content"
+                            :icon="note.icon"
+                            :tags="note.tags"
+                        />
+                    </div>
+                </template>
+            </VirtualScroller>
+        </div>
 
         <div
             v-else

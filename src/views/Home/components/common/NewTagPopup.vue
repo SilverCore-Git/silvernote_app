@@ -99,6 +99,7 @@ const create_tag = () => {
 
     const tag = {
         id: parseInt(Date.now() + Math.floor(Math.random() * 1000).toString()), 
+        user_id: window.localStorage.getItem('user_id') || '',
         uuid: '',
         name: tag_name.value, 
         active: false, 

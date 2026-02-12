@@ -101,9 +101,9 @@ onMounted(async () => {
 
 <template>
 
-    <div class="min-h-full w-full p-8 bg-(--bg) transition-colors duration-300">
+    <div class="min-h-full max-w-5xl mx-auto w-full p-8 bg-(--bg) transition-colors duration-300">
         
-        <header class="mb-8 max-w-2xl mx-auto text-center md:text-left">
+        <header class="mb-8  text-center md:text-left">
 
             <h1 class="font-bold text-3xl mb-2 tracking-tight text-(--text-strong)">
                 Jeu 2048
@@ -115,7 +115,7 @@ onMounted(async () => {
 
         </header>
 
-        <div class="max-w-2xl mx-auto">
+        <div>
 
             <button class="primary w-full" @click="showGame = true">Ouvrir le jeu 2048</button>
 

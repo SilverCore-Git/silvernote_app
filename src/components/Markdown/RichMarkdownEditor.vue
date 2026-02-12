@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
+import { ref, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import { useUser } from '@clerk/vue';
 
@@ -69,8 +69,8 @@ import { EditorProvider } from './EditorProvider';
 
 import { getEditorConfig } from './editorConfig';
 import { createMathCheckDebounced, clearMathCache } from './tiptap-extensions/mathExtension';
-import { createTodoInputExtension } from './tiptap-extensions/todoExtension';
 import './css/DragHandler.scss';
+import './css/CodeBlock.scss';
 import getContrastColor from '@/assets/ts/utils/getContrastColor.js';
 import waitFor from '@/assets/ts/utils/waitFor.js';
 
@@ -143,16 +143,11 @@ async function initEditor(): Promise<void>
   
   const mathCheckDebounced = createMathCheckDebounced();
   
-  const todoInputExtension = createTodoInputExtension({
-    value: editor,
-  } as any);
-
   editor.value = new Editor({
     ...getEditorConfig({
       editable: props.editable,
       ydoc,
       provider,
-      todoInputExtension,
       userColor,
       userName: user.value?.username || 'Invité',
       userAvatar: user.value?.imageUrl,
@@ -187,7 +182,6 @@ async function initEditor(): Promise<void>
   }).catch(err => console.warn('Failed to fetch user color:', err));
 
   await nextTick();
-
   await waitFor(() => provider.synced, 10_000);
   
   if (editor.value && props.data.content && editor.value.getText().length <= 0) {
@@ -200,6 +194,18 @@ async function initEditor(): Promise<void>
 
 };
 
+watch(() => props.uuid, async () => {
+  
+  if (editor.value) {
+    editor.value.destroy();
+    editor.value = undefined;
+  }
+  
+  loader.value = true;
+  
+  await initEditor();
+
+}, { immediate: false });
 
 onMounted(async () => {
   window.addEventListener('keydown', handleSaveShortcut)
@@ -220,7 +226,6 @@ onBeforeUnmount(() => {
 
 <style>
 
-@import './tiptap-extensions/table/table-styles.css';
 @import './css/basic.css';
 @import './css/ToDoList.css';
 @import './css/tiptap_carets.css';

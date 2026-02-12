@@ -60,9 +60,7 @@
             </div>
 
             <!-- notes -->
-            <div class="flex-1 overflow-y-auto">
-                <AllNotes />
-            </div>
+            <AllNotes class="flex-1" />
 
         </div>
 
