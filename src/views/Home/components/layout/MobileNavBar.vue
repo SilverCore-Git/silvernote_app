@@ -19,8 +19,9 @@
                     v-for="(btn, index) in Btns"
                     :key="index" 
                     @click="router.push(btn.href)"
-                    :class="route.fullPath == btn.href ? 'text-(--btn)' : ''"
+                    :class="route.fullPath == btn.href ? 'bg-(--btn) ring-(--btn-hover) ring-2' : ''"
                     class="p-1"
+                    :title="btn.name"
                 >
                     <i class="bi" :class="btn.icon" />
                 </a>
@@ -41,18 +42,20 @@ import { useRoute, useRouter } from 'vue-router';
 const router = useRouter();
 const route = useRoute();
 
-
 const Btns = [
     {
         icon: 'bi-house-fill',
+        name: 'Accueil',
         href: '/'
     },
     {
-        icon: 'bi-share-fill',
+        icon: 'bi-people-fill',
+        name: 'Partage',
         href: '/?page=shared'
     },
     {
         icon: 'bi-gear-fill',
+        name: 'Paramètres',
         href: '/settings'
     }
 ]

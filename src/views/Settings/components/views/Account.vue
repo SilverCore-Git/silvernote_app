@@ -9,7 +9,7 @@ import { SignOutButton, UserProfile, useUser } from '@clerk/vue';
 
   <div 
     class="
-      min-h-full w-full p-4 lg:p-8
+      min-h-full w-full px-4 lg:px-8 py-8
       transition-colors duration-300
       space-y-8 max-w-5xl mx-auto
     "

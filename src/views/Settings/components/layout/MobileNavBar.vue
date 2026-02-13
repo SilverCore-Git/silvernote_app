@@ -22,10 +22,11 @@
                     :class="[
                         route.params.page == page.path.replace('/', '')
                         || page.path == '/' && !route.params.page 
-                            ? 'text-(--btn)'
+                            ? 'bg-(--btn) ring-(--btn-hover) ring-2'
                             : ''
                     ]"
                     class="p-1"
+                    :title="page.name"
                 >
                     <i class="bi" :class="page.icon" />
                 </a>

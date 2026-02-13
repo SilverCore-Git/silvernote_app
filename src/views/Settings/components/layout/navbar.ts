@@ -35,7 +35,7 @@ const pages: Page[] = [
     },
     {
         path: '/legal',
-        icon: "bi-shield-check", // Juridique / sécurité
+        icon: "bi-shield-fill-check", // Juridique / sécurité
         name: "Juridique"
     },
     // {
