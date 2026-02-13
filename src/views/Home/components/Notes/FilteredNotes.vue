@@ -1,14 +1,14 @@
 <script setup lang="ts">
 
-import { useRouter } from 'vue-router';
 import { sortedNotes, Tags } from '@/assets/ts/database/Var';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import DefaultNoteCard from '../common/DefaultNoteCard.vue';
 import useFilter from '../../composables/useFilter';
-import VirtualScroller from 'vue3-virtual-scroller';
+import { RecycleScroller } from 'vue3-virtual-scroller';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
 
 const { selectedFilter } = useFilter();
+const columns = ref<number>(3);
 
 const notes = computed(() =>
     sortedNotes.value.filter(note => note.tags.includes(selectedFilter.value || 0))
@@ -16,7 +16,31 @@ const notes = computed(() =>
 const tag = computed(() =>
     Tags.value.filter(tag => tag.id === selectedFilter.value)[0]
 );
-const router = useRouter();
+
+const noteRows = computed(() => {
+
+    const others = notes.value?.filter(n => !n.pinned) || [];
+    const rows = [];
+    const colCount = columns.value || 1;
+
+    for (let i = 0; i < others.length; i += colCount)
+    {
+    
+        const rowItems = others.slice(i, i + colCount);
+        
+        if (rowItems.length > 0)
+        {
+            rows.push({
+                id: `row-${rowItems[0].uuid}`,
+                items: [...rowItems] 
+            });
+        }
+
+    }
+
+    return rows;
+
+});
 
 </script>
 
@@ -46,25 +70,25 @@ const router = useRouter();
             </div>
         </span>
 
-        <div
-            v-if="notes.length"
-            class="
-                grid grid-cols-2
-                gap-4
-                h-full overflow-hidden
-            "
+        <RecycleScroller
+            v-if="noteRows.length > 0"
+            :key="noteRows.length"
+            :items="noteRows"
+            :item-size="220"
+            key-field="id"
+            page-mode
+            class="w-full"
+            :buffer="600" 
         >
-            <VirtualScroller
-                :items="notes"
-                :item-height="280"
-                class="h-full"
-                :buffer="5"
-            >
-                <template #default="{ item: note }">
-                    <div 
-                        class="overflow-hidden cursor-pointer"
-                        @click="router.push('/edit/'+note.uuid)"
-                    >
+
+            <template #default="{ item: row }">
+                
+                <div 
+                    class="grid gap-4 mb-4 pr-2 pl-1"
+                    :style="{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }"
+                >
+            
+                    <div v-for="note in row.items" :key="note.uuid">
                         <DefaultNoteCard
                             :uuid="note.uuid"
                             :title="note.title"
@@ -73,9 +97,12 @@ const router = useRouter();
                             :tags="note.tags"
                         />
                     </div>
-                </template>
-            </VirtualScroller>
-        </div>
+            
+                </div>
+            
+            </template>
+
+        </RecycleScroller>
 
         <div
             v-else
