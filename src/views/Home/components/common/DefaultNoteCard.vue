@@ -12,7 +12,7 @@
                     cursor-pointer overflow-hidden
                     hover:border-(--btn) border
                     transition-all duration-200 ease-in-out
-                    backdrop-blur-3xl
+                    backdrop-blur-3xl active:scale-90
                 "
                 :class="[
                     note_selected || isSelected(uuid)
@@ -45,13 +45,13 @@
                 <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed overflow-hidden">
                     <p
                         v-if="IsPrivate"
-                        class="font-mono text-[10px] tracking-widest opacity-50 line-clamp-3"
+                        class="font-mono text-[10px] tracking-widest opacity-50 line-clamp-6"
                     >
                         {{ displayContent }}
                     </p>
                     <div
                         v-else
-                        class="content-html line-clamp-3"
+                        class="content-html line-clamp-6"
                         v-html="displayContent"
                     ></div>
                 </div>
@@ -206,6 +206,7 @@ onMounted(async () => {
         sharerIcon.value = _sharer?.imageUrl;
 
         try {
+
             const token = await useToken();
             const res = await fetch(`${api_url}/api/share/${props.uuid}/info`, {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -213,20 +214,23 @@ onMounted(async () => {
             const data = await res.json();
             
             if (data.share) {
+
                 isMyShare.value = data.share.owner_id === window.localStorage.getItem('user_id');
-                const visitors = data.share.visitor.slice(0, 6);
-                for (const v of visitors) {
-                    const u = await getUserByUUID(v);
-                    if (u) shareVisitors.value.push(u);
-                }
+                
+                const visitorPromises = data.share.visitor.map((v: string) => getUserByUUID(v));
+                const visitors = await Promise.all(visitorPromises);
+
+                shareVisitors.value = visitors.filter(u => u !== null);
+
             }
+
         } catch (e) {
             console.error(e);
         }
     }
 
     if (props.icon && props.icon !== '')
-        bgColor.value = await getDominantColor(props.icon) + '22';
+        bgColor.value = await getDominantColor(props.icon) + '30';
 
 });
 
@@ -236,14 +240,14 @@ onMounted(async () => {
 .content-html :deep(h1), 
 .content-html :deep(h2), 
 .content-html :deep(h3) {
-  font-size: 1em;
+  font-size: 1.2em;
   font-weight: bold;
   display: inline;
 }
 
-.line-clamp-3 {
+.line-clamp-6 {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 6;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
