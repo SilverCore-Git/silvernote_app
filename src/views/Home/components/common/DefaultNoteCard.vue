@@ -199,13 +199,18 @@ const select_note = () => {
     note_selected.value = !note_selected.value;
 };
 
-onMounted(async () => {
+const initShareVisitors = async () => {
 
-    if (props.sharedBy) {
-        const _sharer = await getUserByUUID(props.sharedBy);
-        sharerIcon.value = _sharer?.imageUrl;
+    if (props.sharedBy) 
+    {
 
-        try {
+        const initSharer = async () => {
+            if (!props.sharedBy) return;
+            const _sharer = await getUserByUUID(props.sharedBy);
+            sharerIcon.value = _sharer?.imageUrl;
+        }
+
+        const initVisitors = async () => {
 
             const token = await useToken();
             const res = await fetch(`${api_url}/api/share/${props.uuid}/info`, {
@@ -216,21 +221,48 @@ onMounted(async () => {
             if (data.share) {
 
                 isMyShare.value = data.share.owner_id === window.localStorage.getItem('user_id');
-                
-                const visitorPromises = data.share.visitor.map((v: string) => getUserByUUID(v));
+
+                const visitorPromises = data.share.visitor
+                                            .filter((v: string) => v !== data.share.owner_id)
+                                            .map((v: string) => getUserByUUID(v));
+                                            
                 const visitors = await Promise.all(visitorPromises);
 
                 shareVisitors.value = visitors.filter(u => u !== null);
 
             }
 
-        } catch (e) {
+        }
+
+        try {
+
+            await Promise.all([
+                initSharer(),
+                initVisitors()
+            ])
+
+        } 
+        catch (e) {
             console.error(e);
         }
+
     }
 
+}
+
+const initBG = async () => {
     if (props.icon && props.icon !== '')
+    {
         bgColor.value = await getDominantColor(props.icon) + '30';
+    }
+}
+
+onMounted(async () => {
+
+    await Promise.all([
+        initBG(),
+        initShareVisitors()
+    ])
 
 });
 
