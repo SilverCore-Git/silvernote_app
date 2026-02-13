@@ -10,14 +10,14 @@
 
           <UpdateAvalable v-if="loaded && isLoaded" />
 
-          <div v-if="!route.path.startsWith('/sauth')">
+          <div v-if="route.path.startsWith('/sauth')">
+            <router-view />
+          </div>
+
+          <div v-else>
             <Protect>
               <router-view />
             </Protect>
-          </div>
-
-          <div v-if="route.path.startsWith('/sauth')">
-            <router-view />
           </div>
 
           <div 
@@ -36,11 +36,11 @@
       </div>
 
 
-      <transition name="fade-app" appear>
+      <transition name="fade-app">
 
         <!-- loader -->
         <div
-          v-if="loader" 
+          v-if="!loaded" 
           class="
             fixed inset-0 z-50
             dark:bg-black bg-white
@@ -62,6 +62,7 @@
       </transition>
 
       <div v-if="is_offline" class="fixed inset-0 bg-(--bg) z-50">
+
         <div class="flex justify-center items-center flex-col w-screen h-screen">
 
             <div class="w-30 h-30">
@@ -83,6 +84,7 @@
             </button>
           
         </div>
+
       </div>
 
   </div>
@@ -108,23 +110,22 @@ import IconLoader from "./components/iconLoader.vue";
 import { initNotifications } from "./components/notifications/notifications";
 import UpdateAvalable from "./components/updateAvalable.vue";
 
-const loader = ref<boolean>(true);
-const status = ref<string>('Chargement de l\'app...');
-const session = new Session();
+
 const route = useRoute();
 const router = useRouter();
 const { user, isLoaded } = useUser();
 const { isSignedIn } = useAuth();
 
+const status = ref<string>('Chargement de l\'app...');
+const session = new Session();
 const is_offline = ref<boolean>(false);
 
 
 onMounted(async () => {
-console.log('test 030226')
+
   try {
 
     init_theme();
-    localStorage.removeItem('hiddenNews');
 
     const [apiCheck] = await Promise.allSettled([
       fetch(`${api_url}/version`).then(res => res.json()),
@@ -144,7 +145,7 @@ console.log('test 030226')
       status.value = 'Redirection...';
       const redirectUrl = route.query.redirectUrl || route.fullPath;
       router.push({ path: "/sauth/sign-in", query: { ...route.query, redirectUrl } });
-      loader.value = false;
+      loaded.value = true;
       return;
 
     }
@@ -168,16 +169,20 @@ console.log('test 030226')
 
     status.value = "Prêt !";
     
-    loader.value = false;
     loaded.value = true;
 
-    await session.create(user.value);
-    await initNotifications();
+    await Promise.all([
+      session.create(user.value),
+      initNotifications()
+    ])
+
     setInterval(async () => {
       await initNotifications();
     }, 15 * 60 * 1000); // Refresh notif every 15 minutes
 
-  } catch (err: any) {
+  } 
+  catch (err: any)
+  {
 
     postError({ 
       place: "App.vue initialization",
@@ -200,16 +205,13 @@ const reload = () => {
 
 <style>
 
-.fade-app-leave-from {
-  opacity: 1;
-  animation: circle-reveal 1000ms cubic-bezier(0.4, 0, 0.2, 1);
+.fade-app-leave-active {
+  transition: opacity 800ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.fade-app-leave-active {
-  transition: opacity 300ms ease-out;
+.fade-app-leave-to {
   opacity: 0;
 }
-
 
 @keyframes circle-reveal {
   from {

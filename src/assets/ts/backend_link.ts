@@ -43,22 +43,29 @@ const dev_db: { notes: Note[], tags: Tag[] } = {
 export class Session {
 
   async create (user: any): Promise<void> {
-    await fetch(`${api_url}/user/create`, {
-      method: 'POST',
-      body: JSON.stringify({ user: user }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include'
-    }).catch(err => console.log(err));
-    await fetch(`${api_url}/user/session/create`, {
-      method: 'POST',
-      body: JSON.stringify({ platform: 'web', userId: user.id }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include'
-    }); 
+
+    await Promise.all([
+
+      fetch(`${api_url}/user/create`, {
+        method: 'POST',
+        body: JSON.stringify({ user: user }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+      }).catch(err => console.log(err)),
+
+      fetch(`${api_url}/user/session/create`, {
+        method: 'POST',
+        body: JSON.stringify({ platform: 'web', userId: user.id }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+      })
+
+    ])
+
   }
 
   async close (): Promise<any> {
