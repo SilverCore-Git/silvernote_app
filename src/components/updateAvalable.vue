@@ -43,7 +43,9 @@ const host = window.location.hostname;
 const updateAvailable = ref<boolean>(false);
 
 const reload = () => {
-    window.location.reload();
+    const url = new URL(window.location.href);
+    url.searchParams.set('cache_bust', Date.now().toString());
+    window.location.href = url.toString();
 };
 
 const checkForUpdates = async () => {

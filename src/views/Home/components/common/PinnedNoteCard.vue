@@ -2,86 +2,90 @@
 
     <PressAndHold
         @long-press="select_note"
-        @click.stop="open_note"
+        @click.stop.prevent="open_note"
         class="h-full"
     >
 
-        <div
-            class="
-                group relative flex flex-col 
-                rounded-2xl p-4 w-full h-[205px]
-                cursor-pointer overflow-hidden
-                hover:border-(--btn) border
-                transition-all duration-200 ease-in-out
-            "
-            :class="
-                note_selected || isSelected(props.uuid)
-                    ? 'border-(--btn) border-dashed border-2'
-                    : 'border-gray-200'
-            "
-            :style="{ 
-                'view-transition-name': `note-${uuid}`,
-                'content-visibility': 'auto',
-                'contain-intrinsic-size': '1px 205px',
-                background: bgColor
-            }"
-        >
-            
-            <div class="flex justify-between items-start mb-3 gap-2">
+        <a :href="href" class="w-full h-full">
+
+            <div
+                class="
+                    group relative flex flex-col 
+                    rounded-2xl p-4 w-full h-[205px]
+                    cursor-pointer overflow-hidden
+                    hover:border-(--btn) border
+                    transition-all duration-200 ease-in-out
+                "
+                :class="
+                    note_selected || isSelected(props.uuid)
+                        ? 'border-(--btn) border-dashed border-2'
+                        : 'border-gray-200'
+                "
+                :style="{ 
+                    'view-transition-name': `note-${uuid}`,
+                    'content-visibility': 'auto',
+                    'contain-intrinsic-size': '1px 205px',
+                    background: bgColor
+                }"
+            >
                 
-                <div class="flex items-center gap-2.5 min-w-0">
-                    <img 
-                        v-if="icon && icon != ''" 
-                        :src="icon" 
-                        class="w-8 h-8 object-contain shrink-0 opacity-80" 
-                    />
-                    <h2 
-                        class="font-bold text-xl sm:text-2xl"
-                        v-text="title.length > 0 ? title : 'Note sans titre'"
-                    />
+                <div class="flex justify-between items-start mb-3 gap-2">
+                    
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <img 
+                            v-if="icon && icon != ''" 
+                            :src="icon" 
+                            class="w-8 h-8 object-contain shrink-0 opacity-80" 
+                        />
+                        <h2 
+                            class="font-bold text-xl sm:text-2xl"
+                            v-text="title.length > 0 ? title : 'Note sans titre'"
+                        />
+                    </div>
+
+                    <div v-if="_Tags.length > 0" class="shrink-0">
+                        <span 
+                            class="
+                                px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide
+                                flex items-center justify-center
+                            "
+                            :style="{ 
+                                backgroundColor: _Tags[0].color + '20', /* 20 = ~12% opacité pour le fond pastel */
+                                color: _Tags[0].color 
+                            }"
+                        >
+                            {{ _Tags[0].name }}
+                        </span>
+                    </div>
                 </div>
 
-                <div v-if="_Tags.length > 0" class="shrink-0">
-                    <span 
-                        class="
-                            px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide
-                            flex items-center justify-center
-                        "
-                        :style="{ 
-                            backgroundColor: _Tags[0].color + '20', /* 20 = ~12% opacité pour le fond pastel */
-                            color: _Tags[0].color 
-                        }"
+                <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed break-words max-h-30">
+                    <p
+                        v-if="IsPrivate"
+                        class="line-clamp-3 font-mono text-[10px] tracking-widest opacity-50"
                     >
-                        {{ _Tags[0].name }}
-                    </span>
+                        {{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 500) + ' ...' }}
+                    </p>
+
+                    <div
+                        v-else
+                        class="line-clamp-3 content-html"
+                        v-html="utils.clean_html(content).slice(0, 500) + ' ...'"
+                    ></div>
                 </div>
+
+                <div v-if="_Tags.length > 1" class="mt-2 flex gap-1">
+                    <div 
+                        v-for="i in (_Tags.length - 1)" 
+                        :key="i" 
+                        class="w-1.5 h-1.5 rounded-full"
+                        :style="{ backgroundColor: _Tags[i].color }"
+                    ></div>
+                </div>
+
             </div>
 
-            <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed break-words max-h-30">
-                <p
-                    v-if="IsPrivate"
-                    class="line-clamp-3 font-mono text-[10px] tracking-widest opacity-50"
-                >
-                    {{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 500) + ' ...' }}
-                </p>
-
-                <div
-                    v-else
-                    class="line-clamp-3 content-html"
-                    v-html="utils.clean_html(content).slice(0, 500) + ' ...'"
-                ></div>
-            </div>
-
-            <div v-if="_Tags.length > 1" class="mt-2 flex gap-1">
-                <div 
-                    v-for="i in (_Tags.length - 1)" 
-                    :key="i" 
-                    class="w-1.5 h-1.5 rounded-full"
-                    :style="{ backgroundColor: _Tags[i].color }"
-                ></div>
-            </div>
-
-        </div>
+        </a>
 
     </PressAndHold>
 
@@ -120,6 +124,8 @@ const bgColor = ref<string>('var(--white)');
 const router = useRouter();
 const _Tags = computed<Tag[]>(() => Tags.value.filter(tag => props.tags.includes(tag.id)));
 const note_selected = ref<boolean>(false);
+const href = computed<string>(() => `/edit/${props.uuid}`);
+
 
 const open_note = () => {
     if (isMobile && selectedNotes.value.length > 0) {
@@ -129,12 +135,12 @@ const open_note = () => {
     if (props.click) return props.click();
 
     if (!document.startViewTransition) {
-        router.push(`/edit/${props.uuid}`);
+        router.push(href.value);
         return;
     }
 
     document.startViewTransition(async () => {
-        await router.push(`/edit/${props.uuid}`);
+        await router.push(href.value);
         await nextTick(); 
     });
 
