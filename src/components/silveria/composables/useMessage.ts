@@ -10,6 +10,7 @@ type Message = {
   role: 'user' | 'assistant';
   content: string;
   timestamp: number;
+  error?: string;
   isThinking?: boolean;
   activeTool?: string | null;
 };
@@ -75,7 +76,8 @@ const sendMessage = async ({
             },
 
             onError: (err) => {
-                messages.value[assistantMessageIndex].content += "\n\n*Une erreur est survenue lors de la génération.*";
+                //messages.value[assistantMessageIndex].content += "\n\n*Une erreur est survenue lors de la génération.*";
+                messages.value[assistantMessageIndex].error = err;
                 console.error("Erreur SilverIA:", err);
             }
 

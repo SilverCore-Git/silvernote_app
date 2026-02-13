@@ -3,6 +3,8 @@ import { userInput } from "../composables/useMessage";
 import router from "@/router";
 
 const isOpen = ref<boolean>(false);
+const online = ref<boolean>(false);
+const loaded = ref<boolean>(false);
 const isMaximised = ref<boolean>(false);
 const chatBody = ref<HTMLElement | null>(null);
 const isLoading = ref<boolean>(false);
@@ -60,6 +62,8 @@ export {
     isUserInputMaximised,
     chatBody,
     isLoading,
+    online,
+    loaded,
     toggleChat,
     toggleMaximise,
     scrollToBottom,

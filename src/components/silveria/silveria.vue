@@ -17,8 +17,10 @@ import {
     toggleMaximise,
     isUserInputMaximised,
     chatBody, // ref
+    online,
     isLoading,
-    toggleUserInputMaximise
+    toggleUserInputMaximise,
+    loaded
 } from './assets/const';
 
 import {
@@ -38,6 +40,7 @@ const { user, isLoaded } = useUser();
 
 onMounted(async () => {
     await waitFor(() => isLoaded.value, 10000);
+    loaded.value = true;
     await useChat.create(user.value);
 })
 
@@ -109,8 +112,11 @@ onBeforeUnmount(async () => {
 
                             <h3 class="font-bold text-sm">SilverIA</h3>
                             <div class="text-[10px] opacity-50 flex items-center gap-1">
-                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                                Agent
+                                <span 
+                                    class="w-2 h-2 rounded-full animate-pulse" 
+                                    :class="online ? 'bg-green-600' : 'bg-red-600'"
+                                />
+                                Agent {{ online ? 'en ligne' : 'hors ligne' }}
                             </div>
 
                         </div>
@@ -154,7 +160,7 @@ onBeforeUnmount(async () => {
                     "
                 >
 
-                    <Suggestion v-if="isOpen" />
+                    <Suggestion v-if="isOpen && online && loaded" />
 
                     <MessagesContaner />
 
