@@ -60,17 +60,38 @@ const checkForUpdates = async () => {
     }
 };
 
+const checkIsOnUpdate = async () => {
+    try {
+        const response = await fetch(
+            '/score-host/api/status'
+        );
+        const data = await response.json();
+        if (
+            data.service.onUpdate 
+            || data.service.errored 
+            || data.service.maintenance
+        )
+        {
+            reload();
+        }
+    } catch (error) {
+        console.error('Error checking for updates:', error);
+    }
+};
+
 onMounted(() => {
 
     setTimeout(async () => {
 
         await checkForUpdates();
+        await checkIsOnUpdate();
 
     }, 1500);
 
     setInterval(async () => {
 
         await checkForUpdates();
+        await checkIsOnUpdate();
 
     }, 60 * 60 * 1000); // Check every hour
 
