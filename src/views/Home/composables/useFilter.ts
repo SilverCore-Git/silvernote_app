@@ -1,7 +1,7 @@
 import router from "@/router";
 import { ref } from "vue";
 
-const selectedFilter = ref<number>();
+const selectedFilter = ref<number | undefined>(undefined);
 
 export default function
 ()

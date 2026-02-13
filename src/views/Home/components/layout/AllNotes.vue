@@ -13,6 +13,10 @@
       <NotesByQuery />
     </template>
 
+    <template v-else-if="isFilteredNotes">
+      <FilteredNotes />
+    </template>
+
     <template v-else>
 
       <div class="flex flex-col gap-8">
@@ -60,16 +64,24 @@
 import { useRoute, useRouter } from 'vue-router';
 import { computed } from 'vue';
 import { Notes } from '@/assets/ts/database/Var';
+import useFilter from '../../composables/useFilter';
+
 import PinnedNotes from '../Notes/PinnedNotes.vue';
 import OtherNotes from '../Notes/OtherNotes.vue';
 import SharedNotes from '../Notes/SharedNotes.vue';
 import NotesByQuery from '../Notes/NotesByQuery.vue';
+import FilteredNotes from '../Notes/FilteredNotes.vue';
 
+
+const { selectedFilter } = useFilter();
 const route = useRoute();
 const router = useRouter();
+
+
 const searchQuery = computed(() => (route.query.q ? String(route.query.q).trim() : ''));
 const pageQuery = computed(() => (route.query.page ? String(route.query.page).trim() : ''));
 const hasPinnedNotes = computed(() => Notes.value.some(note => note.pinned));
+const isFilteredNotes = computed(() => selectedFilter.value)
 const hasNotPinnedNotes = computed(() => Notes.value.some(note => !note.pinned));
 
 const createNote = () => {

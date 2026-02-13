@@ -8,6 +8,8 @@
 
       <div>
 
+          <UpdateAvalable v-if="loaded && isLoaded" />
+
           <div v-if="!route.path.startsWith('/sauth')">
             <Protect>
               <router-view />
@@ -20,7 +22,8 @@
 
           <div 
             v-show="
-              loaded  
+              loaded
+              && isLoaded
               && !route.path.startsWith('/settings')
               && route.name !== 'NotFound'
             "
@@ -103,6 +106,7 @@ import BtnOverlay from "./components/common/BtnOverlay.vue";
 import DesktopAppTitleBar from "./components/DesktopAppTitleBar.vue";
 import IconLoader from "./components/iconLoader.vue";
 import { initNotifications } from "./components/notifications/notifications";
+import UpdateAvalable from "./components/updateAvalable.vue";
 
 const loader = ref<boolean>(true);
 const status = ref<string>('Chargement de l\'app...');

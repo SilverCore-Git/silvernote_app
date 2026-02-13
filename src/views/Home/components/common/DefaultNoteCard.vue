@@ -2,99 +2,105 @@
 
     <PressAndHold
         @long-press="select_note"
-        @click.stop="openNote"
+        @click.stop.prevent="openNote"
     >
-        <div
-            class="
-                group relative flex flex-col 
-                rounded-2xl p-4 w-full h-[205px]
-                cursor-pointer overflow-hidden
-                hover:border-(--btn) border
-                transition-all duration-200 ease-in-out
-                backdrop-blur-3xl
-            "
-            :class="[
-                note_selected || isSelected(uuid)
-                    ? 'border-(--btn) border-dashed border-2'
-                    : 'border-gray-200', 
-                inertw
-            ]"
-            :style="{ 
-                'view-transition-name': `note-${uuid}`,
-                'content-visibility': 'auto',
-                'contain-intrinsic-size': '1px 205px',
-                background: bgColor
-            }"
-        >
-            <div class="flex justify-between items-start mb-3 gap-2">
-                <div class="flex items-center gap-2.5 min-w-0">
-                    <img 
-                        v-if="icon && icon != ''" 
-                        :src="icon" 
-                        class="w-6 h-6 object-contain shrink-0 opacity-80" 
-                        loading="lazy"
-                    />
-                    <h2 
-                        class="font-bold text-lg sm:text-xl "
-                        v-text="title || 'Note sans titre'"
-                    />
-                </div>
-            </div>
-
-            <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed overflow-hidden">
-                <p
-                    v-if="IsPrivate"
-                    class="font-mono text-[10px] tracking-widest opacity-50 line-clamp-3"
-                >
-                    {{ displayContent }}
-                </p>
-                <div
-                    v-else
-                    class="content-html line-clamp-3"
-                    v-html="displayContent"
-                ></div>
-            </div>
-
-            <div v-if="_Tags.length > 0" class="shrink-0 flex flex-wrap gap-1 mt-auto pt-2">
-                <span
-                    v-for="tag in _Tags"
-                    :key="tag.id"
-                    class="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide"
-                    :style="{ 
-                        backgroundColor: tag.color + '20',
-                        color: tag.color 
-                    }"
-                >
-                    {{ tag.name }}
-                </span>
-            </div>
-
-            <div 
-                v-if="sharedBy && sharerIcon"
-                class="shrink-0 gap-1 mt-2 flex flex-row justify-between items-center pt-2"
+        <a :href="href" class="w-full h-full">
+            <div
+                class="
+                    group relative flex flex-col 
+                    rounded-2xl p-4 w-full h-[205px]
+                    cursor-pointer overflow-hidden
+                    hover:border-(--btn) border
+                    transition-all duration-200 ease-in-out
+                    backdrop-blur-3xl
+                "
+                :class="[
+                    note_selected || isSelected(uuid)
+                        ? 'border-(--btn) border-dashed border-2'
+                        : 'border-gray-200', 
+                    inertw
+                ]"
+                :style="{ 
+                    'view-transition-name': `note-${uuid}`,
+                    'content-visibility': 'auto',
+                    'contain-intrinsic-size': '1px 205px',
+                    background: bgColor
+                }"
             >
-                <img
-                    class="w-7 h-7 rounded-full border border-gray-200"
-                    :src="sharerIcon"
-                    loading="lazy"
-                />
-                <div class="flex justify-center items-center flex-row -space-x-3">
-                    <img
-                        v-for="visitor in shareVisitors.slice(0, 5)"
-                        :key="visitor.user_id"
-                        class="w-7 h-7 rounded-full border border-gray-200 bg-white"
-                        :src="visitor.imageUrl"
-                        loading="lazy"
-                    />
-                    <div 
-                        v-if="shareVisitors.length > 5"
-                        class="flex items-center justify-center w-7 h-7 rounded-full border border-white bg-(--bg) text-[9px] font-bold z-10"
-                    >
-                        +{{ shareVisitors.length - 5 }}
+                <div class="flex justify-between items-start mb-3 gap-2">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <img 
+                            v-if="icon && icon != ''" 
+                            :src="icon" 
+                            class="w-6 h-6 object-contain shrink-0 opacity-80" 
+                            loading="lazy"
+                        />
+                        <h2 
+                            class="font-bold text-lg sm:text-xl "
+                            v-text="title || 'Note sans titre'"
+                        />
                     </div>
                 </div>
+
+                <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed overflow-hidden">
+                    <p
+                        v-if="IsPrivate"
+                        class="font-mono text-[10px] tracking-widest opacity-50 line-clamp-3"
+                    >
+                        {{ displayContent }}
+                    </p>
+                    <div
+                        v-else
+                        class="content-html line-clamp-3"
+                        v-html="displayContent"
+                    ></div>
+                </div>
+
+                <div v-if="_Tags.length > 0" class="shrink-0 flex flex-wrap gap-1 mt-auto pt-2">
+                    <span
+                        v-for="tag in _Tags"
+                        :key="tag.id"
+                        class="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide"
+                        :style="{ 
+                            backgroundColor: tag.color + '20',
+                            color: tag.color 
+                        }"
+                    >
+                        {{ tag.name }}
+                    </span>
+                </div>
+
+                <div 
+                    v-if="sharedBy && sharerIcon"
+                    class="shrink-0 gap-1 mt-2 flex flex-row justify-between items-center pt-2"
+                >
+                    <img
+                        class="w-7 h-7 rounded-full border border-gray-200"
+                        :src="sharerIcon"
+                        loading="lazy"
+                    />
+                    <div class="flex justify-center items-center flex-row -space-x-3">
+                        <img
+                            v-for="visitor in shareVisitors.slice(0, 5)"
+                            :key="visitor.user_id"
+                            class="w-7 h-7 rounded-full border border-gray-200 bg-white"
+                            :src="visitor.imageUrl"
+                            loading="lazy"
+                        />
+                        <div 
+                            v-if="shareVisitors.length > 5"
+                            class="flex items-center justify-center w-7 h-7 rounded-full border border-white bg-(--bg) text-[9px] font-bold z-10"
+                        >
+                            +{{ shareVisitors.length - 5 }}
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
-        </div>
+        
+        </a>
+
     </PressAndHold>
 
     <NoteParamsOverlay
@@ -152,6 +158,7 @@ const share_menu = ref<boolean>(false);
 const sharerIcon = ref<string | undefined>(undefined);
 const shareVisitors = ref<User[]>([]);
 const isMyShare = ref<boolean>(false);
+const href = computed<string>(() => `/${props.sharedBy ? 'share' : 'edit'}/${props.uuid}`);
 
 const _Tags = computed<Tag[]>(() => Tags.value.filter(tag => props.tags.includes(tag.id)));
 
@@ -170,12 +177,12 @@ const openNote = () => {
     if (props.click) return props.click();
 
     if (!document.startViewTransition) {
-        router.push(`/${props.sharedBy ? 'share' : 'edit'}/${props.uuid}`);
+        router.push(href.value);
         return;
     }
 
     document.startViewTransition(async () => {
-        await router.push(`/${props.sharedBy ? 'share' : 'edit'}/${props.uuid}`);
+        await router.push(href.value);
         await nextTick(); 
     });
 };

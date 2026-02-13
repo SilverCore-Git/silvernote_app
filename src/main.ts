@@ -5,6 +5,7 @@ import FloatingVue from 'floating-vue';
 import { clerkPlugin } from '@clerk/vue';
 import { frFR } from '@clerk/localizations'
 import pkg from '../package.json' assert { type: 'json' };
+import '@/assets/ts/utils/DangerLogger.ts';
 
 
 import './style.css';
