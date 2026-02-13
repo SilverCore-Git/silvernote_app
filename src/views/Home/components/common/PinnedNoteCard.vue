@@ -15,6 +15,7 @@
                     cursor-pointer overflow-hidden
                     hover:border-(--btn) border
                     transition-all duration-200 ease-in-out
+                     active:scale-90 backdrop-blur-3xl
                 "
                 :class="
                     note_selected || isSelected(props.uuid)
@@ -62,14 +63,14 @@
                 <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed break-words max-h-30">
                     <p
                         v-if="IsPrivate"
-                        class="line-clamp-3 font-mono text-[10px] tracking-widest opacity-50"
+                        class="line-clamp-6 font-mono text-[10px] tracking-widest opacity-50"
                     >
                         {{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 500) + ' ...' }}
                     </p>
 
                     <div
                         v-else
-                        class="line-clamp-3 content-html"
+                        class="line-clamp-6 content-html"
                         v-html="utils.clean_html(content).slice(0, 500) + ' ...'"
                     ></div>
                 </div>
@@ -157,7 +158,7 @@ const select_note = () => {
 
 onMounted(async () => {
     if (props.icon && props.icon !== '')
-        bgColor.value = await getDominantColor(props.icon) + '22';
+        bgColor.value = await getDominantColor(props.icon) + '30';
 })
 
 </script>
@@ -173,13 +174,11 @@ onMounted(async () => {
   display: inline;
 }
 
-.line-clamp-3 {
+.line-clamp-6 {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 6;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-
-
 
 </style>

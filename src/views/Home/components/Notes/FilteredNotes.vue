@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { sortedNotes, Tags } from '@/assets/ts/database/Var';
-import { computed, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import DefaultNoteCard from '../common/DefaultNoteCard.vue';
 import useFilter from '../../composables/useFilter';
 import { RecycleScroller } from 'vue3-virtual-scroller';
@@ -9,6 +9,19 @@ import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
 
 const { selectedFilter } = useFilter();
 const columns = ref<number>(3);
+const updateColumns = () => {
+    if (window.innerWidth < 1024) columns.value = 2;
+    else if (window.innerWidth < 1400) columns.value = 3;
+    else if (window.innerWidth < 1800) columns.value = 4;
+    else if (window.innerWidth < 2000) columns.value = 5;
+    else columns.value = 6;
+};
+
+onMounted(() => {
+    updateColumns();
+    window.addEventListener('resize', updateColumns);
+});
+onUnmounted(() => window.removeEventListener('resize', updateColumns));
 
 const notes = computed(() =>
     sortedNotes.value.filter(note => note.tags.includes(selectedFilter.value || 0))
