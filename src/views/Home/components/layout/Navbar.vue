@@ -35,6 +35,14 @@
                     Development mode
                 </span>
 
+                <span 
+                    v-if="host !== 'app.silvernote.fr' && !dev" 
+                    class="text-sm text-red-600 text-center font-bold" 
+                    style="letter-spacing: 0.2px;"
+                >
+                    Vous n'êtes actuellement pas sur le site officiel de Silvernote.
+                </span>
+
             </li>
 
             <Transition name="fade-slide">
@@ -186,6 +194,7 @@ const router = useRouter();
 const route = useRoute();
 const selectedNote = ref<string>('');
 const showGame = ref<boolean>(false);
+const host = window.location.hostname;
 
 
 const setPage = (a: 'shared' | 'all'): void => {
