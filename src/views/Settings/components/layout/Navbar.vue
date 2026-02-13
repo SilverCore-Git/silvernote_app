@@ -11,7 +11,7 @@
 
        <ul class="w-full flex flex-col gap-2 mt-4">
 
-            <li
+            <a
                 @click="router.push('/')"
                 class="
                     px-4 py-2 rounded-xl cursor-pointer
@@ -24,19 +24,19 @@
             >
                 <i class="bi bi-arrow-left-short text-4xl text-(--btn) " />
                 Accueil
-            </li>
+            </a>
 
             <hr class=" my-6 text-gray-400" />
 
-            <li 
+            <a 
                 v-for="page in pages"
                 @click="router.push('/settings' + page.path)"
-                class="li px-4 py-2 rounded-xl cursor-pointer"
+                class="li px-4 py-2 rounded-xl cursor-pointer group"
                 :class="[
                     page.name == '' ? 'hidden' : '',
                     route.params.page == page.path.replace('/', '')
                     || page.path == '/' && !route.params.page
-                        ? 'bg-(--btn) text-white' 
+                        ? 'bg-(--btn)' 
                         : ''
                 ]"
             >
@@ -45,24 +45,33 @@
                         page.icon,
                         route.params.page == page.path.replace('/', '') 
                         || page.path == '/' && !route.params.page
-                            ? '' 
+                            ? 'text-white group-hover:text-(--text)' 
                             : 'text-(--btn)'
                     "
-                    class="bi text-xl"
+                    class="bi text-xl  transition-all duration-300"
                 />
-                <span>{{ page.name }}</span>
-            </li>
+                <span
+                    :class="[
+                        page.name == '' ? 'hidden' : '',
+                        route.params.page == page.path.replace('/', '')
+                        || page.path == '/' && !route.params.page
+                            ? 'text-white group-hover:text-(--text)' 
+                            : ''
+                    ]"
+                    class=" transition-all duration-300"
+                >{{ page.name }}</span>
+            </a>
             
             <hr class=" my-6 text-gray-400" />
 
-            <SignOutButton><li 
-                class="li px-4 py-2 rounded-xl cursor-pointer text-red-600"
+            <SignOutButton><a
+                class="li px-4 py-2 rounded-xl cursor-pointer"
             >
                 <i
-                    class="bi bi-box-arrow-right text-xl"
+                    class="text-red-600 bi bi-box-arrow-right text-xl"
                 />
-                <span>Se déconnecter</span>
-            </li></SignOutButton>
+                <span class="text-red-600">Se déconnecter</span>
+            </a></SignOutButton>
 
         </ul>
 

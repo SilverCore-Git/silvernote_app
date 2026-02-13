@@ -2,6 +2,7 @@
 
 import { messages } from '../composables/useMessage';
 import { tools, type Tool } from '../composables/useSilveriaAPI/useTools';
+import { online, loaded } from '../assets/const';
 import MarkdownIt from 'markdown-it';
 
 const md = new MarkdownIt({ html: true, linkify: true });
@@ -40,6 +41,7 @@ const getToolsForMessage = (messageId: number): Tool[] => {
 <template>
         
     <div
+        v-if="loaded && online"
         v-for="msg in messages"
         :key="msg.id"
         class="flex w-full mb-6 animate-fade-in"
@@ -76,14 +78,14 @@ const getToolsForMessage = (messageId: number): Tool[] => {
 
                             <div v-else-if="tool.error" class="flex items-center gap-1.5 text-red-500">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                                 <span class="text-xs">Erreur</span>
                             </div>
 
                             <div v-else-if="tool.result" class="flex items-center gap-1.5 text-green-500">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
                                 <span class="text-xs">Terminé</span>
                             </div>
@@ -110,6 +112,15 @@ const getToolsForMessage = (messageId: number): Tool[] => {
                     : 'bg-(--bg2) border border-(--text)/10 rounded-bl-none text-(--text)'
                 "
             >
+
+                <div v-if="msg.error" class="mb-2">
+                    <div class="flex items-center gap-2 text-red-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span class="text-xs">Erreur : {{ msg.error }}</span>
+                    </div>
+                </div>
             
                 <div v-if="msg.role === 'assistant'">
 
@@ -133,6 +144,20 @@ const getToolsForMessage = (messageId: number): Tool[] => {
 
         </div>
 
+    </div>
+
+    <div v-else-if="!online" class="flex items-center gap-2 text-red-500">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        <span class="text-xs">SilverIA est hors ligne. Veuillez vérifier votre connexion.</span>
+    </div>
+
+    <div v-else class="flex items-center gap-2 text-(--btn)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="text-xs">Chargement de SilverIA...</span>
     </div>
 
 </template>

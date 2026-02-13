@@ -28,7 +28,7 @@
 
   <div 
     v-else 
-    class="h-full flex flex-col items-center justify-center text-center -translate-y-10"
+    class="h-full flex flex-col items-center justify-center text-center -translate-y-25"
   >
 
     <div class="bg-(--white)/50 w-24 h-24 flex items-center justify-center rounded-3xl mb-6 animate-bounce-slow">

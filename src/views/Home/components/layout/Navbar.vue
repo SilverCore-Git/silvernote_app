@@ -9,7 +9,7 @@
 
         <ul class="w-full">
             
-            <li class="flex-col">
+            <li class="flex-col nohover">
 
                 <div
                     @click="showGame = !showGame"

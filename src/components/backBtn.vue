@@ -1,13 +1,15 @@
 <template>
   <i 
     class="
-      absolute left-0 cursor-pointer z-50 
-      bi bi-arrow-left-short 
-      text-5xl hover:text-6xl
+      absolute left-0 cursor-pointer 
+      bi bi-arrow-left-short z-50 
+      text-5xl hover:scale-120
+      active:scale-90
        transition-all duration-300
     " 
     :class="white ? 'text-(--white)' : ' text-(--btn)'"
     @click="goBack"
+    title="Retour"
   />
 </template>
 

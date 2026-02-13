@@ -42,6 +42,22 @@ export async function sendMessageStream({
             throw new Error(`Erreur HTTP: ${response.status}`);
         }
 
+        const contentType = response.headers.get("content-type");
+        
+        if (!contentType?.includes("text/event-stream"))
+        {
+            try {
+                const jsonRes = await response.json();
+                if (jsonRes.error)
+                {
+                    onError(jsonRes.message || "Une erreur est survenue");
+                    return;
+                }
+            } catch (e) {
+                console.warn("La réponse n'est pas un JSON valide, traitement en tant que flux.");
+            }
+        }
+
         const reader = response.body.getReader();
         const decoder = new TextDecoder("utf-8");
         let buffer = "";

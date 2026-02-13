@@ -39,7 +39,12 @@ defineProps<{
 
     <NavBar class="lg:block hidden" />
     <MobileNavBar />
-    <BackBtn class="absolute top-4 left-4 lg:hidden" />
+
+    <BackBtn class="absolute top-2 left-1 lg:hidden" />
+    <div 
+      class="absolute z-45 h-30 pointer-events-none top-0 inset-x-0 lg:hidden"
+      style="background: linear-gradient(to top, transparent 0%, var(--bg2) 100%);" 
+    />
 
     <div
       class="w-full h-full xl:px-10 py-10 overflow-y-auto pb-20 bg-(--bg)"

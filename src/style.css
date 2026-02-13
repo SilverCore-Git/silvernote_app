@@ -93,6 +93,10 @@ a:hover {
   @apply bg-(--text)/10
 }
 
+a:active {
+  transform: scale(0.90);
+}
+
 .default-input {
   @apply w-full px-2 py-1 rounded-lg bg-(--white)/80 border border-[#F28C28]/40 focus:border-[#F28C28] outline-none
 }

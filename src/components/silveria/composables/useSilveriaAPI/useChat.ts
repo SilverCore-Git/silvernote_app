@@ -2,6 +2,7 @@ import { api_url } from "@/assets/ts/backend_link";
 import type { Chat } from "./SilverIAtypes";
 import { ref, type Ref } from "vue";
 import useToken from "@/composables/useToken";
+import { online } from "../../assets/const";
 
 class useChat
 {
@@ -23,6 +24,7 @@ class useChat
         if (res.ok) {
             const data = await res.json();
             this.chat.value = data.session;
+            online.value = true;
             return data;
         }
 
