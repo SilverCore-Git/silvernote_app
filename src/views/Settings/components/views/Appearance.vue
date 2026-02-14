@@ -15,7 +15,7 @@ const currentTheme = ref<Theme>(savedTheme || 'default');
 const eggMenu = ref<boolean>(false);
 
 const { Item: isPrivate, isLoaded: isPrivateLoaded } = useSettingsItem('private_mode', false);
-const { Item: showAllNews } = useSettingsItem('show_all_news', false);
+// const { Item: showAllNews } = useSettingsItem('show_all_news', false);
 
 const themes = [
   { id: 'light', label: 'Clair', icon: 'bi-sun' },

@@ -109,7 +109,6 @@ import NoteParamsOverlay from './NoteParamsOverlay.vue';
 import { Tags } from '@/assets/ts/database/Var';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { isSelected, selectedNotes, toggleNoteSelect } from '@/composables/useSelectedNotes';
-import { getDominantColor } from '@/assets/ts/GetColorByImage';
 import useSettingsItem from '@/assets/ts/settings/useSettingsItem';
 
 const props = defineProps<{

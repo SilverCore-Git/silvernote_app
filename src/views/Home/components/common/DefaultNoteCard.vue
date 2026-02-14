@@ -134,7 +134,6 @@ import useToken from '@/composables/useToken';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { isSelected, toggleNoteSelect, selectedNotes } from '@/composables/useSelectedNotes';
 import Share_menu from '@/components/popup/share_menu.vue';
-import { getDominantColor } from '@/assets/ts/GetColorByImage'
 import useSettingsItem from '@/assets/ts/settings/useSettingsItem';
 
 
