@@ -249,9 +249,10 @@ const initShareVisitors = async () => {
 }
 
 const initBG = async () => {
-    if (props.icon && props.icon !== '')
+    if (props.tags[0])
     {
-        bgColor.value = await getDominantColor(props.icon) + '30';
+        const firstValidTag = Tags.value.find(tag => props.tags.includes(tag.id));
+        bgColor.value = firstValidTag?.color + '30' || 'var(--white)';
     }
 }
 

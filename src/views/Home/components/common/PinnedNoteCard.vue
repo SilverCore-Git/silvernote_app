@@ -158,8 +158,13 @@ const select_note = () => {
 };
 
 onMounted(async () => {
-    if (props.icon && props.icon !== '')
-        bgColor.value = await getDominantColor(props.icon) + '30';
+    
+    if (props.tags[0])
+    {
+        const firstValidTag = Tags.value.find(tag => props.tags.includes(tag.id));
+        bgColor.value = firstValidTag?.color + '30' || 'var(--white)';
+    }
+
 })
 
 </script>
