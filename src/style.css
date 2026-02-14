@@ -24,7 +24,7 @@ body {
 
 div {
   transition: 
-    background-color 600ms ease-in-out, 
+    background-color 600ms ease-in-out,
     color 600ms ease-in-out,
     border-color 600ms ease-in-out;
 }

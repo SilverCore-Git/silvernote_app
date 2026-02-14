@@ -73,15 +73,15 @@
   <!-- Session cleanup -->
   <!-- ========================= -->
   <script>
-    const handleClose = () => {
-      navigator.sendBeacon?.(
-        'https://api.silvernote.fr/user/session/close'
-      ) || fetch('https://api.silvernote.fr/user/session/close', {
-        method: 'POST',
-        credentials: 'include'
-      });
-    };
-    window.addEventListener('beforeunload', handleClose);
+    // const handleClose = () => {
+    //   navigator.sendBeacon?.(
+    //     'https://api.silvernote.fr/user/session/close'
+    //   ) || fetch('https://api.silvernote.fr/user/session/close', {
+    //     method: 'POST',
+    //     credentials: 'include'
+    //   });
+    // };
+    // window.addEventListener('beforeunload', handleClose);
   </script>
 
   <!-- Cronitor RUM -->
@@ -147,6 +147,26 @@
 
 <body>
 
+  <script>
+
+    const theme = window.localStorage.getItem('theme');
+    const body = document.body;
+
+    if (theme == 'dark')
+    {
+      console.log('[index] : Dark theme activated');
+      body.style.backgroundColor = '#000';
+      body.style.color = '#FFF';
+    }
+    else if (theme == 'light') 
+    {
+      console.log('[index] : light theme activated');
+      body.style.backgroundColor = '#fff';
+      body.style.color = '#000';
+    }
+
+  </script>
+
   <div id="app" role="application" aria-label="Application Silvernote">
     <div class="centered-container">
       <img src="/favicon.svg" class="loader-icon" />
@@ -156,4 +176,5 @@
   <script type="module" src="/src/main.ts"></script>
 
 </body>
+
 </html>

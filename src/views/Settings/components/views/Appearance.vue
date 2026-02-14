@@ -50,7 +50,7 @@ watch(currentTheme, (newTheme) => {
 
 <template>
         
-    <div class="min-h-full max-w-5xl mx-auto w-full p-8 transition-colors duration-300">
+    <div class="min-h-full max-w-5xl mx-auto w-full p-8 transition-colors duration-300 ">
         
         <header class="mb-8">
 

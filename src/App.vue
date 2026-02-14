@@ -4,7 +4,7 @@
 
   <ShortsCut />
 
-  <div>
+  <div class="text-(--text) bg-(--bg)">
 
       <div>
 
@@ -43,10 +43,8 @@
           v-if="!loaded" 
           class="
             fixed inset-0 z-50
-            dark:bg-black bg-white
-            dark:text-white text-black
-            
           "
+          :class="themeClass"
         >
 
           <DesktopAppTitleBar />
@@ -62,7 +60,7 @@
 
       </transition>
 
-      <div v-if="is_offline" class="fixed inset-0 bg-(--bg)  z-50">
+      <div v-if="is_offline" class="fixed inset-0 bg-(--bg) z-50">
 
         <div class="flex justify-center items-center flex-col w-screen h-screen">
 
@@ -111,6 +109,11 @@ import IconLoader from "./components/iconLoader.vue";
 import { initNotifications } from "./components/notifications/notifications";
 import UpdateAvalable from "./components/updateAvalable.vue";
 
+const themeClass = ref<string>(
+  window.localStorage.getItem('theme') == 'dark'
+    ? 'bg-black text-white'
+    : 'bg-white text-black'
+);
 
 const route = useRoute();
 const router = useRouter();
