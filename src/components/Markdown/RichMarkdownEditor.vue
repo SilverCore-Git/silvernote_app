@@ -146,7 +146,7 @@ const handleScroll = (editor: Editor) => {
           const container = document.querySelector('.editor-container');
           if (container) 
           {
-            container.scrollBy({ top: -1000, behavior: 'smooth' });
+            container.scrollBy({ top: -2000, behavior: 'smooth' });
           }
 
         }
