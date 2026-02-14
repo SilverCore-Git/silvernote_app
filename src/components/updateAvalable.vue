@@ -53,6 +53,7 @@ const checkForUpdates = async () => {
         const response = await fetch(
             'https://raw.githubusercontent.com/silvercore-git/silvernote_app/main/package.json'
         );
+        if (!response.ok) return;
         const data = await response.json();
         if (data.version !== version) {
             updateAvailable.value = true;
@@ -67,6 +68,7 @@ const checkIsOnUpdate = async () => {
         const response = await fetch(
             '/score-host/api/status'
         );
+        if (!response.ok) return;
         const data = await response.json();
         if (
             data.service.onUpdate 
