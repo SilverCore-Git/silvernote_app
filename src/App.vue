@@ -45,6 +45,7 @@
             fixed inset-0 z-50
             dark:bg-black bg-white
             dark:text-white text-black
+            
           "
         >
 
@@ -61,7 +62,7 @@
 
       </transition>
 
-      <div v-if="is_offline" class="fixed inset-0 bg-(--bg) z-50">
+      <div v-if="is_offline" class="fixed inset-0 bg-(--bg)  z-50">
 
         <div class="flex justify-center items-center flex-col w-screen h-screen">
 
