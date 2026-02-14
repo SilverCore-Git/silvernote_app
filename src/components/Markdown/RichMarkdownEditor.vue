@@ -157,7 +157,36 @@ async function initEditor(): Promise<void>
         }
       },
     }),
-    editable: props.editable
+    editable: props.editable,
+    onFocus({ editor }) {
+      
+      setTimeout(() => {
+
+        const { view } = editor;
+        const { state } = view;
+        const { from } = state.selection;
+
+        const coords = view.coordsAtPos(from);
+        
+        const node = document.elementFromPoint(coords.left, coords.top);
+
+        if (node) 
+        {
+          
+          node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          const container = document.querySelector('.editor-container');
+          if (container) 
+          {
+            container.scrollBy({ top: -150, behavior: 'smooth' });
+          }
+
+        }
+
+      }, 150);
+
+    },
+
   });
 
   await nextTick();
@@ -237,6 +266,8 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  scroll-behavior: smooth;
+  overflow-y: auto;
 }
 
 .editor-container .ProseMirror {
@@ -251,6 +282,10 @@ onBeforeUnmount(() => {
   letter-spacing: 0.01em;
   color: var(--text);
   min-width: 0;
+}
+
+.editor-container .ProseMirror > * {
+  scroll-margin-top: 25vh; 
 }
 
 .editor-container .prose {
