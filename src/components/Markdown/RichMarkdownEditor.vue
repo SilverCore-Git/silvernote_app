@@ -126,6 +126,35 @@ const getColorByImage = async (): Promise<{ bg: string, text: string }> => {
 
 };
 
+const handleScroll = (editor: Editor) => {
+
+      setTimeout(() => {
+
+        const { view } = editor;
+        const { state } = view;
+        const { from } = state.selection;
+
+        const coords = view.coordsAtPos(from);
+        
+        const node = document.elementFromPoint(coords.left, coords.top);
+
+        if (node) 
+        {
+          
+          node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          const container = document.querySelector('.editor-container');
+          if (container) 
+          {
+            container.scrollBy({ top: -1000, behavior: 'smooth' });
+          }
+
+        }
+
+    }, 150);
+
+}
+
 
 async function initEditor(): Promise<void>
 {
@@ -158,33 +187,12 @@ async function initEditor(): Promise<void>
       },
     }),
     editable: props.editable,
+
     onFocus({ editor }) {
-      
-      setTimeout(() => {
-
-        const { view } = editor;
-        const { state } = view;
-        const { from } = state.selection;
-
-        const coords = view.coordsAtPos(from);
-        
-        const node = document.elementFromPoint(coords.left, coords.top);
-
-        if (node) 
-        {
-          
-          node.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-          const container = document.querySelector('.editor-container');
-          if (container) 
-          {
-            container.scrollBy({ top: -150, behavior: 'smooth' });
-          }
-
-        }
-
-      }, 150);
-
+      handleScroll(editor as Editor);
+    },
+    onSelectionUpdate({ editor }) {
+      handleScroll(editor as Editor);
     },
 
   });
