@@ -2,17 +2,20 @@
 
 import { setThemePreference } from '@/assets/ts/theme';
 import DefaultNoteCard from '@/views/Home/components/common/DefaultNoteCard.vue';
-import { IsPrivate, setPrivate } from '@/assets/ts/settings/privatMode';
 import { ref, watch } from 'vue';
 import Switch from '@/components/inputs/Switch.vue';
 import Popup from '@/components/popup/Popup.vue';
 import darkenHex from '@/assets/ts/utils/darkenHex';
+import useSettingsItem from '@/assets/ts/settings/useSettingsItem';
 
 type Theme = 'light' | 'dark' | 'default';
 
 const savedTheme = window.localStorage.getItem('theme') as Theme | null;
 const currentTheme = ref<Theme>(savedTheme || 'default');
 const eggMenu = ref<boolean>(false);
+
+const { Item: isPrivate, isLoaded: isPrivateLoaded } = useSettingsItem('private_mode', false);
+const { Item: showAllNews } = useSettingsItem('show_all_news', false);
 
 const themes = [
   { id: 'light', label: 'Clair', icon: 'bi-sun' },
@@ -74,11 +77,11 @@ watch(currentTheme, (newTheme) => {
                     :class="[
                         'flex flex-col items-center justify-center py-4 px-6 rounded-lg transition-all duration-200 gap-2 border-2 cursor-pointer',
                         currentTheme === theme.id 
-                            ? 'bg-(--bg) border-(--btn) shadow-lg' 
+                            ? 'bg-(--bg) border-(--btn) shadow-lg text-(--btn)' 
                             : 'border-transparent hover:bg-(--bg)/50 opacity-70 hover:opacity-100'
                     ]"
                 >
-                    <i class="bi text-2xl" :class="theme.icon" />
+                    <i class="bi text-2xl" :class="currentTheme === theme.id ? theme.icon + '-fill' : theme.icon" />
                     <span class="font-medium text-sm">{{ theme.label }}</span>
                 </button>
 
@@ -86,7 +89,7 @@ watch(currentTheme, (newTheme) => {
 
         </section>
 
-        <section class="mb-8">
+        <section class="mb-8" v-if="isPrivateLoaded">
 
             <h2 class="font-semibold text-lg mb-4">Mode privée</h2>
 
@@ -96,8 +99,7 @@ watch(currentTheme, (newTheme) => {
                     <div class="text-xs opacity-60">Ne pas afficher le contenu des notes.</div>
                 </div>
                 <Switch
-                    :model-value="IsPrivate!"
-                    @update:model-value="setPrivate(!IsPrivate)"
+                    v-model:model-value="isPrivate"
                 />
             </div>
 

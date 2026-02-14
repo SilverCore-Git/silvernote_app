@@ -44,15 +44,15 @@
 
                 <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed overflow-hidden">
                     <p
-                        v-if="IsPrivate"
+                        v-if="isPrivate"
                         class="font-mono text-[10px] tracking-widest opacity-50 line-clamp-6"
                     >
-                        {{ displayContent }}
+                        {{ utils.htmlToText(props.content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 500) + '...' }}
                     </p>
                     <div
                         v-else
                         class="content-html line-clamp-6"
-                        v-html="displayContent"
+                        v-html="utils.clean_html(props.content).slice(0, 500) + '...'"
                     ></div>
                 </div>
 
@@ -125,7 +125,6 @@ import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import utils from '@/assets/ts/utils';
 import type { User, Tag } from '@/assets/ts/type';
-import { IsPrivate } from '@/assets/ts/settings/privatMode';
 import PressAndHold from '@/components/PressAndHold.vue';
 import NoteParamsOverlay from './NoteParamsOverlay.vue';
 import { Tags } from '@/assets/ts/database/Var';
@@ -136,6 +135,8 @@ import isMobile from '@/assets/ts/utils/isMobile';
 import { isSelected, toggleNoteSelect, selectedNotes } from '@/composables/useSelectedNotes';
 import Share_menu from '@/components/popup/share_menu.vue';
 import { getDominantColor } from '@/assets/ts/GetColorByImage'
+import useSettingsItem from '@/assets/ts/settings/useSettingsItem';
+
 
 const props = defineProps<{
     uuid: string;
@@ -149,8 +150,10 @@ const props = defineProps<{
     sharedBy?: string;
 }>();
 
+
 const { getUserByUUID } = useUser();
 const router = useRouter();
+const { Item: isPrivate } = useSettingsItem('private_mode', false);
 
 const bgColor = ref<string>('var(--white)');
 const note_selected = ref<boolean>(false);
@@ -158,16 +161,11 @@ const share_menu = ref<boolean>(false);
 const sharerIcon = ref<string | undefined>(undefined);
 const shareVisitors = ref<User[]>([]);
 const isMyShare = ref<boolean>(false);
-const href = computed<string>(() => `/${props.sharedBy ? 'share' : 'edit'}/${props.uuid}`);
 
+const href = computed<string>(() => `/${props.sharedBy ? 'share' : 'edit'}/${props.uuid}`);
 const _Tags = computed<Tag[]>(() => Tags.value.filter(tag => props.tags.includes(tag.id)));
 
-const displayContent = computed(() => {
-    if (IsPrivate.value) {
-        return utils.htmlToText(props.content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 500) + ' ...';
-    }
-    return utils.clean_html(props.content).slice(0, 500) + ' ...';
-});
+
 
 const openNote = () => {
     if (isMobile && selectedNotes.value.length > 0) {
