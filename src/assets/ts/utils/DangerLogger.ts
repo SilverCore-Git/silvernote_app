@@ -17,7 +17,7 @@ const log = () => {
 }
 
 
-if (dev) {
+if (!dev) {
     log()
     setInterval(() => {
         log();

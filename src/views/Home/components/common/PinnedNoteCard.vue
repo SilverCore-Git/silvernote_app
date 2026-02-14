@@ -62,7 +62,7 @@
 
                 <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed break-words max-h-30">
                     <p
-                        v-if="IsPrivate"
+                        v-if="isPrivate"
                         class="line-clamp-6 font-mono text-[10px] tracking-widest opacity-50"
                     >
                         {{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 500) + ' ...' }}
@@ -104,13 +104,12 @@ import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import utils from '@/assets/ts/utils';
 import type { Tag } from '@/assets/ts/type';
-import { IsPrivate } from '@/assets/ts/settings/privatMode';
 import PressAndHold from '@/components/PressAndHold.vue';
 import NoteParamsOverlay from './NoteParamsOverlay.vue';
 import { Tags } from '@/assets/ts/database/Var';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { isSelected, selectedNotes, toggleNoteSelect } from '@/composables/useSelectedNotes';
-import { getDominantColor } from '@/assets/ts/GetColorByImage';
+import useSettingsItem from '@/assets/ts/settings/useSettingsItem';
 
 const props = defineProps<{
     uuid: string;
@@ -126,6 +125,7 @@ const router = useRouter();
 const _Tags = computed<Tag[]>(() => Tags.value.filter(tag => props.tags.includes(tag.id)));
 const note_selected = ref<boolean>(false);
 const href = computed<string>(() => `/edit/${props.uuid}`);
+const { Item: isPrivate } = useSettingsItem('private_mode', false);
 
 
 const open_note = () => {
@@ -157,8 +157,13 @@ const select_note = () => {
 };
 
 onMounted(async () => {
-    if (props.icon && props.icon !== '')
-        bgColor.value = await getDominantColor(props.icon) + '30';
+    
+    if (props.tags[0])
+    {
+        const firstValidTag = Tags.value.find(tag => props.tags.includes(tag.id));
+        bgColor.value = firstValidTag?.color + '30' || 'var(--white)';
+    }
+
 })
 
 </script>

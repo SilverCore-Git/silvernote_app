@@ -34,15 +34,6 @@ body.dark {
 }
 
 
-/* body.light {
-    --bg: #FFF8F0;
-    --bg2: #FFF3E0;
-    --white: #FFF;
-    --text: #000;
-    --text-strong: rgb(51, 51, 51);
-    --text-little: #444444d2;
-    --shadow: #33333381;
-} */
 body.light {
     --bg: #F5F2ED;
     --bg2: #EFE9E0;
