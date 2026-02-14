@@ -35,7 +35,7 @@ export async function sendMessageStream({
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${await useToken()}`
             },
-            body: JSON.stringify({ uuid, message, note }),
+            body: JSON.stringify({ uuid, message, note, clerkToken: await window.Clerk.session?.getToken() }),
         });
 
         if (!response.ok || !response.body) {
