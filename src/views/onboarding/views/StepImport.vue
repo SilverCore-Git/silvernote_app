@@ -5,13 +5,13 @@
     <h2 class="text-2xl font-bold mb-2">D'où venez-vous ?</h2>
     <p class="text-(--text)/80">Importez vos notes depuis vos anciens outils.</p>
 
-    <div class="grid grid-cols-2 gap-4 mt-4 h-full">
+    <div class="flex flex-col justify-center items-center gap-4 mx-2 my-4 h-full">
 
       <button
         v-for="src in sources" 
         :key="src.id"
         @click="$emit('toggle', src.id)"
-        class="h-full cursor-pointer relative rounded-xl border border-(--text)/10 p-4 transition-all duration-150"
+        class="h-full w-full cursor-pointer relative rounded-xl border border-(--text)/10 p-4 transition-all duration-150"
         :class="
           selected.includes(src.id) 
             ? 'bg-(--btn)/5 border-(--btn) ring-1 ring-(--btn)' 

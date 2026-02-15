@@ -2,8 +2,8 @@
 
   <div 
     class="
-      relative w-full h-screen 
-      overflow-hidden flex 
+      relative w-full h-screen
+      overflow-hidden flex p-1 md:p-4
       items-center justify-center 
       bg-(--bg) text-(--text)
     "
@@ -21,14 +21,16 @@
         flex flex-col md:flex-row bg-(--white)/60
         backdrop-blur-xl border border-(--text)/10 
         rounded-3xl shadow-2xl overflow-hidden
+        h-full md:h-auto
       "
     >
       
       <div 
         class="
-          w-full md:w-1/3 p-8 bg-(--bg2)
+          w-full md:w-1/3 bg-(--bg2)
           flex flex-col justify-between 
           border-r border-(--text)/5
+          p-4 md:p-8
         "
       >
 
@@ -40,7 +42,7 @@
           <p class="text-xs opacity-60">Configuration de l'espace de travail.</p>
         </div>
 
-        <div class="space-y-4 my-8">
+        <div class="md:space-y-4 md:block my-4 md:my-8 flex justify-between  items-center">
 
           <div 
             v-for="(stepId, index) in stepsOrder" 
@@ -48,15 +50,15 @@
             class="flex items-center gap-4 transition-all duration-300"
             :class="[
               page === stepId ? 'opacity-100' : 'opacity-40',
-              stepId.startsWith('import-') ? 'ml-6' : ''
+              stepId.startsWith('import-') ? 'md:ml-6' : ''
             ]"
           >
 
             <div 
               class="
-                w-7 h-7 rounded-full 
+                w-10 h-10 md:w-7 md:h-7 rounded-full 
                 flex items-center justify-center 
-                text-[10px] font-bold border transition-all
+                font-bold border transition-all
               "
               :class="
                 currentIndex >= index 
@@ -64,11 +66,11 @@
                   : 'border-(--text)/30'
               "
             >
-              <i v-if="currentIndex > index" class="bi bi-check-lg text-xs" />
-              <span v-else>{{ index + 1 }}</span>
+              <i v-if="currentIndex > index" class="bi bi-check-lg text-md md:text-xs" />
+              <span v-else class="text-md md:text-xs">{{ index + 1 }}</span>
             </div>
 
-            <div class="flex flex-col">
+            <div class=" hidden md:flex flex-col">
               <span class="text-sm font-semibold tracking-tight">{{ stepsLabels[stepId] }}</span>
               <span v-if="stepId.startsWith('import-')" class="text-[9px] uppercase opacity-60 font-bold tracking-tighter">
                 Importation
@@ -79,15 +81,15 @@
 
         </div>
 
-        <div class="text-[10px] font-bold opacity-30 uppercase tracking-widest">
+        <div class="hidden md:block text-[10px] font-bold opacity-30 uppercase tracking-widest">
           Étape {{ currentIndex + 1 }} / {{ stepsOrder.length }}
         </div>
 
       </div>
 
-      <div class="w-full md:w-2/3 p-10 relative flex flex-col overflow-hidden">
+      <div class="w-full h-full md:h-auto p-4 md:p-8 relative flex flex-col overflow-hidden">
         
-        <div class="flex-1">
+        <div class="flex-1 mb-4 overflow-y-auto md:overflow-hidden">
           <transition :name="transitionName" mode="out-in">
             <slot :key="page" />
           </transition>
@@ -95,7 +97,7 @@
 
         <div 
           v-if="page !== 'start' && page !== 'done'" 
-          class="mt-auto flex justify-between items-center pt-8 border-t border-(--text)/5 bg-transparent"
+          class="mt-auto flex justify-between items-center pt-4 border-t border-(--text)/5 bg-transparent"
         >
           <button 
             @click="$emit('back')" 
@@ -145,9 +147,7 @@ const stepsConfigBase: Record<string, string> = {
 
 const importNames: Record<string, string> = {
   keep: 'Google Keep',
-  notion: 'Notion',
-  apple: 'Apple Notes',
-  md: 'Markdown'
+  snote: 'Silvernote'
 };
 
 const stepsOrder = computed(() => {

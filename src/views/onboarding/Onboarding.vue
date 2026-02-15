@@ -3,11 +3,14 @@
 import { computed, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUser } from '@clerk/vue';
+
 import OnboardingLayout from './OnboardingLayout.vue';
+
 import StepStart from './views/StepStart.vue';
 import StepImport from './views/StepImport.vue';
 import StepApparence from './views/StepApparence.vue';
 import ImportKeep from './views/import-keep.vue';
+import ImportSnote from './views/import-snote.vue';
 import TransitionPortal from './TransitionPortal.vue';
 
 const props = defineProps<{ page: 'start' | 'apparence' | 'import' | 'done' }>();
@@ -25,19 +28,9 @@ const importSources = [
     icon: 'https://cdn.simpleicons.org/googlekeep'
   },
   { 
-    id: 'apple', 
-    name: 'Apple Notes', 
-    icon: 'https://cdn.simpleicons.org/apple'
-  },
-  { 
-    id: 'notion', 
-    name: 'Notion HTML', 
-    icon: 'https://cdn.simpleicons.org/notion'
-  },
-  { 
-    id: 'md', 
-    name: 'Fichiers Markdown', 
-    icon: 'https://cdn.simpleicons.org/markdown/0081ff'
+    id: 'snote', 
+    name: 'Silvernote', 
+    icon: '/favicon.png'
   }
 ];
 
@@ -113,7 +106,9 @@ const complete = async () => {
     
     <StepImport v-else-if="page === 'import'" :selected="selection.imports" :sources="importSources" @toggle="toggleImport" />
 
-    <import-keep v-else-if="page.startsWith('import-')" :selected="selection.imports" />
+    <import-keep v-else-if="page.startsWith('import-keep')" :selected="selection.imports" />
+
+    <import-snote v-else-if="page.startsWith('import-snote')" :selected="selection.imports" />
     
     <div v-else-if="page === 'done'" class="flex flex-col items-center text-center justify-center h-full">
       <div class="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center text-4xl mb-6 animate-bounce-slow"><i class="bi bi-stars"></i></div>

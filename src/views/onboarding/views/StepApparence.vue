@@ -2,11 +2,11 @@
 
   <div class="flex flex-col h-full">
 
-    <h2 class="text-2xl font-bold mb-2">
-      Déffinissez votre thème.
+    <h2 class="text-2xl font-bold">
+      Définissez votre thème :
     </h2>
 
-    <div >
+    <div class="my-auto" >
             
       <div class="grid grid-cols-1 gap-2 p-1 bg-(--bg2) rounded-xl border border-(--text)/5">
                 
@@ -15,7 +15,7 @@
             :key="theme.id"
             @click="currentTheme = theme.id as Theme"
             :class="[
-                'flex flex-col items-center justify-center py-4 px-6 rounded-lg transition-all duration-200 gap-2 border-2 cursor-pointer',
+                'flex flex-col items-center justify-center py-4 px-6 rounded-lg transition-all duration-200 gap-2 border-2 cursor-pointer h-full',
                 currentTheme === theme.id 
                     ? 'bg-(--bg) border-(--btn) shadow-lg text-(--btn)' 
                     : 'border-transparent hover:bg-(--bg)/50 opacity-70 hover:opacity-100'
