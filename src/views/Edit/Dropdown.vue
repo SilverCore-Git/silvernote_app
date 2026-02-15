@@ -46,7 +46,7 @@
                                 {{ wordCount || '...' }}
                             </span>
                             <span>
-                                Cractères :
+                                Caractères :
                                 {{ characterCount || '...' }}
                             </span>
                         </div>

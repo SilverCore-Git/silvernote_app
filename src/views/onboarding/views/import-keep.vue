@@ -104,7 +104,7 @@ onMounted(() => {
             ]"
             @dragover.prevent="isDragging = true"
             @dragleave.prevent="isDragging = false"
-            @drop.prevent="isDragging = false; handleImportLogic($event.dataTransfer?.files[0])"
+            @drop.prevent="isDragging = false; handleImportLogic($event.dataTransfer?.files[0]!)"
         >
             
             <div v-if="!isProcessing && !stats.finished" class="p-8 text-center">

@@ -10,7 +10,7 @@ import SignUp from './views/auth/SignUp.vue';
 import Redirect from './views/auth/Redirect.vue';
 import NotFound from './views/errors/404.vue';
 import App2048 from './components/2048/App2048.vue';
-import Onboarding from './views/onboarding/onboarding.vue';
+import Onboarding from './views/onboarding/Onboarding.vue';
 
 
 

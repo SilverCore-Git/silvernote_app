@@ -31,6 +31,6 @@
 
 <script setup lang="ts">
 defineProps<{ 
-  name?: string 
+  name?: string | null;
 }>();
 </script>
