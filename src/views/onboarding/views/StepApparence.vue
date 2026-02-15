@@ -1,6 +1,6 @@
 <template>
 
-  <div class="flex flex-col h-full">
+  <div class="flex flex-col h-full p-4 md:p-8">
 
     <h2 class="text-2xl font-bold">
       Définissez votre thème :

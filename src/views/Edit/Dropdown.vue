@@ -19,7 +19,6 @@
 
                     <li @click="export_menu = true">Exporter</li>
                     <li @click="import_menu = true">Importer</li>
-                    <li @click="debugCryptedNote">Débogé la note crypté</li>
 
                     <hr />
 
@@ -144,16 +143,6 @@ const delete_note = async (state: number) => {
         Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
         router.push('/');
     }
-}
-
-const debugCryptedNote = async () => {
-    await fetch(`${api_url}/api/db/fulldecrypte/a/note?uuid=${props.uuid}`, {
-        method: 'POST',
-        headers: {
-            'Authorization': 'Bearer ' + await getToken()
-        }
-    })
-    nextTick().then(() => window.location.reload());
 }
 
 </script>

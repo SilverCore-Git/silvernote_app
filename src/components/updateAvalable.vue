@@ -97,7 +97,7 @@ onMounted(() => {
         await checkForUpdates();
         await checkIsOnUpdate();
 
-    }, 60 * 60 * 1000); // Check every hour
+    }, 5 * 60 * 1000); // Check every 5mn
 
 })
 

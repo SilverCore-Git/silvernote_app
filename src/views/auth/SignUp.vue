@@ -3,14 +3,12 @@
 import isMobile from '@/assets/ts/utils/isMobile';
 import IconLoader from '@/components/iconLoader.vue';
 import { ClerkLoaded, ClerkLoading, SignUp } from '@clerk/vue';
-import { useRoute } from 'vue-router';
 
-const route = useRoute();
 const url = new URL('/sauth/redirect', 'http://dummy.local');
 
 url.searchParams.set(
   'redirectUrl',
-  String(route.query.redirectUrl ?? '')
+  '/onboarding'
 );
 
 const redirectUrl = url.pathname + url.search;

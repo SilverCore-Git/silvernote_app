@@ -157,6 +157,13 @@ onMounted(async () => {
 
     }
 
+    if (!user.value?.unsafeMetadata.onboarding && user.value?.unsafeMetadata.onboarding !== 'completed')
+    {
+      router.push({ path: "/onboarding/start" });
+      loaded.value = true;
+      return;
+    }
+
     if (user.value?.id)
     {
 

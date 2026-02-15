@@ -12,6 +12,7 @@ import StepApparence from './views/StepApparence.vue';
 import ImportKeep from './views/import-keep.vue';
 import ImportSnote from './views/import-snote.vue';
 import TransitionPortal from './TransitionPortal.vue';
+import StepDone from './views/StepDone.vue';
 
 const props = defineProps<{ page: 'start' | 'apparence' | 'import' | 'done' }>();
 const router = useRouter();
@@ -110,11 +111,7 @@ const complete = async () => {
 
     <import-snote v-else-if="page.startsWith('import-snote')" :selected="selection.imports" />
     
-    <div v-else-if="page === 'done'" class="flex flex-col items-center text-center justify-center h-full">
-      <div class="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center text-4xl mb-6 animate-bounce-slow"><i class="bi bi-stars"></i></div>
-      <h2 class="text-2xl font-bold mb-4">Prêt à commencer ?</h2>
-      <button @click="complete" class="premium" :disabled="loading"><span class="text-xl">C'est parti !</span></button>
-    </div>
+    <StepDone v-else-if="page === 'done'" @complete="complete" :loading="loading" />
 
   </OnboardingLayout>
 

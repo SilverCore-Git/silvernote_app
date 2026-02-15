@@ -9,7 +9,7 @@
     "
   >
     
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="hidden md:block absolute inset-0 overflow-hidden pointer-events-none">
       <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-(--btn)/20 rounded-full blur-[100px]" />
       <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-(--btn)/20 rounded-full blur-[100px]" />
       <div class="absolute top-[40%] left-[40%] w-[300px] h-[300px] bg-(--btn)/20 rounded-full blur-[100px]" />
@@ -87,9 +87,9 @@
 
       </div>
 
-      <div class="w-full h-full md:h-auto p-4 md:p-8 relative flex flex-col overflow-hidden">
+      <div class="w-full h-full md:h-auto relative flex flex-col overflow-hidden">
         
-        <div class="flex-1 mb-4 overflow-y-auto md:overflow-hidden">
+        <div class="flex-1 mb-4 overflow-y-auto md:overflow-hidden ">
           <transition :name="transitionName" mode="out-in">
             <slot :key="page" />
           </transition>
@@ -97,7 +97,7 @@
 
         <div 
           v-if="page !== 'start' && page !== 'done'" 
-          class="mt-auto flex justify-between items-center pt-4 border-t border-(--text)/5 bg-transparent"
+          class=" flex justify-between items-center p-4 border-t border-(--text)/5 bg-transparent"
         >
           <button 
             @click="$emit('back')" 
@@ -125,7 +125,7 @@
 
 <script setup lang="ts">
 
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 const props = defineProps<{ 
@@ -133,7 +133,7 @@ const props = defineProps<{
   selectedImports: string[] 
 }>();
 
-defineEmits(['next', 'back']);
+const emit = defineEmits(['next', 'back']);
 
 const route = useRoute();
 const canPass = ref<boolean>(route.query.canPass !== undefined ? route.query.canPass === '1' : true);
@@ -176,6 +176,13 @@ watch(() => props.page, (newVal, oldVal) => {
 watch(() => route.query.canPass, (newVal) => {
   canPass.value = newVal === '1';
 })
+
+const handleKeydown = (e: KeyboardEvent) => {
+  if (e.key === 'Enter') emit('next');
+};
+
+onMounted(() => window.addEventListener('keydown', handleKeydown));
+onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
 
 </script>
 
