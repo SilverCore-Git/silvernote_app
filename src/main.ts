@@ -42,6 +42,7 @@ app.use(clerkPlugin, {
   localization: frFR,
   appearance: clerkAppearanceSettings,
   afterSignOutUrl: '/sauth/sign-in',
+  afterSignUpUrl: '/onboarding',
   routerPush: router.push,
   routerReplace: router.replace
 });
