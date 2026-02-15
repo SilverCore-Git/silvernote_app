@@ -157,13 +157,6 @@ onMounted(async () => {
 
     }
 
-    if (user.value?.unsafeMetadata.onboarding !== 'completed')
-    {
-      router.push({ path: "/onboarding/start" });
-      loaded.value = true;
-      return;
-    }
-
     if (user.value?.id)
     {
 
@@ -193,6 +186,13 @@ onMounted(async () => {
     setInterval(async () => {
       await initNotifications();
     }, 15 * 60 * 1000); // Refresh notif every 15 minutes
+
+    if (user.value?.unsafeMetadata.onboarding !== 'completed')
+    {
+      router.push({ path: "/onboarding/start" });
+      loaded.value = true;
+      return;
+    }
 
   } 
   catch (err: any)
