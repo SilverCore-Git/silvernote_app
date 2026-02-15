@@ -39,7 +39,7 @@ onMounted(async() => {
     <div class="relative">
 
         <div 
-            class="flex flex-col gap-4 h-full "
+            class="flex flex-col gap-4 h-full pb-40"
             v-if="SharedNotes.length || ShareByMe.length"
         >
 

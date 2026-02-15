@@ -19,6 +19,7 @@
 
                     <li @click="export_menu = true">Exporter</li>
                     <li @click="import_menu = true">Importer</li>
+                    <li @click="debugCryptedNote">Débogé la note crypté</li>
 
                     <hr />
 
@@ -141,6 +142,12 @@ const delete_note = async (state: number) => {
         Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
         router.push('/');
     }
+}
+
+const debugCryptedNote = () => {
+    const note = Notes.value.find(note => note.uuid == props.uuid);
+    note!.content_type = 'text/html/crypted';
+    saveNote(note!.uuid, { force: true });
 }
 
 </script>
