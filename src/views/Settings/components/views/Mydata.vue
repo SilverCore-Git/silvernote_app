@@ -6,7 +6,6 @@ import DownloadDBToSnote from '../../utils/DownloadDBToSNOTE';
 import DownloadDBToJSON from '../../utils/DownloadDBToJSON';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import database from '@/assets/ts/database/database';
-import UploadFromSNOTE from '../../utils/UploadFromSNOTE';
 import { api_url } from '@/assets/ts/backend_link';
 import useToken from '@/composables/useToken';
 import { useRouter } from 'vue-router';
@@ -14,11 +13,8 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const Loader = ref<string>('');
 const ShowConfirmDialog = ref<boolean>(false);
-const file_input = ref<HTMLInputElement | undefined>(undefined);
 const fingerPrint = ref<string>('');
 const showFingerprint = ref<boolean>(false);
-const eatNotesTotal = ref<number | undefined>(undefined);
-const eatNotesCurent = ref<number | undefined>(undefined);
 
 
 const exportFormats = [
@@ -27,8 +23,6 @@ const exportFormats = [
   { id: 'json', label: 'Données brutes (.json)', description: 'Toutes vos données structurées pour les développeurs.' },
 //   { id: 'pdf', label: 'Documents (.pdf)', description: 'Uniquement pour la lecture et l\'impression.' },
 ];
-
-const open_input = () => file_input.value?.click();
 
 const exportData = (format: string) => {
 
@@ -55,27 +49,6 @@ const exportData = (format: string) => {
 
 };
 
-const uploadData = (event: Event) => {
-    Loader.value = 'upload';
-
-    eatNotesTotal.value = 0;
-    eatNotesCurent.value = 0;
-
-    UploadFromSNOTE({
-        event,
-        onEnd: () => {
-            eatNotesTotal.value = undefined;
-            eatNotesCurent.value = undefined;
-            setTimeout(() => {
-                Loader.value = '';
-            }, 200)
-        },
-        onProgress: (current, total) => {
-            eatNotesCurent.value = current;
-            eatNotesTotal.value = total;
-        }
-    })
-}
 
 const resetDB = async (state: 1 | 2) => {
     if (state == 1) 
