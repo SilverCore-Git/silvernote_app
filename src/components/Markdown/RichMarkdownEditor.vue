@@ -142,7 +142,7 @@ const handleScroll = (editor: Editor) => {
     {
       node.scrollIntoView({ 
         behavior: 'smooth', 
-        block: 'start' 
+        block: 'center' 
       });
     }
 
@@ -189,6 +189,16 @@ async function initEditor(): Promise<void>
     onSelectionUpdate({ editor }) {
       handleScroll(editor as Editor);
     },
+
+  editorProps: {
+    handleDOMEvents: {
+      mousedown: (_view, event) => {
+        const target = event.target as HTMLElement;
+        if (target && target.type === 'checkbox' && target.closest('.task-list')) {}
+        return false;
+      },
+    },
+  },
 
   });
 

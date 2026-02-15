@@ -24,14 +24,12 @@ import Blockquote from '@tiptap/extension-blockquote';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { Table, TableCell, TableRow, TableHeader } from '@tiptap/extension-table';
 import { SearchAndReplace } from './tiptap-extensions/searchAndReplace';
-import Emoji, { gitHubEmojis } from '@tiptap/extension-emoji';
 import { createMathExtension } from './tiptap-extensions/mathExtension';
 
 import type * as Y from 'yjs';
 import lowlight from './utils/lowlight.js';
 import CodeBlockLowlightComponent from './tiptap-extensions/components/CodeBlockLowlightComponent.vue';
 import { VueNodeViewRenderer } from '@tiptap/vue-3';
-import suggestion from './tiptap-extensions/Emoji/suggestions.js';
 import ImageComponent from './tiptap-extensions/components/ImageComponent.vue';
 import TableComponent from './tiptap-extensions/components/TableComponent.vue';
 
@@ -69,11 +67,6 @@ export function buildEditorExtensions(params: EditorConfigParams) {
         keepMarks: true,
         keepAttributes: false,
       },
-    }),
-    Emoji.configure({
-      emojis: gitHubEmojis,
-      enableEmoticons: true,
-      suggestion: suggestion,
     }),
     noteBtnLink,
     Blockquote,
