@@ -26,13 +26,13 @@ export function useKeepImporter()
         if (data.listContent) 
         {
             const items = data.listContent.map((item: any) => 
-                `<li><p>${item.text}</p></li>` // Format list
+                `<li data-checked="${item.checked}"><p>${item.text}</p></li>` // Format list
             ).join('');
-            htmlContent = `<ul>${items}</ul>`;
+            htmlContent = `<ul data-type="taskList">${items}</ul>`;
         } 
         else 
         {
-            htmlContent = data.textContentHtml;
+            htmlContent = cleanGoogleHtmlToBody(data.textContentHtml);
         }
 
         if (data.isArchived) return;
@@ -105,8 +105,56 @@ export function useKeepImporter()
 
     };
 
+    const cleanGoogleHtmlToBody = (rawHtml: string): string => {
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(rawHtml, "text/html");
+
+        const body = document.createElement("div");
+
+        doc.body.childNodes.forEach((node) => {
+            
+            if (node.nodeType === Node.TEXT_NODE) 
+            {
+
+                const text = node.textContent?.trim();
+                if (text) 
+                {
+                    const p = document.createElement("p");
+                    p.textContent = text;
+                    body.appendChild(p);
+                }
+
+            }
+
+            if (node instanceof HTMLElement) 
+            {
+
+                if (node.tagName === "P") {
+                    const text = node.textContent?.trim();
+                    if (text) {
+                    const p = document.createElement("p");
+                    p.textContent = text;
+                    body.appendChild(p);
+                    }
+                }
+
+                if (node.tagName === "BR") {
+                    body.appendChild(document.createElement("br"));
+                }
+
+            }
+
+        });
+
+        return body.innerHTML;
+
+    };
+
+
     return {
         processZip,
+        cleanGoogleHtmlToBody,
         isProcessing,
         progress,
         currentFileName
