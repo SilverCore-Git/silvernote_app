@@ -112,6 +112,8 @@ import { Notes } from '@/assets/ts/database/Var';
 import database from '@/assets/ts/database/database';
 import { useRouter } from 'vue-router';
 import App2048Popup from '@/components/2048/App2048Popup.vue';
+import { api_url } from '@/assets/ts/backend_link';
+import getToken from '@/composables/useToken';
 
 const props = defineProps<{
   visible: boolean;
@@ -144,10 +146,13 @@ const delete_note = async (state: number) => {
     }
 }
 
-const debugCryptedNote = () => {
-    const note = Notes.value.find(note => note.uuid == props.uuid);
-    note!.content_type = 'text/html/crypted';
-    saveNote(note!.uuid, { force: true });
+const debugCryptedNote = async () => {
+    await fetch(`${api_url}/api/db/fulldecrypte/a/note?uuid=${props.uuid}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + await getToken()
+        }
+    })
     nextTick().then(() => window.location.reload());
 }
 
