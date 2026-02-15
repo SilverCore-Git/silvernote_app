@@ -394,7 +394,7 @@ watch(() => props.uuid, async () => {
             v-if="editor"
             ref=""
             class="
-              h-80 w-full
+              h-150 w-full
             "
             @click="editor.commands.focus('end');"
           ></div>

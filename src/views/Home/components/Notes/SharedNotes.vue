@@ -19,7 +19,16 @@ onMounted(async() => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${await useToken()}`
         }
-    }).then(res => res.json())).notes as Note[];
+    }).then(res => res.json())).notes as Note[] || [];
+
+    SharedNotes.value = (await fetch(`${api_url}/api/share/for/me`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${await useToken()}`
+        }
+    }).then(res => res.json())).notes as Note[] || [];
     
 })
 
@@ -30,7 +39,7 @@ onMounted(async() => {
     <div class="relative">
 
         <div 
-            class="flex flex-col gap-4 h-full "
+            class="flex flex-col gap-4 h-full pb-40"
             v-if="SharedNotes.length || ShareByMe.length"
         >
 

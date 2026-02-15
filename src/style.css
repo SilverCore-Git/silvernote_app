@@ -226,6 +226,24 @@ a:active {
   opacity: 0;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(150px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeIn 1s ease-out forwards;
+}
+
+.animate-fade-in-up-slow {
+  animation: fadeIn 2s ease-out forwards;
+}
 
 select {
   @apply bg-(--white) text-(--text) cursor-pointer;

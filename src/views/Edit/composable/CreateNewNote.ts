@@ -13,7 +13,7 @@ async function
         icon: '',
         title: '',
         content: '',
-        date: utils.date(),
+        date: new Date().toISOString(),
         pinned: false,
         tags: [],
         content_type: 'text/html/crypted'

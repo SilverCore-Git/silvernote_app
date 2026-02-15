@@ -127,33 +127,28 @@ const getColorByImage = async (): Promise<{ bg: string, text: string }> => {
 };
 
 const handleScroll = (editor: Editor) => {
+  
+  setTimeout(() => {
 
-      setTimeout(() => {
+    const { view } = editor;
+    const { selection } = view.state;
+    const { from } = selection;
 
-        const { view } = editor;
-        const { state } = view;
-        const { from } = state.selection;
+    const coords = view.coordsAtPos(from);
+    
+    const node = document.elementFromPoint(coords.left, coords.top);
 
-        const coords = view.coordsAtPos(from);
-        
-        const node = document.elementFromPoint(coords.left, coords.top);
+    if (node instanceof HTMLElement)
+    {
+      node.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+    }
 
-        if (node) 
-        {
-          
-          node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 50);
 
-          const container = document.querySelector('.editor-container');
-          if (container) 
-          {
-            container.scrollBy({ top: -1000, behavior: 'smooth' });
-          }
-
-        }
-
-    }, 150);
-
-}
+};
 
 
 async function initEditor(): Promise<void>

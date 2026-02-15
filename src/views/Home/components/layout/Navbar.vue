@@ -115,7 +115,7 @@
                         :class="route.query.page !== 'shared' ? '' : 'text-(--btn)'"
                         class="bi bi-journal-text text-xl"
                     />
-                    <span>Toutes les notes</span>
+                    <span>Mes notes</span>
                 </li>
 
                 <li 

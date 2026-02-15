@@ -14,7 +14,7 @@
                     rounded-2xl p-4 w-full h-[205px]
                     cursor-pointer overflow-hidden
                     hover:border-(--btn) border
-                    transition-all duration-200 ease-in-out
+                    transition-all duration-200! ease-in-out
                      active:scale-90 backdrop-blur-3xl
                 "
                 :class="

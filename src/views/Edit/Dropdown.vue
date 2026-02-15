@@ -45,7 +45,7 @@
                                 {{ wordCount || '...' }}
                             </span>
                             <span>
-                                Cractères :
+                                Caractères :
                                 {{ characterCount || '...' }}
                             </span>
                         </div>
@@ -110,7 +110,6 @@ import { useEditorStats } from '@/components/Markdown/Function/Stats';
 import { Notes } from '@/assets/ts/database/Var';
 import database from '@/assets/ts/database/database';
 import { useRouter } from 'vue-router';
-import App2048Popup from '@/components/2048/App2048Popup.vue';
 
 const props = defineProps<{
   visible: boolean;

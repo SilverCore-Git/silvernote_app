@@ -25,6 +25,7 @@
               loaded
               && isLoaded
               && !route.path.startsWith('/settings')
+              && !route.path.startsWith('/onboarding')
               && route.name !== 'NotFound'
             "
             v-if="isSignedIn"
@@ -112,7 +113,9 @@ import UpdateAvalable from "./components/updateAvalable.vue";
 const themeClass = ref<string>(
   window.localStorage.getItem('theme') == 'dark'
     ? 'bg-black text-white'
-    : 'bg-white text-black'
+    : window.localStorage.getItem('theme') == 'light'
+      ? 'bg-white text-black'
+      : 'bg-(--bg) text-(--text)'
 );
 
 const route = useRoute();
@@ -183,6 +186,13 @@ onMounted(async () => {
     setInterval(async () => {
       await initNotifications();
     }, 15 * 60 * 1000); // Refresh notif every 15 minutes
+
+    if (user.value?.unsafeMetadata.onboarding !== 'completed')
+    {
+      router.push({ path: "/onboarding/start" });
+      loaded.value = true;
+      return;
+    }
 
   } 
   catch (err: any)
