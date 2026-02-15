@@ -9,7 +9,9 @@ import database from '@/assets/ts/database/database';
 import UploadFromSNOTE from '../../utils/UploadFromSNOTE';
 import { api_url } from '@/assets/ts/backend_link';
 import useToken from '@/composables/useToken';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const Loader = ref<string>('');
 const ShowConfirmDialog = ref<boolean>(false);
 const file_input = ref<HTMLInputElement | undefined>(undefined);
@@ -170,31 +172,24 @@ onMounted(async () => {
 
                 <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
                     <i class="bi bi-box-arrow-down text-(--btn)" />
-                    {{ 
-                        eatNotesCurent && eatNotesTotal 
-                            ? `Importation des notes : ${eatNotesCurent}/${eatNotesTotal}` 
-                            : 'Importer' 
-                        }}
+                    Importer des notes et tags
                 </h2>
 
-                <p class="text-sm opacity-60 mb-4">Fusionnez vos notes depuis un fichier .snote.</p>
+                <p class="text-sm opacity-60 mb-4">Fusionnez vos notes depuis google keep ou un fichier .snote.</p>
 
-                <label>
-                    <button 
-                        class="second w-full"
-                        :class="Loader == 'upload' ? 'loader' : ''"
-                        @click="open_input"
-                    >
-                        Sélectionner un fichier
-                    </button>
-                    <input 
-                        ref="file_input" 
-                        @change="uploadData($event)" 
-                        accept=".snote" 
-                        class="w-0" 
-                        type="file"
-                    />
-                </label>
+                <button 
+                    class="second w-full mb-2"
+                    @click="router.push('/onboarding/import')"
+                >
+                    Importer depuis google keep
+                </button>
+
+                <button 
+                    class="second w-full"
+                    @click="router.push('/onboarding/import')"
+                >
+                    Importer depuis un fichier .snote 
+                </button>
 
             </div>
 
