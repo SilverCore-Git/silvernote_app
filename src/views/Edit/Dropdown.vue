@@ -97,7 +97,7 @@
 
 <script setup lang="ts">
 
-import { nextTick, ref } from 'vue'
+import { ref } from 'vue'
 import { editor } from '@/components/Markdown/Editor'
 import type { Note } from '@/assets/ts/type';
 import Import from './common/Import.vue';
@@ -110,9 +110,6 @@ import { useEditorStats } from '@/components/Markdown/Function/Stats';
 import { Notes } from '@/assets/ts/database/Var';
 import database from '@/assets/ts/database/database';
 import { useRouter } from 'vue-router';
-import App2048Popup from '@/components/2048/App2048Popup.vue';
-import { api_url } from '@/assets/ts/backend_link';
-import getToken from '@/composables/useToken';
 
 const props = defineProps<{
   visible: boolean;

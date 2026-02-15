@@ -67,7 +67,7 @@
 
 import { onMounted, onUnmounted } from 'vue';
 
-const props = defineProps<{ 
+defineProps<{ 
   name?: string | null;
 }>();
 
