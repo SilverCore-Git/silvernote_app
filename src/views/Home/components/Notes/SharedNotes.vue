@@ -19,7 +19,16 @@ onMounted(async() => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${await useToken()}`
         }
-    }).then(res => res.json())).notes as Note[];
+    }).then(res => res.json())).notes as Note[] || [];
+
+    SharedNotes.value = (await fetch(`${api_url}/api/share/for/me`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${await useToken()}`
+        }
+    }).then(res => res.json())).notes as Note[] || [];
     
 })
 
