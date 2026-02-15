@@ -10,10 +10,12 @@ import SignUp from './views/auth/SignUp.vue';
 import Redirect from './views/auth/Redirect.vue';
 import NotFound from './views/errors/404.vue';
 import App2048 from './components/2048/App2048.vue';
+import Onboarding from './views/onboarding/onboarding.vue';
 
 
 
 const routes = [
+
   { 
     path: '/', 
     name: 'Home', 
@@ -79,6 +81,24 @@ const routes = [
     component: SignUp,
     meta: { title: 'Se créer un compte - Silvernote' }
   },
+
+
+  // on boarding
+  { 
+    path: '/onboarding/:page?',
+    name: 'Onboarding',
+    props: true,
+    component: Onboarding,
+    meta: { title: 'Bienvenue sur Silvernote' },
+    beforeEnter: (to: any, _from: any, next: any) => {
+      const validPages = ['start', 'usage', 'import', 'done'];
+      if (!to.params.page || !validPages.includes(to.params.page as string)) {
+        return next('/onboarding/start');
+      }
+      next();
+    }
+  },
+
 
   {
     path: '/:pathMatch(.*)*',
