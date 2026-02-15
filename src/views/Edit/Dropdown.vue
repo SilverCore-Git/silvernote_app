@@ -98,7 +98,7 @@
 
 <script setup lang="ts">
 
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import { editor } from '@/components/Markdown/Editor'
 import type { Note } from '@/assets/ts/type';
 import Import from './common/Import.vue';
@@ -148,6 +148,7 @@ const debugCryptedNote = () => {
     const note = Notes.value.find(note => note.uuid == props.uuid);
     note!.content_type = 'text/html/crypted';
     saveNote(note!.uuid, { force: true });
+    nextTick().then(() => window.location.reload());
 }
 
 </script>
