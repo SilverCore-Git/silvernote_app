@@ -32,6 +32,7 @@ import CodeBlockLowlightComponent from './tiptap-extensions/components/CodeBlock
 import { VueNodeViewRenderer } from '@tiptap/vue-3';
 import ImageComponent from './tiptap-extensions/components/ImageComponent.vue';
 import TableComponent from './tiptap-extensions/components/TableComponent.vue';
+import TaskItemComponent from './tiptap-extensions/components/TaskItemComponent.vue';
 
 
 interface EditorConfigParams {
@@ -119,9 +120,15 @@ export function buildEditorExtensions(params: EditorConfigParams) {
     Markdown.configure({ html: true }),
     Placeholder.configure({ placeholder: 'Commencez à écrire ici...' }),
     FileHandler.configure(FileHandler_configure),
-    TaskItem.configure({
-      nested: true,
-    }),
+    TaskItem
+      .extend({
+        addNodeView() {
+          return VueNodeViewRenderer(TaskItemComponent)
+        }
+      })
+      .configure({
+        nested: true,
+      }),
     TaskList,
     Collaboration.configure({
       document: ydoc,
