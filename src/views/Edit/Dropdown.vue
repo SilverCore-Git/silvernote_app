@@ -8,10 +8,6 @@
 
                 <ul @click="emit('update:visible')">
 
-                    <!-- <li @click="tagManager = true">Gérer les tags</li>
-
-                    <hr /> -->
-
                     <li v-if="editor" @click="undo">Annuler</li>
                     <li v-if="editor" @click="redo">Rétablir</li>
 
@@ -37,7 +33,7 @@
 
                     <hr />
 
-                    <li>
+                    <li class="nohover">
                         <span class="font-semibold">Statistiques</span>
                         <div class="flex flex-col text-[12px]">
                             <span>
