@@ -1,31 +1,35 @@
 <template>
 
-    <node-view-wrapper class=" group flex flex-row justify-start items-center gap-3 my-1 max-h-5">
-      
+  <node-view-wrapper 
+    class="
+      todo-item-container group 
+      flex flex-row justify-start items-start 
+      gap-3 my-0.5 min-w-0 w-full
+    "
+  >
+    
+    <div 
+      class="flex-none flex items-center justify-center h-6 select-none cursor-pointer"
+      contenteditable="false"
+      @mousedown.prevent
+    >
       <div 
-        class="flex items-center justify-center h-6 select-none cursor-pointer"
-        contenteditable="false"
-        @mousedown.prevent
+        @click.stop.prevent="toggle"
+        class="w-5 h-5 rounded-md border-2 transition-all duration-200! flex items-center justify-center"
+        :class="node.attrs.checked 
+          ? 'bg-(--btn) border-(--btn) shadow-[0_0_10px_rgba(var(--btn),0.3)]' 
+          : 'border-(--text)/20 hover:border-(--text)/40 bg-(--text)/5'"
       >
-        <div 
-          @click.stop.prevent="toggle"
-          class="
-              w-5 h-5 rounded-md border-2 transition-all duration-200! flex items-center justify-center
-          "
-          :class="node.attrs.checked 
-            ? 'bg-(--btn) border-(--btn) shadow-[0_0_10px_rgba(var(--btn),0.3)]' 
-            : 'border-(--text)/20 hover:border-(--text)/40 bg-(--text)/5'"
-        >
-          <i v-if="node.attrs.checked" class="bi bi-check-lg text-(--text) text-xs font-bold" />
-        </div>
+        <i v-if="node.attrs.checked" class="bi bi-check-lg text-(--text) text-xs font-bold" />
       </div>
+    </div>
 
-      <node-view-content 
-        class=" outline-none transition-all duration-300 leading-6"
-        :class="{ 'opacity-40 line-through decoration-2': node.attrs.checked }"
-      />
+    <node-view-content 
+      class="flex-1 outline-none transition-all duration-300 leading-6 wrap-break-word min-w-0"
+      :class="{ 'opacity-40 line-through decoration-2': node.attrs.checked }"
+    />
 
-    </node-view-wrapper>
+  </node-view-wrapper>
 
 </template>
 
@@ -42,3 +46,19 @@ const toggle = () => {
 }
 
 </script>
+
+<style>
+
+.todo-item-container p {
+  margin: 0 !important;
+  display: inline;
+}
+
+ul[data-type="taskList"] {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+</style>
