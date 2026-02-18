@@ -18,6 +18,7 @@ import { initSocket, socket } from '@/composables/WSocket';
 import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
 import isElectron from '@/assets/ts/utils/isElectron';
 import { icon, title } from './composable/useTitleIcon';
+import PressAndHold from '@/components/PressAndHold.vue';
 
 const props = defineProps<{
   uuid: string;
@@ -274,7 +275,7 @@ watch(() => props.uuid, async () => {
           </div>
 
         
-          <div
+          <button
             class="cursor-pointer text-(--btn) text-3xl"
             v-tooltip="note?.pinned ? 'Désépingler' : 'Épingler'"
             @click="note.pinned = !note.pinned"
@@ -283,16 +284,17 @@ watch(() => props.uuid, async () => {
               class="bi"
               :class="note?.pinned ? 'bi-pin-angle-fill' : 'bi-pin-angle'"
             />
-          </div>
+          </button>
 
-          <div
+          <button
             class="cursor-pointer text-(--btn) text-3xl"
             @click="ShowDropdown = !ShowDropdown"
           >
             <i class="bi bi-three-dots-vertical" />
-          </div>
+          </button>
 
           <div class="z-60">
+
             <Dropdown
               v-model:visible="ShowDropdown"
               :note="note"
@@ -339,22 +341,25 @@ watch(() => props.uuid, async () => {
             class="flex w-[90%] mb-2 items-end justify-start gap-2"
           >
 
-            <button ref="emojiBtn"><a>
+            <a ref="emojiBtn" class="px-1">
 
-              <img
-                v-if="icon" 
-                class="w-20 h-20 p-2 cursor-pointer" 
-                :src="icon" 
-              />
+              <div v-if="icon && icon !== ''" >
+                <PressAndHold @long-press="icon = ''">
+                  <img
+                    class="w-20 h-20 p-2 cursor-pointer" 
+                    :src="icon" 
+                  />
+                </PressAndHold>
+              </div>
 
-              <a 
+              <span
                 v-else
                 class="px-1"
               >
                 Ajouter une icon
-              </a>
+              </span>
 
-            </a></button>
+            </a>
           
           </div>
 

@@ -13,14 +13,18 @@
 }
 
 .dropdown ul {
-  gap: 0px;
+  @apply space-y-1;
 } 
 
 .dropdown ul li {
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 12px;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition: all 0.2s ease;
+}
+
+.dropdown ul li:not(.nohover):active {
+  transform: scale(0.90);
 }
 
 .dropdown ul hr {
