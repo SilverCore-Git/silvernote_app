@@ -13,7 +13,7 @@
 
       <EditorContent
         :editor="editor as Editor"
-        class="prose h-full"
+        class="prose h-full max-w-screen"
       />
 
     </div>

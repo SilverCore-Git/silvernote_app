@@ -53,7 +53,7 @@ ul[data-type="taskList"] {
   margin: 1rem 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0rem;
 }
 
 .todo-item-container node-view-content > * {
@@ -62,7 +62,7 @@ ul[data-type="taskList"] {
 }
 
 .todo-item-container p {
-  margin: 0 !important;
+  margin-top: 0 !important;
 }
 
 </style>
