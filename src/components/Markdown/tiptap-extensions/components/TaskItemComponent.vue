@@ -25,7 +25,7 @@
     </div>
 
     <node-view-content 
-      class="flex-1 outline-none transition-all duration-300 leading-6 wrap-break-word min-w-0"
+      class="flex-1 outline-none transition-all duration-300 wrap-break-word min-w-0 h-full w-full"
       :class="{ 'opacity-40 line-through decoration-2': node.attrs.checked }"
     />
 
