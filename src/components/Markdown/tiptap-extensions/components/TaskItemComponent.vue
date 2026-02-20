@@ -47,16 +47,23 @@ const toggle = () => {
 
 <style>
 
-.todo-item-container p {
-  margin: 0 !important;
-  display: inline;
-}
-
 ul[data-type="taskList"] {
   list-style: none;
   padding: 0;
-  margin: 0;
-  width: 100%;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.todo-item-container node-view-content > * {
+  margin: 0 !important;
+  line-height: 1.5;
+}
+
+.todo-item-container p {
+  display: block !important;
+  margin: 0 !important;
 }
 
 </style>
