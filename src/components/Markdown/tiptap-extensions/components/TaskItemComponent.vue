@@ -62,7 +62,6 @@ ul[data-type="taskList"] {
 }
 
 .todo-item-container p {
-  display: block !important;
   margin: 0 !important;
 }
 
