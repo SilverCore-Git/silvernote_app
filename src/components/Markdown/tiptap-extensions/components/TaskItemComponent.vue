@@ -2,9 +2,7 @@
 
   <node-view-wrapper 
     class="
-      todo-item-container group 
-      flex flex-row justify-start items-start 
-      gap-3 my-0.5 min-w-0 w-full
+      todo-item-container group flex items-start gap-3 my-1 w-full
     "
   >
     
@@ -25,7 +23,7 @@
     </div>
 
     <node-view-content 
-      class="flex-1 outline-none transition-all duration-300 wrap-break-word min-w-0 h-full w-full"
+      class="flex-1 min-w-0 outline-none transition-all duration-300 break-words"
       :class="{ 'opacity-40 line-through decoration-2': node.attrs.checked }"
     />
 
