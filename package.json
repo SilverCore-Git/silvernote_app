@@ -79,16 +79,16 @@
     "@types/hammerjs": "^2.0.46",
     "@types/masonry-layout": "^4.2.8",
     "@vitejs/plugin-vue": "^6.0.4",
-    "@vue/tsconfig": "^0.8.1",
+    "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.24",
     "path": "^0.12.7",
     "postcss": "^8.5.3",
     "puppeteer": "^24.11.0",
     "sass-embedded": "^1.93.2",
     "tailwindcss": "^4.1.7",
-    "typescript": "^5.9.3",
-    "vite": "^7.3.1",
-    "vue-tsc": "^3.2.4"
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5",
+    "vue-tsc": "^2.2.8"
   },
   "bugs": {
     "url": "https://github.com/SilverCore-Git/silvernote/issues"

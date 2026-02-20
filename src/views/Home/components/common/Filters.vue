@@ -66,7 +66,6 @@ const ShowNewTagPopup = ref<boolean>(false);
             <Swiper
                 :slides-per-view="'auto'" 
                 :space-between="8"
-                :free-mode="true"
                 :modules="[FreeMode]"
                 :observer="true"
                 :observe-parents="true"

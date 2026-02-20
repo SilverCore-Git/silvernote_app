@@ -8,7 +8,7 @@
 
       <div>
 
-          <UpdateAvalable v-if="loaded && isLoaded" />
+          <!-- <UpdateAvalable v-if="loaded && isLoaded" /> -->
 
           <div v-if="route.path.startsWith('/sauth')">
             <router-view />
@@ -108,7 +108,6 @@ import BtnOverlay from "./components/common/BtnOverlay.vue";
 import DesktopAppTitleBar from "./components/DesktopAppTitleBar.vue";
 import IconLoader from "./components/iconLoader.vue";
 import { initNotifications } from "./components/notifications/notifications";
-import UpdateAvalable from "./components/updateAvalable.vue";
 
 const themeClass = ref<string>(
   window.localStorage.getItem('theme') == 'dark'

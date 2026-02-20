@@ -42,6 +42,7 @@ onMounted(async () => {
     await waitFor(() => isLoaded.value, 10000);
     loaded.value = true;
     await useChat.create(user.value);
+    waitFor(() => chatBody.value !== undefined, 10000);
 })
 
 onBeforeUnmount(async () => {

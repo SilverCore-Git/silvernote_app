@@ -41,6 +41,7 @@ export interface Note {
     content: string;
     date: string;
     user_id?: string;
+    lastSaveAt?: string;
     tags: number[];
     selected?: boolean;
     updated_at?: number;

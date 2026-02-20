@@ -12,8 +12,8 @@
     >
 
       <EditorContent
-        :editor="editor as Editor"
-        class="prose h-full"
+        :editor="(editor as unknown as Editor)"
+        class="prose h-full max-w-screen"
       />
 
     </div>

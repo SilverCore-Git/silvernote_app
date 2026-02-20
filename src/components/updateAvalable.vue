@@ -51,7 +51,7 @@ const reload = () => {
 const checkForUpdates = async () => {
     try {
         const response = await fetch(
-            'https://raw.githubusercontent.com/silvercore-git/silvernote_app/main/package.json'
+            `https://raw.githubusercontent.com/silvercore-git/silvernote_app/main/package.json?cache_bust=${Date.now()}`
         );
         if (!response.ok) return;
         const data = await response.json();
@@ -66,7 +66,7 @@ const checkForUpdates = async () => {
 const checkIsOnUpdate = async () => {
     try {
         const response = await fetch(
-            '/score-host/api/status'
+            `/score-host/api/status?cache_bust=${Date.now()}`
         );
         if (!response.ok) return;
         const data = await response.json();

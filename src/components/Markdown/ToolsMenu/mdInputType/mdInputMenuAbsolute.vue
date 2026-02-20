@@ -65,7 +65,7 @@
 
 <script lang="ts" setup>
 
-import { defineProps, defineEmits, ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, watch, nextTick } from 'vue';
 import config from './mdInputMenu.json';
 import { editor } from '../../Editor';
 

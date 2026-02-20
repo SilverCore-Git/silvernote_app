@@ -2,9 +2,7 @@
 
   <node-view-wrapper 
     class="
-      todo-item-container group 
-      flex flex-row justify-start items-start 
-      gap-3 my-0.5 min-w-0 w-full
+      todo-item-container group flex items-start gap-3 my-1 w-full
     "
   >
     
@@ -25,7 +23,7 @@
     </div>
 
     <node-view-content 
-      class="flex-1 outline-none transition-all duration-300 leading-6 wrap-break-word min-w-0"
+      class="flex-1 min-w-0 outline-none transition-all duration-300 break-words"
       :class="{ 'opacity-40 line-through decoration-2': node.attrs.checked }"
     />
 
@@ -49,16 +47,23 @@ const toggle = () => {
 
 <style>
 
-.todo-item-container p {
-  margin: 0 !important;
-  display: inline;
-}
-
 ul[data-type="taskList"] {
   list-style: none;
   padding: 0;
-  margin: 0;
-  width: 100%;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.todo-item-container node-view-content > * {
+  margin: 0 !important;
+  line-height: 1.5;
+}
+
+.todo-item-container p {
+  display: block !important;
+  margin: 0 !important;
 }
 
 </style>

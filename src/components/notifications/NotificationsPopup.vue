@@ -18,7 +18,7 @@
                     <div 
                         class="
                             bg-(--bg) border border-(--text)/20 
-                            shadow-lg rounded-xl p-4 h-full pt-10
+                            shadow-lg rounded-2xl p-4 h-full pt-10
                         "
                     >
 
@@ -36,7 +36,7 @@
                             </svg>
                         </a>
 
-                        <Notifications />
+                        <Notifications class="h-full" />
 
                     </div>
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { Notes, sortedNotes } from '@/assets/ts/database/Var';
+import { sortedNotes } from '@/assets/ts/database/Var';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { RecycleScroller } from 'vue3-virtual-scroller';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
@@ -36,7 +36,7 @@ const noteRows = computed(() => {
         if (rowItems.length > 0)
         {
             rows.push({
-                id: `row-${rowItems[0].uuid}`,
+                id: `row-${rowItems[0]?.uuid}`,
                 items: [...rowItems] 
             });
         }
@@ -92,7 +92,7 @@ const noteRows = computed(() => {
         </RecycleScroller>
 
         <div 
-            v-if="Notes.length > 16"
+            v-if="sortedNotes.length > 16"
             class="mt-40 flex flex-col items-center justify-center gap-4 group"
         >
             
