@@ -12,7 +12,7 @@
     >
 
       <EditorContent
-        :editor="editor as Editor"
+        :editor="(editor as unknown as Editor)"
         class="prose h-full max-w-screen"
       />
 

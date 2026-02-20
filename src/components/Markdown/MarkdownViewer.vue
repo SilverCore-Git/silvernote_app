@@ -2,7 +2,7 @@
   <div class="w-full h-full">
     <editor-content 
         v-if="loaded"
-        :editor="editor as Editor" 
+        :editor="(editor as unknown as Editor)" 
         class="prose max-w-none" 
     />
   </div>
