@@ -37,6 +37,14 @@
                         <span class="font-semibold">Statistiques</span>
                         <div class="flex flex-col text-[12px]">
                             <span>
+                                Note créer le : <br>
+                                {{ new Date(note.date).toLocaleString() || '...' }}
+                            </span>
+                            <span>
+                                Note mise a jour le : <br>
+                                {{ new Date(note.lastSaveAt!).toLocaleString() || '...' }}
+                            </span>
+                            <span>
                                 Mots :
                                 {{ wordCount || '...' }}
                             </span>
