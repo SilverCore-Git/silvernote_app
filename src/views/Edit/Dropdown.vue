@@ -11,15 +11,16 @@
                     <li v-if="editor" @click="undo">Annuler</li>
                     <li v-if="editor" @click="redo">Rétablir</li>
 
-                    <hr />
+                    <hr v-if="!isMobile" />
 
-                    <li @click="export_menu = true">Exporter</li>
-                    <li @click="import_menu = true">Importer</li>
+                    <li v-if="!isMobile" @click="export_menu = true">Exporter</li>
+                    <li v-if="!isMobile" @click="import_menu = true">Importer</li>
 
                     <hr />
 
                     <li @click="share_menu = true">Partager</li>
                     <li @click="saveNote(uuid, { force: true })">Sauvegarder</li>
+                    <li @click="stats_popup = true">Statistiques</li>
 
                     <hr />
 
@@ -29,30 +30,6 @@
 
                     <li class="text-red-600" @click="showDialog = true">
                         Supprimer
-                    </li>
-
-                    <hr />
-
-                    <li class="nohover">
-                        <span class="font-semibold">Statistiques</span>
-                        <div class="flex flex-col text-[12px]">
-                            <span>
-                                Note créer le : <br>
-                                {{ new Date(note.date).toLocaleString() || '...' }}
-                            </span>
-                            <span>
-                                Note mise a jour le : <br>
-                                {{ new Date(note.lastSaveAt!).toLocaleString() || '...' }}
-                            </span>
-                            <span>
-                                Mots :
-                                {{ wordCount || '...' }}
-                            </span>
-                            <span>
-                                Caractères :
-                                {{ characterCount || '...' }}
-                            </span>
-                        </div>
                     </li>
 
                 </ul>
@@ -95,6 +72,11 @@
         :note="note"
     />
 
+    <notes-stats-popup
+        v-model:visible="stats_popup"
+        :note="note"
+    />
+
     <app2048-popup v-model:show="showGame" />
 
 </template>
@@ -114,6 +96,8 @@ import { useEditorStats } from '@/components/Markdown/Function/Stats';
 import { Notes } from '@/assets/ts/database/Var';
 import database from '@/assets/ts/database/database';
 import { useRouter } from 'vue-router';
+import isMobile from '@/assets/ts/utils/isMobile';
+import NotesStatsPopup from './common/NotesStatsPopup.vue';
 
 const props = defineProps<{
   visible: boolean;
@@ -124,9 +108,9 @@ const props = defineProps<{
 const emit = defineEmits(['update:visible'])
 
 const router = useRouter();
-const { characterCount, wordCount } = useEditorStats();
 const tagManager = ref<boolean>(false);
 const export_menu = ref<boolean>(false);
+const stats_popup = ref<boolean>(false);
 const import_menu = ref<boolean>(false);
 const share_menu = ref<boolean>(false);
 const showDialog = ref<boolean>(false);
