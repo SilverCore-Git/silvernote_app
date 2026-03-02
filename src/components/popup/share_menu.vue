@@ -46,7 +46,27 @@
 
             </h3>
 
-            <div class="flex items-center gap-4">
+            <div v-if="isExist" class="flex items-center gap-4">
+              
+              <i class="bi bi-hourglass-split text-(--text)/70 text-lg" />
+              
+              <div>
+
+                <p class="m-0">
+
+                  Le partage expire le 
+
+                  <span class="font-semibold text-(--btn)">
+                    {{ dateExpiration }}
+                  </span>
+
+                </p>
+
+              </div>
+
+            </div>
+
+            <div v-else class="flex items-center gap-4">
 
               <div
                 class="
@@ -283,6 +303,7 @@ const visible = ref<boolean>(props.modelValue);
 const copied = ref<boolean>(false);
 const loader = ref<boolean>(false);
 const showConfirmDel = ref<boolean>(false);
+const dateExpiration = ref<string>('');
 
 
 // Reset & Sync
@@ -427,6 +448,16 @@ const mount = async () => {
       
       j.value = Math.floor(life / (24 * 3600 * 100));
       h.value = Math.floor((life % (24 * 3600 * 100)) / (3600 * 100));
+
+      const now = new Date();
+      const expirationDate = new Date(now.getTime() + (life * 1000));
+
+      dateExpiration.value = expirationDate.toLocaleDateString('fr-FR', {
+        day: 'numeric',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
       
       password.value = !!res.share.params.passwd;
       passwd.value = res.share.params.passwd || '';

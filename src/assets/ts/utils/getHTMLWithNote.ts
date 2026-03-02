@@ -41,17 +41,17 @@ export default function(note: Note, user?: any): string {
         ${css}
         @media print {
             @page {
-                margin: 2cm; /* Marges physiques sur le papier */
-                size: A4;    /* Force le format A4 */
+                margin: 2cm;
+                size: A4;
             }
             body {
-                background: white !important; /* Force le fond blanc pour l'impression */
+                background: white !important;
                 color: black !important;
             }
             .container {
                 width: 100% !important;
                 max-width: none !important;
-                animation: none !important; /* Désactive les animations pour le PDF */
+                animation: none !important;
             }
         }
         :root {
@@ -146,7 +146,10 @@ export default function(note: Note, user?: any): string {
             padding-top: 20px;
             padding-bottom: 40px;
             min-height: 400px;
-            white-space: pre-wrap;
+        }
+
+        .content p {
+            min-height: 20px;
         }
 
         .footer {
@@ -180,7 +183,7 @@ export default function(note: Note, user?: any): string {
             </div>
         </header>
 
-        <main class="content prose ProseMirror tiptap">${note.content}</main>
+        <main class="content prose ProseMirror tiptap">${note.content.replace(/\n/g, '<br>') }</main>
 
         <footer class="footer">
             Exporté depuis <a href="https://www.silvernote.fr" class="brand">Silvernote</a> v${version} <span style="padding-right: 4px; padding-left: 4px">|</span> Le ${formattedDate}
