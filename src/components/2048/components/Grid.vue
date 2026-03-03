@@ -9,9 +9,8 @@ import getToken from '@/composables/useToken';
 
 // init
 const size = ref<number>(4);
-const returnUsage = ref<number>(3);
 
-const { cells, score, isEnd, move, undo, init, start } = useGrid(size.value);
+const { cells, score, isEnd, move, init, start } = useGrid(size.value);
 
 const bestScore = ref<number>(0);
 
@@ -223,12 +222,6 @@ start();
 
         <div class="flex justify-center items-center gap-2">
           <button class="primary" @click="handleNewGame">nouvelle partie</button>
-          <button 
-            class="primary danger" 
-            @click="undo; returnUsage--"
-            :class="returnUsage < 1 ? ' grayscale-100 pointer-events-none' : ''"
-          >
-            annuler ({{ returnUsage }})</button>
         </div>
 
       </div>
