@@ -1,7 +1,7 @@
 <template>
 
             <Popup
-                :visible="true"
+                :visible="visible"
                 @update:visible="emit('close')"
             >
 
@@ -57,13 +57,6 @@
                     <div class="flex gap-3 justify-center mt-2">
 
                         <button
-                            class="primary danger flex-1"
-                            @click.stop="emit('close')"
-                        >
-                            Annuler
-                        </button>
-
-                        <button
                             class="primary flex-1"
                             @click.stop="create_tag"
                         >
@@ -79,9 +72,10 @@
 </template>
 
 <script lang="ts" setup>
+
 import utils from '@/assets/ts/utils';
 import Popup from '@/components/popup/Popup.vue';
-import { ref } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 import FilterCard from './FilterCard.vue';
 import { Tags } from '@/assets/ts/database/Var';
 import database from '@/assets/ts/database/database';
@@ -90,9 +84,13 @@ const emit = defineEmits([
     'close'
 ]);
 
+const props = defineProps({
+    visible: Boolean
+});
 
 const tag_name = ref<string>('');
 const tag_color = ref<string>(utils.getRandomHexColor());
+const inputRef = ref<HTMLInputElement | null>(null);
 
 
 const create_tag = () => {
@@ -115,6 +113,13 @@ const create_tag = () => {
     emit('close');
 
 }
+
+watch(() => props.visible, async () => {
+    await nextTick();
+    tag_name.value = '';
+    tag_color.value = utils.getRandomHexColor();
+    inputRef.value?.focus();
+})
 
 
 </script>
