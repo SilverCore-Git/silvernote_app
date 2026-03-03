@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 
 import { onMounted, ref } from 'vue';
-import { version } from '../../package.json';
+//import { version } from '../../package.json';
 
 const host = window.location.hostname;
 const updateAvailable = ref<boolean>(false);
@@ -48,20 +48,20 @@ const reload = () => {
     window.location.href = url.toString();
 };
 
-const checkForUpdates = async () => {
-    try {
-        const response = await fetch(
-            `https://raw.githubusercontent.com/silvercore-git/silvernote_app/main/package.json?cache_bust=${Date.now()}`
-        );
-        if (!response.ok) return;
-        const data = await response.json();
-        if (data.version !== version) {
-            updateAvailable.value = true;
-        }
-    } catch (error) {
-        console.error('Error checking for updates:', error);
-    }
-};
+// const checkForUpdates = async () => {
+//     try {
+//         const response = await fetch(
+//             `https://raw.githubusercontent.com/silvercore-git/silvernote_app/main/package.json?cache_bust=${Date.now()}`
+//         );
+//         if (!response.ok) return;
+//         const data = await response.json();
+//         if (data.version !== version) {
+//             updateAvailable.value = true;
+//         }
+//     } catch (error) {
+//         console.error('Error checking for updates:', error);
+//     }
+// };
 
 const checkIsOnUpdate = async () => {
     try {
@@ -87,14 +87,14 @@ onMounted(() => {
 
     setTimeout(async () => {
 
-        await checkForUpdates();
+        //await checkForUpdates();
         await checkIsOnUpdate();
 
     }, 1500);
 
     setInterval(async () => {
 
-        await checkForUpdates();
+        //await checkForUpdates();
         await checkIsOnUpdate();
 
     }, 5 * 60 * 1000); // Check every 5mn
