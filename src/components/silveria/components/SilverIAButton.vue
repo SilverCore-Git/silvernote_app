@@ -1,5 +1,15 @@
 <script setup lang="ts">
+
+import { useShortcut } from '@/composables/useShrotcut';
 import { isOpen, toggleChat } from '../assets/const';
+
+const { tooltipConfig } = useShortcut(
+    'j',
+    'Ouvrir SilverIA',
+    () => {
+        isOpen.value = !isOpen.value;
+    }
+)
 
 </script>
 
@@ -17,6 +27,7 @@ import { isOpen, toggleChat } from '../assets/const';
             text-2xl shadow-2xl bounce-hover
             cursor-pointer
         "
+        v-tooltip="tooltipConfig"
     >
 
         <i 

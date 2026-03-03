@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useRoute } from 'vue-router';
-import { onBeforeUnmount, onMounted } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useUser } from '@clerk/vue';
 
 // import components
@@ -36,7 +36,7 @@ import isMobile from '@/assets/ts/utils/isMobile';
 
 const route = useRoute();
 const { user, isLoaded } = useUser();
-
+const MessageTextarea = ref<HTMLTextAreaElement | null>(null);
 
 onMounted(async () => {
     await waitFor(() => isLoaded.value, 10000);
@@ -47,6 +47,11 @@ onMounted(async () => {
 
 onBeforeUnmount(async () => {
     await useChat.close(useChat?.chat.value?.uuid || '');
+})
+
+watch(() => isOpen.value, async () => {
+    await nextTick();
+    MessageTextarea.value?.focus();
 })
 
 
@@ -75,7 +80,7 @@ onBeforeUnmount(async () => {
                     pointer-events-auto
                     bg-(--bg) border border-(--text)/10
                     rounded-2xl overflow-hidden z-50
-                    flex flex-col transition-all duration-500
+                    flex flex-col transition-all! duration-400
                     ease-in-out origin-bottom-right
                 "
                 :class="[
@@ -183,6 +188,7 @@ onBeforeUnmount(async () => {
 
                         <textarea
                             v-model="userInput"
+                            ref="MessageTextarea"
                             @keydown.enter.exact.prevent="sendMessage({ route })"
                             placeholder="Posez votre question..."
                             :rows="

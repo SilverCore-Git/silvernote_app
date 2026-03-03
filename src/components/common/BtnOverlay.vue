@@ -17,7 +17,7 @@
             v-if="!route.path.startsWith('/edit') && !route.path.startsWith('/share')"
             @click="openEditNewNote"
             class="
-                transition-all duration-300 ease-in-out
+                transition-all! duration-300 ease-in-out
                 bg-(--btn) text-(--white)
                 w-16 h-16 rounded-2xl shadow-2xl
                 flex justify-center items-center
@@ -25,6 +25,7 @@
                 hover:rotate-180 hover:bg-(--btn-hover)
             "
             :style="{ 'view-transition-name': `note-new` }"
+            v-tooltip="tooltipConfig"
         >
             <i class="bi bi-plus" />
         </button>
@@ -38,6 +39,7 @@
 import { useRoute, useRouter } from 'vue-router';
 import Silveria from '../silveria/silveria.vue';
 import { nextTick } from 'vue';
+import { useShortcut } from '@/composables/useShrotcut';
 
 const route = useRoute();
 const router = useRouter();
@@ -54,5 +56,13 @@ const openEditNewNote = () => {
         await nextTick(); 
     });
 };
+
+const { tooltipConfig } = useShortcut(
+    [ 'maj', 'n' ],
+    'Créer une note',
+    () => {
+        openEditNewNote();
+    }
+)
 
 </script>
