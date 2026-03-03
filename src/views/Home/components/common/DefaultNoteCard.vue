@@ -111,7 +111,6 @@
     />
     
     <share_menu
-        v-if="share_menu"
         :uuid="uuid"
         :title="title"
         v-model="share_menu"
@@ -185,11 +184,13 @@ const openNote = () => {
 };
 
 const select_note = () => {
-    if (props.sharedBy) {
+    if (props.sharedBy)
+    {
         if (isMyShare.value) share_menu.value = !share_menu.value;
         return;
     }
-    if (isMobile) {
+    if (isMobile) 
+    {
         toggleNoteSelect(props.uuid);
         return;
     }
