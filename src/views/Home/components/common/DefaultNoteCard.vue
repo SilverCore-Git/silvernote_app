@@ -10,8 +10,8 @@
                     group relative flex flex-col 
                     rounded-2xl p-4 w-full h-[205px]
                     cursor-pointer overflow-hidden
-                    hover:border-(--btn) border
-                    transition-all duration-200! ease-in-out
+                    hover:border-(--btn) border hover:scale-101
+                    transition-all! duration-200 ease-in-out
                     backdrop-blur-3xl active:scale-90
                 "
                 :class="[

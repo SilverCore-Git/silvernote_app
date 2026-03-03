@@ -20,6 +20,7 @@ const router = useRouter();
 
         <ul
             class="
+                pl-1
                 grid gap-4
                 grid-cols-1
                 md:grid-cols-2
