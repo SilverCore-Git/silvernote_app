@@ -132,10 +132,12 @@ const handleScroll = (editor: Editor) => {
 
     const { view } = editor;
     const { selection } = view.state;
-    const { from } = selection;
+    const { $from } = selection;
 
-    const coords = view.coordsAtPos(from);
-    
+    const lineIndex = $from.index(0);
+    if (lineIndex < 3) return;
+
+    const coords = view.coordsAtPos(selection.from);
     const node = document.elementFromPoint(coords.left, coords.top);
 
     if (node instanceof HTMLElement)
@@ -230,8 +232,8 @@ async function initEditor(): Promise<void>
   await nextTick();
   await waitFor(() => provider.synced, 10_000);
   
-  if (editor.value && props.data.content && editor.value.getText().length <= 0) {
-    console.log('len : ', editor.value?.getText().length)
+  if (editor.value && props.data.content && editor.value.getText().length <= 0) 
+  {
     editor.value.commands.setContent(props.data.content);
   }
 
