@@ -225,14 +225,14 @@
                             <div class="grid grid-cols-2 gap-2" v-if="!justTags">
                                 <button 
                                     @click="deleteNote(1)"
-                                    class="w-full primary danger flex gap-1"
+                                    class="w-full second danger flex gap-1"
                                 >
                                     <i class="bi bi-trash-fill" />
                                     Supprimer
                                 </button>
                                 <button
                                     @click="showShareMenu = true"
-                                    class="w-full primary flex gap-1"
+                                    class="w-full default-primary flex gap-1"
                                 >
                                     <i class="bi bi-share-fill" />
                                     Partager

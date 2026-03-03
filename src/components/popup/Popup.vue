@@ -67,7 +67,7 @@ const emit = defineEmits(['update:visible']);
 const emitClose = () => emit('update:visible', false);
 
 const handleEsc = (e: KeyboardEvent) => {
-    if (e.key === 'Escape' && props.visible) emitClose();
+    if (e.key == 'Escape') emitClose();
 };
 
 watch(() => props.visible, (val) => {

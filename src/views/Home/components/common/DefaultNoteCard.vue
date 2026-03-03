@@ -104,7 +104,6 @@
     </PressAndHold>
 
     <NoteParamsOverlay
-        v-if="note_selected"
         v-model:visible="note_selected"
         :uuid="uuid"
         :selected-tags="tags"
