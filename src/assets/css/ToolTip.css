@@ -32,7 +32,7 @@
 
 
 .v-popper__popper .v-popper__inner {
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(20px);
   padding: 6px;
   font-size: 12px;
   border-radius: 6px;
@@ -65,4 +65,36 @@
 
 .v-popper__popper.v-popper__popper--skip-transition {
   transition: none !important;
+}
+
+
+.sn-tooltip {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  font-family: -apple-system, sans-serif;
+}
+
+.sn-tooltip-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.sn-tooltip-keys {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.v-popper__popper kbd {
+  background: var(--bg2);
+  border: 1px solid #d1d1d6;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.1);
 }

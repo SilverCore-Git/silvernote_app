@@ -10,8 +10,8 @@
                     group relative flex flex-col 
                     rounded-2xl p-4 w-full h-[205px]
                     cursor-pointer overflow-hidden
-                    hover:border-(--btn) border
-                    transition-all duration-200! ease-in-out
+                    hover:border-(--btn) border hover:scale-101
+                    transition-all! duration-200 ease-in-out
                     backdrop-blur-3xl active:scale-90
                 "
                 :class="[
@@ -104,14 +104,12 @@
     </PressAndHold>
 
     <NoteParamsOverlay
-        v-if="note_selected"
         v-model:visible="note_selected"
         :uuid="uuid"
         :selected-tags="tags"
     />
     
     <share_menu
-        v-if="share_menu"
         :uuid="uuid"
         :title="title"
         v-model="share_menu"
@@ -185,11 +183,13 @@ const openNote = () => {
 };
 
 const select_note = () => {
-    if (props.sharedBy) {
+    if (props.sharedBy)
+    {
         if (isMyShare.value) share_menu.value = !share_menu.value;
         return;
     }
-    if (isMobile) {
+    if (isMobile) 
+    {
         toggleNoteSelect(props.uuid);
         return;
     }

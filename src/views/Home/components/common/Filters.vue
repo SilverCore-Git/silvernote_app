@@ -111,17 +111,10 @@ const ShowNewTagPopup = ref<boolean>(false);
 
     </div>
 
-    <Teleport to="body">
+    <NewTagPopup 
+        :visible="ShowNewTagPopup"
+        @close="ShowNewTagPopup = false"
+    />
 
-        <Transition name="fade-slide">
-
-            <NewTagPopup 
-                v-if="ShowNewTagPopup"
-                @close="ShowNewTagPopup = false"
-            />
-
-        </Transition>
-
-    </Teleport>
 
 </template>

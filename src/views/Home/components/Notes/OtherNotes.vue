@@ -53,7 +53,7 @@ const noteRows = computed(() => {
 
     <div class="flex flex-col w-full pb-100">
     
-        <span class="uppercase text-md font-semibold text-(--text-little) mb-4 shrink-0 px-1">
+        <span class="uppercase text-md font-semibold text-(--text-little) shrink-0 px-1">
             Notes récentes
         </span>
 
@@ -61,7 +61,7 @@ const noteRows = computed(() => {
             v-if="noteRows.length > 0"
             :key="noteRows.length"
             :items="noteRows"
-            :item-size="220"
+            :item-size="222"
             key-field="id"
             page-mode
             class="w-full"
@@ -71,7 +71,7 @@ const noteRows = computed(() => {
             <template #default="{ item: row }">
                 
                 <div 
-                    class="grid gap-4 mb-4 pr-2 pl-1"
+                    class="grid gap-4 mb-4 pt-4 pr-2 pl-1"
                     :style="{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }"
                 >
             
