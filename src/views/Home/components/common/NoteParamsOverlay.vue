@@ -325,9 +325,8 @@ const deleteNote = async (state: number) => {
     {
         showConfirmDel.value = false;
         if (!props.uuid) return;
-        await database.delete(props.uuid);
-        Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
         (await useWSocket()).value.emit('note:delete', note.value);
+        Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
         emitClose();
     }
 }

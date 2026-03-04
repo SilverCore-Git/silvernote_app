@@ -10,6 +10,7 @@ async function
 
     const note: Note = {
         uuid: await utils.UUID(),
+        user_id: localStorage.getItem('user_id')!,
         icon: '',
         title: '',
         content: '',

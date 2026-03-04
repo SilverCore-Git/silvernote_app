@@ -12,7 +12,6 @@ import waitFor from '@/assets/ts/utils/waitFor';
 import useEmoji from './composable/useEmoji';
 import CreateNewNote from './composable/CreateNewNote';
 import { useRoute, useRouter } from 'vue-router';
-import database from '@/assets/ts/database/database';
 import useToken from '@/composables/useToken';
 import { initSocket, useWSocket } from '@/composables/WSocket';
 import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
@@ -94,21 +93,27 @@ const initExistingNote = async () => {
 const saveNote = async () => {
   
   const index = Notes.value.findIndex(n => n.uuid === props.uuid);
+  if (index === -1) return;
 
-  if (index !== -1)
-  {
-    Notes.value[index].title = title.value || Notes.value[index].title;
-    Notes.value[index].icon = icon.value || Notes.value[index].icon;
-  }
+  const socket = (await useWSocket()).value;
+  const currentNote = Notes.value[index];
 
-  if (note.value?.title == '' && (note.value?.content == '' || note.value?.content == '<p></p>'))
+  currentNote.title = title.value || currentNote.title;
+  currentNote.icon = icon.value || currentNote.icon;
+
+  await nextTick();
+
+  const isTitleEmpty = !currentNote.title?.trim();
+  const isContentEmpty = !currentNote.content || currentNote.content === '<p></p>';
+
+  if (isTitleEmpty && isContentEmpty) 
   {
-    (await useWSocket()).value.emit('note:delete', note.value);
-    Notes.value = Notes.value.filter(_note => _note.uuid !== Notes.value[index].uuid);
+    socket.emit('note:delete', currentNote);
+    Notes.value = Notes.value.filter(n => n.uuid !== props.uuid);
     return;
   }
 
-  (await useWSocket()).value.emit('note:update', note.value);
+  socket.emit('note:update', currentNote);
 
 }
 

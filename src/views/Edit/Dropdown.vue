@@ -124,9 +124,8 @@ const delete_note = async (state: number) => {
     if (state === 1) return showDialog.value = true;
     if (state === 2)
     {
-        await database.delete(props.uuid);
-        Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
         (await useWSocket()).value.emit('note:delete', props.note);
+        Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
         router.push('/');
     }
 }
