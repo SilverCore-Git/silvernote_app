@@ -93,7 +93,7 @@ const tag_color = ref<string>(utils.getRandomHexColor());
 const inputRef = ref<HTMLInputElement | null>(null);
 
 
-const create_tag = () => {
+const create_tag = async () => {
 
     const tag = {
         id: parseInt(Date.now() + Math.floor(Math.random() * 1000).toString()), 
@@ -105,7 +105,7 @@ const create_tag = () => {
     }
 
     Tags.value.push(tag);
-    async () => (await useWSocket()).value.emit('tag:create', tag);
+    (await useWSocket()).value.emit('tag:create', tag);
 
     tag_name.value = '';
     tag_color.value = '';

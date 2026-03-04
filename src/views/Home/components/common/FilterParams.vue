@@ -63,6 +63,7 @@
 
                 <button
                     class="primary"
+                    :class="tag.name.trim() ? '' : ' grayscale-100 pointer-events-none'"
                     @click="save"
                 >
                     Sauvegarder
@@ -90,7 +91,7 @@
 
 import { Tags } from '@/assets/ts/database/Var';
 import Popup from '@/components/popup/Popup.vue';
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import FilterCard from './FilterCard.vue';
 import type { Tag } from '@/assets/ts/type';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
@@ -109,7 +110,7 @@ watch(() => props.modelValue, v => {
 });
 
 const verifyDelete = ref<boolean>(false);
-const tag = ref<Tag | undefined>(Tags.value.find(tag => tag.uuid == props.uuid));
+const tag = ref<Tag | undefined>(undefined);
 
 
 const deleteTag = async (state: number) => {
@@ -124,8 +125,8 @@ const deleteTag = async (state: number) => {
 
         verifyDelete.value = false;
 
+        (await useWSocket()).value.emit('tag:delete', tag.value);
         Tags.value = Tags.value.filter(tag => tag.uuid !== props.uuid);
-        (await useWSocket()).value.emit('tag:delete', tag);
 
     }
 
@@ -142,10 +143,15 @@ const save = async () => {
         Tags.value[index] = { ...tag.value }; 
     }
 
-    (await useWSocket()).value.emit('tag:update', tag);
+    (await useWSocket()).value.emit('tag:update', Tags.value[index]);
 
     emit('update:modelValue', false);
 
 }
+
+
+onMounted(() => {
+    tag.value = Tags.value.find(tag => tag.uuid == props.uuid);
+})
 
 </script>
