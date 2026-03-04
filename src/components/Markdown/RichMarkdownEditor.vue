@@ -127,6 +127,8 @@ const getColorByImage = async (): Promise<{ bg: string, text: string }> => {
 };
 
 const handleScroll = (editor: Editor) => {
+
+  return;
   
   setTimeout(() => {
 
