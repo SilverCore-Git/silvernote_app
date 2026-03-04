@@ -1,7 +1,9 @@
 import { watch, type Ref } from "vue";
-import { wsocket } from "./useWebSocket";
+import useWSocket from "./useWebSocket";
 
-const useTitle = () => {
+const useTitle = async () => {
+
+    const wsocket = await useWSocket();
 
     const createTitleAutoSync = (title: Ref<string | undefined>) => {
         
@@ -14,7 +16,7 @@ const useTitle = () => {
                 if (newVal === oldVal || onUpdate) return;
 
                 onUpdate = true;
-                wsocket.emit('title-update', newVal);
+                wsocket.value.emit('title-update', newVal);
 
                 setTimeout(() => {
                     onUpdate = false;
@@ -34,11 +36,11 @@ const useTitle = () => {
             }, 200);
         };
 
-        wsocket.on('title-update', socketHandler);
+        wsocket.value.on('title-update', socketHandler);
 
         const stopTitleAutoSync = () => {
             stopWatch();
-            wsocket.off('title-update', socketHandler);
+            wsocket.value.off('title-update', socketHandler);
         };
 
         return {

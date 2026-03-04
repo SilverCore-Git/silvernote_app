@@ -50,6 +50,7 @@ const handleImportLogic = async (file: File) => {
                 const noteData: Note = {
                     uuid: uuidv4(),
                     title: note.title || 'Note sans titre',
+                    user_id: localStorage.getItem('user_id'),
                     content: note.content,
                     date: note.createdAt,
                     tags: [],

@@ -93,10 +93,10 @@ import { saveNote } from '@/components/Markdown/Function/saveNote';
 import Share_menu from '@/components/popup/share_menu.vue';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import { Notes } from '@/assets/ts/database/Var';
-import database from '@/assets/ts/database/database';
 import { useRouter } from 'vue-router';
 import isMobile from '@/assets/ts/utils/isMobile';
 import NotesStatsPopup from './common/NotesStatsPopup.vue';
+import { useWSocket } from '@/composables/WSocket';
 
 const props = defineProps<{
   visible: boolean;
@@ -123,7 +123,7 @@ const delete_note = async (state: number) => {
     if (state === 1) return showDialog.value = true;
     if (state === 2)
     {
-        await database.delete(props.uuid);
+        (await useWSocket()).value.emit('note:delete', props.note);
         Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
         router.push('/');
     }

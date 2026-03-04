@@ -1,8 +1,8 @@
 import { type Ref } from "vue";
-import { wsocket } from "./useWebSocket";
+import useWSocket from "./useWebSocket";
 
 
-const createAIListener = (
+const createAIListener = async (
     {
         room,
         title,
@@ -14,6 +14,8 @@ const createAIListener = (
         icon: Ref<string | undefined>
     }
 ) => {
+
+    const wsocket = await useWSocket();
 
     const titleHandler = (data: { title: string, room: string }) => {
 
@@ -49,13 +51,13 @@ const createAIListener = (
 
     };
 
-    wsocket.on('ai-title-update', titleHandler)
-    wsocket.on('ai-icon-update', iconHandler)
+    wsocket.value.on('ai-title-update', titleHandler)
+    wsocket.value.on('ai-icon-update', iconHandler)
 
     const stopAIListener = () =>
     {
-        wsocket.off('ai-title-update', titleHandler)
-        wsocket.off('ai-icon-update', iconHandler)
+        wsocket.value.off('ai-title-update', titleHandler)
+        wsocket.value.off('ai-icon-update', iconHandler)
     };
 
     return {

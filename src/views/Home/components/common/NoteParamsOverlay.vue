@@ -289,6 +289,7 @@ import DefaultNoteCard from '@/views/Home/components/common/DefaultNoteCard.vue'
 import database from '@/assets/ts/database/database';
 import share_menu from '@/components/popup/share_menu.vue';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
+import { useWSocket } from '@/composables/WSocket';
 
 
 const props = defineProps<{
@@ -324,7 +325,7 @@ const deleteNote = async (state: number) => {
     {
         showConfirmDel.value = false;
         if (!props.uuid) return;
-        await database.delete(props.uuid);
+        (await useWSocket()).value.emit('note:delete', note.value);
         Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
         emitClose();
     }

@@ -40,7 +40,7 @@ export interface Note {
     title: string;
     content: string;
     date: string;
-    user_id?: string;
+    user_id: string;
     lastSaveAt?: string;
     tags: number[];
     selected?: boolean;
