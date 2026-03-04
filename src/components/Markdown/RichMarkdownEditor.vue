@@ -127,8 +127,6 @@ const getColorByImage = async (): Promise<{ bg: string, text: string }> => {
 };
 
 const handleScroll = (editor: Editor) => {
-
-  return;
   
   setTimeout(() => {
 
@@ -303,10 +301,6 @@ onBeforeUnmount(() => {
   letter-spacing: 0.01em;
   color: var(--text);
   min-width: 0;
-}
-
-.editor-container .ProseMirror > * {
-  scroll-margin-top: 25vh; 
 }
 
 .editor-container .prose {
