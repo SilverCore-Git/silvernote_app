@@ -14,7 +14,7 @@ import CreateNewNote from './composable/CreateNewNote';
 import { useRoute, useRouter } from 'vue-router';
 import database from '@/assets/ts/database/database';
 import useToken from '@/composables/useToken';
-import { initSocket, socket } from '@/composables/WSocket';
+import { initSocket, useWSocket } from '@/composables/WSocket';
 import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
 import isElectron from '@/assets/ts/utils/isElectron';
 import { icon, title } from './composable/useTitleIcon';
@@ -153,7 +153,7 @@ const setupNote = async () => {
     icon.value = note.value?.icon || '';
   }
   
-  const { closeSocket } = initSocket({
+  const { closeSocket } = await initSocket({
     room: props.uuid,
     users,
     icon,
@@ -193,7 +193,7 @@ onUnmounted(async () => {
   }
 
   await saveNote();
-  socket.emit('leave-room', { room: props.uuid });
+  (await useWSocket()).value.emit('leave-room', { room: props.uuid });
 
   title.value = undefined;
   icon.value = undefined;

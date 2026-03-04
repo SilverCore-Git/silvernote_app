@@ -1,13 +1,16 @@
 import type { Ref } from "vue";
 import useUser from "../useUser";
-import { wsocket } from "./useWebSocket";
 import type { User } from "@/assets/ts/type";
+import useWSocket from "./useWebSocket";
 
 const { getUserByUUID } = useUser();
 
-const useUsers = ( users: Ref<User[]> ) => {
+const useUsers = async ( users: Ref<User[]> ) => {
+
+    const wsocket = await useWSocket();
 
     const onNewUser = async (userId: string) => {
+        
         if (!userId) return;
 
         const user_visitor = await getUserByUUID(userId, "visitor");
@@ -22,14 +25,15 @@ const useUsers = ( users: Ref<User[]> ) => {
         if (alreadyExists) return;
 
         users.value.push(user_visitor);
+
     };
 
     const start = () => {
-        wsocket.on("new_user", onNewUser);
+        wsocket.value.on("new_user", onNewUser);
     };
 
     const close = () => {
-        wsocket.off("new_user", onNewUser);
+        wsocket.value.off("new_user", onNewUser);
     };
 
     return {

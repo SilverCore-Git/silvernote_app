@@ -6,7 +6,7 @@ import { useUsers } from "./useUsers";
 import { createAIListener } from "./useAIListener";
 import type { User } from "@/assets/ts/type";
 
-function initSocket ({
+async function initSocket ({
     room,
     users,
     title,
@@ -18,23 +18,23 @@ function initSocket ({
     title: Ref<string | undefined>,
     icon: Ref<string | undefined>,
     userId: string
-}): { closeSocket: () => void }
+}): Promise<{ closeSocket: () => void }>
 {
 
-    const { join, leave } = useRoom();
-    const { createIconAutoSync } = useIcon();
-    const { createTitleAutoSync } = useTitle();
+    const { join, leave } = await useRoom();
+    const { createIconAutoSync } = await useIcon();
+    const { createTitleAutoSync } = await useTitle();
 
     join({ room, userId });
 
     const { stopIconAutoSync } = createIconAutoSync(icon);
     const { stopTitleAutoSync } = createTitleAutoSync(title);
-    const { stopAIListener } = createAIListener({
+    const { stopAIListener } = await createAIListener({
         room,
         title,
         icon
     })
-    const { start, close } = useUsers(users);
+    const { start, close } = await useUsers(users);
     start();
 
     console.log(`Socket initialized for room ${room}!`);
