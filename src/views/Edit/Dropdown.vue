@@ -97,6 +97,7 @@ import database from '@/assets/ts/database/database';
 import { useRouter } from 'vue-router';
 import isMobile from '@/assets/ts/utils/isMobile';
 import NotesStatsPopup from './common/NotesStatsPopup.vue';
+import { useWSocket } from '@/composables/WSocket';
 
 const props = defineProps<{
   visible: boolean;
@@ -125,6 +126,7 @@ const delete_note = async (state: number) => {
     {
         await database.delete(props.uuid);
         Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
+        (await useWSocket()).value.emit('note:delete', props.note);
         router.push('/');
     }
 }

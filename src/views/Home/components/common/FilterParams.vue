@@ -93,8 +93,8 @@ import Popup from '@/components/popup/Popup.vue';
 import { ref, watch } from 'vue';
 import FilterCard from './FilterCard.vue';
 import type { Tag } from '@/assets/ts/type';
-import database from '@/assets/ts/database/database';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
+import { useWSocket } from '@/composables/WSocket';
 
 const props = defineProps<{
   uuid: string;
@@ -124,8 +124,8 @@ const deleteTag = async (state: number) => {
 
         verifyDelete.value = false;
 
-        await database.delete_tag(props.uuid);
         Tags.value = Tags.value.filter(tag => tag.uuid !== props.uuid);
+        (await useWSocket()).value.emit('tag:delete', tag);
 
     }
 
@@ -135,14 +135,14 @@ const save = async () => {
 
     if (!tag.value) return;
     tag.value._id = undefined;
-    
-    await database.updateTag(tag.value);
 
     const index = Tags.value.findIndex(t => t.uuid === props.uuid);
     
     if (index !== -1) {
         Tags.value[index] = { ...tag.value }; 
     }
+
+    (await useWSocket()).value.emit('tag:update', tag);
 
     emit('update:modelValue', false);
 

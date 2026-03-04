@@ -103,12 +103,12 @@ const saveNote = async () => {
 
   if (note.value?.title == '' && (note.value?.content == '' || note.value?.content == '<p></p>'))
   {
-    await database.delete(Notes.value[index].uuid);
+    (await useWSocket()).value.emit('note:delete', note.value);
     Notes.value = Notes.value.filter(_note => _note.uuid !== Notes.value[index].uuid);
     return;
   }
 
-  await database.update(Notes.value[index]);
+  (await useWSocket()).value.emit('note:update', note.value);
 
 }
 

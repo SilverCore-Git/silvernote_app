@@ -15,9 +15,10 @@ export default function (socket: Ref<Socket>)
 
 
     // sync notes
-    
+
     socket.value.on('note:create', (note: Note) => {
         
+        if (Notes.value.some(n => n.uuid === note.uuid)) return;
         Notes.value.push(note);
 
     });
@@ -43,6 +44,7 @@ export default function (socket: Ref<Socket>)
 
     socket.value.on('tag:create', (tag: Tag) => {
         
+        if (Tags.value.some(n => n.uuid === tag.uuid)) return;
         Tags.value.push(tag);
 
     });

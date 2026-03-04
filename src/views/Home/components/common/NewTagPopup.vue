@@ -78,7 +78,7 @@ import Popup from '@/components/popup/Popup.vue';
 import { nextTick, ref, watch } from 'vue';
 import FilterCard from './FilterCard.vue';
 import { Tags } from '@/assets/ts/database/Var';
-import database from '@/assets/ts/database/database';
+import { useWSocket } from '@/composables/WSocket';
 
 const emit = defineEmits([
     'close'
@@ -105,7 +105,7 @@ const create_tag = () => {
     }
 
     Tags.value.push(tag);
-    database.create_tag(tag);
+    async () => (await useWSocket()).value.emit('tag:create', tag);
 
     tag_name.value = '';
     tag_color.value = '';
