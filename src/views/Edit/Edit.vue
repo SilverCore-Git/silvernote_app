@@ -12,9 +12,8 @@ import waitFor from '@/assets/ts/utils/waitFor';
 import useEmoji from './composable/useEmoji';
 import CreateNewNote from './composable/CreateNewNote';
 import { useRoute, useRouter } from 'vue-router';
-import database from '@/assets/ts/database/database';
 import useToken from '@/composables/useToken';
-import { initSocket, socket } from '@/composables/WSocket';
+import { initSocket, useWSocket } from '@/composables/WSocket';
 import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
 import isElectron from '@/assets/ts/utils/isElectron';
 import { icon, title } from './composable/useTitleIcon';
@@ -94,21 +93,27 @@ const initExistingNote = async () => {
 const saveNote = async () => {
   
   const index = Notes.value.findIndex(n => n.uuid === props.uuid);
+  if (index === -1) return;
 
-  if (index !== -1)
-  {
-    Notes.value[index].title = title.value || Notes.value[index].title;
-    Notes.value[index].icon = icon.value || Notes.value[index].icon;
-  }
+  const socket = (await useWSocket()).value;
+  const currentNote = Notes.value[index];
 
-  if (note.value?.title == '' && (note.value?.content == '' || note.value?.content == '<p></p>'))
+  currentNote.title = title.value || currentNote.title;
+  currentNote.icon = icon.value || currentNote.icon;
+
+  await nextTick();
+
+  const isTitleEmpty = !currentNote.title?.trim();
+  const isContentEmpty = !currentNote.content || currentNote.content === '<p></p>';
+
+  if (isTitleEmpty && isContentEmpty) 
   {
-    await database.delete(Notes.value[index].uuid);
-    Notes.value = Notes.value.filter(_note => _note.uuid !== Notes.value[index].uuid);
+    socket.emit('note:delete', currentNote);
+    Notes.value = Notes.value.filter(n => n.uuid !== props.uuid);
     return;
   }
 
-  await database.update(Notes.value[index]);
+  socket.emit('note:update', currentNote);
 
 }
 
@@ -153,7 +158,7 @@ const setupNote = async () => {
     icon.value = note.value?.icon || '';
   }
   
-  const { closeSocket } = initSocket({
+  const { closeSocket } = await initSocket({
     room: props.uuid,
     users,
     icon,
@@ -193,7 +198,7 @@ onUnmounted(async () => {
   }
 
   await saveNote();
-  socket.emit('leave-room', { room: props.uuid });
+  (await useWSocket()).value.emit('leave-room', { room: props.uuid });
 
   title.value = undefined;
   icon.value = undefined;

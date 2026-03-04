@@ -1,7 +1,7 @@
-import database from "@/assets/ts/database/database";
 import { Notes } from "@/assets/ts/database/Var";
 import type { Note } from "@/assets/ts/type";
 import utils from "@/assets/ts/utils";
+import { useWSocket } from "@/composables/WSocket";
 
 export default 
 async function
@@ -10,6 +10,7 @@ async function
 
     const note: Note = {
         uuid: await utils.UUID(),
+        user_id: localStorage.getItem('user_id')!,
         icon: '',
         title: '',
         content: '',
@@ -20,7 +21,7 @@ async function
     };
 
     Notes.value.push(note);
-    await database.create(note);
+    (await useWSocket()).value.emit('note:create', note);
 
     return note;
     

@@ -111,7 +111,7 @@ function useFetchShare()
 
                 if (!note.value) return;
 
-                const { closeSocket } = initSocket({
+                const { closeSocket } = await initSocket({
                     room: note.value.uuid,
                     users,
                     icon,

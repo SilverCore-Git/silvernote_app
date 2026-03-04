@@ -1,6 +1,6 @@
 import * as Y from 'yjs';
 import * as awarenessProtocol from 'y-protocols/awareness';
-import { socket, socketConnected, useRoom } from '@/composables/WSocket';
+import { useWSocket, socketConnected, useRoom } from '@/composables/WSocket';
 import waitFor from '@/assets/ts/utils/waitFor';
 import postError from '../errorOverlay/postError';
 import { editor } from './Editor';
@@ -8,6 +8,7 @@ import { saveNote } from './Function/saveNote';
 
 let isOffline = false;
 
+const socket = useWSocket();
 
 export class EditorProvider
 {
@@ -43,7 +44,7 @@ export class EditorProvider
         waitFor(
           () => socketConnected.value,
           5000
-        ).then(() => {
+        ).then(async () => {
 
           if (!socketConnected.value)
           {
@@ -55,7 +56,7 @@ export class EditorProvider
             return;
           }
 
-          this.setupListeners();
+          await this.setupListeners();
 
         });
 
@@ -63,16 +64,16 @@ export class EditorProvider
 
     }
 
-    private setupListeners()
+    private async setupListeners()
     {
 
-      const { join, leave } = useRoom();
+      const { join, leave } = await useRoom();
 
       leave(this.room);
       join({ room: this.room, userId: window.localStorage.getItem('user_id') ?? '' });
 
       // État initial du document
-      socket.on('sync', (state: Uint8Array | any) => {
+      (await socket).value.on('sync', (state: Uint8Array | any) => {
 
         if (this.synced) return;
 
@@ -99,7 +100,7 @@ export class EditorProvider
       });
 
       // Updates distants du document
-      socket.on('y-update', (update: Uint8Array | any) => {
+      (await socket).value.on('y-update', (update: Uint8Array | any) => {
         
         const uint8Update =
           update instanceof Uint8Array
@@ -111,7 +112,7 @@ export class EditorProvider
       });
 
       // Updates distants d'awareness (curseurs)
-      socket.on('awareness-update', (update: Uint8Array | any) => {
+      (await socket).value.on('awareness-update', (update: Uint8Array | any) => {
         
         const uint8Update =
           update instanceof Uint8Array
@@ -126,7 +127,7 @@ export class EditorProvider
         
       });
 
-      socket.on('ai-content-update', (data: { content: { html: string, pos: number }, room: string }) => {
+      (await socket).value.on('ai-content-update', (data: { content: { html: string, pos: number }, room: string }) => {
 
           if (data.room !== this.room) return;
 
@@ -153,7 +154,7 @@ export class EditorProvider
           
       });
 
-      socket.on('connect', async () => {
+      (await socket).value.on('connect', async () => {
         console.log('✅ Socket connected');
         this.enableLocalUpdates();
         if (isOffline) 
@@ -166,7 +167,7 @@ export class EditorProvider
         }
       });
 
-      socket.on('disconnect', () => {
+      (await socket).value.on('disconnect', () => {
         isOffline = true;
         console.log('❌ Socket disconnected');
         this.disableLocalUpdates();
@@ -186,10 +187,10 @@ export class EditorProvider
       }
 
       // Updates locaux du document
-      this.updateHandler = (update: Uint8Array, origin: any) => {
+      this.updateHandler = async (update: Uint8Array, origin: any) => {
         
         if (origin !== 'remote' && this.editable && this.room) {
-          socket.emit('y-update', update);
+          (await socket).value.emit('y-update', update);
         } else {
           console.log('❌ Not emitting y-update - origin:', origin, 'editable:', this.editable, 'room:', this.room);
         }
@@ -198,7 +199,7 @@ export class EditorProvider
       this.doc.on('update', this.updateHandler);
 
       // Updates locales d'awareness
-      this.awarenessUpdateHandler = ({ added, updated, removed }: any) => {
+      this.awarenessUpdateHandler = async ({ added, updated, removed }: any) => {
 
         const clients = added.concat(updated).concat(removed);
         const update = awarenessProtocol.encodeAwarenessUpdate(
@@ -207,7 +208,7 @@ export class EditorProvider
         );
         
         if (this.editable && this.room) {
-          socket.emit('awareness-update', update);
+          (await socket).value.emit('awareness-update', update);
         } else {
           console.log('❌ Not emitting awareness-update - editable:', this.editable, 'room:', this.room);
         }

@@ -300,7 +300,7 @@ import useSendShare from './composable/useSendShare';
 import useInitShare from './composable/useInitShare';
 import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
 import isElectron from '@/assets/ts/utils/isElectron';
-import { socket } from '@/composables/WSocket';
+import { useWSocket } from '@/composables/WSocket';
 
 
 const props = defineProps<{
@@ -388,9 +388,9 @@ onMounted(async () => {
 
 })
 
-onUnmounted(() => {
+onUnmounted(async () => {
     close();
-    socket.emit('leave-room', { room: props.uuid });
+    (await useWSocket()).value.emit('leave-room', { room: props.uuid });
 })
 
 </script>

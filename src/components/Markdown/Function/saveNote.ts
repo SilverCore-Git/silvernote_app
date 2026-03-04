@@ -1,6 +1,6 @@
 import { editor } from "../Editor";
 import { Notes } from "@/assets/ts/database/Var";
-import database from "@/assets/ts/database/database";
+import { useWSocket } from "@/composables/WSocket";
 import { icon, title } from "@/views/Edit/composable/useTitleIcon";
 
 
@@ -54,7 +54,7 @@ export const saveNote = async (uuid: string, { force = false } = {}) =>
         note.icon = newIcon;
 
         Notes.value.splice(Notes.value.indexOf(note), 1, note);
-        await database.update(note);
+        (await useWSocket()).value.emit('note:update', note);
 
         window.dispatchEvent(new CustomEvent('note-saved', {
             detail: { noteId: uuid, timestamp: Date.now() }

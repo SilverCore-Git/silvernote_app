@@ -1,8 +1,9 @@
 import { watch, type Ref } from "vue";
-import { wsocket } from "./useWebSocket";
+import useWSocket from "./useWebSocket";
 
-const useIcon = () => {
+const useIcon = async () => {
 
+    const wsocket = await useWSocket();
 
     const createIconAutoSync = (icon: Ref<string | undefined>) => {
         
@@ -15,7 +16,7 @@ const useIcon = () => {
                 if (newVal === oldVal || onUpdate) return;
 
                 onUpdate = true;
-                wsocket.emit('icon-update', newVal);
+                wsocket.value.emit('icon-update', newVal);
 
                 setTimeout(() => {
                     onUpdate = false;
@@ -35,11 +36,11 @@ const useIcon = () => {
             }, 200);
         };
 
-        wsocket.on('icon-update', socketHandler);
+        wsocket.value.on('icon-update', socketHandler);
 
         const stopIconAutoSync = () => {
             stopWatch();
-            wsocket.off('icon-update', socketHandler);
+            wsocket.value.off('icon-update', socketHandler);
         };
 
         return {

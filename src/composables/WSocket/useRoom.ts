@@ -1,21 +1,23 @@
 import { ref } from "vue";
-import { wsocket } from "./useWebSocket"
+import useWSocket from "./useWebSocket";
 
 const socketConnected = ref<boolean>(false);
 
 const useRoom =
-() =>
+async () =>
 {
 
+    const wsocket = await useWSocket();
+
     const join = (params: { room: string, userId: string }) => {
-        wsocket.emit('join-room', params);
+        wsocket.value.emit('join-room', params);
         setTimeout(() => {
             socketConnected.value = true;
         }, 200);
     }
 
     const leave = (room: string) => {
-        wsocket.emit('leave-room', { room });
+        wsocket.value.emit('leave-room', { room });
         socketConnected.value = false;
     }
 

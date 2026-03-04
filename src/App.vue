@@ -41,7 +41,7 @@
 
         <!-- loader -->
         <div
-          v-if="!loaded" 
+          v-if="!loaded"
           class="
             fixed inset-0 z-50
           "
@@ -50,11 +50,11 @@
 
           <DesktopAppTitleBar />
 
-          <div class="flex justify-center items-center w-full h-full">
+          <div 
+            v-if="!loaded" 
+            class="flex justify-center items-center w-full h-full"
+          >
             <IconLoader />
-            <span class="absolute bottom-6 inset-x-0 z-500 flex justify-center items-center">
-              {{ status }}
-            </span>
           </div>
 
         </div>
@@ -109,6 +109,8 @@ import DesktopAppTitleBar from "./components/DesktopAppTitleBar.vue";
 import IconLoader from "./components/iconLoader.vue";
 import { initNotifications } from "./components/notifications/notifications";
 import UpdateAvalable from "./components/updateAvalable.vue";
+import { useWSocket } from "./composables/WSocket";
+import dbSocket from "./assets/ts/database/dbSocket";
 
 const themeClass = ref<string>(
   window.localStorage.getItem('theme') == 'dark'
@@ -207,6 +209,17 @@ onMounted(async () => {
     console.error(err);
 
   }
+  finally 
+  {
+
+    loaded.value = true;
+
+    // init db socket
+    const socket = await useWSocket();
+    dbSocket(socket);
+
+  }
+
 
 });
 
@@ -220,11 +233,12 @@ const reload = () => {
 <style>
 
 .fade-app-leave-active {
-  transition: opacity 800ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 800ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fade-app-leave-to {
   opacity: 0;
+  transform: scale(2);
 }
 
 @keyframes circle-reveal {

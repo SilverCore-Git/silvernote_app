@@ -303,10 +303,6 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 
-.editor-container .ProseMirror > * {
-  scroll-margin-top: 25vh; 
-}
-
 .editor-container .prose {
   all: unset;
   display: block;
