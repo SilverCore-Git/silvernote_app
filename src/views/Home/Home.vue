@@ -28,7 +28,7 @@
 
                 <a 
                     class="p-1.5"
-                    v-tooltip.bottom="tooltipConfig"
+                    v-tooltip.bottom="'Recharger'"
                 >
                     <div
                         class="bi bi-arrow-clockwise text-(--btn) text-2xl 
@@ -83,14 +83,5 @@ import NavBar from './components/layout/Navbar.vue';
 import SearchAndTag from './components/layout/SearchAndTag.vue';
 import { isRotating, reload_list } from './composables/Reload';
 import isElectron from '@/assets/ts/utils/isElectron';
-import { useShortcut } from '@/composables/useShrotcut';
-
-const { tooltipConfig } = useShortcut(
-    'r',
-    'Recharger',
-    () => {
-        reload_list('cloud');
-    }
-)
 
 </script>
