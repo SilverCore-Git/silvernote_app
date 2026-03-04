@@ -109,6 +109,8 @@ import DesktopAppTitleBar from "./components/DesktopAppTitleBar.vue";
 import IconLoader from "./components/iconLoader.vue";
 import { initNotifications } from "./components/notifications/notifications";
 import UpdateAvalable from "./components/updateAvalable.vue";
+import { useWSocket } from "./composables/WSocket";
+import dbSocket from "./assets/ts/database/dbSocket";
 
 const themeClass = ref<string>(
   window.localStorage.getItem('theme') == 'dark'
@@ -207,6 +209,17 @@ onMounted(async () => {
     console.error(err);
 
   }
+  finally 
+  {
+
+    loaded.value = true;
+
+    // init db socket
+    const socket = await useWSocket();
+    dbSocket(socket);
+
+  }
+
 
 });
 
