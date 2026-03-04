@@ -1,6 +1,5 @@
 import { editor } from "../Editor";
 import { Notes } from "@/assets/ts/database/Var";
-import database from "@/assets/ts/database/database";
 import { useWSocket } from "@/composables/WSocket";
 import { icon, title } from "@/views/Edit/composable/useTitleIcon";
 

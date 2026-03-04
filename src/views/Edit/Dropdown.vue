@@ -93,7 +93,6 @@ import { saveNote } from '@/components/Markdown/Function/saveNote';
 import Share_menu from '@/components/popup/share_menu.vue';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import { Notes } from '@/assets/ts/database/Var';
-import database from '@/assets/ts/database/database';
 import { useRouter } from 'vue-router';
 import isMobile from '@/assets/ts/utils/isMobile';
 import NotesStatsPopup from './common/NotesStatsPopup.vue';

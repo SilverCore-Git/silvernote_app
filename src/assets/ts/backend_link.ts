@@ -29,6 +29,7 @@ const dev_db: { notes: Note[], tags: Tag[] } = {
       id,
       uuid,
       pinned,
+      user_id: '',
       simply_edit,
       title,
       content,
