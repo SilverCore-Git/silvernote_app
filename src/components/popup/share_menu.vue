@@ -456,7 +456,8 @@ const mount = async () => {
         day: 'numeric',
         month: 'short',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        year: 'numeric'
       });
       
       password.value = !!res.share.params.passwd;
