@@ -58,7 +58,7 @@ const openEditNewNote = () => {
 };
 
 const { tooltipConfig } = useShortcut(
-    [ 'maj', 'n' ],
+    [ 'shift', 'n' ],
     'Créer une note',
     () => {
         openEditNewNote();

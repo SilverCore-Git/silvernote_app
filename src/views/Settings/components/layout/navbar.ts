@@ -28,11 +28,11 @@ const pages: Page[] = [
         icon: "bi-database-fill", // Mes données / données personnelles
         name: "Mes données"
     },
-    {
-        path: '/2048',
-        icon: "bi-grid-3x3", // Juridique / sécurité
-        name: "Jeu 2048"
-    },
+    // {
+    //     path: '/2048',
+    //     icon: "bi-grid-3x3", // Juridique / sécurité
+    //     name: "Jeu 2048"
+    // },
     {
         path: '/legal',
         icon: "bi-shield-fill-check", // Juridique / sécurité

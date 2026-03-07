@@ -38,7 +38,12 @@ const route = useRoute();
 const { user, isLoaded } = useUser();
 const MessageTextarea = ref<HTMLTextAreaElement | null>(null);
 
+const handleEsc = (e: KeyboardEvent) => {
+    if (e.key == 'Escape') isOpen.value = false;
+};
+
 onMounted(async () => {
+    window.addEventListener('keydown', handleEsc)
     await waitFor(() => isLoaded.value, 10000);
     loaded.value = true;
     await useChat.create(user.value);
@@ -47,6 +52,7 @@ onMounted(async () => {
 
 onBeforeUnmount(async () => {
     await useChat.close(useChat?.chat.value?.uuid || '');
+    window.removeEventListener('keydown', handleEsc);
 })
 
 watch(() => isOpen.value, async () => {

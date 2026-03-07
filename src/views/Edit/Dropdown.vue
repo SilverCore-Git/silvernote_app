@@ -19,14 +19,15 @@
                     <hr />
 
                     <li @click="share_menu = true">Partager</li>
+
+                    <hr />
+
+                    <!-- <li @click="showGame = true">2048</li> -->
+
+                    <hr />
+
                     <li @click="saveNote(uuid, { force: true })">Sauvegarder</li>
                     <li @click="stats_popup = true">Statistiques</li>
-
-                    <hr />
-
-                    <li @click="showGame = true">2048</li>
-
-                    <hr />
 
                     <li class="text-red-600" @click="showDialog = true">
                         Supprimer

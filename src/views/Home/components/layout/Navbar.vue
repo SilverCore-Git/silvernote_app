@@ -171,7 +171,7 @@
 
         </ul> -->
 
-        <App2048Popup v-model:show="showGame" />
+        <!-- <App2048Popup v-model:show="showGame" /> -->
 
     </div>
 
@@ -186,7 +186,7 @@ import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { UserButton } from '@clerk/vue';
 import { clerkAppearanceSettings } from '@/assets/ts/theme';
-import App2048Popup from '@/components/2048/App2048Popup.vue';
+// import App2048Popup from '@/components/2048/App2048Popup.vue';
 import News from '../../../../components/notifications/Notifications.vue';
 
  

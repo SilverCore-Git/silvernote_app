@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.13.29",
   "description": "A simple note taking app",
-  "dev": false,
+  "dev": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
