@@ -55,12 +55,10 @@ import { useUser } from '@clerk/vue';
 
 import * as Y from 'yjs';
 
-import type { Note } from '@/assets/ts/type';
 import { api_url } from '@/assets/ts/backend_link';
 import { getDominantColor } from '@/assets/ts/GetColorByImage';
 
 import { editor } from './Editor';
-import { saveNote } from './Function/saveNote.js';
 import ToolsMenu from '@/components/Markdown/ToolsMenu/toolsBar/ToolsMenu.vue';
 import SaveIndicator from './SaveIndicator.vue';
 import PhoneToolsBar from './ToolsMenu/phoneToolsBar/phoneToolsBar.vue';
@@ -73,11 +71,10 @@ import './css/DragHandler.scss';
 import './css/CodeBlock.scss';
 import getContrastColor from '@/assets/ts/utils/getContrastColor.js';
 import waitFor from '@/assets/ts/utils/waitFor.js';
+import { useWSocket } from '@/composables/WSocket';
 
 const props = defineProps<{
-  id: number;
   editable?: boolean;
-  data: Note;
   uuid: string;
 }>()
 
@@ -86,20 +83,17 @@ const searchBarVisible = ref<boolean>(false);
 const colorCache = ref<string | null>(null);
 const { user } = useUser();
 
-let autosaveInterval: ReturnType<typeof setInterval> | null = null;
 
 const focusEditor = () => editor.value?.commands.focus();
 
 const handleSaveShortcut = (e: KeyboardEvent) => {
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') 
+  {
     e.preventDefault();
-    saveNote(props.data.uuid, { force: true });
+    useWSocket().then(socket => socket.value.emit('save-room', { room: props.uuid }));
   }
 };
 
-const startAutoSave = () => {
-  autosaveInterval = setInterval(() => saveNote(props.data.uuid), 10 * 1000);
-};
 
 const getColorByImage = async (): Promise<{ bg: string, text: string }> => {
   
@@ -231,11 +225,6 @@ async function initEditor(): Promise<void>
 
   await nextTick();
   await waitFor(() => provider.synced, 10_000);
-  
-  if (editor.value && props.data.content && editor.value.getText().length <= 0) 
-  {
-    editor.value.commands.setContent(props.data.content);
-  }
 
   console.log('Editor initialized');
   loader.value = false;
@@ -258,15 +247,12 @@ watch(() => props.uuid, async () => {
 onMounted(async () => {
   window.addEventListener('keydown', handleSaveShortcut)
   await initEditor();
-  startAutoSave();
 });
 
 onBeforeUnmount(() => {
-  saveNote(props.data.uuid);
   window.removeEventListener('keydown', handleSaveShortcut)
   if (editor.value) editor.value.destroy();
   clearMathCache();
-  autosaveInterval && clearInterval(autosaveInterval);
 });
 
 </script>

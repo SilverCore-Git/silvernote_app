@@ -25,8 +25,7 @@
                     <!-- <li @click="showGame = true">2048</li> -->
 
                     <hr />
-
-                    <li @click="saveNote(uuid, { force: true })">Sauvegarder</li>
+                    
                     <li @click="stats_popup = true">Statistiques</li>
 
                     <li class="text-red-600" @click="showDialog = true">
@@ -89,7 +88,6 @@ import { editor } from '@/components/Markdown/Editor'
 import Import from './common/Import.vue';
 import Export from './common/Export.vue';
 import NoteParamsOverlay from '../Home/components/common/NoteParamsOverlay.vue';
-import { saveNote } from '@/components/Markdown/Function/saveNote';
 import Share_menu from '@/components/popup/share_menu.vue';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import { Notes } from '@/assets/ts/database/Var';

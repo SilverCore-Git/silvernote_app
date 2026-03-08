@@ -1,10 +1,11 @@
 import * as Y from 'yjs';
 import * as awarenessProtocol from 'y-protocols/awareness';
-import { useWSocket, socketConnected, useRoom } from '@/composables/WSocket';
+import { useWSocket, socketConnected } from '@/composables/WSocket';
 import waitFor from '@/assets/ts/utils/waitFor';
 import postError from '../errorOverlay/postError';
 import { editor } from './Editor';
 import { saveNote } from './Function/saveNote';
+import { nextTick } from 'vue';
 
 let isOffline = false;
 
@@ -67,52 +68,48 @@ export class EditorProvider
     private async setupListeners()
     {
 
-      const { join, leave } = await useRoom();
-
-      leave(this.room);
-      join({ room: this.room, userId: window.localStorage.getItem('user_id') ?? '' });
-
       // État initial du document
-      (await socket).value.on('sync', (state: Uint8Array | any) => {
+      (await socket).value.on('initial-state', ({ ydocState }: { ydocState: any }) => {
 
-        if (this.synced) return;
+          if (this.synced) return;
 
-        const currentUpdate = Y.encodeStateAsUpdate(this.doc);
-        console.log('leng : ', currentUpdate.length)
-        if (currentUpdate.length > 2) {
+          const uint8State = ydocState instanceof Uint8Array 
+              ? ydocState 
+              : new Uint8Array(ydocState);
+
+          if (uint8State.length > 0) 
+          {
+              try {
+                  Y.applyUpdate(this.doc, uint8State, 'initial');
+              } 
+              catch (e) 
+              {
+                  console.error("❌ Erreur lors de l'application de l'état initial Yjs", e);
+              }
+          }
+
           this.synced = true;
-          this.enableLocalUpdates();
-          return;
-        }
+          console.log('✅ Editor synced!');
+        
+          nextTick(() => {
+              this.enableLocalUpdates();
+          });
 
-        const uint8State =
-          state instanceof Uint8Array
-            ? state
-            : new Uint8Array(Object.values(state));
-
-        if (uint8State.length > 0) {
-          Y.applyUpdate(this.doc, uint8State, 'remote');
-        }
-
-        this.synced = true;
-        console.log('✅ Editor synced!');
-        this.enableLocalUpdates();
       });
 
       // Updates distants du document
-      (await socket).value.on('y-update', (update: Uint8Array | any) => {
+      (await socket).value.on('y-update', ({ update }: { update: any }) => {
         
-        const uint8Update =
-          update instanceof Uint8Array
-            ? update
-            : new Uint8Array(Object.values(update));
+        const uint8Update = update instanceof Uint8Array
+                ? update
+                : new Uint8Array(update);
 
         Y.applyUpdate(this.doc, uint8Update, 'remote');
         
       });
 
       // Updates distants d'awareness (curseurs)
-      (await socket).value.on('awareness-update', (update: Uint8Array | any) => {
+      (await socket).value.on('awareness-update', ({ update }: { update: any }) => {
         
         const uint8Update =
           update instanceof Uint8Array
@@ -190,7 +187,7 @@ export class EditorProvider
       this.updateHandler = async (update: Uint8Array, origin: any) => {
         
         if (origin !== 'remote' && this.editable && this.room) {
-          (await socket).value.emit('y-update', update);
+          (await socket).value.emit('y-update', { roomId: this.room, update });
         } else {
           console.log('❌ Not emitting y-update - origin:', origin, 'editable:', this.editable, 'room:', this.room);
         }
@@ -208,7 +205,7 @@ export class EditorProvider
         );
         
         if (this.editable && this.room) {
-          (await socket).value.emit('awareness-update', update);
+          (await socket).value.emit('awareness-update', { roomId: this.room, update });
         } else {
           console.log('❌ Not emitting awareness-update - editable:', this.editable, 'room:', this.room);
         }
@@ -234,10 +231,21 @@ export class EditorProvider
 
     }
 
-    destroy()
+    public destroy()
     {
+
       this.disableLocalUpdates();
       this.awareness.destroy();
+
+      socket.then(s => {
+        s.value.off('initial-state');
+        s.value.off('y-update');
+        s.value.off('awareness-update');
+        s.value.off('ai-content-update');
+        s.value.off('connect');
+        s.value.off('disconnect');
+      })
+
     }
 
 }
