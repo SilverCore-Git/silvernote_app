@@ -84,9 +84,8 @@
 
 <script setup lang="ts">
 
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { editor } from '@/components/Markdown/Editor'
-import type { Note } from '@/assets/ts/type';
 import Import from './common/Import.vue';
 import Export from './common/Export.vue';
 import NoteParamsOverlay from '../Home/components/common/NoteParamsOverlay.vue';
@@ -102,8 +101,9 @@ import { useWSocket } from '@/composables/WSocket';
 const props = defineProps<{
   visible: boolean;
   uuid: string;
-  note: Note;
 }>()
+
+const note = computed(() => Notes.value.find(note => note.uuid === props.uuid));
 
 const emit = defineEmits(['update:visible'])
 
@@ -124,7 +124,7 @@ const delete_note = async (state: number) => {
     if (state === 1) return showDialog.value = true;
     if (state === 2)
     {
-        (await useWSocket()).value.emit('note:delete', props.note);
+        (await useWSocket()).value.emit('note:delete', note.value);
         Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
         router.push('/');
     }

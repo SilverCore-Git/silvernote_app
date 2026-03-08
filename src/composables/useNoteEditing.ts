@@ -43,32 +43,38 @@ function useNoteEditing (noteId: Ref<string> | ComputedRef<string>)
         socket = await useWSocket();
         let note: Note | undefined = Notes.value.find(note => note.uuid == noteId);
 
-        if (!note)
+        if (!note) 
         {
-            note = await CreateNewNote();
+
+            const newNote = await CreateNewNote();
             router.push({ 
-                params: {
-                    ...router.currentRoute.value.params,
-                    uuid: note.uuid
-                }
-            })
+                params: { ...router.currentRoute.value.params, uuid: newNote.uuid }
+            });
+
+            // return !!! : router.push update props.uuid then a new mount,
+            return; 
+
         }
-        // after, use note.uuid or localNote.id, didn't use noteId
+
+
+        socket.value.once('initial-state', ({ note }: { note: Note }) => {
+
+            if (note.uuid !== noteId) return;
+
+            localNote.value = {
+                id: note.uuid,
+                title: note.title,
+                icon: note.icon,
+                pinned: note.pinned,
+                loaded: true
+            }
+
+            clearListener = initListener();
+            document.title = `${localNote.value.title} - Silvernote`;
+
+        })
 
         socket.value.emit('join-room', { room: note.uuid });
-
-        localNote.value = {
-            id: note.uuid,
-            title: note.title,
-            icon: note.icon,
-            pinned: note.pinned,
-            loaded: false
-        }
-
-        clearListener = initListener();
-        document.title = `${localNote.value.title} - Silvernote`;
-
-        localNote.value.loaded = true;
 
     }
 
