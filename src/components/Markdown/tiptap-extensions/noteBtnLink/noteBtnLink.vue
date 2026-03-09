@@ -29,7 +29,6 @@ import SearchANote from '@/components/notes/searchANote.vue'
 import { NodeViewWrapper, nodeViewProps } from '@tiptap/vue-3'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { saveNote } from '../../Function/saveNote'
 import { Notes } from '@/assets/ts/database/Var'
 
 const props = defineProps({
@@ -80,7 +79,6 @@ const setNote = async (noteId: string) => {
 
     note.value = foundNote
     props.updateAttributes({ noteId })
-    await saveNote(noteId)
 
 }
 

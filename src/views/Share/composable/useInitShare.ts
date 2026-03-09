@@ -3,7 +3,6 @@ import { api_url } from "@/assets/ts/backend_link";
 import type { Note, User } from '@/assets/ts/type';
 import useUser from '@/composables/useUser';
 import useToken from '@/composables/useToken';
-import { initSocket } from '@/composables/WSocket';
 
 const { getUserByUUID } = useUser();
 

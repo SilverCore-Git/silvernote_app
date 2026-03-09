@@ -4,7 +4,6 @@ import { useWSocket, socketConnected } from '@/composables/WSocket';
 import waitFor from '@/assets/ts/utils/waitFor';
 import postError from '../errorOverlay/postError';
 import { editor } from './Editor';
-import { saveNote } from './Function/saveNote';
 import { nextTick } from 'vue';
 
 let isOffline = false;
@@ -143,7 +142,6 @@ export class EditorProvider
 
           try {
               editor.value.commands.insertContentAt(safePos, data.content.html);
-              saveNote(this.room);
           }
           catch (e) {
               console.error("Erreur lors de l'insertion Tiptap : ", e);
@@ -158,9 +156,6 @@ export class EditorProvider
         {
           isOffline = false;
           window.dispatchEvent(new CustomEvent('note-save-online'));
-          setTimeout(async () => {
-            await saveNote(this.room, { force: true });
-          }, 4500);
         }
       });
 
