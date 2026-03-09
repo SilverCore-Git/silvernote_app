@@ -45,7 +45,7 @@ export interface Note {
     tags: number[];
     selected?: boolean;
     updated_at?: number;
-    content_type?: "text/plain" | "text/markdown" | "text/html" | "text/html/crypted";
+    content_type?: "text/plain" | "text/markdown" | "text/html" | "text/html/crypted" | "ydoc";
 };
 
 export interface Tag {

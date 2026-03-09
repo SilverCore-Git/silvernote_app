@@ -17,7 +17,7 @@ async function
         date: new Date().toISOString(),
         pinned: false,
         tags: [],
-        content_type: 'text/html/crypted'
+        content_type: 'ydoc'
     };
 
     Notes.value.push(note);

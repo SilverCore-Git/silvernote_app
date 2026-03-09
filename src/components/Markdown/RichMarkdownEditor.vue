@@ -70,7 +70,6 @@ import { createMathCheckDebounced, clearMathCache } from './tiptap-extensions/ma
 import './css/DragHandler.scss';
 import './css/CodeBlock.scss';
 import getContrastColor from '@/assets/ts/utils/getContrastColor.js';
-import waitFor from '@/assets/ts/utils/waitFor.js';
 import { useWSocket } from '@/composables/WSocket';
 
 const props = defineProps<{
@@ -224,7 +223,6 @@ async function initEditor(): Promise<void>
   }).catch(err => console.warn('Failed to fetch user color:', err));
 
   await nextTick();
-  await waitFor(() => provider.synced, 10_000);
 
   console.log('Editor initialized');
   loader.value = false;

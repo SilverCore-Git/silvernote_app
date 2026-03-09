@@ -99,6 +99,7 @@ onMounted(async () => {
         2xl:inset-x-[25vw] bg-transparent
       "
       :class="isElectron ? 'top-18' : 'top-8'"
+      v-if="localNote.loaded"
     >
 
       <div

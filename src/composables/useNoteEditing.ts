@@ -1,10 +1,11 @@
-import { onBeforeUnmount, onMounted, ref, watch, type ComputedRef, type Ref } from "vue";
-import { useWSocket } from "./WSocket";
+import { nextTick, onBeforeUnmount, onMounted, ref, watch, type ComputedRef, type Ref } from "vue";
+import { useRoom, useWSocket } from "./WSocket";
 import { Notes } from "@/assets/ts/database/Var";
 import type { Note } from "@/assets/ts/type";
 import CreateNewNote from "@/views/Edit/composable/CreateNewNote";
 import router from "@/router";
 import { Socket } from "socket.io-client";
+import waitFor from "@/assets/ts/utils/waitFor";
 
 
 interface LocalNote {
@@ -29,55 +30,6 @@ function useNoteEditing (noteId: Ref<string> | ComputedRef<string>)
         pinned: false,
         loaded: false
     })
-
-
-    watch(() => noteId.value, async (newNoteId) => await mount(newNoteId));
-    onMounted(async () => await mount(noteId.value));
-
-
-    const mount = async (noteId: string) => {
-
-        if (clearListener) clearListener();
-        localNote.value.loaded = false;
-
-        socket = await useWSocket();
-        let note: Note | undefined = Notes.value.find(note => note.uuid == noteId);
-
-        if (!note) 
-        {
-
-            const newNote = await CreateNewNote();
-            router.push({ 
-                params: { ...router.currentRoute.value.params, uuid: newNote.uuid }
-            });
-
-            // return !!! : router.push update props.uuid then a new mount,
-            return; 
-
-        }
-
-
-        socket.value.once('initial-state', ({ note }: { note: Note }) => {
-
-            if (note.uuid !== noteId) return;
-
-            localNote.value = {
-                id: note.uuid,
-                title: note.title,
-                icon: note.icon,
-                pinned: note.pinned,
-                loaded: true
-            }
-
-            clearListener = initListener();
-            document.title = `${localNote.value.title} - Silvernote`;
-
-        })
-
-        socket.value.emit('join-room', { room: note.uuid });
-
-    }
-
 
     const initListener = () => {
 
@@ -107,18 +59,86 @@ function useNoteEditing (noteId: Ref<string> | ComputedRef<string>)
             socket.value.emit('title-update', { roomId: localNote.value.id, update: newTitle });
         })
 
-        return () => {
+        return async function ()
+        {
+
             iconEmitWatch();
             titleEmitWatch();
             socket.value.off('title-update');
             socket.value.off('icon-update');
-            socket.value.emit('leave-room', { room: localNote.value.id });
+
+            const note = Notes.value.find(note => note.uuid == localNote.value.id);
+            if (!note) return;
+
+            (await useWSocket()).value.emit('note:update', note);
+            (await useWSocket()).value.emit('leave-room', { room: localNote.value.id });
+
         }
 
     }
 
-    onBeforeUnmount(() => {
+    watch(() => noteId.value, async (newNoteId) => await mount(newNoteId));
+    onMounted(async () => await mount(noteId.value));
+
+
+    const mount = async (noteId: string) => {
+
         if (clearListener) clearListener();
+        localNote.value.loaded = false;
+
+        const { join } = await useRoom();
+        socket = await useWSocket();
+        waitFor(() => socket.value.connected, 10_000);
+
+        let note: Note | undefined = Notes.value.find(note => note.uuid == noteId);
+
+        if (!note || noteId == 'new') 
+        {
+
+            const newNote = await CreateNewNote();
+
+            localNote.value.id = newNote.uuid;
+
+            setTimeout(() => {
+
+                console.log('note created')
+
+                router.push({ 
+                    params: { ...router.currentRoute.value.params, uuid: newNote.uuid }
+                });
+
+            }, 200);
+
+            return;
+
+        }
+
+        console.log('load note')
+
+        socket.value.once('initial-state', ({ note }: { note: Note }) => {
+
+            if (note.uuid !== noteId) return;
+
+            localNote.value = {
+                id: note.uuid,
+                title: note.title,
+                icon: note.icon,
+                pinned: note.pinned,
+                loaded: true
+            }
+
+            clearListener = initListener();
+            document.title = `${localNote.value.title} - Silvernote`;
+
+        })
+
+        await nextTick();
+        join({ room: noteId }); // join room
+
+    }
+
+    onBeforeUnmount(async () => {
+        if (clearListener) await clearListener();
     })
 
     return {
