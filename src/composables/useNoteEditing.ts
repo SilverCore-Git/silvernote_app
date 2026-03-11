@@ -70,7 +70,6 @@ function useNoteEditing (noteId: Ref<string> | ComputedRef<string>)
             const note = Notes.value.find(note => note.uuid == localNote.value.id);
             if (!note) return;
 
-            (await useWSocket()).value.emit('note:update', note);
             (await useWSocket()).value.emit('leave-room', { room: localNote.value.id });
 
         }

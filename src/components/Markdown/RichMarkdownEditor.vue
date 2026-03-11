@@ -71,6 +71,7 @@ import './css/DragHandler.scss';
 import './css/CodeBlock.scss';
 import getContrastColor from '@/assets/ts/utils/getContrastColor.js';
 import { useWSocket } from '@/composables/WSocket';
+import waitFor from '@/assets/ts/utils/waitFor';
 
 const props = defineProps<{
   editable?: boolean;
@@ -221,6 +222,8 @@ async function initEditor(): Promise<void>
       }
     }
   }).catch(err => console.warn('Failed to fetch user color:', err));
+
+  await waitFor(() => provider.synced);
 
   await nextTick();
 

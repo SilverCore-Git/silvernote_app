@@ -67,6 +67,8 @@ export class EditorProvider
     private async setupListeners()
     {
 
+      (await socket).value.emit('get-initial-state', { roomId: this.room });
+
       // État initial du document
       (await socket).value.on('initial-state', ({ ydocState }: { ydocState: any }) => {
 
