@@ -6,7 +6,7 @@
 
             <div class="flex items-center gap-3">
                 <i class="bi bi-bar-chart-line text-2xl" />
-                <h2 class="text-2xl font-bold">Statistiques de la note</h2>
+                <h2 class="text-2xl font-bold">Informations de la note</h2>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
@@ -44,6 +44,24 @@
                     </div>
                     <div class="font-semibold text-xl text-(--text)/70">
                         {{ characterCount }}
+                    </div>
+                </div>
+
+                <div class="border border-(--text)/10 bg-(--bg2) rounded-lg p-4">
+                    <div class="text-xs flex items-center gap-1.5 mb-1">
+                        <i class="bi bi-sticky" /> Type de note
+                    </div>
+                    <div class="font-semibold text-lg text-(--text)/70">
+                        {{ note.content_type }}
+                    </div>
+                </div>
+
+                <div class="border border-(--text)/10 bg-(--bg2) rounded-lg p-4">
+                    <div class="text-xs flex items-center gap-1.5 mb-1">
+                        <i class="bi bi-lock" /> Chiffrement
+                    </div>
+                    <div class="font-semibold text-lg text-(--text)/70">
+                        AES-256-GCM
                     </div>
                 </div>
 

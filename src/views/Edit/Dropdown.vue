@@ -23,10 +23,8 @@
                     <hr />
 
                     <!-- <li @click="showGame = true">2048</li> -->
-
-                    <hr />
                     
-                    <li @click="stats_popup = true">Statistiques</li>
+                    <li @click="stats_popup = true">Informations</li>
 
                     <li class="text-red-600" @click="showDialog = true">
                         Supprimer
