@@ -5,6 +5,7 @@ import waitFor from '@/assets/ts/utils/waitFor';
 import postError from '../errorOverlay/postError';
 import { editor } from './Editor';
 import { nextTick } from 'vue';
+import type { Note } from '@/assets/ts/type';
 
 let isOffline = false;
 
@@ -70,24 +71,39 @@ export class EditorProvider
       (await socket).value.emit('get-initial-state', { roomId: this.room });
 
       // État initial du document
-      (await socket).value.on('initial-state', ({ ydocState }: { ydocState: any }) => {
+      (await socket).value.on('initial-state', ({ ydocState, note }: { ydocState: any, note: Note }) => {
 
           if (this.synced) return;
 
-          const uint8State = ydocState instanceof Uint8Array 
-              ? ydocState 
-              : new Uint8Array(ydocState);
-
-          if (uint8State.length > 0) 
+          if (note.content_type == 'text/html/crypted' || note.content_type == 'text/html')
           {
-              try {
-                  Y.applyUpdate(this.doc, uint8State, 'initial');
-              } 
-              catch (e) 
-              {
-                  console.error("❌ Erreur lors de l'application de l'état initial Yjs", e);
-              }
+            editor.value.commands.setContent(note.content);
           }
+          else if (note.content_type == 'ydoc')
+          {
+
+            const uint8State = ydocState instanceof Uint8Array 
+                ? ydocState 
+                : new Uint8Array(ydocState);
+
+            if (uint8State.length > 0) 
+            {
+                try {
+                    Y.applyUpdate(this.doc, uint8State, 'initial');
+                } 
+                catch (e) 
+                {
+                    console.error("❌ Erreur lors de l'application de l'état initial Yjs", e);
+                }
+            }
+
+          }
+          else
+          {
+            throw new Error(`Unsupported content type : ${note.content_type}`);
+          }
+
+
 
           this.synced = true;
           console.log('✅ Editor synced!');
