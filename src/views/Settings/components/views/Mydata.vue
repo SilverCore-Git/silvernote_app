@@ -120,7 +120,7 @@ onMounted(async () => {
                 <div 
                     v-for="format in exportFormats" 
                     :key="format.id"
-                    class="group p-4 rounded-lg border border-(--white)/10 bg-(--bg) hover:border-(--btn)/50 transition-all cursor-pointer"
+                    class="group p-4 rounded-lg border border-(--white)/10 bg-(--bg) hover:border-(--btn)/50 transition-all duration-200! cursor-pointer"
                     @click="exportData(format.id)"
                 >
 
@@ -141,32 +141,40 @@ onMounted(async () => {
 
         <section class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <div class="p-6 rounded-xl bg-(--bg2) border border-(--white)/10">
+            <div class="p-6 rounded-xl bg-(--bg2) border border-(--white)/10 flex justify-between flex-col">
 
-                <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
-                    <i class="bi bi-box-arrow-down text-(--btn)" />
-                    Importer des notes et tags
-                </h2>
+                <div>
 
-                <p class="text-sm opacity-60 mb-4">Fusionnez vos notes depuis google keep ou un fichier .snote.</p>
+                    <h2 class="font-semibold text-lg mb-1 flex items-center gap-2">
+                        <i class="bi bi-box-arrow-down text-(--btn)" />
+                        Importer des notes et des tags
+                    </h2>
 
-                <button 
-                    class="second w-full mb-2"
-                    @click="router.push('/onboarding/import')"
-                >
-                    Importer depuis google keep
-                </button>
+                    <p class="text-sm opacity-60">Fusionnez vos notes depuis google keep ou un fichier .snote.</p>
 
-                <button 
-                    class="second w-full"
-                    @click="router.push('/onboarding/import')"
-                >
-                    Importer depuis un fichier .snote 
-                </button>
+                </div>
+
+                <div class="flex gap-2">
+
+                    <button 
+                        class="default-primary w-full"
+                        @click="router.push('/import/keep')"
+                    >
+                        Depuis google keep
+                    </button>
+
+                    <button 
+                        class="default-primary w-full"
+                        @click="router.push('/import/snote')"
+                    >
+                        Depuis un fichier .snote 
+                    </button>
+                
+                </div>
 
             </div>
 
-            <div class="p-6 rounded-xl border border-red-500/20 bg-red-500/5">
+            <div class="p-6 rounded-xl border border-red-500/20 bg-red-500/5 flex justify-between flex-col">
 
                 <h2 class="text-red-500 font-semibold text-lg mb-2 flex items-center gap-2">
                     <i class="bi bi-exclamation-triangle" /> Réinitialiser la base de données
@@ -178,7 +186,7 @@ onMounted(async () => {
                     </p>
                     <button 
                         @click="resetDB(1)"
-                        class="second danger w-full"
+                        class="primary danger w-full"
                         :class="Loader == 'reset' ? 'loader' : ''"
                     >
                         Supprimer tout
@@ -246,10 +254,6 @@ onMounted(async () => {
 
                     </div>
 
-                    <p class="text-[9px] opacity-40 mt-2 italic text-right">
-                        Vérifié par Silvernote Security Stack
-                    </p>
-            
                 </div>
             
             </div>
