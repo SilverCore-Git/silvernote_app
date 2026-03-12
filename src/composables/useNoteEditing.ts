@@ -6,6 +6,7 @@ import CreateNewNote from "@/views/Edit/composable/CreateNewNote";
 import router from "@/router";
 import { Socket } from "socket.io-client";
 import waitFor from "@/assets/ts/utils/waitFor";
+import init from "@/assets/ts/database/init";
 
 
 interface LocalNote {
@@ -87,8 +88,9 @@ function useNoteEditing (noteId: Ref<string> | ComputedRef<string>)
 
         const { join } = await useRoom();
         socket = await useWSocket();
-        waitFor(() => socket.value.connected, 10_000);
+        await waitFor(() => socket.value.connected, 10_000);
 
+        await waitFor(() => init.isLoaded());
         let note: Note | undefined = Notes.value.find(note => note.uuid == noteId);
 
         if (!note || noteId == 'new') 

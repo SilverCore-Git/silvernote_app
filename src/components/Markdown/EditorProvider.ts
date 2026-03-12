@@ -79,7 +79,7 @@ export class EditorProvider
           const note = Notes.value.find(note => note.uuid == this.room);
           if (!note) return;
 
-          if (note.content_type == 'text/html/crypted' || note.content_type == 'text/html')
+          if (note.content_type == 'text/html')
           {
             console.log(note.content)
             editor.value.commands.setContent(note.content);

@@ -215,7 +215,7 @@ onMounted(async () => {
                 v-else
                 class="px-1"
               >
-                Ajouter une localNote.icon
+                Ajouter une icon
               </span>
 
             </a>
