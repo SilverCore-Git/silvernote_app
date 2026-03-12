@@ -31,6 +31,7 @@
                         <ul>
 
                             <li @click="openNoteNewTab">Ouvrir dans un nouvel onglet</li>
+                            <li @click="togglePin(); emitClose();">{{ note.pinned ? 'Dé-épingler' : 'Épingler'}}</li>
                             <li @click="toggleNoteSelect(props.uuid); emitClose();">Selectionner</li>
 
                             <hr />
@@ -126,7 +127,8 @@ const emit = defineEmits([
 ]);
 
 const emitClose = () => {
-  emit('update:visible', false);
+    save();
+    emit('update:visible', false);
 };
 
 const deleteNote = async (state: number) => {
@@ -145,6 +147,21 @@ const deleteNote = async (state: number) => {
     }
 }
 
+const togglePin = async () => {
+
+    if (!note.value) return;
+
+    const index = Notes.value.findIndex(n => n.uuid === props.uuid);
+    const newNote = { ...note.value, pinned: !note.value.pinned};
+
+    if (index !== -1) {
+        Notes.value[index] = newNote;
+    }
+
+    (await useWSocket()).value.emit('note:update', newNote);
+
+};
+
 const openNoteNewTab = () => {
 
     const routeData = router.resolve({ 
@@ -153,6 +170,21 @@ const openNoteNewTab = () => {
     });
   
   window.open(routeData.href, '_blank');
+
+};
+
+
+const save = async () => {
+    
+    if (!note.value) return;
+
+    const index = Notes.value.findIndex(n => n.uuid === props.uuid);
+
+    if (index !== -1) {
+        Notes.value[index] = { ...note.value };
+    }
+
+    (await useWSocket()).value.emit('note:update', note.value);
 
 };
 
