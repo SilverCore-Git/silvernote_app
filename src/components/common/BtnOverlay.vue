@@ -24,7 +24,6 @@
                 text-5xl cursor-pointer
                 hover:rotate-180 hover:bg-(--btn-hover)
             "
-            :style="{ 'view-transition-name': `note-new` }"
             v-tooltip="tooltipConfig"
         >
             <i class="bi bi-plus" />
