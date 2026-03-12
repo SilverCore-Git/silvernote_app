@@ -32,9 +32,11 @@
                 @mousemove="handleMouseMove"
             >
             
-                <div class="flex justify-between items-start">
+                <div 
+                    v-if="icon && icon != ''" 
+                    class="flex justify-center items-start"
+                >
                     <img 
-                        v-if="icon && icon != ''" 
                         :src="icon" 
                         class="w-15 h-15 object-contain shrink-0 opacity-80" 
                         loading="lazy"
