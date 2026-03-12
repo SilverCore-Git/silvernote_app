@@ -11,6 +11,8 @@ import Redirect from './views/auth/Redirect.vue';
 import NotFound from './views/errors/404.vue';
 import App2048 from './components/2048/App2048.vue';
 import Onboarding from './views/onboarding/Onboarding.vue';
+import ImportSnote from './views/onboarding/views/import-snote.vue';
+import ImportKeep from './views/onboarding/views/import-keep.vue';
 
 
 
@@ -44,6 +46,21 @@ const routes = [
     props: true, 
     component: Settings,
     meta: { title: 'Settings - Silvernote' }
+  },
+
+  { 
+    path: '/import/snote', 
+    name: 'ImportSnote',
+    props: true, 
+    component: ImportSnote,
+    meta: { title: 'Importation - Silvernote' }
+  },
+  { 
+    path: '/import/keep', 
+    name: 'ImportKeep',
+    props: true, 
+    component: ImportKeep,
+    meta: { title: 'Importation - Silvernote' }
   },
 
   { 

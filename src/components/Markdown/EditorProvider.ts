@@ -6,6 +6,7 @@ import postError from '../errorOverlay/postError';
 import { editor } from './Editor';
 import { nextTick } from 'vue';
 import type { Note } from '@/assets/ts/type';
+import { Notes } from '@/assets/ts/database/Var';
 
 let isOffline = false;
 
@@ -71,12 +72,16 @@ export class EditorProvider
       (await socket).value.emit('get-initial-state', { roomId: this.room });
 
       // État initial du document
-      (await socket).value.on('initial-state', ({ ydocState, note }: { ydocState: any, note: Note }) => {
+      (await socket).value.on('initial-state', ({ ydocState }: { ydocState: any }) => {
 
           if (this.synced) return;
 
+          const note = Notes.value.find(note => note.uuid == this.room);
+          if (!note) return;
+
           if (note.content_type == 'text/html/crypted' || note.content_type == 'text/html')
           {
+            console.log(note.content)
             editor.value.commands.setContent(note.content);
           }
           else if (note.content_type == 'ydoc')
@@ -102,7 +107,6 @@ export class EditorProvider
           {
             throw new Error(`Unsupported content type : ${note.content_type}`);
           }
-
 
 
           this.synced = true;

@@ -26,6 +26,7 @@
               && isLoaded
               && !route.path.startsWith('/settings')
               && !route.path.startsWith('/onboarding')
+              && !route.path.startsWith('/import')
               && route.name !== 'NotFound'
             "
             v-if="isSignedIn"

@@ -17,7 +17,8 @@ export default async function
 
   const input = event.target as HTMLInputElement;
 
-  if (input.files) {
+  if (input.files)
+  {
     
     const file = input.files[0];
 

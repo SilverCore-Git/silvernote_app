@@ -4,6 +4,7 @@ import { ref, reactive, onMounted } from 'vue';
 import { Notes } from '@/assets/ts/database/Var';
 import { useRoute, useRouter } from 'vue-router';
 import UploadFromSNOTE from '@/views/Settings/utils/UploadFromSNOTE';
+import BackBtn from '@/components/backBtn.vue';
 
 
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -28,18 +29,20 @@ const handleImportLogic = async (event: Event) => {
 
     let file: File | undefined;
 
-    if (event instanceof DragEvent && event.dataTransfer) 
+    if (event instanceof DragEvent && event.dataTransfer)
     {
         file = event.dataTransfer.files[0];
-    } 
+    }
     else 
     {
-        file = (event.target as HTMLInputElement).files?.[0];
+        const target = event.target as HTMLInputElement;
+        file = target.files?.[0];
     }
 
     if (!file) return;
 
-    if (!file.name.endsWith('.snote')) {
+    if (!file.name.endsWith('.snote')) 
+    {
         alert("Veuillez sélectionner un fichier .snote valide.");
         return;
     }
@@ -53,6 +56,16 @@ const handleImportLogic = async (event: Event) => {
     stats.failed = 0;
 
     try {
+
+        if (event instanceof DragEvent) 
+        {
+            
+            Object.defineProperty(event, 'target', {
+                writable: false,
+                value: { files: [file] }
+            });
+
+        }
 
         UploadFromSNOTE({
             event,
@@ -91,7 +104,20 @@ onMounted(() => {
 
 <template>
 
-    <div class="flex flex-col h-full p-4 md:p-8">
+    <BackBtn 
+        href="/settings/mydata" 
+        class="top-4 left-4" 
+        v-if="route.name == 'ImportSnote'" 
+    />
+
+    <div 
+        class="flex flex-col h-full p-4 md:p-8"
+        :class="
+            route.name == 'ImportSnote'
+                ? 'flex justify-center max-w-4xl min-w-xl mx-auto mt-10'
+                : ''
+        "
+    >
         
         <div>
             <h2 class="text-2xl font-bold mb-1">Importation Silvernote</h2>
@@ -136,8 +162,11 @@ onMounted(() => {
                 </div>
                 <h3 class="font-bold text-lg mb-1">{{ stats.success }} notes importées</h3>
                 <p class="text-xs opacity-50 mb-6">Vos notes sont déjà prêtes dans votre librairie.</p>
-                <button @click="stats.finished = false" class="text-[10px] font-bold uppercase tracking-widest opacity-40 hover:opacity-100">
+                <button @click="stats.finished = false" class="default">
                     Recommencer
+                </button>
+                <button v-if="route.name == 'ImportSnote'" @click="stats.finished = false; router.push('/')" class="ml-4 primary">
+                    Retour à Silvernote
                 </button>
             </div>
 
