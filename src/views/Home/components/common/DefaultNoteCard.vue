@@ -29,6 +29,7 @@
                     'contain-intrinsic-size': '1px 94px',
                     background: bgColor
                 }"
+                @mousemove="handleMouseMove"
             >
             
                 <div class="flex justify-between items-start">
@@ -40,7 +41,7 @@
                     />
                 </div>
 
-                <div class="flex flex-col justify-between items-start gap-2">
+                <div class="flex flex-col justify-between items-start gap-2 w-full">
 
                     <h2 
                         class="font-bold text-xl sm:text-xl "
@@ -97,9 +98,17 @@
     </PressAndHold>
 
     <NoteParamsOverlay
+    v-if="false"
         v-model:visible="note_selected"
         :uuid="uuid"
         :selected-tags="tags"
+    />
+
+    <NoteCardDropdown
+        v-model:visible="note_selected"
+        :uuid="uuid"
+        :x="client.x"
+        :y="client.y"
     />
     
     <share_menu
@@ -124,6 +133,7 @@ import useToken from '@/composables/useToken';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { isSelected, toggleNoteSelect, selectedNotes } from '@/composables/useSelectedNotes';
 import Share_menu from '@/components/popup/share_menu.vue';
+import NoteCardDropdown from './noteCardDropdown.vue';
 
 
 const props = defineProps<{
@@ -141,6 +151,10 @@ const props = defineProps<{
 const { getUserByUUID } = useUser();
 const router = useRouter();
 
+const client = {
+    x: 0,
+    y: 0
+};
 const bgColor = ref<string>('var(--white)');
 const note_selected = ref<boolean>(false);
 const share_menu = ref<boolean>(false);
@@ -152,6 +166,12 @@ const href = computed<string>(() => `/${props.sharedBy ? 'share' : 'edit'}/${pro
 const _Tags = computed<Tag[]>(() => Tags.value.filter(tag => props.tags.includes(tag.id)));
 
 
+
+const handleMouseMove = (e) => {
+    const { clientX, clientY } = e;
+    client.x = clientX;
+    client.y = clientY;
+};
 
 const openNote = () => {
     if (isMobile && selectedNotes.value.length > 0) {
@@ -182,7 +202,10 @@ const select_note = () => {
         toggleNoteSelect(props.uuid);
         return;
     }
-    note_selected.value = !note_selected.value;
+
+    note_selected.value = false;
+    nextTick(() => note_selected.value = true);
+
 };
 
 const initShareVisitors = async () => {

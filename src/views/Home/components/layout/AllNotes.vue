@@ -19,7 +19,7 @@
 
     <template v-else>
 
-      <div class="flex flex-col gap-8">
+      <div class="flex flex-col gap-8 pb-40">
         
         <PinnedNotes v-if="hasPinnedNotes" />
         <OtherNotes v-if="hasNotPinnedNotes" />
