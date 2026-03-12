@@ -27,14 +27,18 @@
                 <div
                     class="
                         max-w-2xl
-                        lg:grid lg:grid-cols-[280px_1em_300px]
                         flex justify-center items-center
                         w-full gap-10
                         pointer-events-auto relative
                     "
+                    :class="
+                        justTags
+                            ? ''
+                            : 'lg:grid lg:grid-cols-[280px_1em_300px]'
+                    "
                 >
 
-                    <div class="relative w-full hidden lg:block">
+                    <div v-if="!justTags" class="relative w-full hidden lg:block">
 
                         <DefaultNoteCard
                             v-if="note && showCard"
@@ -49,6 +53,7 @@
                     </div>
 
                     <div
+                        v-if="!justTags"
                         class=" 
                             hidden lg:flex
                             gap-2 mx-auto w-full
@@ -286,7 +291,6 @@ import type { Note } from '@/assets/ts/type';
 import { nextTick, onMounted, ref, watch } from 'vue';
 import { Notes, Tags } from '@/assets/ts/database/Var';
 import DefaultNoteCard from '@/views/Home/components/common/DefaultNoteCard.vue';
-import database from '@/assets/ts/database/database';
 import share_menu from '@/components/popup/share_menu.vue';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import { useWSocket } from '@/composables/WSocket';
@@ -331,7 +335,7 @@ const deleteNote = async (state: number) => {
     }
 }
 
-const save = () => {
+const save = async () => {
     
     if (!note.value) return;
 
@@ -347,7 +351,7 @@ const save = () => {
         Notes.value[index] = { ...note.value };
     }
 
-    database.update(note.value);
+    (await useWSocket()).value.emit('note:update', note.value);
 
     emitClose();
 };
@@ -391,7 +395,7 @@ const mount = () => {
     
     if (props.justView) {
         note.value = {};
-        tags.value = props.selectedTags || [];
+        tags.value = props?.selectedTags || [];
         showCard.value = true;
         return;
     }
