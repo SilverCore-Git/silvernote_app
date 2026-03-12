@@ -1,38 +1,27 @@
 <template>
 
-  <div class="flex flex-col h-full justify-center relative z-10 p-4 md:p-8">
+  <div class="flex flex-col justify-center h-full relative z-10 p-4 md:p-8 ">
 
-    <h2 
-      class="text-4xl md:text-5xl font-bold mb-6 tracking-tight animate-fade-in-up leading-tight"
-      style="animation-delay: 100ms;"
-    >
-      Bienvenue,
-      <span class="text-transparent bg-clip-text bg-gradient-to-r from-(--btn) to-(--btn-hover)">
-        {{ name || 'Voyageur' }}
-      </span>.
-    </h2>
+    <div>
 
-    <p 
-      class="text-lg opacity-60 mb-8 max-w-md leading-relaxed animate-fade-in-up"
-      style="animation-delay: 200ms;"
-    >
-      Silvernote n'est pas juste une prise de notes.<br>
-      C'est une extension <span class="text-(--text) font-medium">intelligente</span> de votre mémoire.
-    </p>
+      <h2 
+        class="text-4xl md:text-5xl font-bold mb-6 tracking-tight animate-fade-in-up leading-tight"
+        style="animation-delay: 100ms;"
+      >
+        Bienvenue,
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-(--btn) to-(--btn-hover)">
+          {{ name || 'Voyageur' }}
+        </span>.
+      </h2>
 
-    <div 
-      class="flex flex-wrap gap-3 mb-10 opacity-80 animate-fade-in-up"
-      style="animation-delay: 300ms;"
-    >
-      <span class="px-3 py-1 rounded-full text-xs font-bold bg-(--text)/5 border border-(--text)/5 flex items-center gap-2">
-        <i class="bi bi-pencil-square text-indigo-500"></i> Note
-      </span>
-      <span class="px-3 py-1 rounded-full text-xs font-bold bg-(--text)/5 border border-(--text)/5 flex items-center gap-2">
-        <i class="bi bi-magic text-purple-500"></i> Simple
-      </span>
-      <span class="px-3 py-1 rounded-full text-xs font-bold bg-(--text)/5 border border-(--text)/5 flex items-center gap-2">
-        <i class="bi bi-check-circle-fill text-blue-500"></i> Complète
-      </span>
+      <p 
+        class="text-lg opacity-60 mb-8 max-w-md leading-relaxed animate-fade-in-up"
+        style="animation-delay: 200ms;"
+      >
+        Silvernote n'est pas juste une prise de notes.<br>
+        C'est une extension <span class="text-(--text) font-medium">intelligente</span> de votre mémoire.
+      </p>
+
     </div>
 
     <div class="animate-fade-in-up" style="animation-delay: 400ms;">

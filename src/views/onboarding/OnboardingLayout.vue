@@ -107,9 +107,8 @@
           </button>
 
           <button 
-            @click="canPass ? $emit('next') : console.log('')" 
+            @click="$emit('next')" 
             class="primary"
-            :class="!canPass ? 'grayscale-100 cursor-not-allowed!' : ''"
           >
             Continuer
           </button>

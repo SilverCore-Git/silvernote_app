@@ -2,7 +2,7 @@
 
   <div class="flex flex-col h-full p-4 md:p-8">
 
-    <h2 class="text-2xl font-bold mb-2">D'où venez-vous ?</h2>
+    <h2 class="text-2xl font-bold mb-2">Importez vos notes !</h2>
     <p class="text-(--text)/80">Importez vos notes depuis vos anciens outils.</p>
 
     <div class="flex flex-col justify-center items-center gap-4 mx-2 my-4 h-full">
