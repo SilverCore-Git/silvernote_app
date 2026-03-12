@@ -52,8 +52,7 @@ onMounted(async() => {
 
             <ul
                 class="
-                    sm:flex sm:flex-wrap
-                    grid grid-cols-2
+                    grid grid-cols-1
                     gap-4
                 "
                 v-if="SharedNotes && SharedNotes.length"
@@ -62,7 +61,6 @@ onMounted(async() => {
                     v-for="(note, index) in SharedNotes"
                     :key="index"
                     @click.stop="router.push('/share/'+note.uuid)"
-                    class="sm:max-w-[250px]"
                 >
                     <DefaultNoteCard
                         :uuid="note.uuid"
@@ -84,8 +82,7 @@ onMounted(async() => {
 
             <ul
                 class="
-                    sm:flex sm:flex-wrap
-                    grid grid-cols-2
+                    grid grid-cols-1
                     gap-4
                 "
                 v-if="ShareByMe && ShareByMe.length"
@@ -94,7 +91,6 @@ onMounted(async() => {
                     v-for="(note, index) in ShareByMe"
                     :key="index"
                     @click="router.push('/share/'+note.uuid)"
-                    class="sm:max-w-[250px]"
                 >
                     <DefaultNoteCard
                         :uuid="note.uuid"

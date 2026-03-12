@@ -35,7 +35,7 @@
 
                             <hr />
 
-                            <li>Modifier les tags</li>
+                            <li @click="showTagMenu = true; emitClose();">Modifier les tags</li>
                             <li @click="showShareMenu = true; emitClose();">Partager</li>
 
                             <hr />
@@ -58,6 +58,13 @@
                 :uuid="uuid || note.uuid"
                 :title="note.title"
                 v-model="showShareMenu"
+            />
+
+            <NoteParamsOverlay
+                :uuid="note.uuid"
+                :justTags="true"    
+                :selected-tags="note.tags"
+                v-model:visible="showTagMenu"
             />
 
             <ConfirmDialog
@@ -91,6 +98,7 @@ import { useWSocket } from '@/composables/WSocket';
 import { useRouter } from 'vue-router';
 import { toggleNoteSelect } from '@/composables/useSelectedNotes';
 import NotesStatsPopup from '@/views/Edit/common/NotesStatsPopup.vue';
+import NoteParamsOverlay from './NoteParamsOverlay.vue';
 
 
 const props = defineProps<{
@@ -108,6 +116,8 @@ const note = computed(() => Notes.value.find(note => note.uuid === props.uuid));
 const showShareMenu = ref<boolean>(false);
 const showConfirmDel = ref<boolean>(false);
 const showStatsPopup = ref<boolean>(false);
+const showTagMenu = ref<boolean>(false);
+
 
 
 const emit = defineEmits([

@@ -68,11 +68,6 @@
                     v-if="sharedBy && sharerIcon"
                     class="shrink-0 gap-1 mt-2 flex flex-row justify-between items-center pt-2"
                 >
-                    <img
-                        class="w-7 h-7 rounded-full border border-gray-200"
-                        :src="sharerIcon"
-                        loading="lazy"
-                    />
                     <div class="flex justify-center items-center flex-row -space-x-3">
                         <img
                             v-for="visitor in shareVisitors.slice(0, 5)"
@@ -231,8 +226,10 @@ const initShareVisitors = async () => {
 
                 isMyShare.value = data.share.owner_id === window.localStorage.getItem('user_id');
 
+                data.share.visitor.push(data.share.owner_id);
+
                 const visitorPromises = data.share.visitor
-                                            .filter((v: string) => v !== data.share.owner_id)
+                                            //.filter((v: string) => v !== data.share.owner_id)
                                             .map((v: string) => getUserByUUID(v));
                                             
                 const visitors = await Promise.all(visitorPromises);
