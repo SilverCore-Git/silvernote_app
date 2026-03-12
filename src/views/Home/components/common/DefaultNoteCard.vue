@@ -4,15 +4,18 @@
         @long-press="select_note"
         @click.stop.prevent="openNote"
     >
-        <a :href="href" class="w-full h-full">
+
+        <a :href="href" class="w-full h-full ">
+
             <div
                 class="
-                    group relative flex flex-col 
-                    rounded-2xl p-4 w-full h-[205px]
+                    group relative flex flex-raw gap-4 
+                    justify-start items-start
+                    rounded-2xl p-4 w-full h-[94px]
                     cursor-pointer overflow-hidden
-                    hover:border-(--btn) border hover:scale-101
+                    hover:border-(--btn) border
                     transition-all! duration-200 ease-in-out
-                    backdrop-blur-3xl active:scale-90
+                    backdrop-blur-3xl active:scale-95
                 "
                 :class="[
                     note_selected || isSelected(uuid)
@@ -23,51 +26,41 @@
                 :style="{ 
                     'view-transition-name': `note-${uuid}`,
                     'content-visibility': 'auto',
-                    'contain-intrinsic-size': '1px 205px',
+                    'contain-intrinsic-size': '1px 94px',
                     background: bgColor
                 }"
             >
-                <div class="flex justify-between items-start mb-3 gap-2">
-                    <div class="flex items-center gap-2.5 min-w-0">
-                        <img 
-                            v-if="icon && icon != ''" 
-                            :src="icon" 
-                            class="w-6 h-6 object-contain shrink-0 opacity-80" 
-                            loading="lazy"
-                        />
-                        <h2 
-                            class="font-bold text-lg sm:text-xl "
-                            v-text="title || 'Note sans titre'"
-                        />
+            
+                <div class="flex justify-between items-start">
+                    <img 
+                        v-if="icon && icon != ''" 
+                        :src="icon" 
+                        class="w-15 h-15 object-contain shrink-0 opacity-80" 
+                        loading="lazy"
+                    />
+                </div>
+
+                <div class="flex flex-col justify-between items-start gap-2">
+
+                    <h2 
+                        class="font-bold text-xl sm:text-xl "
+                        v-text="title || 'Note sans titre'"
+                    />
+
+                    <div v-if="_Tags.length > 0" class="shrink-0 flex flex-wrap gap-1 ">
+                        <span
+                            v-for="tag in _Tags"
+                            :key="tag.id"
+                            class="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide"
+                            :style="{ 
+                                backgroundColor: tag.color + '20',
+                                color: tag.color 
+                            }"
+                        >
+                            {{ tag.name }}
+                        </span>
                     </div>
-                </div>
 
-                <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed overflow-hidden">
-                    <p
-                        v-if="isPrivate"
-                        class="font-mono text-[10px] tracking-widest opacity-50 line-clamp-6"
-                    >
-                        {{ utils.htmlToText(props.content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 500) + '...' }}
-                    </p>
-                    <div
-                        v-else
-                        class="content-html line-clamp-6"
-                        v-html="utils.clean_html(props.content).slice(0, 500) + '...'"
-                    ></div>
-                </div>
-
-                <div v-if="_Tags.length > 0" class="shrink-0 flex flex-wrap gap-1 mt-auto pt-2">
-                    <span
-                        v-for="tag in _Tags"
-                        :key="tag.id"
-                        class="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide"
-                        :style="{ 
-                            backgroundColor: tag.color + '20',
-                            color: tag.color 
-                        }"
-                    >
-                        {{ tag.name }}
-                    </span>
                 </div>
 
                 <div 
@@ -121,7 +114,6 @@
 
 import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import utils from '@/assets/ts/utils';
 import type { User, Tag } from '@/assets/ts/type';
 import PressAndHold from '@/components/PressAndHold.vue';
 import NoteParamsOverlay from './NoteParamsOverlay.vue';
@@ -132,13 +124,11 @@ import useToken from '@/composables/useToken';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { isSelected, toggleNoteSelect, selectedNotes } from '@/composables/useSelectedNotes';
 import Share_menu from '@/components/popup/share_menu.vue';
-import useSettingsItem from '@/assets/ts/settings/useSettingsItem';
 
 
 const props = defineProps<{
     uuid: string;
     title: string;
-    content: string;
     icon: string;
     tags: number[];
     click?: () => void;
@@ -150,7 +140,6 @@ const props = defineProps<{
 
 const { getUserByUUID } = useUser();
 const router = useRouter();
-const { Item: isPrivate } = useSettingsItem('private_mode', false);
 
 const bgColor = ref<string>('var(--white)');
 const note_selected = ref<boolean>(false);
@@ -281,4 +270,5 @@ onMounted(async () => {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
 </style>

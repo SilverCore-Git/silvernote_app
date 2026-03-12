@@ -11,7 +11,7 @@
             <div
                 class="
                     group relative flex flex-col 
-                    rounded-2xl p-4 w-full h-[205px]
+                    rounded-2xl p-4 w-full h-[94px]
                     cursor-pointer overflow-hidden
                     hover:border-(--btn) border hover:scale-101
                     transition-all! duration-200 ease-in-out
@@ -25,7 +25,7 @@
                 :style="{ 
                     'view-transition-name': `note-${uuid}`,
                     'content-visibility': 'auto',
-                    'contain-intrinsic-size': '1px 205px',
+                    'contain-intrinsic-size': '1px 94px',
                     background: bgColor
                 }"
             >
@@ -60,21 +60,6 @@
                     </div>
                 </div>
 
-                <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed break-words max-h-30">
-                    <p
-                        v-if="isPrivate"
-                        class="line-clamp-6 font-mono text-[10px] tracking-widest opacity-50"
-                    >
-                        {{ utils.htmlToText(content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 500) + ' ...' }}
-                    </p>
-
-                    <div
-                        v-else
-                        class="line-clamp-6 content-html"
-                        v-html="utils.clean_html(content).slice(0, 500) + ' ...'"
-                    ></div>
-                </div>
-
                 <div v-if="_Tags.length > 1" class="mt-2 flex gap-1">
                     <div 
                         v-for="i in (_Tags.length - 1)" 
@@ -102,19 +87,17 @@
 
 import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import utils from '@/assets/ts/utils';
 import type { Tag } from '@/assets/ts/type';
 import PressAndHold from '@/components/PressAndHold.vue';
 import NoteParamsOverlay from './NoteParamsOverlay.vue';
 import { Tags } from '@/assets/ts/database/Var';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { isSelected, selectedNotes, toggleNoteSelect } from '@/composables/useSelectedNotes';
-import useSettingsItem from '@/assets/ts/settings/useSettingsItem';
+
 
 const props = defineProps<{
     uuid: string;
     title: string;
-    content: string;
     icon: string;
     tags: number[]; // Liste des IDs des tags
     click?: () => void;
@@ -125,7 +108,6 @@ const router = useRouter();
 const _Tags = computed<Tag[]>(() => Tags.value.filter(tag => props.tags.includes(tag.id)));
 const note_selected = ref<boolean>(false);
 const href = computed<string>(() => `/edit/${props.uuid}`);
-const { Item: isPrivate } = useSettingsItem('private_mode', false);
 
 
 const open_note = () => {

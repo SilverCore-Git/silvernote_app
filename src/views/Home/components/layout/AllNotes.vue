@@ -1,7 +1,7 @@
 <template>
 
   <div 
-    class="min-h-full flex flex-col overflow-y-auto custom-scroll" 
+    class="min-h-full flex flex-col overflow-y-auto px-4 md:px-8" 
     v-if="Notes.length || pageQuery == 'shared'"
   >
     
@@ -89,12 +89,3 @@ const createNote = () => {
 }
 
 </script>
-
-
-<style scoped>
-
-.custom-scroll {
-    height: 100%;
-}
-
-</style>
