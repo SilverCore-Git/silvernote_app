@@ -81,7 +81,6 @@ export class EditorProvider
 
           if (note.content_type == 'text/html')
           {
-            console.log(note.content)
             editor.value.commands.setContent(note.content);
           }
           else if (note.content_type == 'ydoc')

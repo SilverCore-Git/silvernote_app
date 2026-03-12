@@ -13,14 +13,14 @@
                     justify-start items-start
                     rounded-2xl p-4 w-full h-[94px]
                     cursor-pointer overflow-hidden
-                    hover:border-(--btn) border
+                    hover:border-(--btn) border-2
                     transition-all! duration-200 ease-in-out
                     backdrop-blur-3xl active:scale-95
                 "
                 :class="[
                     note_selected || isSelected(uuid)
-                        ? 'border-(--btn) border-dashed border-2'
-                        : 'border-gray-200', 
+                        ? 'border-(--btn) border-dashed '
+                        : 'border-(--text)/40', 
                     inertw
                 ]"
                 :style="{ 

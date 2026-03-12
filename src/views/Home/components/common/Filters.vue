@@ -35,10 +35,10 @@ const ShowNewTagPopup = ref<boolean>(false);
 
             <div
                 class="
-                    bg-(--white) border border-(--btn) border-dashed
+                    bg-(--white) border-2 border-(--btn) border-dashed
                     flex justify-center items-center gap-1 flex-row
                     px-3 py-1.5 rounded-2xl cursor-pointer
-                    min-w-18 hover:text-(--btn)
+                    min-w-18 hover:text-(--btn) 
                     transition-all duration-200 ease-in-out
                 "
                 @click="ShowNewTagPopup = true"
@@ -91,11 +91,11 @@ const ShowNewTagPopup = ref<boolean>(false);
             <li class="md:block hidden">
                 <div
                     class="
-                        bg-(--white) border border-(--btn) border-dashed
+                        bg-(--white) border-2 border-(--text)/40 border-dashed
                         flex justify-center items-center gap-1 flex-row
                         px-3 py-1.5 rounded-2xl cursor-pointer
-                        min-w-18 hover:text-(--btn)
-                        transition-all duration-200 ease-in-out
+                        min-w-18 hover:border-(--btn) text-(--btn)
+                        transition-all duration-200! ease-in-out
                     "
                     @click="ShowNewTagPopup = true"
                 >
