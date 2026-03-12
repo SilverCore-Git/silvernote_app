@@ -71,7 +71,7 @@ onMounted(async () => {
 <div
     class="
         overflow-y-auto fixed
-        inset-0 flex flex-col
+        inset-0 flex flex-col bg-(--bg)
         h-full w-full overflow-x-hidden
     "
     :style="{ 'view-transition-name': `note-${uuid}` }"
@@ -269,7 +269,7 @@ onMounted(async () => {
         "
         v-else
       >
-        loader
+        <i>Chargement...</i>
       </div>
 
     </div>

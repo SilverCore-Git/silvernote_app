@@ -95,7 +95,7 @@
 
 import Popup from '@/components/popup/Popup.vue'
 import type { Note } from '@/assets/ts/type';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import useToken from '@/composables/useToken';
 import { api_url } from '@/assets/ts/backend_link';
 
@@ -137,7 +137,6 @@ const characterCount = computed(() => {
     return props.note.content?.length || 0;
 });
 
-onMounted(async () => await checkShareStatus());
 watch(() => stats_menu.value, async () => await checkShareStatus());
 
 </script>

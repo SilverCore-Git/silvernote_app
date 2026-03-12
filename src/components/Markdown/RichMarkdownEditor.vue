@@ -1,7 +1,7 @@
 <template>
 
   <ToolsMenu
-      class="editor-container h-full overflow-hidden" 
+      class="editor-container h-full overflow-hidden relative" 
       @click="focusEditor"
   >
 
@@ -18,22 +18,17 @@
 
     </div>
 
-    <div
-      v-if="loader"
-      class="
-        z-100 h-full w-full absolute
-        rounded-xl bg-(--text-little)/30
-      "
-      style="animation: flash 2.5s ease-in-out infinite;"
-    />
+    <transition name="fade">
 
-    <div
-      v-if="loader"
-      class="
-        z-80 h-full w-full absolute
-        rounded-xl bg-(--bg)
-      "
-    />
+      <div
+        v-if="loader"
+        class="
+          z-100 absolute inset-0
+          rounded-xl bg-(--bg)
+        "
+      />
+
+    </transition>
 
   </ToolsMenu>
 
@@ -356,5 +351,16 @@ onBeforeUnmount(() => {
   z-index: 9999;
 }
 
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .1s ease-in-out !important;
+  opacity: 1;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 
 </style>
