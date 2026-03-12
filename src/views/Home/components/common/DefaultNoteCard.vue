@@ -174,7 +174,7 @@ const handleMouseMove = (e) => {
 };
 
 const openNote = () => {
-    if (isMobile && selectedNotes.value.length > 0) {
+    if (selectedNotes.value.length > 0) {
         toggleNoteSelect(props.uuid);
         return;
     }

@@ -30,17 +30,17 @@
 
                         <ul>
 
-                            <li>Ouvrir dans un nouvel onglet</li>
-                            <li>Selectionner</li>
+                            <li @click="openNoteNewTab">Ouvrir dans un nouvel onglet</li>
+                            <li @click="toggleNoteSelect(props.uuid); emitClose();">Selectionner</li>
 
                             <hr />
 
                             <li>Modifier les tags</li>
-                            <li @click="showShareMenu = true">Partager</li>
+                            <li @click="showShareMenu = true; emitClose();">Partager</li>
 
                             <hr />
                             
-                            <li @click="">Informations</li>
+                            <li @click="showStatsPopup = true; emitClose();">Informations</li>
 
                             <li class="text-red-600" @click="deleteNote(1)">
                                 Supprimer
@@ -55,7 +55,6 @@
             </transition>
 
             <share_menu
-                v-if="showShareMenu"
                 :uuid="uuid || note.uuid"
                 :title="note.title"
                 v-model="showShareMenu"
@@ -69,6 +68,11 @@
                 @confirm="deleteNote(2)"
             />
 
+            <NotesStatsPopup
+                v-model:visible="showStatsPopup"
+                :note="note"
+            />
+
         </div>
 
     </Teleport>
@@ -79,15 +83,14 @@
 
 <script setup lang="ts">
 
-import BackdropOverlay from '@/components/common/BackdropOverlay.vue';
-import type { Note } from '@/assets/ts/type';
-import { nextTick, onMounted, ref, watch } from 'vue';
-import { Notes, Tags } from '@/assets/ts/database/Var';
-import DefaultNoteCard from '@/views/Home/components/common/DefaultNoteCard.vue';
-import database from '@/assets/ts/database/database';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { Notes } from '@/assets/ts/database/Var';
 import share_menu from '@/components/popup/share_menu.vue';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import { useWSocket } from '@/composables/WSocket';
+import { useRouter } from 'vue-router';
+import { toggleNoteSelect } from '@/composables/useSelectedNotes';
+import NotesStatsPopup from '@/views/Edit/common/NotesStatsPopup.vue';
 
 
 const props = defineProps<{
@@ -97,11 +100,15 @@ const props = defineProps<{
     y: number;
 }>();
 
-const note = ref<Note | undefined | any>(undefined);
-const showCard = ref<boolean>(false);
+
+const router = useRouter();
+
+const note = computed(() => Notes.value.find(note => note.uuid === props.uuid));
+
 const showShareMenu = ref<boolean>(false);
 const showConfirmDel = ref<boolean>(false);
-const tags = ref<number[]>( []);
+const showStatsPopup = ref<boolean>(false);
+
 
 const emit = defineEmits([
     'update:visible',
@@ -116,7 +123,7 @@ const deleteNote = async (state: number) => {
     if (state == 1)
     {
         showConfirmDel.value = true;
-        
+        emitClose();
     }
     else
     {
@@ -128,83 +135,28 @@ const deleteNote = async (state: number) => {
     }
 }
 
-const save = () => {
-    
-    if (!note.value) return;
+const openNoteNewTab = () => {
 
-    if (false) {
-        emit('TagsCallback', tags.value);
-        emit('update:visible', false);
-        return;
-    }
+    const routeData = router.resolve({ 
+        name: 'Edit',
+        params: { uuid: props.uuid } 
+    });
+  
+  window.open(routeData.href, '_blank');
 
-    const index = Notes.value.findIndex(n => n.uuid === props.uuid);
-
-    if (index !== -1) {
-        Notes.value[index] = { ...note.value };
-    }
-
-    database.update(note.value);
-
-    emitClose();
 };
 
-const toggleTag = (id: number) => {
 
-    if (!note.value) return;
-    
-    const index = note.value.tags.indexOf(id);
-    
-    if (index !== -1) {
-        note.value.tags.splice(index, 1);
-    } 
-    else {
-        note.value.tags.push(id);
-    }
+const handleEsc = (e: KeyboardEvent) => {
+    if (e.key == 'Escape') emitClose();
+};
 
-    refrechCard();
-    
-}
+onMounted(() => window.addEventListener('keydown', handleEsc));
 
-
-const togglePin = () => {
-
-    if (!note.value) return;
-
-    note.value.pinned = !note.value.pinned;
-
-    refrechCard();
-
-}
-
-const refrechCard = async () => {
-    showCard.value = false;
-    await nextTick();
-    showCard.value = true;
-}
-
-
-const mount = () => {
-    
-    if (false) {
-        note.value = {};
-        tags.value =  [];
-        showCard.value = true;
-        return;
-    }
-
-    const _note = Notes.value.find(note => note.uuid === props.uuid);
-    note.value = JSON.parse(JSON.stringify(_note));
-    showCard.value = true;
-    if (!note) throw new Error('Note is undefined on params overlay !')
-
-}
-
-watch(() => props.visible, () => {
-    if (props.visible) mount()
-})
-
-onMounted(mount);
+onBeforeUnmount(() => {
+    window.removeEventListener('keydown', handleEsc);
+    document.body.style.overflow = '';
+});
 
 
 </script>

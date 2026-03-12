@@ -2,9 +2,9 @@
 
     <Popup v-model:visible="stats_menu">
 
-        <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-4">
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 mb-2">
                 <i class="bi bi-bar-chart-line text-2xl" />
                 <h2 class="text-2xl font-bold">Informations de la note</h2>
             </div>
@@ -58,13 +58,31 @@
 
                 <div class="border border-(--text)/10 bg-(--bg2) rounded-lg p-4">
                     <div class="text-xs flex items-center gap-1.5 mb-1">
-                        <i class="bi bi-lock" /> Chiffrement
+                        <i class="bi bi-share" /> Note partager
                     </div>
                     <div class="font-semibold text-lg text-(--text)/70">
-                        AES-256-GCM
+                        {{ isShared }}
                     </div>
                 </div>
 
+            </div>
+
+            <div class="border border-(--text)/10 bg-(--bg2) rounded-lg p-4">
+                <div class="text-xs flex items-center gap-1.5 mb-1">
+                    <i class="bi bi-lock" /> Chiffrement
+                </div>
+                <div class=" text-sm text-(--text)/70">
+                    AES-256-GCM
+                </div>
+            </div>
+
+            <div class="border border-(--text)/10 bg-(--bg2) rounded-lg p-4">
+                <div class="text-xs flex items-center gap-1.5 mb-1">
+                    <i class="bi bi-lock" /> Identifiant de la note
+                </div>
+                <div class=" text-sm text-(--text)/70">
+                    {{ note.uuid }}
+                </div>
             </div>
 
         </div>
@@ -77,13 +95,28 @@
 
 import Popup from '@/components/popup/Popup.vue'
 import type { Note } from '@/assets/ts/type';
-import { computed } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
+import useToken from '@/composables/useToken';
+import { api_url } from '@/assets/ts/backend_link';
 
 const props = defineProps<{
   note: Note;
 }>();
 
 const stats_menu = defineModel<boolean>('visible')
+const isShared = ref<string>('Chargement...');
+
+const checkShareStatus = async () => {
+    try {
+        const token = await useToken();
+        const res = await fetch(`${api_url}/api/share/${props.note.uuid}/info`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        isShared.value = res.ok ? 'Oui' : 'Non';
+    } catch (e) {
+        isShared.value = 'Erreur';
+    }
+};
 
 const formatDate = (date: number | string | undefined) => {
     if (!date) return '...';
@@ -103,5 +136,8 @@ const wordCount = computed(() => {
 const characterCount = computed(() => {
     return props.note.content?.length || 0;
 });
+
+onMounted(async () => await checkShareStatus());
+watch(() => stats_menu.value, async () => await checkShareStatus());
 
 </script>
