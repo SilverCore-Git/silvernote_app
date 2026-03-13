@@ -1,36 +1,68 @@
 <script setup lang="ts">
 
 import { useRouter } from 'vue-router';
-import { ShareByMe, SharedNotes } from '@/assets/ts/database/Var';
+import { ShareByMe, SharedNotes, ShareByMeShare } from '@/assets/ts/database/Var';
 import DefaultNoteCard from '../common/DefaultNoteCard.vue';
 import type { Note } from '@/assets/ts/type';
-import { onMounted } from 'vue';
+import { nextTick, onMounted } from 'vue';
 import { api_url } from '@/assets/ts/backend_link';
 import useToken from '@/composables/useToken';
 
 const router = useRouter();
 
-onMounted(async() => {
+const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-    ShareByMe.value = (await fetch(`${api_url}/api/share/by/me`, {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${await useToken()}`
-        }
-    }).then(res => res.json())).notes as Note[] || [];
+onMounted(async () => {
 
-    SharedNotes.value = (await fetch(`${api_url}/api/share/for/me`, {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${await useToken()}`
-        }
-    }).then(res => res.json())).notes as Note[] || [];
+    const token = await useToken();
+
+    const [ShareByMeRes, SharedNotesRes] = await Promise.all([
+
+        fetch(`${api_url}/api/share/by/me`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(res => res.json()),
+
+        fetch(`${api_url}/api/share/for/me`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(res => res.json())
+
+    ]);
+
+    const shareByMeNotes = ShareByMeRes?.notes as Note[] || [];
     
-})
+    ShareByMe.value = [];
+
+    if (shareByMeNotes.length > 0) 
+    {
+        
+        ShareByMe.value.push(shareByMeNotes[0]);
+
+        if (shareByMeNotes.length > 1)
+        {
+
+            await delay(200);
+
+            const remainingNotes = shareByMeNotes.slice(1);
+            ShareByMe.value.push(...remainingNotes);
+
+        }
+
+    }
+
+    SharedNotes.value = SharedNotesRes?.notes as Note[] || [];
+    ShareByMeShare.value = ShareByMeRes?.share || [];
+
+});
 
 </script>
 
@@ -52,15 +84,17 @@ onMounted(async() => {
 
             <ul
                 class="
-                    grid grid-cols-1
-                    gap-4
+                    grid gap-4
+                    grid-cols-1
+                    lg:grid-cols-2
                 "
                 v-if="SharedNotes && SharedNotes.length"
             >
                 <li
                     v-for="(note, index) in SharedNotes"
-                    :key="index"
+                    :key="'sharedNotes-'+index"
                     @click.stop="router.push('/share/'+note.uuid)"
+                    class="cursor-pointer hover:scale-102! transition-all"
                 >
                     <DefaultNoteCard
                         :uuid="note.uuid"
@@ -82,15 +116,17 @@ onMounted(async() => {
 
             <ul
                 class="
-                    grid grid-cols-1
-                    gap-4
+                    grid gap-4
+                    grid-cols-1
+                    lg:grid-cols-2
                 "
                 v-if="ShareByMe && ShareByMe.length"
             >
                 <li
                     v-for="(note, index) in ShareByMe"
-                    :key="index"
+                    :key="'shareByMe-'+index"
                     @click="router.push('/share/'+note.uuid)"
+                    class="cursor-pointer hover:scale-102! transition-all"
                 >
                     <DefaultNoteCard
                         :uuid="note.uuid"
@@ -99,6 +135,7 @@ onMounted(async() => {
                         :icon="note.icon"
                         :tags="note.tags"
                         :sharedBy="note.user_id"
+                        :share="ShareByMeShare.find(s => s.note_uuid === note.uuid)"
                     />
                 </li>
             </ul>

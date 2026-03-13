@@ -39,6 +39,7 @@ const useWSocket = async (): Promise<Ref<Socket | null>> => {
             path: "/socket",
             auth: { token },
             reconnection: true,
+            autoConnect: true,
             reconnectionAttempts: 5
         });
 

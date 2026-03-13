@@ -23,8 +23,10 @@ const sortedNotes = computed(() =>
   })
   
 )
+
 const SharedNotes = ref<Note[]>([]);
 const ShareByMe = ref<Note[]>([]);
+const ShareByMeShare = ref<any[]>([]);
 
 
 export {
@@ -32,5 +34,6 @@ export {
     Tags,
     SharedNotes,
     sortedNotes,
-    ShareByMe
+    ShareByMe,
+    ShareByMeShare
 }

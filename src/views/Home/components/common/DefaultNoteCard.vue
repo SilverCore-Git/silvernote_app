@@ -72,9 +72,10 @@
                 >
                     <div class="flex justify-center items-center flex-row -space-x-3">
                         <img
-                            v-for="visitor in shareVisitors.slice(0, 5)"
+                            v-for="(visitor, index) in shareVisitors.slice(0, 5)"
                             :key="visitor.user_id"
                             class="w-7 h-7 rounded-full border border-gray-200 bg-white"
+                            :style="{ zIndex: 10 - index }"
                             :src="visitor.imageUrl"
                             loading="lazy"
                         />
@@ -142,6 +143,7 @@ const props = defineProps<{
     lines?: number;
     inertw?: string;
     sharedBy?: string;
+    share?: any;
 }>();
 
 
@@ -152,7 +154,10 @@ const client = {
     x: 0,
     y: 0
 };
-const bgColor = ref<string>('var(--white)');
+const bgColor = computed(() => {
+    const firstValidTag = Tags.value.find(tag => props.tags.includes(tag.id));
+    return firstValidTag ? firstValidTag.color + '30' : 'rgba(var(--text-rgb), 0.05)';
+});
 const note_selected = ref<boolean>(false);
 const share_menu = ref<boolean>(false);
 const sharerIcon = ref<string | undefined>(undefined);
@@ -218,12 +223,19 @@ const initShareVisitors = async () => {
 
         const initVisitors = async () => {
 
-            const token = await useToken();
-            const res = await fetch(`${api_url}/api/share/${props.uuid}/info`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const data = await res.json();
+            let data: any;
+
+            if (!props.share)
+            {
+                const token = await useToken();
+                data = await fetch(`${api_url}/api/share/${props.uuid}/info`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                }).then(res => res.json());
             
+            }
+            else data = { share: props.share };
+
+
             if (data.share) {
 
                 isMyShare.value = data.share.owner_id === window.localStorage.getItem('user_id');
@@ -258,20 +270,9 @@ const initShareVisitors = async () => {
 
 }
 
-const initBG = async () => {
-    if (props.tags[0])
-    {
-        const firstValidTag = Tags.value.find(tag => props.tags.includes(tag.id));
-        bgColor.value = firstValidTag?.color + '30' || 'var(--white)';
-    }
-}
-
 onMounted(async () => {
 
-    await Promise.all([
-        initBG(),
-        initShareVisitors()
-    ])
+    await initShareVisitors();
 
 });
 
