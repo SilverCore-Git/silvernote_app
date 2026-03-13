@@ -11,6 +11,11 @@ import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
 import isElectron from '@/assets/ts/utils/isElectron';
 import PressAndHold from '@/components/PressAndHold.vue';
 import useNoteEditing from '@/composables/useNoteEditing';
+import { useRoute, useRouter } from 'vue-router';
+import getToken from '@/composables/useToken';
+import { api_url } from '@/assets/ts/backend_link';
+import ShareDropdown from '../Share/components/dropdown.vue';
+import Popup from '@/components/popup/Popup.vue';
 
 
 const props = defineProps<{
@@ -18,16 +23,40 @@ const props = defineProps<{
 }>();
 
 
+const route = useRoute();
+const router = useRouter();
+
 const noteId = computed(() => props.uuid);
 const { localNote } = useNoteEditing(noteId);
 const { init_emoji_picker } = useEmoji();
 
-
+const error = ref<string>('');
 const emojiBtn = ref<HTMLElement | null>(null);
 const ShowDropdown = ref<boolean>(false);
-const users = ref<User[]>([]); // a faire
-const shared = ref<boolean | undefined>(undefined);
 const titleRef = ref<HTMLInputElement | undefined>(undefined);
+
+const shareData = ref<any>(null);
+const shared = computed<boolean>(() => route.name == 'Share');
+const passwd = ref<string | 'done'>('');
+
+const imTheOwner = computed(() => {
+  if (!shared.value || !shareData.value) return false;
+  return shareData.value.owner_id === localStorage.getItem('user_id');
+});
+
+const users = computed<User[]>(() => {
+  if (!shared.value || !shareData.value) return [];
+  return shareData.value.visitor;
+});
+
+const needPasswd = computed<boolean>(() => {
+  if (!shared.value || !shareData.value) return false;
+  return shareData.value?.need == 'passwd';
+});
+
+
+const share_menu = ref<boolean>(false);
+
 
 const resizeTitle = () => {
   const el = titleRef.value;
@@ -35,6 +64,62 @@ const resizeTitle = () => {
     el.style.height = 'auto';
     el.style.height = `${el.scrollHeight}px`;
   }
+};
+
+
+const loadShareInfo = async () => {
+
+  if (!shared.value) return;
+  try {
+
+    const token = await getToken();
+    const res = await fetch(`${api_url}/api/share/${props.uuid}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    shareData.value = await res.json();
+
+  } 
+  catch (e) 
+  {
+    console.error("Erreur share info:", e);
+  }
+
+};
+
+
+const verifyPasswd = async () => {
+
+  try {
+
+    const token = await getToken();
+    const res = await fetch(`${api_url}/api/share/${props.uuid}?passwd=${passwd.value}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (res.ok) 
+    {
+      await loadShareInfo();
+    } 
+    else 
+    {
+      error.value = "Mot de passe incorrect.";
+    }
+
+  } 
+  catch (e) 
+  {
+    console.error("Erreur vérification mot de passe:", e);
+    error.value = "Une erreur est survenue. Veuillez réessayer.";
+  }
+
 };
 
 
@@ -62,13 +147,97 @@ onMounted(async () => {
 
   }, { immediate: true });
 
+  if (shared.value) await loadShareInfo();
+
 });
 
 </script>
 
 <template>
 
+<div v-if="shared">
+
+  <Popup v-model:visible="needPasswd">
+
+      <div @click.stop class="w-full max-w-sm p-2">
+          
+          <div class="flex flex-col items-center mb-8">
+
+              <div class="w-16 h-16 bg-(--btn)/10 rounded-full flex items-center justify-center mb-4">
+                  <i class="bi bi-shield-lock-fill text-3xl text-(--btn)" />
+              </div>
+
+              <h2 class="text-2xl font-bold text-(--text-strong)">Note protégée</h2>
+
+              <p class="text-sm text-(--text-little) text-center mt-1">
+                  Cette note est privée. Veuillez saisir le mot de passe pour y accéder.
+              </p>
+
+          </div>
+
+          <div class="flex flex-col gap-4">
+
+              <div class="relative group">
+
+                  <input
+                      v-model="passwd"
+                      type="password"
+                      placeholder="Mot de passe"
+                      class="
+                        w-full px-5 py-4 rounded-2xl 
+                        bg-(--bg2)/50 border-2 
+                        border-transparent focus:border-(--btn)/50 
+                        focus:bg-(--bg2) outline-none transition-all 
+                        duration-300 placeholder:text-(--text-little)/50
+                      "
+                      @keydown.enter="verifyPasswd"
+                  />
+
+                  <div 
+                    class="
+                      absolute inset-0 rounded-2xl pointer-events-none 
+                      group-focus-within:ring-4 ring-(--btn)/5 transition-all
+                    "
+                  />
+
+              </div>
+
+              <transition name="fade">
+                  <div v-if="error" class="flex items-center gap-2 px-2 text-red-400 text-sm">
+                      <i class="bi bi-exclamation-circle-fill" />
+                      <span>{{ error }}</span>
+                  </div>
+              </transition>
+
+              <div class="grid grid-cols-2 gap-3 mt-4">
+
+                  <button
+                      class="default"
+                      @click="router.push('/')"
+                  >
+                      Annuler
+                  </button>
+
+                  <button
+                      class="primary gap-2"
+                      @click="verifyPasswd"
+                  >
+                      <span>Accéder</span>
+                      <i class="bi bi-arrow-right-short text-xl" />
+                  </button>
+
+              </div>
+
+          </div>
+
+      </div>
+
+  </Popup>
+
+</div>
+
 <div
+    v-if="!needPasswd"
     class="
         overflow-y-auto fixed
         inset-0 flex flex-col bg-(--bg)
@@ -111,12 +280,12 @@ onMounted(async () => {
         <BackBtn />
 
         <div
-          class="flex flex-row gap-4 absolute right-0"
+          class="flex flex-row gap-6 absolute right-0"
         >
           
           <div
             v-if="shared"
-            class="flex justify-center items-center flex-row gap-4"
+            class="flex justify-center items-center flex-row gap-6"
           >
 
             <div
@@ -125,17 +294,37 @@ onMounted(async () => {
 
               <img
                   v-for="(user, index) in users"
-                  :key="index"
-                  class="w-8 h-8 rounded-full border border-gray-200"
+                  :key="'visitor-'+index"
+                  class="w-8 h-8 rounded-full border border-(--text)/10"
                   :src="user.imageUrl"
               />
 
             </div>
 
+            <button
+                class="px-2 default-primary"
+                :class="share_menu ? 'bg-(--text)/10' : ''"
+                @click="share_menu = !share_menu"
+            >
+                Partage
+            </button>
+
+            <transition name="fade-slide">
+                        
+              <ShareDropdown
+                  v-if="share_menu"
+                  @click="share_menu = false"
+                  :users="users"
+                  :send_share="() => {}"
+              />
+                    
+            </transition>
+
           </div>
 
         
           <button
+            v-if="!shared || shared && imTheOwner"
             class="cursor-pointer text-(--btn) text-3xl"
             v-tooltip="localNote.pinned ? 'Désépingler' : 'Épingler'"
             @click="localNote.pinned = !localNote.pinned"
@@ -147,6 +336,7 @@ onMounted(async () => {
           </button>
 
           <button
+            v-if="!shared || shared && imTheOwner"
             class="cursor-pointer text-(--btn) text-3xl"
             @click="ShowDropdown = !ShowDropdown"
           >
@@ -200,25 +390,29 @@ onMounted(async () => {
             class="flex w-[90%] mb-2 items-end justify-start gap-2"
           >
 
-            <a ref="emojiBtn" class="px-1">
+          <a ref="emojiBtn" class="px-1 group">
 
-              <div v-if="localNote.icon && localNote.icon !== ''" >
-                <PressAndHold @long-press="localNote.icon = ''">
-                  <img
-                    class="w-20 h-20 p-2 cursor-pointer" 
-                    :src="localNote.icon" 
-                  />
-                </PressAndHold>
-              </div>
+            <div v-if="localNote.icon">
 
-              <span
-                v-else
-                class="px-1"
-              >
-                Ajouter une icon
-              </span>
+              <PressAndHold @long-press="localNote.icon = ''">
 
-            </a>
+                <img 
+                  class="w-20 h-20 p-2 cursor-pointer hover:scale-110 transition-transform" 
+                  :src="localNote.icon" 
+                />
+
+              </PressAndHold>
+
+            </div>
+
+            <div v-else class="cursor-pointer opacity-30 hover:opacity-100 transition-opacity text-sm flex items-center gap-2">
+
+              <i class="bi bi-plus-circle text-2xl" />
+              <span>Ajouter une icône</span>
+
+            </div>
+
+          </a>
           
           </div>
 
@@ -277,5 +471,7 @@ onMounted(async () => {
   </div>
 
 </div>
+
+
 
 </template>

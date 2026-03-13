@@ -7,7 +7,7 @@
                     <div 
                         class="
                             dropdown absolute 
-                            right-0 top-6
+                            right-8 top-12
                         "
                     >
 
@@ -16,8 +16,7 @@
                             <li
                                 v-for="user in users"
                                 class="
-                                    flex justify-between items-center flex-row
-                                    space-x-8
+                                    flex justify-between items-center flex-row px-2
                                 "
                                 @click.stop
                             >

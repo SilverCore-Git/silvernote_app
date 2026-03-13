@@ -4,7 +4,6 @@ import { nextTick } from 'vue';
 import Home from './views/Home/Home.vue';
 import Edit from './views/Edit/Edit.vue';
 import Settings from './views/Settings/Settings.vue';
-import Share from './views/Share/Share.vue';
 import SignIn from './views/auth/SignIn.vue';
 import SignUp from './views/auth/SignUp.vue';
 import Redirect from './views/auth/Redirect.vue';
@@ -24,6 +23,7 @@ const routes = [
     component: Home,
     meta: { title: 'Accueil - Silvernote' }
   },
+
   { 
     path: '/edit/:uuid', 
     name: 'Edit', 
@@ -31,6 +31,15 @@ const routes = [
     props: true,
     meta: { title: 'Silvernote' }
   },
+  { 
+    path: '/share/:uuid', 
+    name: 'Share', 
+    component: Edit,
+    props: true,
+    meta: { title: 'Partage - Silvernote' }
+  },
+
+
   { 
     path: '/settings', 
     name: 'Settings', 
@@ -61,14 +70,6 @@ const routes = [
     props: true, 
     component: ImportKeep,
     meta: { title: 'Importation - Silvernote' }
-  },
-
-  { 
-    path: '/share/:uuid', 
-    name: 'Share', 
-    component: Share,
-    props: true,
-    meta: { title: 'Partage - Silvernote' }
   },
 
   { 
