@@ -4,15 +4,21 @@ import { useRouter } from 'vue-router';
 import { ShareByMe, SharedNotes, ShareByMeShare } from '@/assets/ts/database/Var';
 import DefaultNoteCard from '../common/DefaultNoteCard.vue';
 import type { Note } from '@/assets/ts/type';
-import { nextTick, onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { api_url } from '@/assets/ts/backend_link';
 import useToken from '@/composables/useToken';
 
 const router = useRouter();
+const loading = ref<boolean>(true);
 
-const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+//const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 onMounted(async () => {
+
+    if (ShareByMe.value.length > 0 || SharedNotes.value.length > 0) 
+    {
+        loading.value = false;
+    }
 
     const token = await useToken();
 
@@ -40,27 +46,29 @@ onMounted(async () => {
 
     const shareByMeNotes = ShareByMeRes?.notes as Note[] || [];
     
-    ShareByMe.value = [];
+    ShareByMe.value = shareByMeNotes;
 
-    if (shareByMeNotes.length > 0) 
-    {
+    // if (shareByMeNotes.length > 0) 
+    // {
         
-        ShareByMe.value.push(shareByMeNotes[0]);
+    //     ShareByMe.value.push(shareByMeNotes[0]);
 
-        if (shareByMeNotes.length > 1)
-        {
+    //     if (shareByMeNotes.length > 1)
+    //     {
 
-            await delay(200);
+    //         await delay(200);
 
-            const remainingNotes = shareByMeNotes.slice(1);
-            ShareByMe.value.push(...remainingNotes);
+    //         const remainingNotes = shareByMeNotes.slice(1);
+    //         ShareByMe.value.push(...remainingNotes);
 
-        }
+    //     }
 
-    }
+    // }
 
     SharedNotes.value = SharedNotesRes?.notes as Note[] || [];
     ShareByMeShare.value = ShareByMeRes?.share || [];
+
+    loading.value = false;
 
 });
 
@@ -68,7 +76,17 @@ onMounted(async () => {
 
 <template>
 
-    <div class="relative">
+    <template v-if="loading">
+
+        <div 
+            class="flex justify-center text-(--text-little) items-center h-40"
+        >
+            <i class="bi bi-arrow-repeat text-4xl animate-spin" />
+        </div>
+        
+    </template>
+
+    <template v-else class="relative">
 
         <div 
             class="flex flex-col gap-4 h-full pb-40"
@@ -99,7 +117,6 @@ onMounted(async () => {
                     <DefaultNoteCard
                         :uuid="note.uuid"
                         :title="note.title"
-                        :content="note.content"
                         :icon="note.icon"
                         :tags="note.tags"
                         :sharedBy="note.user_id"
@@ -131,7 +148,6 @@ onMounted(async () => {
                     <DefaultNoteCard
                         :uuid="note.uuid"
                         :title="note.title"
-                        :content="note.content"
                         :icon="note.icon"
                         :tags="note.tags"
                         :sharedBy="note.user_id"
@@ -150,6 +166,6 @@ onMounted(async () => {
             <h3 class="text-2xl font-bold">Aucune note partagée</h3>
         </div>
 
-    </div>
+    </template>
 
 </template>

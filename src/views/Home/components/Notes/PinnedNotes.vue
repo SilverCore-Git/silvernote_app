@@ -39,7 +39,6 @@ const router = useRouter();
                 <DefaultNoteCard
                     :uuid="note.uuid"
                     :title="note.title"
-                    :content="note.content"
                     :icon="note.icon"
                     :tags="note.tags"
                 />

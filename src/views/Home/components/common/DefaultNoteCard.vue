@@ -46,11 +46,11 @@
                 <div class="flex flex-col justify-between items-start gap-2 w-full ">
 
                     <h2 
-                        class="font-bold text-xl sm:text-xl truncate text-ellipsis max-w-[92%]"
+                        class="font-bold text-xl sm:text-xl truncate text-ellipsis max-w-[90%]"
                         v-text="title || 'Note sans titre'"
                     />
 
-                    <div v-if="_Tags.length > 0" class=" flex flex-raw gap-1 rounded-md max-w-[92%] overflow-hidden">
+                    <div v-if="_Tags.length > 0" class=" flex flex-raw gap-1 rounded-md max-w-[90%] overflow-hidden">
                         <span
                             v-for="tag in _Tags"
                             :key="tag.id"
