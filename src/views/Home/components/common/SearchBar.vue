@@ -41,7 +41,7 @@
                     flex flex-row-reverse
                     justify-center items-center
                     bg-(--white)/50
-                    border border-gray-300
+                    border border-(--text)/40
                     rounded-2xl
                 "
             >
@@ -67,7 +67,7 @@
 
                 </button>
 
-                <div class="h-11 -my-1 border-l border-gray-300" />
+                <div class="h-11 -my-1 border-l border-(--text)/40" />
 
                 <button 
                     class="
