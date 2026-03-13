@@ -13,7 +13,7 @@
                     justify-start items-start
                     rounded-2xl p-4 w-full h-[94px]
                     cursor-pointer overflow-hidden
-                    hover:border-(--btn) border-2
+                    hover:border-(--btn) border-2 
                     transition-all! duration-200 ease-in-out
                     backdrop-blur-3xl active:scale-95
                 "
@@ -38,27 +38,32 @@
                 >
                     <img 
                         :src="icon" 
-                        class="w-15 h-15 object-contain shrink-0 opacity-80" 
+                        class="min-w-15 w-15 h-15 object-contain shrink-0 opacity-80" 
                         loading="lazy"
                     />
                 </div>
 
-                <div class="flex flex-col justify-between items-start gap-2 w-full">
+                <div class="flex flex-col justify-between items-start gap-2 w-full ">
 
                     <h2 
-                        class="font-bold text-xl sm:text-xl "
+                        class="font-bold text-xl sm:text-xl truncate text-ellipsis max-w-[92%]"
                         v-text="title || 'Note sans titre'"
                     />
 
-                    <div v-if="_Tags.length > 0" class="shrink-0 flex flex-wrap gap-1 ">
+                    <div v-if="_Tags.length > 0" class=" flex flex-raw gap-1 rounded-md max-w-[92%] overflow-hidden">
                         <span
                             v-for="tag in _Tags"
                             :key="tag.id"
-                            class="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide"
-                            :style="{ 
-                                backgroundColor: tag.color + '20',
-                                color: tag.color 
+                            class="
+                                px-2 py-1 rounded-md text-[10px] 
+                                font-bold uppercase tracking-wide 
+                                bg-(--white)/50 border
+                            "
+                            :style="{
+                                color: tag.color,
+                                borderColor: tag.color
                             }"
+                            :title="tag.name"
                         >
                             {{ tag.name }}
                         </span>
