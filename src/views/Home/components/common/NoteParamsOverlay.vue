@@ -132,15 +132,15 @@
 
                                                 <div
                                                     class="
-                                                        w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 
+                                                        w-11 h-6 bg-(--text)/20 peer-focus:outline-none peer-focus:ring-2 
                                                         peer-focus:ring-(--btn) rounded-full peer
-                                                        peer-checked:bg-(--btn) transition-all
+                                                        peer-checked:bg-(--btn) transition-all!
                                                     "
                                                 ></div>
 
                                                 <div
                                                     class="absolute left-0.5 top-0.5 w-5 h-5 bg-white
-                                                    rounded-full transition-transform peer-checked:translate-x-5"
+                                                    rounded-full transition-transform! peer-checked:translate-x-5"
                                                 ></div>
 
                                             </div>
@@ -288,7 +288,7 @@
 
 import BackdropOverlay from '@/components/common/BackdropOverlay.vue';
 import type { Note } from '@/assets/ts/type';
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { Notes, Tags } from '@/assets/ts/database/Var';
 import DefaultNoteCard from '@/views/Home/components/common/DefaultNoteCard.vue';
 import share_menu from '@/components/popup/share_menu.vue';
@@ -308,7 +308,7 @@ const note = ref<Note | undefined | any>(undefined);
 const showCard = ref<boolean>(false);
 const showShareMenu = ref<boolean>(false);
 const showConfirmDel = ref<boolean>(false);
-const tags = ref<number[]>(props.selectedTags || []);
+const tags = computed<number[]>(() => props.selectedTags || []);
 
 const emit = defineEmits([
     'update:visible',
@@ -395,7 +395,6 @@ const mount = () => {
     
     if (props.justView) {
         note.value = {};
-        tags.value = props?.selectedTags || [];
         showCard.value = true;
         return;
     }

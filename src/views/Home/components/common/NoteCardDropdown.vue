@@ -64,7 +64,7 @@
             <NoteParamsOverlay
                 :uuid="note.uuid"
                 :justTags="true"
-                :selected-tags="note?.tags || []"
+                :selectedTags="note.tags || []"
                 v-model:visible="showTagMenu"
             />
 
