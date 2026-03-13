@@ -6,6 +6,7 @@
             min-w-55
             xl:min-w-70
             bg-(--bg2)
+            border-r border-(--text-little)/20
         "
     >
 

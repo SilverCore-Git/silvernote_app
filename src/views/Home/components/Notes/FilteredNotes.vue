@@ -85,34 +85,26 @@ const noteRows = computed(() => {
 
         <RecycleScroller
             v-if="noteRows.length > 0"
-            :key="noteRows.length"
+            :key="'scroller-'+noteRows.length"
             :items="noteRows"
-            :item-size="220"
+            :item-size="108" 
             key-field="id"
+            :buffer="200" 
             page-mode
-            class="w-full"
-            :buffer="600" 
+            class="w-full overflow-visible!"
         >
 
-            <template #default="{ item: row }">
-                
-                <div 
-                    class="grid gap-4 mb-4 pr-2 pl-1"
-                    :style="{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }"
-                >
-            
-                    <div v-for="note in row.items" :key="note.uuid">
-                        <DefaultNoteCard
-                            :uuid="note.uuid"
-                            :title="note.title"
-                            :content="note.content"
-                            :icon="note.icon"
-                            :tags="note.tags"
-                        />
-                    </div>
-            
-                </div>
-            
+            <template #default="{ item: note }">
+ 
+
+                    <DefaultNoteCard
+                        :uuid="note.uuid"
+                        :title="note.title"
+                        :icon="note.icon"
+                        :tags="note.tags"
+                    />
+
+
             </template>
 
         </RecycleScroller>
@@ -128,3 +120,47 @@ const noteRows = computed(() => {
     </div>
 
 </template>
+
+<style scoped>
+
+/* card scale hover */
+:deep(.group:hover) {
+    transform: scale(1.02) !important;
+    z-index: 30;
+    border-color: var(--btn) !important;
+    opacity: 1 !important;
+}
+
+:deep(.vue-recycle-scroller__item-view:has(+ .vue-recycle-scroller__item-view .group:hover) .group) {
+    transform: scale(1.01);
+    opacity: 0.92;
+    z-index: 10;
+}
+
+:deep(.vue-recycle-scroller__item-view:has(.group:hover) + .vue-recycle-scroller__item-view .group) {
+    transform: scale(1.01);
+    opacity: 0.92;
+    z-index: 10;
+}
+
+:deep(.group) {
+    transition: 
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), 
+        border-color 0.3s ease, 
+        opacity 0.4s ease !important;
+    will-change: transform;
+}
+
+:deep(.vue-recycle-scroller__item-wrapper) {
+    overflow: visible !important;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+:deep(.vue-recycle-scroller__item-view) {
+    overflow: visible !important;
+    transition: z-index 0s;
+}
+
+
+</style>

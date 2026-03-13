@@ -161,7 +161,7 @@ const client = {
 };
 const bgColor = computed(() => {
     const firstValidTag = Tags.value.find(tag => props.tags.includes(tag.id));
-    return firstValidTag ? firstValidTag.color + '30' : 'rgba(var(--text-rgb), 0.05)';
+    return firstValidTag ? firstValidTag.color + '30' : 'var(--white)';
 });
 const note_selected = ref<boolean>(false);
 const share_menu = ref<boolean>(false);

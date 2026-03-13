@@ -2,7 +2,7 @@
 
     <div
         class="
-            h-full bg-(--bg2) shadow-2xl 
+            h-full bg-(--bg2) border-r border-(--text-little)/20
             p-4 min-w-65 max-w-75 relative
         "
     >
