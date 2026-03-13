@@ -139,7 +139,16 @@ function useNoteEditing (noteId: Ref<string> | ComputedRef<string>)
     }
 
     onBeforeUnmount(async () => {
+
+        socket.value.emit('leave-room', { room: localNote.value.id });
+        const note = Notes.value.find(note => note.uuid == localNote.value.id);
+
+        note.title = localNote.value.title;
+        note.icon = localNote.value.icon;
+        note.pinned = localNote.value.pinned;
+
         if (clearListener) await clearListener();
+
     })
 
     return {
