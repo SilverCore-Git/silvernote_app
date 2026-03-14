@@ -79,7 +79,7 @@
 
                 <slot></slot>
 
-                <a class="p-1.5 flex items-center justify-center ">
+                <a class="p-2 flex items-center justify-center ">
                     <UserButton
                         :appearance="{
                             ...clerkAppearanceSettings,

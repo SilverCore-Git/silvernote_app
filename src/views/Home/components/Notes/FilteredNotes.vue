@@ -1,59 +1,24 @@
 <script setup lang="ts">
 
 import { sortedNotes, Tags } from '@/assets/ts/database/Var';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
-import DefaultNoteCard from '../common/DefaultNoteCard.vue';
-import useFilter from '../../composables/useFilter';
+import { computed } from 'vue';
 import { RecycleScroller } from 'vue3-virtual-scroller';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
+import DefaultNoteCard from '../common/DefaultNoteCard.vue';
+import useFilter from '../../composables/useFilter';
 
 const { selectedFilter } = useFilter();
-const columns = ref<number>(3);
-const updateColumns = () => {
-    if (window.innerWidth < 1024) columns.value = 2;
-    else if (window.innerWidth < 1400) columns.value = 3;
-    else if (window.innerWidth < 1800) columns.value = 4;
-    else if (window.innerWidth < 2000) columns.value = 5;
-    else columns.value = 6;
-};
 
-onMounted(() => {
-    updateColumns();
-    window.addEventListener('resize', updateColumns);
+const noteRows = computed(() => {
+    return (sortedNotes.value?.filter(n => n.tags.includes(selectedFilter.value)) || []).map(n => ({
+        ...n,
+        id: n.uuid
+    }));
 });
-onUnmounted(() => window.removeEventListener('resize', updateColumns));
 
-const notes = computed(() =>
-    sortedNotes.value.filter(note => note.tags.includes(selectedFilter.value || 0))
-);
 const tag = computed(() =>
     Tags.value.filter(tag => tag.id === selectedFilter.value)[0]
 );
-
-const noteRows = computed(() => {
-
-    const others = notes.value?.filter(n => !n.pinned) || [];
-    const rows = [];
-    const colCount = columns.value || 1;
-
-    for (let i = 0; i < others.length; i += colCount)
-    {
-    
-        const rowItems = others.slice(i, i + colCount);
-        
-        if (rowItems.length > 0)
-        {
-            rows.push({
-                id: `row-${rowItems[0].uuid}`,
-                items: [...rowItems] 
-            });
-        }
-
-    }
-
-    return rows;
-
-});
 
 </script>
 
@@ -89,22 +54,20 @@ const noteRows = computed(() => {
             :items="noteRows"
             :item-size="108" 
             key-field="id"
-            :buffer="200" 
             page-mode
             class="w-full overflow-visible!"
         >
 
             <template #default="{ item: note }">
- 
 
                     <DefaultNoteCard
+                        :key="note.uuid"
                         :uuid="note.uuid"
                         :title="note.title"
                         :icon="note.icon"
                         :tags="note.tags"
                     />
-
-
+                    
             </template>
 
         </RecycleScroller>

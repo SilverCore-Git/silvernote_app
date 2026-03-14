@@ -5,7 +5,7 @@
         class="h-full"
     >
 
-        <div 
+        <button 
             class="
                 bg-(--white) border-2 rounded-2xl flex-row
                 flex justify-center items-center gap-1
@@ -29,7 +29,7 @@
                 {{ name }}
             </span>
 
-        </div>
+        </button>
 
     </PressAndHold>
 

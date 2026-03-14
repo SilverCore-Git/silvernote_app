@@ -29,7 +29,6 @@ const noteRows = computed(() => {
             :items="noteRows"
             :item-size="108" 
             key-field="id"
-            :buffer="200" 
             page-mode
             class="w-full overflow-visible!"
         >
@@ -38,6 +37,7 @@ const noteRows = computed(() => {
  
 
                     <DefaultNoteCard
+                        :key="note.uuid"
                         :uuid="note.uuid"
                         :title="note.title"
                         :icon="note.icon"

@@ -390,7 +390,7 @@ onMounted(async () => {
             class="flex w-[90%] mb-2 items-end justify-start gap-2"
           >
 
-          <a ref="emojiBtn" class="px-1 group">
+          <a ref="emojiBtn" class="px-2 group">
 
             <div v-if="localNote.icon">
 
@@ -405,9 +405,10 @@ onMounted(async () => {
 
             </div>
 
-            <div v-else class="cursor-pointer opacity-30 hover:opacity-100 transition-opacity text-sm flex items-center gap-2">
+            <div
+              v-else
+            >
 
-              <i class="bi bi-plus-circle text-2xl" />
               <span>Ajouter une icône</span>
 
             </div>
