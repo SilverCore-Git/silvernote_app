@@ -5,7 +5,6 @@ import waitFor from '@/assets/ts/utils/waitFor';
 import postError from '../errorOverlay/postError';
 import { editor } from './Editor';
 import { nextTick } from 'vue';
-import type { Note } from '@/assets/ts/type';
 import { Notes } from '@/assets/ts/database/Var';
 
 let isOffline = false;
@@ -20,6 +19,7 @@ export class EditorProvider
     public synced: boolean = false;
 
     private room: string = '';
+    private shared: boolean = false;
     private editable: boolean = true;
 
     private updateHandler: ((update: Uint8Array, origin: any) => void) | null = null;
@@ -28,12 +28,13 @@ export class EditorProvider
     constructor(
       doc: Y.Doc,
       room?: string,
-      editable?: boolean
+      shared?: boolean,
     ) {
 
       this.doc = doc;
       this.room = room ?? '';
-      this.editable = editable ?? true;
+      this.shared = shared ?? false;
+      this.editable = !this.shared;
       this.awareness = new awarenessProtocol.Awareness(doc);
 
       if (socketConnected.value)
@@ -72,18 +73,17 @@ export class EditorProvider
       (await socket).value.emit('get-initial-state', { roomId: this.room });
 
       // État initial du document
-      (await socket).value.on('initial-state', ({ ydocState }: { ydocState: any }) => {
+      (await socket).value.on('initial-state', ({ ydocState, share }: { ydocState: any, share: any }) => {
 
           if (this.synced) return;
 
           const note = Notes.value.find(note => note.uuid == this.room);
-          if (!note) return;
 
-          if (note.content_type == 'text/html')
+          if (note && note.content_type == 'text/html')
           {
             editor.value.commands.setContent(note.content);
           }
-          else if (note.content_type == 'ydoc')
+          else if (note?.content_type == 'ydoc' || (!note && this.shared))
           {
 
             const uint8State = ydocState instanceof Uint8Array 
@@ -105,6 +105,11 @@ export class EditorProvider
           else
           {
             throw new Error(`Unsupported content type : ${note.content_type}`);
+          }
+
+          if (this.shared && share)
+          {
+            this.editable = share.params.editable || false;
           }
 
 

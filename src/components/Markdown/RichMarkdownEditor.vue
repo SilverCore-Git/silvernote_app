@@ -3,6 +3,7 @@
   <ToolsMenu
       class="editor-container h-full overflow-hidden relative" 
       @click="focusEditor"
+      :disable="loader || !props.editable"
   >
 
     <div
@@ -38,7 +39,7 @@
 
   <SaveIndicator />
 
-  <PhoneToolsBar />
+  <PhoneToolsBar v-if="!loader || props.editable" />
   
 </template>
 
@@ -71,6 +72,7 @@ import waitFor from '@/assets/ts/utils/waitFor';
 const props = defineProps<{
   editable?: boolean;
   uuid: string;
+  shared?: boolean;
 }>()
 
 const loader = ref<boolean>(true);
@@ -155,7 +157,7 @@ async function initEditor(): Promise<void>
 
   const colorPromise = getColorByImage();
 
-  const provider = new EditorProvider(ydoc, props.uuid, props.editable ?? true);
+  const provider = new EditorProvider(ydoc, props.uuid, props.shared);
   
   const mathCheckDebounced = createMathCheckDebounced();
   

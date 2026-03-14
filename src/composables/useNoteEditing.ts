@@ -18,7 +18,7 @@ interface LocalNote {
 }
 
 
-function useNoteEditing (noteId: Ref<string> | ComputedRef<string>)
+function useNoteEditing (noteId: Ref<string> | ComputedRef<string>, isShared: Ref<boolean> | ComputedRef<boolean>)
 {
 
     let socket: Ref<Socket>;
@@ -93,7 +93,7 @@ function useNoteEditing (noteId: Ref<string> | ComputedRef<string>)
         await waitFor(() => init.isLoaded());
         let note: Note | undefined = Notes.value.find(note => note.uuid == noteId);
 
-        if (!note || noteId == 'new') 
+        if ((!note || noteId == 'new') && !isShared.value) 
         {
 
             const newNote = await CreateNewNote();
@@ -112,6 +112,10 @@ function useNoteEditing (noteId: Ref<string> | ComputedRef<string>)
 
             return;
 
+        }
+        else if (isShared.value)
+        {
+            
         }
 
         console.log('load note')

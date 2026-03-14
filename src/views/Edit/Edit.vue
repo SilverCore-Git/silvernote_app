@@ -26,8 +26,12 @@ const props = defineProps<{
 const route = useRoute();
 const router = useRouter();
 
+const shareData = ref<any>(null);
+const shared = computed<boolean>(() => route.name == 'Share');
+const passwd = ref<string | 'done'>('');
+
 const noteId = computed(() => props.uuid);
-const { localNote } = useNoteEditing(noteId);
+const { localNote } = useNoteEditing(noteId, shared);
 const { init_emoji_picker } = useEmoji();
 
 const error = ref<string>('');
@@ -35,9 +39,6 @@ const emojiBtn = ref<HTMLElement | null>(null);
 const ShowDropdown = ref<boolean>(false);
 const titleRef = ref<HTMLInputElement | undefined>(undefined);
 
-const shareData = ref<any>(null);
-const shared = computed<boolean>(() => route.name == 'Share');
-const passwd = ref<string | 'done'>('');
 
 const imTheOwner = computed(() => {
   if (!shared.value || !shareData.value) return false;
@@ -142,6 +143,8 @@ onMounted(async () => {
         note: localNote,
         ref: emojiBtn,
       });
+
+      titleRef.value?.focus();
 
     }
 
@@ -390,7 +393,20 @@ onMounted(async () => {
             class="flex w-[90%] mb-2 items-end justify-start gap-2"
           >
 
-          <a ref="emojiBtn" class="px-2 group">
+          <div v-if="shared && !shareData.editable" class="p-2">
+
+            <div v-if="localNote.icon">
+
+              <img 
+                class="w-20 h-20 p-2 " 
+                :src="localNote.icon" 
+              />
+
+            </div>
+
+          </div>
+
+          <a v-else ref="emojiBtn" class="p-2 px-2">
 
             <div v-if="localNote.icon">
 
@@ -435,12 +451,14 @@ onMounted(async () => {
             "
             placeholder="Titre..." 
             rows="1"
+            :disabled="shared ? !shareData.editable : false"
             @keydown.enter.prevent="editor?.commands.focus()"
           />
 
           <RichMarkdownEditor
-            :editable="true" 
+            :editable="shared ? shareData.editable : true" 
             :uuid="localNote.id"
+            :shared="shared"
           />
 
           <div
