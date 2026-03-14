@@ -7,7 +7,7 @@
                     <div 
                         class="
                             dropdown absolute 
-                            right-8 top-12
+                            right-6 top-12 w-64
                         "
                     >
 

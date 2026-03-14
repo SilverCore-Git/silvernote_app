@@ -1,6 +1,6 @@
 import * as Y from 'yjs';
 import * as awarenessProtocol from 'y-protocols/awareness';
-import { socketConnected, useWSocket } from '@/composables/WSocket';
+import { socketConnected, useRoom, useWSocket } from '@/composables/WSocket';
 import waitFor from '@/assets/ts/utils/waitFor';
 import postError from '../errorOverlay/postError';
 import { editor } from './Editor';
@@ -178,6 +178,8 @@ export class EditorProvider
       (await socket).value.on('connect', async () => {
         console.log('✅ Socket connected');
         this.enableLocalUpdates();
+        const { join } = await useRoom();
+        join({ room: this.room });
         if (isOffline) 
         {
           isOffline = false;

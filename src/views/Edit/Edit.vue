@@ -46,7 +46,7 @@ const imTheOwner = computed(() => {
 });
 
 const users = computed<User[]>(() => {
-  if (!shared.value || !shareData.value) return [];
+  if (!shareData.value) return [];
   return shareData.value.visitor;
 });
 
@@ -69,8 +69,7 @@ const resizeTitle = () => {
 
 
 const loadShareInfo = async () => {
-
-  if (!shared.value) return;
+  
   try {
 
     const token = await getToken();
@@ -150,7 +149,7 @@ onMounted(async () => {
 
   }, { immediate: true });
 
-  if (shared.value) await loadShareInfo();
+  await loadShareInfo();
 
 });
 
@@ -287,7 +286,7 @@ onMounted(async () => {
         >
           
           <div
-            v-if="shared"
+            v-if="shareData && shareData.visitor.length > 0"
             class="flex justify-center items-center flex-row gap-6"
           >
 
@@ -312,18 +311,18 @@ onMounted(async () => {
                 Partage
             </button>
 
-            <transition name="fade-slide">
-                        
-              <ShareDropdown
-                  v-if="share_menu"
-                  @click="share_menu = false"
-                  :users="users"
-                  :send_share="() => {}"
-              />
-                    
-            </transition>
-
           </div>
+
+          <transition name="fade-slide">
+                        
+            <ShareDropdown
+                v-if="share_menu"
+                @click="share_menu = false"
+                :users="users"
+                :send_share="() => {}"
+            />
+                    
+          </transition>
 
         
           <button
