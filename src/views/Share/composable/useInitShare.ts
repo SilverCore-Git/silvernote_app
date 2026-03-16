@@ -30,9 +30,11 @@ function useFetchShare()
     async function executeFetch(): Promise<{ closeSocket: () => void } | undefined>
     {
         
+        return
         if (!_state) return;
 
         const { note, users, error, loaded, need_passwd, editable, title, icon } = _state;
+        console.log(title, icon);
         
         const passwordValue = unref(_passwd);
 
@@ -110,13 +112,13 @@ function useFetchShare()
 
                 if (!note.value) return;
 
-                const { closeSocket } = await initSocket({
-                    room: note.value.uuid,
-                    users,
-                    icon,
-                    title,
-                    userId: shareData.user_id
-                })
+                // const { closeSocket } = await initSocket({
+                //     room: note.value.uuid,
+                //     users,
+                //     icon,
+                //     title,
+                //     userId: shareData.user_id
+                // })
 
                 if (shareData.visitor && shareData.visitor.length > 0)
                 {
@@ -134,7 +136,7 @@ function useFetchShare()
                 }
 
                 return {
-                    closeSocket
+                    closeSocket: () => {}
                 }
 
             }

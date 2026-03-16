@@ -109,7 +109,6 @@ import { editor } from '../../Editor';
 import MdInputeMenu from '../mdInputType/mdInputMenu.vue';
 import colorEditor from '../colorEditor/colorEditor.vue';
 import isMobile from '@/assets/ts/utils/isMobile';
-import { transition } from '@vueuse/core';
 
 
 const { sendToSilverIA } = useSilverIA();
