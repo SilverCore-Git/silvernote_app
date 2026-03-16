@@ -112,6 +112,7 @@ import { initNotifications } from "./components/notifications/notifications";
 import UpdateAvalable from "./components/updateAvalable.vue";
 import { useWSocket } from "./composables/WSocket";
 import dbSocket from "./assets/ts/database/dbSocket";
+import { dev } from '../package.json';
 
 const themeClass = ref<string>(
   window.localStorage.getItem('theme') == 'dark'
@@ -132,6 +133,15 @@ const is_offline = ref<boolean>(false);
 
 
 onMounted(async () => {
+
+  if (window.location.host == 'beta.silvernote.fr' && !dev)
+  {
+    alert("Vous êtes sur le domaine de test de Silvernote. Certaines fonctionnalités peuvent être instables, vos notes peuvent être perdues !! Pour une expérience optimale, veuillez accéder à l'application via https://app.silvernote.fr.");
+  }
+  else if (window.location.host !== 'app.silvernote.fr' && !dev)
+  {
+    alert("Vous n'êtes pas sur le domaine officiel de Silvernote. Veuillez accéder à l'application via https://app.silvernote.fr pour une expérience optimale et sécurisée.");
+  }
 
   try {
 
