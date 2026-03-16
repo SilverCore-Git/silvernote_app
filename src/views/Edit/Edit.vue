@@ -27,7 +27,7 @@ const route = useRoute();
 const router = useRouter();
 
 const shareData = ref<any>(null);
-const shared = computed<boolean>(() => route.name == 'Share');
+const shared = ref<boolean>(route.name == 'Share');
 const passwd = ref<string | 'done'>('');
 
 const noteId = computed(() => props.uuid);
@@ -46,10 +46,17 @@ const imTheOwner = computed(() => {
 });
 
 const users = computed<User[]>(() => {
-  if (!shareData.value) return [];
-  return shareData.value.visitor;
+
+  const visitors = shareData.value?.visitor;
+  if (!visitors) return [];
+
+  return visitors.filter((user, index, self) =>
+    index === self.findIndex((u) => u.user_id === user.user_id)
+  );
+
 });
 
+const needPasswdLoading = ref<boolean>(false);
 const needPasswd = computed<boolean>(() => {
   if (!shared.value || !shareData.value) return false;
   return shareData.value?.need == 'passwd';
@@ -73,15 +80,16 @@ const loadShareInfo = async () => {
   try {
 
     const token = await getToken();
-    const res = await fetch(`${api_url}/api/share/${props.uuid}`, {
+    const res = await fetch(`${api_url}/api/share/${props.uuid}?passwd=${passwd.value}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
     });
-    if (!res.ok) return;
+    
     shareData.value = await res.json();
+    shared.value = true;
 
   } 
   catch (e) 
@@ -93,6 +101,8 @@ const loadShareInfo = async () => {
 
 
 const verifyPasswd = async () => {
+
+  needPasswdLoading.value = true;
 
   try {
 
@@ -119,6 +129,10 @@ const verifyPasswd = async () => {
   {
     console.error("Erreur vérification mot de passe:", e);
     error.value = "Une erreur est survenue. Veuillez réessayer.";
+  }
+  finally 
+  {
+    needPasswdLoading.value = false;
   }
 
 };
@@ -223,6 +237,7 @@ onMounted(async () => {
 
                   <button
                       class="primary gap-2"
+                      :class="needPasswdLoading ? 'loader' : ''"
                       @click="verifyPasswd"
                   >
                       <span>Accéder</span>
