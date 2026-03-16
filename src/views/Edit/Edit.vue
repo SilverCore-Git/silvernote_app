@@ -89,7 +89,7 @@ const loadShareInfo = async () => {
     });
     
     shareData.value = await res.json();
-    shared.value = true;
+    if (shareData.value?.success || shareData.value?.need == 'passwd') shared.value = true;
 
   } 
   catch (e) 
@@ -144,6 +144,8 @@ watch(() => localNote.value.title, async () => {
 });
 
 onMounted(async () => {
+
+  shared.value = route.name == 'Share';
   
   watch(() => localNote.value.loaded, async (loaded) => {
 
@@ -302,7 +304,7 @@ onMounted(async () => {
         >
           
           <div
-            v-if="shareData && shareData?.visitor.length > 0"
+            v-if="shareData && shareData?.visitor?.length > 0"
             class="flex justify-center items-center flex-row gap-6"
           >
 
