@@ -80,6 +80,7 @@ const loadShareInfo = async () => {
         'Authorization': `Bearer ${token}`,
       },
     });
+    if (!res.ok) return;
     shareData.value = await res.json();
 
   } 
@@ -286,7 +287,7 @@ onMounted(async () => {
         >
           
           <div
-            v-if="shareData && shareData.visitor.length > 0"
+            v-if="shareData && shareData?.visitor.length > 0"
             class="flex justify-center items-center flex-row gap-6"
           >
 
@@ -392,12 +393,12 @@ onMounted(async () => {
             class="flex w-[90%] mb-2 items-end justify-start gap-2"
           >
 
-          <div v-if="shared && !shareData.editable" class="p-2">
+          <div v-if="shared && !shareData?.editable" class="p-2">
 
             <div v-if="localNote.icon">
 
               <img 
-                class="w-20 h-20 p-2 " 
+                class="w-20 h-20 " 
                 :src="localNote.icon" 
               />
 
@@ -412,7 +413,7 @@ onMounted(async () => {
               <PressAndHold @long-press="localNote.icon = ''">
 
                 <img 
-                  class="w-20 h-20 p-2 cursor-pointer hover:scale-110 transition-transform" 
+                  class="w-20 h-20  cursor-pointer hover:scale-110 transition-transform" 
                   :src="localNote.icon" 
                 />
 
@@ -450,12 +451,12 @@ onMounted(async () => {
             "
             placeholder="Titre..." 
             rows="1"
-            :disabled="shared ? !shareData.editable : false"
+            :disabled="shared ? !shareData?.editable : false"
             @keydown.enter.prevent="editor?.commands.focus()"
           />
 
           <RichMarkdownEditor
-            :editable="shared ? shareData.editable : true" 
+            :editable="shared ? shareData?.editable : true" 
             :uuid="localNote.id"
             :shared="shared"
           />

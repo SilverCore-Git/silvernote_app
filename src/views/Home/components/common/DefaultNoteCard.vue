@@ -10,8 +10,8 @@
             <div
                 class="
                     group relative flex flex-raw gap-4 
-                    justify-start items-start
-                    rounded-2xl p-4 w-full h-[94px]
+                    justify-start items-center pl-3
+                    rounded-2xl w-full h-[94px]
                     cursor-pointer overflow-hidden
                     hover:border-(--btn) border-2 
                     transition-all! duration-200 ease-in-out
@@ -38,7 +38,7 @@
                 >
                     <img 
                         :src="icon" 
-                        class="min-w-15 w-15 h-15 object-contain shrink-0 opacity-80" 
+                        class="min-w-18 w-18 h-18 object-contain shrink-0 opacity-80" 
                         loading="lazy"
                     />
                 </div>
@@ -136,7 +136,7 @@ import useToken from '@/composables/useToken';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { isSelected, toggleNoteSelect, selectedNotes } from '@/composables/useSelectedNotes';
 import Share_menu from '@/components/popup/share_menu.vue';
-import NoteCardDropdown from './noteCardDropdown.vue';
+import NoteCardDropdown from './NoteCardDropdown.vue';
 
 
 const props = defineProps<{
