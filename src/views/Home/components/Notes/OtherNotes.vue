@@ -33,7 +33,10 @@ const noteRows = computed(() => {
             class="w-full overflow-visible!"
         >
 
-            <template #default="{ item: note }">
+            <template 
+                #default="{ item: note }" 
+                @click="router.push('/edit/'+note.uuid)"
+            >
  
 
                     <DefaultNoteCard
