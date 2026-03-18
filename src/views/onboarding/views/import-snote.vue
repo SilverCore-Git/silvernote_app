@@ -104,6 +104,8 @@ onMounted(() => {
 
 <template>
 
+<div class="w-full h-full bg-(--bg)" :style="{ 'view-transition-name': `settings-importSnote` }">
+
     <BackBtn 
         href="/settings/mydata" 
         class="top-4 left-4" 
@@ -210,5 +212,7 @@ onMounted(() => {
         </div>
         
     </div>
+
+</div>
 
 </template>
