@@ -5,7 +5,7 @@ import waitFor from '@/assets/ts/utils/waitFor';
 import postError from '../errorOverlay/postError';
 import { editor } from './Editor';
 import { nextTick } from 'vue';
-import type { Note } from '@/assets/ts/type';
+import { Notes } from '@/assets/ts/database/Var';
 
 let isOffline = false;
 
@@ -73,9 +73,11 @@ export class EditorProvider
       (await socket).value.emit('get-initial-state', { roomId: this.room });
 
       // État initial du document
-      (await socket).value.on('initial-state', ({ ydocState, share, note }: { ydocState: any, share: any, note: Note }) => {
+      (await socket).value.on('initial-state', ({ ydocState, share }: { ydocState: any, share: any }) => {
 
           if (this.synced) return;
+
+          const note = Notes.value.find(note => note.uuid == this.room);
 
           if (note && note.content_type == 'text/html')
           {
