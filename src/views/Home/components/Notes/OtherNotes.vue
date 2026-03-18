@@ -39,13 +39,12 @@ const noteRows = computed(() => {
             >
  
 
-                    <DefaultNoteCard
-                        :key="note.uuid"
-                        :uuid="note.uuid"
-                        :title="note.title"
-                        :icon="note.icon"
-                        :tags="note.tags"
-                    />
+                <DefaultNoteCard
+                    :uuid="note.uuid"
+                    :title="note.title"
+                    :icon="note.icon"
+                    :tags="note.tags"
+                />
 
 
             </template>
