@@ -56,7 +56,6 @@ const md = new MarkdownIt({ html: false, linkify: true });
 defineProps<{
     n: NotificationItem;
     read: boolean;
-    todayNews: NotificationItem[];
 }>();
 
 const exec = (str: string) => {

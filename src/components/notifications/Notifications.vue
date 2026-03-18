@@ -11,13 +11,10 @@
                 </span>
 
                 <span 
-                    v-if="
-                        news 
-                        && news.length > 0 
-                        && todayNews.filter(n => !n.readBy.includes(userId) || n.readBy == undefined).length > 0" 
+                    v-if="news && news.length > 0" 
                     class="text-[10px] bg-(--btn) px-1.5 rounded-full"
                 >
-                    {{ todayNews.filter(n => !n.readBy.includes(userId) || n.readBy == undefined).length }}
+                    {{ news.length }}
                 </span>
 
             </div>
@@ -36,34 +33,13 @@
                 </div>
 
                 <NotifCard 
-                    v-if="!viewAllNews"
-                    v-for="(n, index) in todayNews"
-                    @click="markRead(n.id)"
-                    :key="'today-news-' + index"
-                    :n="n"
-                    :read="n.readBy.includes(userId)"
-                    :todayNews="todayNews" 
-                />
-
-                <NotifCard 
                     v-else
                     v-for="(n, index) in news"
                     @click="markRead(n.id)" 
                     :key="'all-news-' + index"
                     :n="n"
                     :read="n.readBy.includes(userId)"
-                    :todayNews="todayNews"
                 />
-
-                <button
-                    v-if="news && news.length > todayNews.length"
-                    @click="viewAllNews = !viewAllNews"
-                    class="
-                       min-h-10 text-(--btn) mt-2 default
-                    "
-                >
-                    {{ viewAllNews ? 'Voir moins' : 'Voir toutes les notifications' }}
-                </button>
 
             </div>
 
@@ -74,15 +50,13 @@
 
 <script lang="ts" setup>
 
-import { ref } from 'vue';
 import { api_url } from '@/assets/ts/backend_link';
 import NotifCard from './NotifCard.vue';
-import { notifications as news, todayNotifications as todayNews } from './notifications';
+import { notifications as news } from './notifications';
 import useToken from '@/composables/useToken';
 
 
 const userId = localStorage.getItem('user_id') || '';
-const viewAllNews = ref<boolean>(false);
 
 
 const markRead = async (id: string) => {
