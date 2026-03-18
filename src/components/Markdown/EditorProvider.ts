@@ -5,7 +5,6 @@ import waitFor from '@/assets/ts/utils/waitFor';
 import postError from '../errorOverlay/postError';
 import { editor } from './Editor';
 import { nextTick } from 'vue';
-import { Notes } from '@/assets/ts/database/Var';
 import type { Note } from '@/assets/ts/type';
 
 let isOffline = false;
