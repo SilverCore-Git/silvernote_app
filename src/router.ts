@@ -143,10 +143,14 @@ router.beforeResolve((to, from) => {
 
   const fromEdit = from.path.startsWith('/edit')
   const toEdit = to.path.startsWith('/edit')
+
+  const fromSettings = from.path.startsWith('/settings')
+  const toSettings = to.path.startsWith('/settings')
+
   const isEditNew = to.path.startsWith('/edit/new')
 
 
-  if (!(fromEdit || toEdit)) return;
+  if (!(fromEdit || toEdit) || !(fromSettings || toSettings)) return;
   if (fromEdit && isEditNew)
   {
     router.push('/');
