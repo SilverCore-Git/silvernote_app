@@ -58,14 +58,14 @@ const routes = [
   },
 
   { 
-    path: '/import/snote', 
+    path: '/settings/import/snote', 
     name: 'ImportSnote',
     props: true, 
     component: ImportSnote,
     meta: { title: 'Importation - Silvernote' }
   },
   { 
-    path: '/import/keep', 
+    path: '/settings/import/keep', 
     name: 'ImportKeep',
     props: true, 
     component: ImportKeep,
@@ -139,18 +139,15 @@ const router = createRouter({
   },
 });
 
+
 router.beforeResolve((to, from) => {
 
   const fromEdit = from.path.startsWith('/edit')
   const toEdit = to.path.startsWith('/edit')
-
-  const fromSettings = from.path.startsWith('/settings')
-  const toSettings = to.path.startsWith('/settings')
-
   const isEditNew = to.path.startsWith('/edit/new')
 
 
-  if (!(fromEdit || toEdit) || !(fromSettings || toSettings)) return;
+  if (!(fromEdit || toEdit)) return;
   if (fromEdit && isEditNew)
   {
     router.push('/');
@@ -167,7 +164,6 @@ router.beforeResolve((to, from) => {
   })
   
 })
-
 
 router.beforeEach((to, _from, next) => {
   
