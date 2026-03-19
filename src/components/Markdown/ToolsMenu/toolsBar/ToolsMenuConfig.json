@@ -40,6 +40,12 @@
   ],
   "format": [
     {
+      "id": 876452,
+      "name": "Aa",
+      "action": "()=> editor.chain().focus().setParagraph().run()",
+      "isActive": "()=> editor.isActive('paragraph')"
+    },
+    {
       "id": 91,
       "name": "H1",
       "action": "()=> editor.chain().focus().toggleHeading({ level: 1 }).run()",
@@ -56,12 +62,6 @@
       "name": "H3",
       "action": "()=> editor.chain().focus().toggleHeading({ level: 3 }).run()",
       "isActive": "()=> editor.isActive('heading', { level: 3 })"
-    },
-    {
-      "id": 876452,
-      "name": "Aa",
-      "action": "()=> editor.chain().focus().setParagraph().run()",
-      "isActive": "()=> editor.isActive('paragraph')"
     },
     {
       "id": 764532,

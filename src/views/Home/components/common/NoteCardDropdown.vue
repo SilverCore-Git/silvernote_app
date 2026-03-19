@@ -7,7 +7,7 @@
         <div>
 
             <div 
-                v-if="visible" 
+                v-if="visible && show" 
                 class="fixed inset-0 z-90 bg-transparent cursor-default" 
                 @click="emitClose" 
                 @contextmenu.prevent="emitClose"
@@ -17,13 +17,13 @@
 
                 <div
                     v-if="visible"
+                    v-show="show"
+                    ref="dropdownRef"
                     class="
-                        fixed z-100
+                        fixed z-100 shadow-2xl
+
                     "
-                    :style="{ 
-                        left: `${props.x}px`,
-                        top: `${props.y}px`
-                    }"
+                    :style="adjustedPosition"
                 >
 
                     <div class="dropdown ">
@@ -32,11 +32,11 @@
 
                             <li @click="openNoteNewTab">Ouvrir dans un nouvel onglet</li>
                             <li @click="togglePin(); emitClose();">{{ note.pinned ? 'Dé-épingler' : 'Épingler'}}</li>
-                            <li @click="toggleNoteSelect(props.uuid); emitClose();">Selectionner</li>
+                            <li @click="showTagMenu = true; emitClose();">Modifier les tags</li>
 
                             <hr />
 
-                            <li @click="showTagMenu = true; emitClose();">Modifier les tags</li>
+                            <li @click="toggleNoteSelect(props.uuid); emitClose();">Selectionner</li>
                             <li @click="showShareMenu = true; emitClose();">Partager</li>
 
                             <hr />
@@ -91,7 +91,7 @@
 
 <script setup lang="ts">
 
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { Notes } from '@/assets/ts/database/Var';
 import share_menu from '@/components/popup/share_menu.vue';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
@@ -114,12 +114,20 @@ const router = useRouter();
 
 const note = computed(() => Notes.value.find(note => note.uuid === props.uuid));
 
+const show = ref<boolean>(props.visible as boolean);
+const dropdownRef = ref<HTMLElement | null>(null);
 const showShareMenu = ref<boolean>(false);
 const showConfirmDel = ref<boolean>(false);
 const showStatsPopup = ref<boolean>(false);
 const showTagMenu = ref<boolean>(false);
+const offsetPos = ref({ x: props.x, y: props.y });
 
-
+const adjustedPosition = computed(() => {
+    return {
+        left: `${offsetPos.value.x}px`,
+        top: `${offsetPos.value.y}px`
+    };
+});
 
 const emit = defineEmits([
     'update:visible',
@@ -192,6 +200,55 @@ const save = async () => {
 const handleEsc = (e: KeyboardEvent) => {
     if (e.key == 'Escape') emitClose();
 };
+
+watch(() => props.visible, async (isVisible) => {
+
+    if (isVisible) 
+    {
+
+        show.value = false;
+        
+        await nextTick();
+
+        if (dropdownRef.value) 
+        {
+            
+            const menuWidth = dropdownRef.value.offsetWidth;
+            const menuHeight = dropdownRef.value.offsetHeight;
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+
+            let newX = props.x;
+            let newY = props.y;
+
+            if (props.x + menuWidth > screenWidth) 
+            {
+                newX = screenWidth - menuWidth - 10;
+            }
+
+            if (props.y + menuHeight > screenHeight) 
+            {
+                newY = screenHeight - menuHeight - 10;
+            }
+            
+            newX = Math.max(10, newX);
+            newY = Math.max(10, newY);
+
+            offsetPos.value = { x: newX, y: newY };
+
+            show.value = true;
+
+        }
+
+        show.value = true;
+
+    }
+    else 
+    {
+        show.value = false;
+    }
+    
+});
 
 onMounted(() => window.addEventListener('keydown', handleEsc));
 
