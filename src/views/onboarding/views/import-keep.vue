@@ -89,6 +89,11 @@ onMounted(() => {
 
 <template>
 
+<div 
+    class="w-full h-full bg-(--bg) relative"
+    data-transition="slide" 
+>
+
     <BackBtn
         href="/settings/mydata" 
         class="top-4 left-4" 
@@ -206,5 +211,7 @@ onMounted(() => {
         </div>
         
     </div>
+
+</div>
 
 </template>

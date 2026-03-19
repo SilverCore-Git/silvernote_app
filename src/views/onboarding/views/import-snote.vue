@@ -104,7 +104,10 @@ onMounted(() => {
 
 <template>
 
-<div class="w-full h-full bg-(--bg)" :style="{ 'view-transition-name': `settings-importSnote` }">
+<div 
+    class="w-full h-full bg-(--bg) relative"
+    data-transition="slide" 
+>
 
     <BackBtn 
         href="/settings/mydata" 
@@ -113,10 +116,10 @@ onMounted(() => {
     />
 
     <div 
-        class="flex flex-col h-full p-4 md:p-8"
+        class="flex flex-col w-full h-full bg-(--bg) p-4 md:p-8"
         :class="
             route.name == 'ImportSnote'
-                ? 'flex justify-center max-w-4xl min-w-xl mx-auto mt-10'
+                ? 'flex justify-start max-w-4xl min-w-xl mx-auto mt-10'
                 : ''
         "
     >
@@ -129,7 +132,7 @@ onMounted(() => {
         </div>
 
         <div 
-            class="h-full min-h-50 my-8 relative flex-1 flex flex-col items-center justify-center border-2 border-dashed rounded-3xl transition-all duration-500! overflow-hidden bg-(--text)/5"
+            class="h-full max-h-1/2 min-h-50 my-8 relative flex-1 flex flex-col items-center justify-center border-2 border-dashed rounded-3xl transition-all duration-500! overflow-hidden bg-(--text)/5"
             :class="[
                 isDragging ? 'border-(--btn) bg-(--btn)/5 scale-[0.98]' : 'border-(--text)/10',
                 isProcessing ? 'cursor-wait' : ''

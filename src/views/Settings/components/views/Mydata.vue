@@ -158,14 +158,14 @@ onMounted(async () => {
 
                     <button 
                         class="default-primary w-full"
-                        @click="router.push('/import/keep')"
+                        @click="router.push('/settings/import/keep')"
                     >
                         Depuis google keep
                     </button>
 
                     <button 
                         class="default-primary w-full"
-                        @click="router.push('/import/snote')"
+                        @click="router.push('/settings/import/snote')"
                     >
                         Depuis un fichier .snote 
                     </button>

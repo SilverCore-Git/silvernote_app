@@ -73,7 +73,7 @@
                                 bi bi-gear-fill text-(--btn) text-2xl 
                                 w-7 h-7 flex justify-center items-center
                         "
-                        @click="router.push('/settings')"
+                        @click="router.push('/settings/account')"
                     ></div>
                 </a>
 
