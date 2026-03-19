@@ -141,7 +141,7 @@ const session = new Session();
 const is_offline = ref<boolean>(false);
 
 
-const onEnter = (el: HTMLElement, done: () => void) => {
+const onEnter = (el: any, done: () => void) => {
   if (el.dataset.transition === 'slide') 
   {
     gsap.set(el, { x: '100%', position: 'fixed', inset: 0, zIndex: 100 });
@@ -153,7 +153,7 @@ const onEnter = (el: HTMLElement, done: () => void) => {
   }
 };
 
-const onLeave = (el: HTMLElement, done: () => void) => {
+const onLeave = (el: any, done: () => void) => {
   if (el.dataset.transition === 'slide') 
   {
     gsap.to(el, { x: '100%', duration: 0.4, ease: 'expo.in', onComplete: done });

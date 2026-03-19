@@ -92,7 +92,7 @@ import { Notes } from '@/assets/ts/database/Var';
 import { useRouter } from 'vue-router';
 import isMobile from '@/assets/ts/utils/isMobile';
 import NotesStatsPopup from './common/NotesStatsPopup.vue';
-import { useRoom, useWSocket } from '@/composables/WSocket';
+import { useWSocket } from '@/composables/WSocket';
 
 const props = defineProps<{
   visible: boolean;
