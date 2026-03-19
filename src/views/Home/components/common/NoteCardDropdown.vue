@@ -7,7 +7,7 @@
         <div>
 
             <div 
-                v-if="visible && show" 
+                v-if="visible" 
                 class="fixed inset-0 z-90 bg-transparent cursor-default" 
                 @click="emitClose" 
                 @contextmenu.prevent="emitClose"
@@ -17,7 +17,6 @@
 
                 <div
                     v-if="visible"
-                    v-show="show"
                     ref="dropdownRef"
                     class="
                         fixed z-100 shadow-2xl
@@ -235,6 +234,8 @@ watch(() => props.visible, async (isVisible) => {
             newY = Math.max(10, newY);
 
             offsetPos.value = { x: newX, y: newY };
+
+            await nextTick();
 
             show.value = true;
 
