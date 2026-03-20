@@ -1,6 +1,6 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "idb";
 
-type Settings = 'private_mode' | 'show_all_news';
+type Settings = 'private_mode' | 'show_all_news' | 'aiFunc';
 
 interface SettingsSchema extends DBSchema {
     settings: {

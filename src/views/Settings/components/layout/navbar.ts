@@ -13,6 +13,11 @@ const pages: Page[] = [
         icon: "bi-person-fill", // Compte utilisateur
         name: "Compte"
     },
+    {
+        path: '/securite',
+        icon: "bi-shield-lock-fill", // Juridique / sécurité
+        name: "Sécuritée"
+    },
     // {
     //     path: '/preferences',
     //     icon: "bi-sliders", // Préférences / réglages généraux
