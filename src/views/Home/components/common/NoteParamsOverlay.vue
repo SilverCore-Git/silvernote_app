@@ -126,8 +126,8 @@
                                                     :id="`switch-${tag.id}`"
                                                     type="checkbox"
                                                     class="sr-only peer"
-                                                    :checked="justView == true ? note.tags.includes(tag.id) : tags.includes(tag.id)"
-                                                    @change="justView == true ? () => {} : toggleTag(tag.id)"
+                                                    :checked="justView == true ? note?.tags?.includes(tag.id) || false : tags.includes(tag.id)"
+                                                    @change="toggleTag(tag.id)"
                                                 />
 
                                                 <div
@@ -309,6 +309,7 @@ const showCard = ref<boolean>(false);
 const showShareMenu = ref<boolean>(false);
 const showConfirmDel = ref<boolean>(false);
 const tags = computed<number[]>(() => props.selectedTags || []);
+const justViewTags = ref<number[]>([]);
 
 const emit = defineEmits([
     'update:visible',
@@ -336,14 +337,15 @@ const deleteNote = async (state: number) => {
 }
 
 const save = async () => {
-    
-    if (!note.value) return;
 
-    if (props.justView) {
-        emit('TagsCallback', tags.value);
+    if (props.justView) 
+    {
+        emit('TagsCallback', justViewTags.value);
         emit('update:visible', false);
         return;
     }
+
+    if (!note.value) return;
 
     const index = Notes.value.findIndex(n => n.uuid === props.uuid);
 
@@ -357,6 +359,22 @@ const save = async () => {
 };
 
 const toggleTag = (id: number) => {
+
+    if (props.justView)
+    {
+
+        if (justViewTags.value.includes(id))
+        {
+            justViewTags.value.filter(tagId => tagId !== id);
+        }
+        else
+        {
+            justViewTags.value.push(id);
+        }
+
+        return;
+
+    }
 
     if (!note.value) return;
     
