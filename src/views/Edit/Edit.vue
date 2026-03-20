@@ -16,6 +16,7 @@ import getToken from '@/composables/useToken';
 import { api_url } from '@/assets/ts/backend_link';
 import ShareDropdown from '../Share/components/dropdown.vue';
 import Popup from '@/components/popup/Popup.vue';
+import getIconByNote from '@/assets/ts/utils/ai/getIconByNote';
 
 
 const props = defineProps<{
@@ -38,6 +39,7 @@ const error = ref<string>('');
 const emojiBtn = ref<HTMLElement | null>(null);
 const ShowDropdown = ref<boolean>(false);
 const titleRef = ref<HTMLInputElement | undefined>(undefined);
+const suggestedIcon = ref<string>('');
 
 
 const imTheOwner = computed(() => {
@@ -167,6 +169,26 @@ onMounted(async () => {
   }, { immediate: true });
 
   await loadShareInfo();
+
+  setTimeout(async () => {
+
+    if (shared.value) return;
+
+    const content = editor.value.getHTML();
+    if (
+      content.length > 20 
+      && localNote.value.title.length > 5 
+      && !localNote.value.icon
+    )
+    {
+      const payload = {
+        title: localNote.value.title,
+        content: content.substring(0, 500)
+      };
+      suggestedIcon.value = await getIconByNote(payload)
+    }
+
+  }, 1000)
 
 });
 
@@ -410,44 +432,76 @@ onMounted(async () => {
             class="flex w-[90%] mb-2 items-end justify-start gap-2"
           >
 
-          <div v-if="shared && !shareData?.editable" class="p-2">
+            <div v-if="shared && !shareData?.editable" class="p-2">
 
-            <div v-if="localNote.icon">
-
-              <img 
-                class="w-20 h-20 " 
-                :src="localNote.icon" 
-              />
-
-            </div>
-
-          </div>
-
-          <a v-else ref="emojiBtn" class="p-2 px-2">
-
-            <div v-if="localNote.icon">
-
-              <PressAndHold @long-press="localNote.icon = ''">
+              <div v-if="localNote.icon">
 
                 <img 
-                  class="w-20 h-20  cursor-pointer hover:scale-110 transition-transform" 
+                  class="w-20 h-20 " 
                   :src="localNote.icon" 
                 />
 
-              </PressAndHold>
+              </div>
 
             </div>
 
-            <div
-              v-else
+            <a v-else ref="emojiBtn" class="p-2 px-2">
+
+              <div v-if="localNote.icon">
+
+                <PressAndHold @long-press="localNote.icon = ''">
+
+                  <img 
+                    class="w-20 h-20  cursor-pointer hover:scale-110 transition-transform" 
+                    :src="localNote.icon" 
+                  />
+
+                </PressAndHold>
+
+              </div>
+
+              <div
+                v-else
+              >
+
+                <span>Ajouter une icône</span>
+
+              </div>
+
+            </a>
+
+            <div 
+              v-if="suggestedIcon && !localNote.icon" 
+              @click="localNote.icon = suggestedIcon; suggestedIcon = ''"
+              class="group relative flex flex-col items-center gap-2 p-3 rounded-2xl transition-all duration-300 hover:bg-(--text)/5 active:scale-95 cursor-pointer"
             >
 
-              <span>Ajouter une icône</span>
+              <div class="relative w-20 h-20 flex items-center justify-center">
+
+                <img 
+                  :src="suggestedIcon"
+                  @error="suggestedIcon = ''"
+                  class="w-full h-full object-contain filter grayscale-[0.3] opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 ease-out" 
+                />
+                
+                <div class="absolute -top-1 -right-1 bg-(--btn) text-(--text) rounded-lg shadow-lg shadow-purple-500/20 w-7 h-7 flex items-center justify-center border-2 border-(--bg-primary) group-hover:rotate-12 transition-transform">
+                  <i class="bi bi-magic text-sm" />
+                </div>
+
+              </div>
+
+              <div class="flex flex-col items-center">
+               
+                <span class="text-[9px] font-bold uppercase tracking-widest text-(--text) opacity-40 group-hover:opacity-70 transition-opacity">
+                  Suggestion
+                </span>
+
+                <div class="h-[2px] w-0 group-hover:w-full bg-gradient-to-r from-transparent via-(--btn) to-transparent transition-all duration-500"></div>
+              
+              </div>
 
             </div>
 
-          </a>
-          
           </div>
 
         </div>
