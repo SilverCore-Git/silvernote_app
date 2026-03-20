@@ -17,6 +17,7 @@ import { api_url } from '@/assets/ts/backend_link';
 import ShareDropdown from '../Share/components/dropdown.vue';
 import Popup from '@/components/popup/Popup.vue';
 import getIconByNote from '@/assets/ts/utils/ai/getIconByNote';
+import useSettingsItem from '@/assets/ts/settings/useSettingsItem';
 
 
 const props = defineProps<{
@@ -26,6 +27,7 @@ const props = defineProps<{
 
 const route = useRoute();
 const router = useRouter();
+const { Item: aiEnabled } = useSettingsItem('aiFunc', true);
 
 const shareData = ref<any>(null);
 const shared = ref<boolean>(route.name == 'Share');
@@ -170,7 +172,8 @@ onMounted(async () => {
 
   await loadShareInfo();
 
-  setTimeout(async () => {
+  if (aiEnabled.value)
+  {
 
     if (shared.value) return;
 
@@ -188,7 +191,7 @@ onMounted(async () => {
       suggestedIcon.value = await getIconByNote(payload)
     }
 
-  }, 1000)
+  }
 
 });
 

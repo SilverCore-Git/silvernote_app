@@ -10,7 +10,7 @@
     >
 
         <!-- SilverIA btn -->
-        <Silveria />
+        <Silveria v-if="aiEnabled" />
 
         <!-- new note btn -->
         <button
@@ -39,9 +39,11 @@ import { useRoute, useRouter } from 'vue-router';
 import Silveria from '../silveria/silveria.vue';
 import { nextTick } from 'vue';
 import { useShortcut } from '@/composables/useShrotcut';
+import useSettingsItem from '@/assets/ts/settings/useSettingsItem';
 
 const route = useRoute();
 const router = useRouter();
+const { Item: aiEnabled } = useSettingsItem('aiFunc', true);
 
 const openEditNewNote = () => {
 
