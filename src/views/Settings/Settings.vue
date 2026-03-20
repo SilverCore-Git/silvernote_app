@@ -57,7 +57,7 @@ defineProps<{
       <Appearance v-else-if="page == 'appearance'" />
       <Preferences v-else-if="page == 'preferences'" />
       <Developpeurs v-else-if="page == 'developpeurs'" />
-      <Security v-else-if="page == 'securite'" />
+      <Security v-else-if="page == 'security'" />
       <!-- <Game v-else-if="page == '2048'" /> -->
       <Account v-else />
 

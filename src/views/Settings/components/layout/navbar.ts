@@ -14,7 +14,7 @@ const pages: Page[] = [
         name: "Compte"
     },
     {
-        path: '/securite',
+        path: '/security',
         icon: "bi-shield-lock-fill", // Juridique / sécurité
         name: "Sécuritée"
     },
