@@ -9,7 +9,7 @@ interface Page {
 
 const pages: Page[] = [
     {
-        path: '/',
+        path: '/account',
         icon: "bi-person-fill", // Compte utilisateur
         name: "Compte"
     },
