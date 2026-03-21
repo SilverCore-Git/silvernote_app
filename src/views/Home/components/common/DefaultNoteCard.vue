@@ -16,6 +16,7 @@
                     hover:border-(--btn) border-2 
                     transition-all! duration-200 ease-in-out
                     backdrop-blur-3xl active:scale-95
+                    hover:scale-102
                 "
                 :class="[
                     note_selected || isSelected(uuid)

@@ -33,7 +33,7 @@ const router = useRouter();
                 v-for="note in pinned_notes"
                 :key="note.uuid"
                 @click="router.push('/edit/'+note.uuid)"
-                class="cursor-pointer hover:scale-102! transition-all"
+                class="cursor-pointer"
             >
 
                 <DefaultNoteCard
