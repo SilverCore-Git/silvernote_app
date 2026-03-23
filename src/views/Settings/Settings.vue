@@ -12,6 +12,7 @@ import Developpeurs from './components/views/developpeurs/Developpeurs.vue';
 import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
 import isElectron from '@/assets/ts/utils/isElectron';
 import Security from './components/views/Security.vue';
+import Support from './components/views/Support.vue';
 // import Game from './components/views/Game.vue';
 
 defineProps<{
@@ -58,6 +59,7 @@ defineProps<{
       <Preferences v-else-if="page == 'preferences'" />
       <Developpeurs v-else-if="page == 'developpeurs'" />
       <Security v-else-if="page == 'security'" />
+      <Support v-else-if="page == 'support'" />
       <!-- <Game v-else-if="page == '2048'" /> -->
       <Account v-else />
 
