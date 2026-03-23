@@ -4,7 +4,7 @@ import { useShortcut } from '@/composables/useShrotcut';
 import { isOpen, toggleChat } from '../assets/const';
 
 const { tooltipConfig } = useShortcut(
-    'j',
+    [ 'shift', 'e' ],
     'Ouvrir SilverIA',
     () => {
         isOpen.value = !isOpen.value;

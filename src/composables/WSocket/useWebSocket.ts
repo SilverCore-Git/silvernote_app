@@ -31,15 +31,25 @@ const useWSocket = async (): Promise<Ref<Socket | null>> => {
 
     try {
 
-        const token = await window.Clerk.session?.getToken();
-
-        if (!token) throw new Error("No token found");
+        const currentToken = await window.Clerk.session?.getToken();
 
         socket.value = io(wsocketHost, {
             path: "/socket",
-            auth: { token },
+            auth: { token: currentToken },
             reconnection: true,
+            autoConnect: true,
             reconnectionAttempts: 5
+        });
+
+        socket.value.on("reconnect_attempt", async () => {
+            
+            const newToken = await window.Clerk.session?.getToken();
+            
+            if (socket.value) 
+            {
+                socket.value.auth = { token: newToken };
+            }
+
         });
 
         socket.value.on("connect", () => {

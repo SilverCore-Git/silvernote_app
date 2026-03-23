@@ -4,86 +4,84 @@
         @long-press="select_note"
         @click.stop.prevent="openNote"
     >
-        <a :href="href" class="w-full h-full">
+
+        <a :href="href" class="w-full h-full ">
+
             <div
                 class="
-                    group relative flex flex-col 
-                    rounded-2xl p-4 w-full h-[205px]
+                    group relative flex flex-raw gap-4 
+                    justify-start items-center pl-3
+                    rounded-2xl w-full h-[94px]
                     cursor-pointer overflow-hidden
-                    hover:border-(--btn) border hover:scale-101
+                    hover:border-(--btn) border-2 
                     transition-all! duration-200 ease-in-out
-                    backdrop-blur-3xl active:scale-90
+                    backdrop-blur-3xl active:scale-95
+                    hover:scale-102
                 "
                 :class="[
                     note_selected || isSelected(uuid)
-                        ? 'border-(--btn) border-dashed border-2'
-                        : 'border-gray-200', 
+                        ? 'border-(--btn) border-dashed '
+                        : 'border-(--text)/40', 
                     inertw
                 ]"
                 :style="{ 
                     'view-transition-name': `note-${uuid}`,
                     'content-visibility': 'auto',
-                    'contain-intrinsic-size': '1px 205px',
+                    'contain-intrinsic-size': '1px 94px',
                     background: bgColor
                 }"
+                @mousemove="handleMouseMove"
             >
-                <div class="flex justify-between items-start mb-3 gap-2">
-                    <div class="flex items-center gap-2.5 min-w-0">
-                        <img 
-                            v-if="icon && icon != ''" 
-                            :src="icon" 
-                            class="w-6 h-6 object-contain shrink-0 opacity-80" 
-                            loading="lazy"
-                        />
-                        <h2 
-                            class="font-bold text-lg sm:text-xl "
-                            v-text="title || 'Note sans titre'"
-                        />
+            
+                <div 
+                    v-if="icon && icon != ''" 
+                    class="flex justify-center items-start"
+                >
+                    <img 
+                        :src="icon" 
+                        class="min-w-18 w-18 h-18 object-contain shrink-0 opacity-80" 
+                        loading="lazy"
+                    />
+                </div>
+
+                <div class="flex flex-col justify-between items-start gap-2 w-full ">
+
+                    <h2 
+                        class="font-bold text-xl sm:text-xl truncate text-ellipsis max-w-[90%]"
+                        v-text="title || 'Note sans titre'"
+                    />
+
+                    <div v-if="_Tags.length > 0" class=" flex flex-raw gap-1 rounded-md max-w-[90%] overflow-hidden">
+                        <span
+                            v-for="tag in _Tags"
+                            :key="tag.id"
+                            class="
+                                px-2 py-1 rounded-md text-[10px] 
+                                font-bold uppercase tracking-wide 
+                                bg-(--white)/50 border
+                            "
+                            :style="{
+                                color: tag.color,
+                                borderColor: tag.color
+                            }"
+                            :title="tag.name"
+                        >
+                            {{ tag.name }}
+                        </span>
                     </div>
-                </div>
 
-                <div class="text-xs sm:text-sm text-(--text)/80 leading-relaxed overflow-hidden">
-                    <p
-                        v-if="isPrivate"
-                        class="font-mono text-[10px] tracking-widest opacity-50 line-clamp-6"
-                    >
-                        {{ utils.htmlToText(props.content).replace(/[a-zA-ZÀ-ÿ]/g, '█').slice(0, 500) + '...' }}
-                    </p>
-                    <div
-                        v-else
-                        class="content-html line-clamp-6"
-                        v-html="utils.clean_html(props.content).slice(0, 500) + '...'"
-                    ></div>
-                </div>
-
-                <div v-if="_Tags.length > 0" class="shrink-0 flex flex-wrap gap-1 mt-auto pt-2">
-                    <span
-                        v-for="tag in _Tags"
-                        :key="tag.id"
-                        class="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide"
-                        :style="{ 
-                            backgroundColor: tag.color + '20',
-                            color: tag.color 
-                        }"
-                    >
-                        {{ tag.name }}
-                    </span>
                 </div>
 
                 <div 
                     v-if="sharedBy && sharerIcon"
                     class="shrink-0 gap-1 mt-2 flex flex-row justify-between items-center pt-2"
                 >
-                    <img
-                        class="w-7 h-7 rounded-full border border-gray-200"
-                        :src="sharerIcon"
-                        loading="lazy"
-                    />
                     <div class="flex justify-center items-center flex-row -space-x-3">
                         <img
-                            v-for="visitor in shareVisitors.slice(0, 5)"
+                            v-for="(visitor, index) in shareVisitors.slice(0, 5)"
                             :key="visitor.user_id"
                             class="w-7 h-7 rounded-full border border-gray-200 bg-white"
+                            :style="{ zIndex: 10 - index }"
                             :src="visitor.imageUrl"
                             loading="lazy"
                         />
@@ -104,9 +102,17 @@
     </PressAndHold>
 
     <NoteParamsOverlay
+    v-if="false"
         v-model:visible="note_selected"
         :uuid="uuid"
         :selected-tags="tags"
+    />
+
+    <NoteCardDropdown
+        v-model:visible="note_selected"
+        :uuid="uuid"
+        :x="client.x"
+        :y="client.y"
     />
     
     <share_menu
@@ -121,7 +127,6 @@
 
 import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import utils from '@/assets/ts/utils';
 import type { User, Tag } from '@/assets/ts/type';
 import PressAndHold from '@/components/PressAndHold.vue';
 import NoteParamsOverlay from './NoteParamsOverlay.vue';
@@ -132,27 +137,33 @@ import useToken from '@/composables/useToken';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { isSelected, toggleNoteSelect, selectedNotes } from '@/composables/useSelectedNotes';
 import Share_menu from '@/components/popup/share_menu.vue';
-import useSettingsItem from '@/assets/ts/settings/useSettingsItem';
+import NoteCardDropdown from './NoteCardDropdown.vue';
 
 
 const props = defineProps<{
     uuid: string;
     title: string;
-    content: string;
     icon: string;
     tags: number[];
     click?: () => void;
     lines?: number;
     inertw?: string;
     sharedBy?: string;
+    share?: any;
 }>();
 
 
 const { getUserByUUID } = useUser();
 const router = useRouter();
-const { Item: isPrivate } = useSettingsItem('private_mode', false);
 
-const bgColor = ref<string>('var(--white)');
+const client = {
+    x: 0,
+    y: 0
+};
+const bgColor = computed(() => {
+    const firstValidTag = Tags.value.find(tag => props.tags.includes(tag.id));
+    return firstValidTag ? firstValidTag.color + '30' : 'var(--white)';
+});
 const note_selected = ref<boolean>(false);
 const share_menu = ref<boolean>(false);
 const sharerIcon = ref<string | undefined>(undefined);
@@ -164,8 +175,14 @@ const _Tags = computed<Tag[]>(() => Tags.value.filter(tag => props.tags.includes
 
 
 
+const handleMouseMove = (e) => {
+    const { clientX, clientY } = e;
+    client.x = clientX;
+    client.y = clientY;
+};
+
 const openNote = () => {
-    if (isMobile && selectedNotes.value.length > 0) {
+    if (selectedNotes.value.length > 0) {
         toggleNoteSelect(props.uuid);
         return;
     }
@@ -193,7 +210,10 @@ const select_note = () => {
         toggleNoteSelect(props.uuid);
         return;
     }
-    note_selected.value = !note_selected.value;
+
+    note_selected.value = false;
+    nextTick(() => note_selected.value = true);
+
 };
 
 const initShareVisitors = async () => {
@@ -209,18 +229,27 @@ const initShareVisitors = async () => {
 
         const initVisitors = async () => {
 
-            const token = await useToken();
-            const res = await fetch(`${api_url}/api/share/${props.uuid}/info`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const data = await res.json();
+            let data: any;
+
+            if (!props.share)
+            {
+                const token = await useToken();
+                data = await fetch(`${api_url}/api/share/${props.uuid}/info`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                }).then(res => res.json());
             
+            }
+            else data = { share: props.share };
+
+
             if (data.share) {
 
                 isMyShare.value = data.share.owner_id === window.localStorage.getItem('user_id');
 
+                data.share.visitor.push(data.share.owner_id);
+
                 const visitorPromises = data.share.visitor
-                                            .filter((v: string) => v !== data.share.owner_id)
+                                            //.filter((v: string) => v !== data.share.owner_id)
                                             .map((v: string) => getUserByUUID(v));
                                             
                 const visitors = await Promise.all(visitorPromises);
@@ -247,20 +276,9 @@ const initShareVisitors = async () => {
 
 }
 
-const initBG = async () => {
-    if (props.tags[0])
-    {
-        const firstValidTag = Tags.value.find(tag => props.tags.includes(tag.id));
-        bgColor.value = firstValidTag?.color + '30' || 'var(--white)';
-    }
-}
-
 onMounted(async () => {
 
-    await Promise.all([
-        initBG(),
-        initShareVisitors()
-    ])
+    await initShareVisitors();
 
 });
 
@@ -281,4 +299,5 @@ onMounted(async () => {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
 </style>

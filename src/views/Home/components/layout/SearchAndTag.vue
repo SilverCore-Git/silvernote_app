@@ -14,7 +14,6 @@ const route = useRoute();
     <div
         class="
             flex gap-4 flex-col
-            max-w-200
         "
     >
 

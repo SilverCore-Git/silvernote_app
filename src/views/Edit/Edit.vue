@@ -1,41 +1,74 @@
 <script setup lang="ts">
 
-import { Notes } from '@/assets/ts/database/Var';
 import BackBtn from '@/components/backBtn.vue';
 import { editor } from '@/components/Markdown/Editor';
 import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import Dropdown from './Dropdown.vue';
 import type { User } from '@/assets/ts/type';
-import { api_url } from '@/assets/ts/backend_link';
-import waitFor from '@/assets/ts/utils/waitFor';
 import useEmoji from './composable/useEmoji';
-import CreateNewNote from './composable/CreateNewNote';
-import { useRoute, useRouter } from 'vue-router';
-import useToken from '@/composables/useToken';
-import { initSocket, useWSocket } from '@/composables/WSocket';
 import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
 import isElectron from '@/assets/ts/utils/isElectron';
-import { icon, title } from './composable/useTitleIcon';
 import PressAndHold from '@/components/PressAndHold.vue';
+import useNoteEditing from '@/composables/useNoteEditing';
+import { useRoute, useRouter } from 'vue-router';
+import getToken from '@/composables/useToken';
+import { api_url } from '@/assets/ts/backend_link';
+import ShareDropdown from '../Share/components/dropdown.vue';
+import Popup from '@/components/popup/Popup.vue';
+import getIconByNote from '@/assets/ts/utils/ai/getIconByNote';
+import useSettingsItem from '@/assets/ts/settings/useSettingsItem';
+
 
 const props = defineProps<{
   uuid: string;
 }>();
 
-const router = useRouter();
+
 const route = useRoute();
+const router = useRouter();
+const { Item: aiEnabled } = useSettingsItem('aiFunc', true);
+
+const shareData = ref<any>(null);
+const shared = ref<boolean>(route.name == 'Share');
+const passwd = ref<string | 'done'>('');
+
+const noteId = computed(() => props.uuid);
+const { localNote } = useNoteEditing(noteId, shared);
 const { init_emoji_picker } = useEmoji();
 
+const error = ref<string>('');
 const emojiBtn = ref<HTMLElement | null>(null);
 const ShowDropdown = ref<boolean>(false);
-const users = ref<User[]>([]);
-const shared = ref<boolean | undefined>(undefined);
-const isNewNote = ref<boolean>(false);
-const notFound = ref<boolean>(false);
-const note = computed(() => Notes.value.find(note => note.uuid == props.uuid && props.uuid != 'new'));
 const titleRef = ref<HTMLInputElement | undefined>(undefined);
-let close: () => void = () => {};
+const suggestedIcon = ref<string>('');
+
+
+const imTheOwner = computed(() => {
+  if (!shared.value || !shareData.value) return false;
+  return shareData.value.owner_id === localStorage.getItem('user_id');
+});
+
+const users = computed<User[]>(() => {
+
+  const visitors = shareData.value?.visitor;
+  if (!visitors) return [];
+
+  return visitors.filter((user, index, self) =>
+    index === self.findIndex((u) => u.user_id === user.user_id)
+  );
+
+});
+
+const needPasswdLoading = ref<boolean>(false);
+const needPasswd = computed<boolean>(() => {
+  if (!shared.value || !shareData.value) return false;
+  return shareData.value?.need == 'passwd';
+});
+
+
+const share_menu = ref<boolean>(false);
+
 
 const resizeTitle = () => {
   const el = titleRef.value;
@@ -45,178 +78,214 @@ const resizeTitle = () => {
   }
 };
 
-const update_title = () => {
-  if (!title.value) return;
-  document.title = `${title.value} - Silvernote edit`;
-}
 
-const initNewNote = async () => {
-  isNewNote.value = true;
-  shared.value = false;
+const loadShareInfo = async () => {
   
-  const _note = await CreateNewNote();
+  try {
 
-  router.push({
-    params: {
-      ...route.params,
-      uuid: _note.uuid
-    }
-  })
-
-}
-
-const initExistingNote = async () => {
-
-  const found = await waitFor(() => note.value !== undefined, 5_000);
-  
-  if (!found || !note.value) {
-    notFound.value = true;
-    return;
-  }
-
-  isNewNote.value = false;
-
-  const _fetch = await fetch(`${api_url}/api/share/${note.value?.uuid}/info`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${await useToken()}`
-    }
-  }).then(res => res.json())
-
-  if (!_fetch.success) return shared.value = false;
-
-  shared.value = _fetch.share.uuid === note.value?.uuid
-
-}
-
-const saveNote = async () => {
-  
-  const index = Notes.value.findIndex(n => n.uuid === props.uuid);
-  if (index === -1) return;
-
-  const socket = (await useWSocket()).value;
-  const currentNote = Notes.value[index];
-
-  currentNote.title = title.value || currentNote.title;
-  currentNote.icon = icon.value || currentNote.icon;
-
-  await nextTick();
-
-  const isTitleEmpty = !currentNote.title?.trim();
-  const isContentEmpty = !currentNote.content || currentNote.content === '<p></p>';
-
-  if (isTitleEmpty && isContentEmpty) 
-  {
-    socket.emit('note:delete', currentNote);
-    Notes.value = Notes.value.filter(n => n.uuid !== props.uuid);
-    return;
-  }
-
-  socket.emit('note:update', currentNote);
-
-}
-
-const setupNote = async () => {
-
-  notFound.value = false;
-  
-  if (
-    title.value !== undefined 
-    && icon.value !== undefined
-    && note.value
-  )
-  {
-    note.value.title = title.value || '';
-    note.value.icon = icon.value || '';
-    await saveNote();
-  }
-  
-  // Réinitialiser l'état
-  title.value = undefined;
-  icon.value = undefined;
-  shared.value = undefined;
-  isNewNote.value = false;
-  
-  close();
-
-  if (props.uuid == 'new')
-  {
-    await initNewNote();
-    await waitFor(() => title.value !== undefined, 5_000);
-    titleRef.value?.focus();
-  }
-  else
-  {
-    await initExistingNote();
+    const token = await getToken();
+    const res = await fetch(`${api_url}/api/share/${props.uuid}?passwd=${passwd.value}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
     
-    if (notFound.value) {
-      return;
-    }
-    
-    title.value = note.value?.title || '';
-    icon.value = note.value?.icon || '';
+    shareData.value = await res.json();
+    if (shareData.value?.success || shareData.value?.need == 'passwd') shared.value = true;
+
+  } 
+  catch (e) 
+  {
+    console.error("Erreur share info:", e);
   }
-  
-  const { closeSocket } = await initSocket({
-    room: props.uuid,
-    users,
-    icon,
-    title,
-    userId: window.localStorage.getItem('user_id') || ''
-  });
-  
-  close = closeSocket;
-  update_title();
 
-}
+};
 
-watch(() => title.value, update_title);
 
-watch(title, async () => {
+const verifyPasswd = async () => {
+
+  needPasswdLoading.value = true;
+
+  try {
+
+    const token = await getToken();
+    const res = await fetch(`${api_url}/api/share/${props.uuid}?passwd=${passwd.value}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (res.ok) 
+    {
+      await loadShareInfo();
+    } 
+    else 
+    {
+      error.value = "Mot de passe incorrect.";
+    }
+
+  } 
+  catch (e) 
+  {
+    console.error("Erreur vérification mot de passe:", e);
+    error.value = "Une erreur est survenue. Veuillez réessayer.";
+  }
+  finally 
+  {
+    needPasswdLoading.value = false;
+  }
+
+};
+
+
+watch(() => localNote.value.title, async () => {
   await nextTick();
   resizeTitle();
-  init_emoji_picker({
-    note,
-    icon,
-    ref: emojiBtn,
-  });
 });
 
 onMounted(async () => {
-  await setupNote();
-  resizeTitle();
-});
 
-
-onUnmounted(async () => {
+  shared.value = route.name == 'Share';
   
-  if (title.value != undefined && icon.value != undefined && note.value)
+  watch(() => localNote.value.loaded, async (loaded) => {
+
+    if (loaded) 
+    {
+
+      await nextTick();
+      resizeTitle();
+
+      init_emoji_picker({
+        note: localNote,
+        ref: emojiBtn,
+      });
+
+      titleRef.value?.focus();
+
+    }
+
+  }, { immediate: true });
+
+  await loadShareInfo();
+
+  if (aiEnabled.value)
   {
-    note.value.title = title.value || '';
-    note.value.icon = icon.value || '';
+
+    if (shared.value) return;
+
+    const content = editor.value.getHTML();
+    if (
+      content.length > 20 
+      && localNote.value.title.length > 5 
+      && !localNote.value.icon
+    )
+    {
+      const payload = {
+        title: localNote.value.title,
+        content: content.substring(0, 500)
+      };
+      suggestedIcon.value = await getIconByNote(payload)
+    }
+
   }
 
-  await saveNote();
-  (await useWSocket()).value.emit('leave-room', { room: props.uuid });
-
-  title.value = undefined;
-  icon.value = undefined;
-
-})
-
-watch(() => props.uuid, async () => {
-  await setupNote();
-})
+});
 
 </script>
 
 <template>
 
+<div v-if="shared">
+
+  <Popup v-model:visible="needPasswd">
+
+      <div @click.stop class="w-full max-w-sm p-2">
+          
+          <div class="flex flex-col items-center mb-8">
+
+              <div class="w-16 h-16 bg-(--btn)/10 rounded-full flex items-center justify-center mb-4">
+                  <i class="bi bi-shield-lock-fill text-3xl text-(--btn)" />
+              </div>
+
+              <h2 class="text-2xl font-bold text-(--text-strong)">Note protégée</h2>
+
+              <p class="text-sm text-(--text-little) text-center mt-1">
+                  Cette note est privée. Veuillez saisir le mot de passe pour y accéder.
+              </p>
+
+          </div>
+
+          <div class="flex flex-col gap-4">
+
+              <div class="relative group">
+
+                  <input
+                      v-model="passwd"
+                      type="password"
+                      placeholder="Mot de passe"
+                      class="
+                        w-full px-5 py-4 rounded-2xl 
+                        bg-(--bg2)/50 border-2 
+                        border-transparent focus:border-(--btn)/50 
+                        focus:bg-(--bg2) outline-none transition-all 
+                        duration-300 placeholder:text-(--text-little)/50
+                      "
+                      @keydown.enter="verifyPasswd"
+                  />
+
+                  <div 
+                    class="
+                      absolute inset-0 rounded-2xl pointer-events-none 
+                      group-focus-within:ring-4 ring-(--btn)/5 transition-all
+                    "
+                  />
+
+              </div>
+
+              <transition name="fade">
+                  <div v-if="error" class="flex items-center gap-2 px-2 text-red-400 text-sm">
+                      <i class="bi bi-exclamation-circle-fill" />
+                      <span>{{ error }}</span>
+                  </div>
+              </transition>
+
+              <div class="grid grid-cols-2 gap-3 mt-4">
+
+                  <button
+                      class="default"
+                      @click="router.push('/')"
+                  >
+                      Annuler
+                  </button>
+
+                  <button
+                      class="primary gap-2"
+                      :class="needPasswdLoading ? 'loader' : ''"
+                      @click="verifyPasswd"
+                  >
+                      <span>Accéder</span>
+                      <i class="bi bi-arrow-right-short text-xl" />
+                  </button>
+
+              </div>
+
+          </div>
+
+      </div>
+
+  </Popup>
+
+</div>
+
 <div
+    v-if="!needPasswd"
     class="
         overflow-y-auto fixed
-        inset-0 flex flex-col
+        inset-0 flex flex-col bg-(--bg)
         h-full w-full overflow-x-hidden
     "
     :style="{ 'view-transition-name': `note-${uuid}` }"
@@ -244,6 +313,7 @@ watch(() => props.uuid, async () => {
         2xl:inset-x-[25vw] bg-transparent
       "
       :class="isElectron ? 'top-18' : 'top-8'"
+      v-if="localNote.loaded"
     >
 
       <div
@@ -255,13 +325,12 @@ watch(() => props.uuid, async () => {
         <BackBtn />
 
         <div
-          class="flex flex-row gap-4 absolute right-0"
-          v-if="note"
+          class="flex flex-row gap-6 absolute right-0"
         >
           
           <div
-            v-if="shared"
-            class="flex justify-center items-center flex-row gap-4"
+            v-if="shareData && shareData?.visitor?.length > 0"
+            class="flex justify-center items-center flex-row gap-6"
           >
 
             <div
@@ -270,28 +339,49 @@ watch(() => props.uuid, async () => {
 
               <img
                   v-for="(user, index) in users"
-                  :key="index"
-                  class="w-8 h-8 rounded-full border border-gray-200"
+                  :key="'visitor-'+index"
+                  class="w-8 h-8 rounded-full border border-(--text)/10"
                   :src="user.imageUrl"
               />
 
             </div>
 
+            <button
+                class="px-2 default-primary"
+                :class="share_menu ? 'bg-(--text)/10' : ''"
+                @click="share_menu = !share_menu"
+            >
+                Partage
+            </button>
+
           </div>
+
+          <transition name="fade-slide">
+                        
+            <ShareDropdown
+                v-if="share_menu"
+                @click="share_menu = false"
+                :users="users"
+                :send_share="() => {}"
+            />
+                    
+          </transition>
 
         
           <button
+            v-if="!shared || shared && imTheOwner"
             class="cursor-pointer text-(--btn) text-3xl"
-            v-tooltip="note?.pinned ? 'Désépingler' : 'Épingler'"
-            @click="note.pinned = !note.pinned"
+            v-tooltip="localNote.pinned ? 'Désépingler' : 'Épingler'"
+            @click="localNote.pinned = !localNote.pinned"
           >
             <i 
               class="bi"
-              :class="note?.pinned ? 'bi-pin-angle-fill' : 'bi-pin-angle'"
+              :class="localNote.pinned ? 'bi-pin-angle-fill' : 'bi-pin-angle'"
             />
           </button>
 
           <button
+            v-if="!shared || shared && imTheOwner"
             class="cursor-pointer text-(--btn) text-3xl"
             @click="ShowDropdown = !ShowDropdown"
           >
@@ -302,7 +392,6 @@ watch(() => props.uuid, async () => {
 
             <Dropdown
               v-model:visible="ShowDropdown"
-              :note="note"
               :uuid="props.uuid"
             />
 
@@ -335,50 +424,98 @@ watch(() => props.uuid, async () => {
             md:max-w-[70vw] lg:max-w-[60vw] xl:max-w-[50vw]
             2xl:max-w-[40vw] max-w-[90%] w-full h-full
         "
+        v-if="localNote.loaded"
       >
 
         <div
           class="w-full h-full flex justify-center items-center"
-          v-if="note"
         >
 
           <div 
             class="flex w-[90%] mb-2 items-end justify-start gap-2"
           >
 
-            <a ref="emojiBtn" class="px-1">
+            <div v-if="shared && !shareData?.editable" class="p-2">
 
-              <div v-if="icon && icon !== ''" >
-                <PressAndHold @long-press="icon = ''">
-                  <img
-                    class="w-20 h-20 p-2 cursor-pointer" 
-                    :src="icon" 
-                  />
-                </PressAndHold>
+              <div v-if="localNote.icon">
+
+                <img 
+                  class="w-20 h-20 " 
+                  :src="localNote.icon" 
+                />
+
               </div>
 
-              <span
+            </div>
+
+            <a v-else ref="emojiBtn" class="p-2 px-2">
+
+              <div v-if="localNote.icon">
+
+                <PressAndHold @long-press="localNote.icon = ''">
+
+                  <img 
+                    class="w-20 h-20  cursor-pointer hover:scale-110 transition-transform" 
+                    :src="localNote.icon" 
+                  />
+
+                </PressAndHold>
+
+              </div>
+
+              <div
                 v-else
-                class="px-1"
               >
-                Ajouter une icon
-              </span>
+
+                <span>Ajouter une icône</span>
+
+              </div>
 
             </a>
-          
+
+            <div 
+              v-if="suggestedIcon && !localNote.icon" 
+              @click="localNote.icon = suggestedIcon; suggestedIcon = ''"
+              class="group relative flex flex-col items-center gap-2 p-3 rounded-2xl transition-all duration-300 hover:bg-(--text)/5 active:scale-95 cursor-pointer"
+            >
+
+              <div class="relative w-20 h-20 flex items-center justify-center">
+
+                <img 
+                  :src="suggestedIcon"
+                  @error="suggestedIcon = ''"
+                  class="w-full h-full object-contain filter grayscale-[0.3] opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 ease-out" 
+                />
+                
+                <div class="absolute -top-1 -right-1 bg-(--btn) text-(--text) rounded-lg shadow-lg shadow-purple-500/20 w-7 h-7 flex items-center justify-center border-2 border-(--bg-primary) group-hover:rotate-12 transition-transform">
+                  <i class="bi bi-magic text-sm" />
+                </div>
+
+              </div>
+
+              <div class="flex flex-col items-center">
+               
+                <span class="text-[9px] font-bold uppercase tracking-widest text-(--text) opacity-40 group-hover:opacity-70 transition-opacity">
+                  Suggestion
+                </span>
+
+                <div class="h-[2px] w-0 group-hover:w-full bg-gradient-to-r from-transparent via-(--btn) to-transparent transition-all duration-500"></div>
+              
+              </div>
+
+            </div>
+
           </div>
 
         </div>
 
         <div
-          v-if="note"
           class="w-full h-full flex justify-center items-center flex-col"
         >
 
-          <textarea 
-            v-if="title !== undefined"
+          <textarea
             ref="titleRef"
-            v-model="title"
+            v-model="localNote.title"
             class="
               text-4xl font-extrabold mb-4 
               text-(--text-strong) w-[90%]
@@ -388,16 +525,14 @@ watch(() => props.uuid, async () => {
             "
             placeholder="Titre..." 
             rows="1"
+            :disabled="shared ? !shareData?.editable : false"
             @keydown.enter.prevent="editor?.commands.focus()"
           />
 
           <RichMarkdownEditor
-            v-if="note && (shared !== undefined || isNewNote)"
-            :editable="true"
-            :id="-2" 
-            :uuid="note.uuid"
-            :data="note"
-            :is-collaborative="shared || false"
+            :editable="shared ? shareData?.editable : true" 
+            :uuid="localNote.id"
+            :shared="shared"
           />
 
           <div
@@ -411,34 +546,17 @@ watch(() => props.uuid, async () => {
 
         </div>
 
-        <div
-          v-else-if="notFound"
-          class="
-            flex flex-col justify-center items-center
-            h-full w-full gap-8 mt-20
-          "
-        >
+      </div>
 
-          <div class="text-center flex flex-col justify-center items-center">
-        
-            <div class="text-8xl font-bold text-(--btn) mb-4">404</div>
-            <div class="text-3xl font-bold text-(--text-strong) mb-2">Note introuvable</div>
-            <div class="text-(--text) text-lg max-w-md">
-              Oups ! La note que vous cherchez n'existe pas ou a été supprimée.
-            </div>
-
-            <button 
-              @click.stop="router.push('/edit/new')"
-              class="mt-8 premium gap-2"
-            >
-              <i class="bi bi-plus-lg" />
-              Créer une note
-            </button>
-        
-          </div>
-          
-        </div>
-
+      <div
+        class="
+            flex flex-col justify-start items-center 
+            md:max-w-[70vw] lg:max-w-[60vw] xl:max-w-[50vw]
+            2xl:max-w-[40vw] max-w-[90%] w-full h-full
+        "
+        v-else
+      >
+        <i>Chargement...</i>
       </div>
 
     </div>
@@ -446,5 +564,7 @@ watch(() => props.uuid, async () => {
   </div>
 
 </div>
+
+
 
 </template>

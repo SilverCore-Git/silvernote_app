@@ -3,10 +3,8 @@
 import { setThemePreference } from '@/assets/ts/theme';
 import DefaultNoteCard from '@/views/Home/components/common/DefaultNoteCard.vue';
 import { ref, watch } from 'vue';
-import Switch from '@/components/inputs/Switch.vue';
 import Popup from '@/components/popup/Popup.vue';
 import darkenHex from '@/assets/ts/utils/darkenHex';
-import useSettingsItem from '@/assets/ts/settings/useSettingsItem';
 
 type Theme = 'light' | 'dark' | 'default';
 
@@ -14,7 +12,6 @@ const savedTheme = window.localStorage.getItem('theme') as Theme | null;
 const currentTheme = ref<Theme>(savedTheme || 'default');
 const eggMenu = ref<boolean>(false);
 
-const { Item: isPrivate, isLoaded: isPrivateLoaded } = useSettingsItem('private_mode', false);
 // const { Item: showAllNews } = useSettingsItem('show_all_news', false);
 
 const themes = [
@@ -89,22 +86,6 @@ watch(currentTheme, (newTheme) => {
 
         </section>
 
-        <section class="mb-8" v-if="isPrivateLoaded">
-
-            <h2 class="font-semibold text-lg mb-4">Mode privée</h2>
-
-            <div class="flex items-center justify-between">
-                <div>
-                    <div class="font-medium">Activer le mode privée</div>
-                    <div class="text-xs opacity-60">Ne pas afficher le contenu des notes.</div>
-                </div>
-                <Switch
-                    v-model:model-value="isPrivate"
-                />
-            </div>
-
-        </section>
-
         <section>
 
             <h2 class="font-semibold text-lg mb-4">Aperçu des couleurs</h2>
@@ -124,10 +105,9 @@ watch(currentTheme, (newTheme) => {
                 <div class=" pointer-events-none">
                     <DefaultNoteCard
                         title="Ma super note"
-                        content="Lorem ipsum dolor sit amet. Ut reiciendis voluptatem hic quibusdam alias qui galisum exercitationem in voluptas ullam cum ipsa fugit quo fuga omnis qui itaque sunt. Aut sunt dicta aut iure libero vel quia veritatis! Est corporis nobis sit optio omnis ab repudiandae fugiat qui voluptatem incidunt aut quas distinctio."
                         :tags="[]"
                         uuid="0"
-                        icon="/favicon.ico"
+                        icon="/favicon.png"
                     />
                 </div>
 

@@ -4,19 +4,27 @@
 
   <ShortsCut />
 
-  <div class="text-(--text) bg-(--bg)">
+  <div class="text-(--text) bg-(--bg) w-full h-full relative">
 
       <div>
 
           <UpdateAvalable v-if="loaded && isLoaded" />
 
-          <div v-if="route.path.startsWith('/sauth')">
+          <div class="w-full h-full" v-if="route.path.startsWith('/sauth')">
             <router-view />
           </div>
 
-          <div v-else>
+          <div class="w-full h-full" v-else>
             <Protect>
-              <router-view />
+              <router-view v-slot="{ Component, route }">
+                <transition
+                  @enter="onEnter"
+                  @leave="onLeave"
+                  :css="false"
+                >
+                  <component :is="Component" :key="route.path" />
+                </transition>
+              </router-view>
             </Protect>
           </div>
 
@@ -26,6 +34,7 @@
               && isLoaded
               && !route.path.startsWith('/settings')
               && !route.path.startsWith('/onboarding')
+              && !route.path.startsWith('/import')
               && route.name !== 'NotFound'
             "
             v-if="isSignedIn"
@@ -99,6 +108,7 @@ import { api_url, Session } from "./assets/ts/backend_link";
 import { init_theme } from "./assets/ts/theme";
 import { Protect, useAuth, useUser } from "@clerk/vue";
 import { loaded } from "./assets/ts/utils";
+import gsap from 'gsap';
 import InitDB from "./assets/ts/database/init";
 import waitFor from "./assets/ts/utils/waitFor";
 import ShortsCut from "./components/shortsCut.vue";
@@ -111,6 +121,7 @@ import { initNotifications } from "./components/notifications/notifications";
 import UpdateAvalable from "./components/updateAvalable.vue";
 import { useWSocket } from "./composables/WSocket";
 import dbSocket from "./assets/ts/database/dbSocket";
+import { dev } from '../package.json';
 
 const themeClass = ref<string>(
   window.localStorage.getItem('theme') == 'dark'
@@ -130,7 +141,40 @@ const session = new Session();
 const is_offline = ref<boolean>(false);
 
 
+const onEnter = (el: any, done: () => void) => {
+  if (el.dataset.transition === 'slide') 
+  {
+    gsap.set(el, { x: '100%', position: 'fixed', inset: 0, zIndex: 100 });
+    gsap.to(el, { x: 0, duration: 0.5, ease: 'expo.out', onComplete: done });
+  } 
+  else 
+  {
+    done();
+  }
+};
+
+const onLeave = (el: any, done: () => void) => {
+  if (el.dataset.transition === 'slide') 
+  {
+    gsap.to(el, { x: '100%', duration: 0.4, ease: 'expo.in', onComplete: done });
+  } 
+  else 
+  {
+    done();
+  }
+};
+
+
 onMounted(async () => {
+
+  if (window.location.host == 'beta.silvernote.fr' && !dev)
+  {
+    alert("Vous êtes sur le domaine de test de Silvernote. Certaines fonctionnalités peuvent être instables, vos notes peuvent être perdues !! Pour une expérience optimale, veuillez accéder à l'application via https://app.silvernote.fr.");
+  }
+  else if (window.location.host !== 'app.silvernote.fr' && !dev)
+  {
+    alert("Vous n'êtes pas sur le domaine officiel de Silvernote. Veuillez accéder à l'application via https://app.silvernote.fr pour une expérience optimale et sécurisée.");
+  }
 
   try {
 

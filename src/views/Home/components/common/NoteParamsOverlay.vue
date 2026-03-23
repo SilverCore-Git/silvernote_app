@@ -27,14 +27,18 @@
                 <div
                     class="
                         max-w-2xl
-                        lg:grid lg:grid-cols-[280px_1em_300px]
                         flex justify-center items-center
                         w-full gap-10
                         pointer-events-auto relative
                     "
+                    :class="
+                        justTags
+                            ? ''
+                            : 'lg:grid lg:grid-cols-[280px_1em_300px]'
+                    "
                 >
 
-                    <div class="relative w-full hidden lg:block">
+                    <div v-if="!justTags" class="relative w-full hidden lg:block">
 
                         <DefaultNoteCard
                             v-if="note && showCard"
@@ -49,6 +53,7 @@
                     </div>
 
                     <div
+                        v-if="!justTags"
                         class=" 
                             hidden lg:flex
                             gap-2 mx-auto w-full
@@ -121,21 +126,21 @@
                                                     :id="`switch-${tag.id}`"
                                                     type="checkbox"
                                                     class="sr-only peer"
-                                                    :checked="justView == true ? note.tags.includes(tag.id) : tags.includes(tag.id)"
-                                                    @change="justView == true ? () => {} : toggleTag(tag.id)"
+                                                    :checked="justView == true ? note?.tags?.includes(tag.id) || false : tags.includes(tag.id)"
+                                                    @change="toggleTag(tag.id)"
                                                 />
 
                                                 <div
                                                     class="
-                                                        w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 
+                                                        w-11 h-6 bg-(--text)/20 peer-focus:outline-none peer-focus:ring-2 
                                                         peer-focus:ring-(--btn) rounded-full peer
-                                                        peer-checked:bg-(--btn) transition-all
+                                                        peer-checked:bg-(--btn) transition-all!
                                                     "
                                                 ></div>
 
                                                 <div
                                                     class="absolute left-0.5 top-0.5 w-5 h-5 bg-white
-                                                    rounded-full transition-transform peer-checked:translate-x-5"
+                                                    rounded-full transition-transform! peer-checked:translate-x-5"
                                                 ></div>
 
                                             </div>
@@ -283,10 +288,9 @@
 
 import BackdropOverlay from '@/components/common/BackdropOverlay.vue';
 import type { Note } from '@/assets/ts/type';
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { Notes, Tags } from '@/assets/ts/database/Var';
 import DefaultNoteCard from '@/views/Home/components/common/DefaultNoteCard.vue';
-import database from '@/assets/ts/database/database';
 import share_menu from '@/components/popup/share_menu.vue';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import { useWSocket } from '@/composables/WSocket';
@@ -304,7 +308,8 @@ const note = ref<Note | undefined | any>(undefined);
 const showCard = ref<boolean>(false);
 const showShareMenu = ref<boolean>(false);
 const showConfirmDel = ref<boolean>(false);
-const tags = ref<number[]>(props.selectedTags || []);
+const tags = computed<number[]>(() => props.selectedTags || []);
+const justViewTags = ref<number[]>([]);
 
 const emit = defineEmits([
     'update:visible',
@@ -331,15 +336,16 @@ const deleteNote = async (state: number) => {
     }
 }
 
-const save = () => {
-    
-    if (!note.value) return;
+const save = async () => {
 
-    if (props.justView) {
-        emit('TagsCallback', tags.value);
+    if (props.justView) 
+    {
+        emit('TagsCallback', justViewTags.value);
         emit('update:visible', false);
         return;
     }
+
+    if (!note.value) return;
 
     const index = Notes.value.findIndex(n => n.uuid === props.uuid);
 
@@ -347,12 +353,28 @@ const save = () => {
         Notes.value[index] = { ...note.value };
     }
 
-    database.update(note.value);
+    (await useWSocket()).value.emit('note:update', note.value);
 
     emitClose();
 };
 
 const toggleTag = (id: number) => {
+
+    if (props.justView)
+    {
+
+        if (justViewTags.value.includes(id))
+        {
+            justViewTags.value.filter(tagId => tagId !== id);
+        }
+        else
+        {
+            justViewTags.value.push(id);
+        }
+
+        return;
+
+    }
 
     if (!note.value) return;
     
@@ -391,7 +413,6 @@ const mount = () => {
     
     if (props.justView) {
         note.value = {};
-        tags.value = props.selectedTags || [];
         showCard.value = true;
         return;
     }

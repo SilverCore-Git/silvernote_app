@@ -51,14 +51,15 @@
         <!-- conteneur allignement y -->
         <div
             class="
-                flex-1 flex flex-col p-4 gap-4 md:p-8 md:gap-8 overflow-hidden
-                bg-(--bg)
+                flex-1 flex flex-col 
+                gap-4 md:gap-8 overflow-hidden
+                bg-(--bg) py-4 md:py-8
             "
             :class="isElectron ? 'rounded-tl-xl border-t border-l border-(--text-little)/20' : ''"
         >
 
             <!-- search + tags -->
-            <div>
+            <div class="px-4 md:px-8">
                 <SearchAndTag />
             </div>
 

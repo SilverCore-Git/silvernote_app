@@ -8,60 +8,68 @@
 
     <teleport to="body">
 
-      <div
-        v-if="showMenu || mdInputeMenu || IfcolorEditor"
-        class="fixed inset-0 z-500"
-        @click="closeAll"
-      />
-
-      <div
-        v-if="!isMobile && showMenu && editor"
-        class="context-menu"
-        :style="{ top: `${posY}px`, left: `${posX}px` }"
-      >
+      <div v-if="!disable">
 
         <div
-          class="
-            flex flex-row h-10 items-center
-            px-1 bg-(--white) shadow-xl
-            rounded-lg border border-(--btn)
-          "
-        >
+          v-if="showMenu || mdInputeMenu || IfcolorEditor"
+          class="fixed inset-0 z-500"
+          @click="closeAll"
+        />
 
-          <ul
-            v-for="(list, cat) in menuWithState"
-            :key="cat"
-            class="flex flex-row items-center h-full px-1"
-            :class="cat !== 'MdInputMenu' ? 'border-r border-gray-200 mr-1' : ''"
+        <transition name="fade">
+
+          <div
+            v-if="!isMobile && showMenu && editor"
+            class="context-menu"
+            :style="{ top: `${posY}px`, left: `${posX}px` }"
           >
 
-            <li
-              v-for="action in list"
-              :key="action.id"
-              class="px-0.5"
+            <div
+              class="
+                flex flex-row h-10 items-center
+                px-1 bg-(--white) shadow-xl
+                rounded-lg border border-(--btn)
+              "
             >
 
-              <button
+              <ul
+                v-for="(list, cat) in menuWithState"
+                :key="cat"
+                class="flex flex-row items-center h-full px-1"
+                :class="cat !== 'MdInputMenu' ? 'border-r border-gray-200 mr-1' : ''"
+              >
 
-                v-if="'action' in action"
-                class="menu-btn transition-all duration-200 px-2 py-1 rounded-md text-sm font-medium"
-                :class="[
-                  action.isActiveState ? 'bg-(--btn) text-(--bg)' : 'hover:bg-(--bg)',
-                  (cat === 'MdInputMenu' || action.id === 764532) ? 'border border-gray-400' : ''
-                ]"
+                <li
+                  v-for="action in list"
+                  :key="action.id"
+                  class="px-0.5"
+                >
 
-                @click="execAction(action.action)"
-                v-html="action.name"
-                v-tooltip.bottom="action.tooltip"
+                  <button
 
-              />
+                    v-if="'action' in action"
+                    class="menu-btn transition-all duration-200 px-2 py-1 rounded-md text-sm font-medium"
+                    :class="[
+                      action.isActiveState ? 'bg-(--btn) text-(--bg)' : 'hover:bg-(--bg)',
+                      (cat === 'MdInputMenu' || action.id === 764532) ? 'border border-gray-400' : ''
+                    ]"
+
+                    @click="execAction(action.action)"
+                    v-html="action.name"
+                    v-tooltip.bottom="action.tooltip"
+
+                  />
 
 
-            </li>
+                </li>
 
-          </ul>
+              </ul>
 
-        </div>
+            </div>
+
+          </div>
+
+        </transition>
 
       </div>
 
@@ -120,7 +128,9 @@ const editorTick = ref<number>(0);
 
 const fnCache = new Map<string, Function>();
 
-
+defineProps<{
+  disable?: boolean;
+}>()
 
 const menuWithState = computed(() => {
   editorTick.value; 

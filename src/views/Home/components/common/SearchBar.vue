@@ -7,9 +7,9 @@
                 flex justify-center items-center flex-row 
                 border rounded-2xl bg-(--white)/50
                 py-3 px-3.5 w-full gap-2.5
-                transition-all duration-300 ease-in-out
+                transition-all duration-300! ease-in-out
             "
-            :class="isFocus ? 'border-(--btn)' : 'border-gray-300'"
+            :class="isFocus ? 'border-(--btn)' : 'border-(--text)/40'"
         >
 
             <i class="bi bi-search opacity-50" />
@@ -41,7 +41,7 @@
                     flex flex-row-reverse
                     justify-center items-center
                     bg-(--white)/50
-                    border border-gray-300
+                    border border-(--text)/40
                     rounded-2xl
                 "
             >
@@ -67,7 +67,7 @@
 
                 </button>
 
-                <div class="h-11 -my-1 border-l border-gray-300" />
+                <div class="h-11 -my-1 border-l border-(--text)/40" />
 
                 <button 
                     class="

@@ -10,6 +10,8 @@ export function useShortcut(key: string | string[], label: string, callback: () 
 
     const handleKeyDown = (event: KeyboardEvent) => {
 
+        return; // fonction désactivée pour le moment
+
         const isModifierPressed = event.ctrlKey || event.metaKey;
         const keyPressed = event.key.toLowerCase();
 

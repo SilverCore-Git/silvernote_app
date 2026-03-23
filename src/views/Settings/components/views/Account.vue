@@ -25,15 +25,17 @@ import { SignOutButton, UserProfile, useUser } from '@clerk/vue';
     
     <UserProfile :fallback="Loader" />
 
-    <SignOutButton>
-      <button class="primary danger w-full max-w-[55em]">
-        Se déconnecter
-      </button>
-    </SignOutButton>
+    <div class="block lg:hidden">
+      <SignOutButton >
+        <button class="primary danger w-full max-w-[55em]">
+          Se déconnecter
+        </button>
+      </SignOutButton>
+    </div>
 
-    <p class=" text-(--text-little)">
+    <i class=" text-(--text-little)">
       User id : {{ useUser().user.value?.id }}
-    </p>
+    </i>
 
   </div>
 

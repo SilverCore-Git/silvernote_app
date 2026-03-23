@@ -1,7 +1,7 @@
 import utils from "@/assets/ts/utils";
-import db from '@/assets/ts/database/database';
 import { Notes, Tags } from "@/assets/ts/database/Var";
 import type { Note, Tag } from "@/assets/ts/type";
+import { useWSocket } from "@/composables/WSocket";
 
 export default async function
 ({
@@ -17,7 +17,8 @@ export default async function
 
   const input = event.target as HTMLInputElement;
 
-  if (input.files) {
+  if (input.files)
+  {
     
     const file = input.files[0];
 
@@ -47,7 +48,8 @@ export default async function
           if (sender_info_hash_ok) console.log('Hash sender_info ok !'); else console.warn('Hash sender_info incorect !');
           if (data_info_hash_ok) console.log('Hash data_info ok !'); else console.warn('Hash data_info incorect !');
 
-          if (tags_hash_ok && notes_hash_ok && sender_info_hash_ok && data_info_hash_ok) {
+          if (tags_hash_ok && notes_hash_ok && sender_info_hash_ok && data_info_hash_ok) 
+          {
 
             console.log('All hash ok !');
             console.log('Starting eating data...');
@@ -67,8 +69,8 @@ export default async function
                   note.uuid = await utils.UUID();
                   note.id = parseInt(Date.now() + Math.floor(Math.random() * 1000).toString());
                   note._id = undefined;
-                  const _note = await db.create(note);
-                  Notes.value.push(_note);
+                  (await useWSocket()).value.emit('note:create', note);
+                  Notes.value.push(note);
                 })
               );
 
@@ -87,8 +89,8 @@ export default async function
                   tag.user_id = user_id!;
                   tag.uuid = await utils.UUID();
                   tag.id = parseInt(Date.now() + Math.floor(Math.random() * 1000).toString());
-                  const _tag = await db.create_tag(tag);
-                  Tags.value.push(_tag);
+                  (await useWSocket()).value.emit('tag:create', tag);
+                  Tags.value.push(tag);
                 })
               );
 

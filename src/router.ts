@@ -4,13 +4,14 @@ import { nextTick } from 'vue';
 import Home from './views/Home/Home.vue';
 import Edit from './views/Edit/Edit.vue';
 import Settings from './views/Settings/Settings.vue';
-import Share from './views/Share/Share.vue';
 import SignIn from './views/auth/SignIn.vue';
 import SignUp from './views/auth/SignUp.vue';
 import Redirect from './views/auth/Redirect.vue';
 import NotFound from './views/errors/404.vue';
 import App2048 from './components/2048/App2048.vue';
 import Onboarding from './views/onboarding/Onboarding.vue';
+import ImportSnote from './views/onboarding/views/import-snote.vue';
+import ImportKeep from './views/onboarding/views/import-keep.vue';
 
 
 
@@ -22,6 +23,7 @@ const routes = [
     component: Home,
     meta: { title: 'Accueil - Silvernote' }
   },
+
   { 
     path: '/edit/:uuid', 
     name: 'Edit', 
@@ -29,6 +31,15 @@ const routes = [
     props: true,
     meta: { title: 'Silvernote' }
   },
+  { 
+    path: '/share/:uuid', 
+    name: 'Share', 
+    component: Edit,
+    props: true,
+    meta: { title: 'Partage - Silvernote' }
+  },
+
+
   { 
     path: '/settings', 
     name: 'Settings', 
@@ -47,11 +58,18 @@ const routes = [
   },
 
   { 
-    path: '/share/:uuid', 
-    name: 'Share', 
-    component: Share,
-    props: true,
-    meta: { title: 'Partage - Silvernote' }
+    path: '/settings/import/snote', 
+    name: 'ImportSnote',
+    props: true, 
+    component: ImportSnote,
+    meta: { title: 'Importation - Silvernote' }
+  },
+  { 
+    path: '/settings/import/keep', 
+    name: 'ImportKeep',
+    props: true, 
+    component: ImportKeep,
+    meta: { title: 'Importation - Silvernote' }
   },
 
   { 
@@ -121,6 +139,7 @@ const router = createRouter({
   },
 });
 
+
 router.beforeResolve((to, from) => {
 
   const fromEdit = from.path.startsWith('/edit')
@@ -145,7 +164,6 @@ router.beforeResolve((to, from) => {
   })
   
 })
-
 
 router.beforeEach((to, _from, next) => {
   

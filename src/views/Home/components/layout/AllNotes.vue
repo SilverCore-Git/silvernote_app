@@ -1,7 +1,7 @@
 <template>
 
   <div 
-    class="min-h-full flex flex-col overflow-y-auto custom-scroll" 
+    class="min-h-full flex flex-col overflow-y-auto px-4 md:px-8" 
     v-if="Notes.length || pageQuery == 'shared'"
   >
     
@@ -19,7 +19,7 @@
 
     <template v-else>
 
-      <div class="flex flex-col gap-8">
+      <div class="flex flex-col gap-8 pb-40">
         
         <PinnedNotes v-if="hasPinnedNotes" />
         <OtherNotes v-if="hasNotPinnedNotes" />
@@ -89,12 +89,3 @@ const createNote = () => {
 }
 
 </script>
-
-
-<style scoped>
-
-.custom-scroll {
-    height: 100%;
-}
-
-</style>

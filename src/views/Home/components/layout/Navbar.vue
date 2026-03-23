@@ -2,7 +2,7 @@
 
     <div
         class="
-            h-full bg-(--bg2) shadow-2xl 
+            h-full bg-(--bg2) border-r border-(--text-little)/20
             p-4 min-w-65 max-w-75 relative
         "
     >
@@ -73,13 +73,13 @@
                                 bi bi-gear-fill text-(--btn) text-2xl 
                                 w-7 h-7 flex justify-center items-center
                         "
-                        @click="router.push('/settings')"
+                        @click="router.push('/settings/account')"
                     ></div>
                 </a>
 
                 <slot></slot>
 
-                <a class="p-1.5 flex items-center justify-center ">
+                <a class="p-2 flex items-center justify-center ">
                     <UserButton
                         :appearance="{
                             ...clerkAppearanceSettings,
@@ -171,7 +171,7 @@
 
         </ul> -->
 
-        <App2048Popup v-model:show="showGame" />
+        <!-- <App2048Popup v-model:show="showGame" /> -->
 
     </div>
 
@@ -186,7 +186,7 @@ import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { UserButton } from '@clerk/vue';
 import { clerkAppearanceSettings } from '@/assets/ts/theme';
-import App2048Popup from '@/components/2048/App2048Popup.vue';
+// import App2048Popup from '@/components/2048/App2048Popup.vue';
 import News from '../../../../components/notifications/Notifications.vue';
 
  

@@ -32,7 +32,6 @@
 
                 <a 
                     class="p-1"
-                    v-if="selectedNotes.length <= 1"
                     @click="togglePinned()"
                 >
                     <i 
@@ -59,7 +58,6 @@
                 <a
                     class="p-1"
                     @click="showParamsOverlay = true"
-                    v-if="selectedNotes.length <= 1"
                 >
                     <i 
                         class="bi"
@@ -86,10 +84,20 @@
     </div>
 
     <note-params-overlay
+        v-if="selectedNote.length <= 1"
         v-model:visible="showParamsOverlay"
         :uuid="selectedNote[0].uuid"
         :selectedTags="selectedNote[0].tags"
         :justTags="true"
+    />
+
+    <!-- for multiple notes -->
+    <note-params-overlay
+        v-else
+        v-model:visible="showParamsOverlay"
+        :justTags="true"
+        :justView="true"
+        @TagsCallback="saveTags"
     />
 
     <share_menu
@@ -101,7 +109,8 @@
     <confirm-dialog
         :visible="showConfirmDel"
         title="Supprimer les notes séléctionnées"
-        message="Êtes-vous sûr de vouloir supprimer ces notes ?"
+        :message="`Êtes-vous sûr de vouloir supprimer ${selectedNote.length} notes ?`"
+        :checkbox="selectedNote.length > 2 ? 'Je suis conscient que cette action est irreversible.' : undefined"
         @cancel="showConfirmDel = false"
         @confirm="deleteNotes(2)"
     />
@@ -134,6 +143,7 @@ import NoteParamsOverlay from '../common/NoteParamsOverlay.vue';
 import Share_menu from '@/components/popup/share_menu.vue';
 import database from '@/assets/ts/database/database';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
+import { useWSocket } from '@/composables/WSocket';
 
 const showParamsOverlay = ref<boolean>(false);
 const showShareMenu = ref<boolean>(false);
@@ -145,37 +155,36 @@ const selectedNote = computed(() => {
   return Notes.value.filter(note => selectedNotes.value.includes(note.uuid));
 });
 
-// const selectedTags = computed(() => {
-//   if (selectedNote.value.length === 0) return [];
 
-//   return selectedNote.value.length === 1
-//     ? selectedNote.value[0].tags
-//     : selectedNote.value.flatMap(note => note.tags);
-// });
+const saveTags = async (tags: number[]) => {
 
-// const saveTags = async (tags: number[]) => {
+    const socket = await useWSocket();
+    clearSelectedNotes();
 
-//     try {
+    try {
 
-//         for (const note of selectedNote.value) {
+        for (const note of selectedNote.value) 
+        {
 
-//             const index = Notes.value.findIndex(n => n.uuid === note.uuid);
+            const index = Notes.value.findIndex(n => n.uuid === note.uuid);
 
-//             if (index === -1) continue;
+            if (index === -1) continue;
 
-//             Notes.value[index].tags = tags;
+            Notes.value[index].tags = tags;
 
-//             await database.update(Notes.value[index]);
+            socket.value.emit('note:update', Notes.value[index]);
 
-//         }
+        }
 
-//         showParamsOverlay.value = false;
+        showParamsOverlay.value = false;
 
-//     } catch (err) {
-//         throw new Error(`Erreur on SelectedNoteOptions.vue, on saveTags() : ${err}`);
-//     }
+    } 
+    catch (err) 
+    {
+        throw new Error(`Erreur on SelectedNoteOptions.vue, on saveTags() : ${err}`);
+    }
 
-// }
+}
 
 const deleteNotes = async (state: number) => {
 
@@ -203,9 +212,17 @@ const deleteNotes = async (state: number) => {
 
 const togglePinned = async () => {
 
-    Notes.value[0].pinned = !Notes.value[0].pinned;
+    const socket = await useWSocket();
 
-    await database.update(Notes.value[0]);
+    for (const note of selectedNote.value)
+    {
+        const index = Notes.value.findIndex(n => n.uuid === note.uuid);
+        if (index !== -1) 
+        {
+            Notes.value[index].pinned = !Notes.value[index].pinned;
+            socket.value.emit('note:update', Notes.value[index]);
+        }
+    }
 
     clearSelectedNotes();
 

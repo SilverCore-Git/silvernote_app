@@ -4,7 +4,11 @@ import type { Note, Tag } from './type';
 import utils from './utils';
 import { dev } from '@/../package.json';
 
-export const api_url: string = dev ? 'http://localhost:3000' : 'https://api.silvernote.fr'; // 'https://api.silvernote.fr' || 'http://localhost:3000'
+export const api_url: string = dev 
+  ? 'http://localhost:3000' 
+  : window.location.host.includes('beta') 
+    ? 'https://api-beta.silvernote.fr' 
+    : 'https://api.silvernote.fr';
 
 
 const dev_db: { notes: Note[], tags: Tag[] } = {

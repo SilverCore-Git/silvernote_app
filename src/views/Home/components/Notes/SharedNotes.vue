@@ -1,42 +1,92 @@
 <script setup lang="ts">
 
 import { useRouter } from 'vue-router';
-import { ShareByMe, SharedNotes } from '@/assets/ts/database/Var';
+import { ShareByMe, SharedNotes, ShareByMeShare } from '@/assets/ts/database/Var';
 import DefaultNoteCard from '../common/DefaultNoteCard.vue';
 import type { Note } from '@/assets/ts/type';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { api_url } from '@/assets/ts/backend_link';
 import useToken from '@/composables/useToken';
 
 const router = useRouter();
+const loading = ref<boolean>(true);
 
-onMounted(async() => {
+//const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-    ShareByMe.value = (await fetch(`${api_url}/api/share/by/me`, {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${await useToken()}`
-        }
-    }).then(res => res.json())).notes as Note[] || [];
+onMounted(async () => {
 
-    SharedNotes.value = (await fetch(`${api_url}/api/share/for/me`, {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${await useToken()}`
-        }
-    }).then(res => res.json())).notes as Note[] || [];
+    if (ShareByMe.value.length > 0 || SharedNotes.value.length > 0) 
+    {
+        loading.value = false;
+    }
+
+    const token = await useToken();
+
+    const [ShareByMeRes, SharedNotesRes] = await Promise.all([
+
+        fetch(`${api_url}/api/share/by/me`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(res => res.json()),
+
+        fetch(`${api_url}/api/share/for/me`, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(res => res.json())
+
+    ]);
+
+    const shareByMeNotes = ShareByMeRes?.notes as Note[] || [];
     
-})
+    ShareByMe.value = shareByMeNotes;
+
+    // if (shareByMeNotes.length > 0) 
+    // {
+        
+    //     ShareByMe.value.push(shareByMeNotes[0]);
+
+    //     if (shareByMeNotes.length > 1)
+    //     {
+
+    //         await delay(200);
+
+    //         const remainingNotes = shareByMeNotes.slice(1);
+    //         ShareByMe.value.push(...remainingNotes);
+
+    //     }
+
+    // }
+
+    SharedNotes.value = SharedNotesRes?.notes as Note[] || [];
+    ShareByMeShare.value = ShareByMeRes?.share || [];
+
+    loading.value = false;
+
+});
 
 </script>
 
 <template>
 
-    <div class="relative">
+    <template v-if="loading">
+
+        <div 
+            class="flex justify-center text-(--text-little) items-center h-40"
+        >
+            <i class="bi bi-arrow-repeat text-4xl animate-spin" />
+        </div>
+        
+    </template>
+
+    <template v-else class="relative">
 
         <div 
             class="flex flex-col gap-4 h-full pb-40"
@@ -52,22 +102,21 @@ onMounted(async() => {
 
             <ul
                 class="
-                    sm:flex sm:flex-wrap
-                    grid grid-cols-2
-                    gap-4
+                    grid gap-4
+                    grid-cols-1
+                    lg:grid-cols-2
                 "
                 v-if="SharedNotes && SharedNotes.length"
             >
                 <li
                     v-for="(note, index) in SharedNotes"
-                    :key="index"
+                    :key="'sharedNotes-'+index"
                     @click.stop="router.push('/share/'+note.uuid)"
-                    class="sm:max-w-[250px]"
+                    class="cursor-pointer hover:scale-102! transition-all"
                 >
                     <DefaultNoteCard
                         :uuid="note.uuid"
                         :title="note.title"
-                        :content="note.content"
                         :icon="note.icon"
                         :tags="note.tags"
                         :sharedBy="note.user_id"
@@ -84,25 +133,25 @@ onMounted(async() => {
 
             <ul
                 class="
-                    sm:flex sm:flex-wrap
-                    grid grid-cols-2
-                    gap-4
+                    grid gap-4
+                    grid-cols-1
+                    lg:grid-cols-2
                 "
                 v-if="ShareByMe && ShareByMe.length"
             >
                 <li
                     v-for="(note, index) in ShareByMe"
-                    :key="index"
+                    :key="'shareByMe-'+index"
                     @click="router.push('/share/'+note.uuid)"
-                    class="sm:max-w-[250px]"
+                    class="cursor-pointer hover:scale-102! transition-all"
                 >
                     <DefaultNoteCard
                         :uuid="note.uuid"
                         :title="note.title"
-                        :content="note.content"
                         :icon="note.icon"
                         :tags="note.tags"
                         :sharedBy="note.user_id"
+                        :share="ShareByMeShare.find(s => s.note_uuid === note.uuid)"
                     />
                 </li>
             </ul>
@@ -117,6 +166,6 @@ onMounted(async() => {
             <h3 class="text-2xl font-bold">Aucune note partagée</h3>
         </div>
 
-    </div>
+    </template>
 
 </template>

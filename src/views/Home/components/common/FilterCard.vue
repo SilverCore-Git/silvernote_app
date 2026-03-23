@@ -5,14 +5,14 @@
         class="h-full"
     >
 
-        <div 
+        <button 
             class="
-                bg-(--white) border rounded-2xl flex-row
+                bg-(--white) border-2 rounded-2xl flex-row
                 flex justify-center items-center gap-1
-                px-3 py-1.5 cursor-pointer
+                px-3 py-1.5 cursor-pointer duration-100!
             "
             :class="[
-                active ? 'border-(--btn)' : 'border-gray-200'
+                active ? 'border-(--btn)' : 'border-(--text)/40'
             ]"
         >
 
@@ -29,7 +29,7 @@
                 {{ name }}
             </span>
 
-        </div>
+        </button>
 
     </PressAndHold>
 

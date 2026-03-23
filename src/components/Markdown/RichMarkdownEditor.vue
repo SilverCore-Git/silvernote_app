@@ -1,8 +1,9 @@
 <template>
 
   <ToolsMenu
-      class="editor-container h-full overflow-hidden" 
+      class="editor-container h-full overflow-hidden relative" 
       @click="focusEditor"
+      :disable="loader || !props.editable"
   >
 
     <div
@@ -18,22 +19,17 @@
 
     </div>
 
-    <div
-      v-if="loader"
-      class="
-        z-100 h-full w-full absolute
-        rounded-xl bg-(--text-little)/30
-      "
-      style="animation: flash 2.5s ease-in-out infinite;"
-    />
+    <transition name="fade">
 
-    <div
-      v-if="loader"
-      class="
-        z-80 h-full w-full absolute
-        rounded-xl bg-(--bg)
-      "
-    />
+      <div
+        v-if="loader"
+        class="
+          z-100 absolute inset-0
+          rounded-xl bg-(--bg)
+        "
+      />
+
+    </transition>
 
   </ToolsMenu>
 
@@ -43,7 +39,7 @@
 
   <SaveIndicator />
 
-  <PhoneToolsBar />
+  <PhoneToolsBar v-if="!loader || props.editable" />
   
 </template>
 
@@ -55,12 +51,10 @@ import { useUser } from '@clerk/vue';
 
 import * as Y from 'yjs';
 
-import type { Note } from '@/assets/ts/type';
 import { api_url } from '@/assets/ts/backend_link';
 import { getDominantColor } from '@/assets/ts/GetColorByImage';
 
 import { editor } from './Editor';
-import { saveNote } from './Function/saveNote.js';
 import ToolsMenu from '@/components/Markdown/ToolsMenu/toolsBar/ToolsMenu.vue';
 import SaveIndicator from './SaveIndicator.vue';
 import PhoneToolsBar from './ToolsMenu/phoneToolsBar/phoneToolsBar.vue';
@@ -72,13 +66,13 @@ import { createMathCheckDebounced, clearMathCache } from './tiptap-extensions/ma
 import './css/DragHandler.scss';
 import './css/CodeBlock.scss';
 import getContrastColor from '@/assets/ts/utils/getContrastColor.js';
-import waitFor from '@/assets/ts/utils/waitFor.js';
+import { useWSocket } from '@/composables/WSocket';
+import waitFor from '@/assets/ts/utils/waitFor';
 
 const props = defineProps<{
-  id: number;
   editable?: boolean;
-  data: Note;
   uuid: string;
+  shared?: boolean;
 }>()
 
 const loader = ref<boolean>(true);
@@ -86,20 +80,17 @@ const searchBarVisible = ref<boolean>(false);
 const colorCache = ref<string | null>(null);
 const { user } = useUser();
 
-let autosaveInterval: ReturnType<typeof setInterval> | null = null;
 
 const focusEditor = () => editor.value?.commands.focus();
 
 const handleSaveShortcut = (e: KeyboardEvent) => {
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') 
+  {
     e.preventDefault();
-    saveNote(props.data.uuid, { force: true });
+    useWSocket().then(socket => socket.value.emit('save-room', { room: props.uuid }));
   }
 };
 
-const startAutoSave = () => {
-  autosaveInterval = setInterval(() => saveNote(props.data.uuid), 10 * 1000);
-};
 
 const getColorByImage = async (): Promise<{ bg: string, text: string }> => {
   
@@ -127,6 +118,7 @@ const getColorByImage = async (): Promise<{ bg: string, text: string }> => {
 };
 
 const handleScroll = (editor: Editor) => {
+  return;
   
   setTimeout(() => {
 
@@ -165,7 +157,7 @@ async function initEditor(): Promise<void>
 
   const colorPromise = getColorByImage();
 
-  const provider = new EditorProvider(ydoc, props.uuid, props.editable ?? true);
+  const provider = new EditorProvider(ydoc, props.uuid, props.shared);
   
   const mathCheckDebounced = createMathCheckDebounced();
   
@@ -229,13 +221,9 @@ async function initEditor(): Promise<void>
     }
   }).catch(err => console.warn('Failed to fetch user color:', err));
 
+  await waitFor(() => provider.synced);
+
   await nextTick();
-  await waitFor(() => provider.synced, 10_000);
-  
-  if (editor.value && props.data.content && editor.value.getText().length <= 0) 
-  {
-    editor.value.commands.setContent(props.data.content);
-  }
 
   console.log('Editor initialized');
   loader.value = false;
@@ -258,15 +246,12 @@ watch(() => props.uuid, async () => {
 onMounted(async () => {
   window.addEventListener('keydown', handleSaveShortcut)
   await initEditor();
-  startAutoSave();
 });
 
 onBeforeUnmount(() => {
-  saveNote(props.data.uuid);
   window.removeEventListener('keydown', handleSaveShortcut)
   if (editor.value) editor.value.destroy();
   clearMathCache();
-  autosaveInterval && clearInterval(autosaveInterval);
 });
 
 </script>
@@ -369,5 +354,16 @@ onBeforeUnmount(() => {
   z-index: 9999;
 }
 
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .1s ease-in-out !important;
+  opacity: 1;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 
 </style>

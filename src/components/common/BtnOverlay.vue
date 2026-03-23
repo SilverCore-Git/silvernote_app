@@ -10,7 +10,7 @@
     >
 
         <!-- SilverIA btn -->
-        <Silveria />
+        <Silveria v-if="aiEnabled" />
 
         <!-- new note btn -->
         <button
@@ -24,7 +24,6 @@
                 text-5xl cursor-pointer
                 hover:rotate-180 hover:bg-(--btn-hover)
             "
-            :style="{ 'view-transition-name': `note-new` }"
             v-tooltip="tooltipConfig"
         >
             <i class="bi bi-plus" />
@@ -40,9 +39,11 @@ import { useRoute, useRouter } from 'vue-router';
 import Silveria from '../silveria/silveria.vue';
 import { nextTick } from 'vue';
 import { useShortcut } from '@/composables/useShrotcut';
+import useSettingsItem from '@/assets/ts/settings/useSettingsItem';
 
 const route = useRoute();
 const router = useRouter();
+const { Item: aiEnabled } = useSettingsItem('aiFunc', true);
 
 const openEditNewNote = () => {
 
@@ -58,7 +59,7 @@ const openEditNewNote = () => {
 };
 
 const { tooltipConfig } = useShortcut(
-    [ 'maj', 'n' ],
+    [ 'shift', 'n' ],
     'Créer une note',
     () => {
         openEditNewNote();

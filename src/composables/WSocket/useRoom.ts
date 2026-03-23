@@ -9,7 +9,7 @@ async () =>
 
     const wsocket = await useWSocket();
 
-    const join = (params: { room: string, userId: string }) => {
+    const join = (params: { room: string }) => {
         wsocket.value.emit('join-room', params);
         setTimeout(() => {
             socketConnected.value = true;

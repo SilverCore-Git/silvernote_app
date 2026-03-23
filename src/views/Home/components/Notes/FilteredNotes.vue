@@ -1,59 +1,24 @@
 <script setup lang="ts">
 
 import { sortedNotes, Tags } from '@/assets/ts/database/Var';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
-import DefaultNoteCard from '../common/DefaultNoteCard.vue';
-import useFilter from '../../composables/useFilter';
+import { computed } from 'vue';
 import { RecycleScroller } from 'vue3-virtual-scroller';
 import 'vue3-virtual-scroller/dist/vue3-virtual-scroller.css';
+import DefaultNoteCard from '../common/DefaultNoteCard.vue';
+import useFilter from '../../composables/useFilter';
 
 const { selectedFilter } = useFilter();
-const columns = ref<number>(3);
-const updateColumns = () => {
-    if (window.innerWidth < 1024) columns.value = 2;
-    else if (window.innerWidth < 1400) columns.value = 3;
-    else if (window.innerWidth < 1800) columns.value = 4;
-    else if (window.innerWidth < 2000) columns.value = 5;
-    else columns.value = 6;
-};
 
-onMounted(() => {
-    updateColumns();
-    window.addEventListener('resize', updateColumns);
+const noteRows = computed(() => {
+    return (sortedNotes.value?.filter(n => n.tags.includes(selectedFilter.value)) || []).map(n => ({
+        ...n,
+        id: n.uuid
+    }));
 });
-onUnmounted(() => window.removeEventListener('resize', updateColumns));
 
-const notes = computed(() =>
-    sortedNotes.value.filter(note => note.tags.includes(selectedFilter.value || 0))
-);
 const tag = computed(() =>
     Tags.value.filter(tag => tag.id === selectedFilter.value)[0]
 );
-
-const noteRows = computed(() => {
-
-    const others = notes.value?.filter(n => !n.pinned) || [];
-    const rows = [];
-    const colCount = columns.value || 1;
-
-    for (let i = 0; i < others.length; i += colCount)
-    {
-    
-        const rowItems = others.slice(i, i + colCount);
-        
-        if (rowItems.length > 0)
-        {
-            rows.push({
-                id: `row-${rowItems[0].uuid}`,
-                items: [...rowItems] 
-            });
-        }
-
-    }
-
-    return rows;
-
-});
 
 </script>
 
@@ -85,34 +50,24 @@ const noteRows = computed(() => {
 
         <RecycleScroller
             v-if="noteRows.length > 0"
-            :key="noteRows.length"
+            :key="'scroller-'+noteRows.length"
             :items="noteRows"
-            :item-size="220"
+            :item-size="108" 
             key-field="id"
             page-mode
-            class="w-full"
-            :buffer="600" 
+            class="w-full overflow-visible!"
         >
 
-            <template #default="{ item: row }">
-                
-                <div 
-                    class="grid gap-4 mb-4 pr-2 pl-1"
-                    :style="{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }"
-                >
-            
-                    <div v-for="note in row.items" :key="note.uuid">
-                        <DefaultNoteCard
-                            :uuid="note.uuid"
-                            :title="note.title"
-                            :content="note.content"
-                            :icon="note.icon"
-                            :tags="note.tags"
-                        />
-                    </div>
-            
-                </div>
-            
+            <template #default="{ item: note }">
+
+                    <DefaultNoteCard
+                        :key="note.uuid"
+                        :uuid="note.uuid"
+                        :title="note.title"
+                        :icon="note.icon"
+                        :tags="note.tags"
+                    />
+                    
             </template>
 
         </RecycleScroller>
@@ -128,3 +83,47 @@ const noteRows = computed(() => {
     </div>
 
 </template>
+
+<style scoped>
+
+/* card scale hover */
+:deep(.group:hover) {
+    transform: scale(1.02) !important;
+    z-index: 30;
+    border-color: var(--btn) !important;
+    opacity: 1 !important;
+}
+
+:deep(.vue-recycle-scroller__item-view:has(+ .vue-recycle-scroller__item-view .group:hover) .group) {
+    transform: scale(1.01);
+    opacity: 0.92;
+    z-index: 10;
+}
+
+:deep(.vue-recycle-scroller__item-view:has(.group:hover) + .vue-recycle-scroller__item-view .group) {
+    transform: scale(1.01);
+    opacity: 0.92;
+    z-index: 10;
+}
+
+:deep(.group) {
+    transition: 
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), 
+        border-color 0.3s ease, 
+        opacity 0.4s ease !important;
+    will-change: transform;
+}
+
+:deep(.vue-recycle-scroller__item-wrapper) {
+    overflow: visible !important;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+:deep(.vue-recycle-scroller__item-view) {
+    overflow: visible !important;
+    transition: z-index 0s;
+}
+
+
+</style>

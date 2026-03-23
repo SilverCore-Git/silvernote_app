@@ -50,10 +50,9 @@ import Popup from '@/components/popup/Popup.vue'
 import { ref, computed } from 'vue'
 import getArrayFromNotionHTML from '@/assets/ts/utils/getArrayFromNotionHTML'
 import { Notes } from '@/assets/ts/database/Var';
-import database from '@/assets/ts/database/database';
 import type { Note } from '@/assets/ts/type';
 import { editor } from '@/components/Markdown/Editor';
-import { updateIcon, updateTitle } from '@/views/Edit/composable/useTitleIcon';
+import { useWSocket } from '@/composables/WSocket';
 
 const props = defineProps<{
   uuid: string;
@@ -88,6 +87,7 @@ const importFile = async () => {
   if (!import_file.value) return
 
   loaded.value = true;
+  const socket = await useWSocket();
 
   try {
 
@@ -97,14 +97,15 @@ const importFile = async () => {
       const note: Note | undefined = Notes.value.find(_note => _note.uuid === props.uuid)
       if (note)
       {
+
         note.title = notion_note.title;
         note.content = notion_note.content;
         note.icon = notion_note.icon;
-        await database.update(note);
 
         editor.value?.commands.setContent(note.content);
-        updateTitle(note.title);
-        updateIcon(note.icon);
+        socket.value.emit('note:update', note);
+        socket.value.emit('title-update', { uuid: note.uuid, title: note.title });
+        socket.value.emit('icon-update', { uuid: note.uuid, icon: note.icon });
         
       }
       else
@@ -122,11 +123,11 @@ const importFile = async () => {
         note.title = snote_note.note.title;
         note.content = snote_note.note.content;
         note.icon = snote_note.note.icon;
-        await database.update(note);
 
         editor.value?.commands.setContent(note.content);
-        updateTitle(note.title);
-        updateIcon(note.icon);
+        socket.value.emit('note:update', note);
+        socket.value.emit('title-update', { uuid: note.uuid, title: note.title });
+        socket.value.emit('icon-update', { uuid: note.uuid, icon: note.icon });
 
       }
       else

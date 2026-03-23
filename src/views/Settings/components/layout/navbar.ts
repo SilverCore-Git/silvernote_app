@@ -9,33 +9,38 @@ interface Page {
 
 const pages: Page[] = [
     {
-        path: '/',
-        icon: "bi-person-fill", // Compte utilisateur
+        path: '/account',
+        icon: "bi-person-fill",
         name: "Compte"
+    },
+    {
+        path: '/security',
+        icon: "bi-shield-lock-fill",
+        name: "Sécuritée"
     },
     // {
     //     path: '/preferences',
-    //     icon: "bi-sliders", // Préférences / réglages généraux
+    //     icon: "bi-sliders",
     //     name: "Préférences"
     // },
     {
         path: '/appearance',
-        icon: "bi-palette-fill", // Apparence / thème
+        icon: "bi-palette-fill",
         name: "Apparence"
     },
     {
         path: '/mydata',
-        icon: "bi-database-fill", // Mes données / données personnelles
+        icon: "bi-database-fill",
         name: "Mes données"
     },
-    {
-        path: '/2048',
-        icon: "bi-grid-3x3", // Juridique / sécurité
-        name: "Jeu 2048"
-    },
+    // {
+    //     path: '/2048',
+    //     icon: "bi-grid-3x3",
+    //     name: "Jeu 2048"
+    // },
     {
         path: '/legal',
-        icon: "bi-shield-fill-check", // Juridique / sécurité
+        icon: "bi-shield-fill-check",
         name: "Juridique"
     },
     // {

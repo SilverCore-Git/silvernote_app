@@ -7,6 +7,7 @@ import type { Note } from '@/assets/ts/type';
 import database from '@/assets/ts/database/database';
 import { Notes } from '@/assets/ts/database/Var';
 import { useRoute, useRouter } from 'vue-router';
+import BackBtn from '@/components/backBtn.vue';
 
 
 const { processZip, isProcessing, progress, currentFileName } = useKeepImporter();
@@ -88,7 +89,25 @@ onMounted(() => {
 
 <template>
 
-    <div class="flex flex-col h-full p-4 md:p-8">
+<div 
+    class="w-full h-full bg-(--bg) relative"
+    data-transition="slide" 
+>
+
+    <BackBtn
+        href="/settings/mydata" 
+        class="top-4 left-4" 
+        v-if="route.name == 'ImportKeep'" 
+    />
+
+    <div 
+        class="flex flex-col h-full p-4 md:p-8"
+        :class="
+            route.name == 'ImportKeep'
+                ? 'flex justify-center max-w-4xl min-w-xl mx-auto mt-10'
+                : ''
+        "
+    >
         
         <div>
             <h2 class="text-2xl font-bold mb-1">Importation Google Keep</h2>
@@ -134,8 +153,11 @@ onMounted(() => {
                 </div>
                 <h3 class="font-bold text-lg mb-1">{{ stats.success }} notes importées</h3>
                 <p class="text-xs opacity-50 mb-6">Vos notes sont déjà prêtes dans votre librairie.</p>
-                <button @click="stats.finished = false" class="text-[10px] font-bold uppercase tracking-widest opacity-40 hover:opacity-100">
+                <button @click="stats.finished = false" class="default">
                     Recommencer
+                </button>
+                <button v-if="route.name == 'ImportKeep'" @click="stats.finished = false; router.push('/')" class="ml-4 primary">
+                    Retour à Silvernote
                 </button>
             </div>
 
@@ -189,5 +211,7 @@ onMounted(() => {
         </div>
         
     </div>
+
+</div>
 
 </template>

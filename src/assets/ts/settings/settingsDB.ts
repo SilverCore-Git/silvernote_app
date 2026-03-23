@@ -1,59 +1,28 @@
-import { openDB, type DBSchema, type IDBPDatabase } from "idb";
+export type Settings = 'private_mode' | 'show_all_news' | 'aiFunc';
 
-type Settings = 'private_mode' | 'show_all_news';
+export const sdb = {
+    
+    async get(user: any, key: Settings): Promise<any> 
+    {
+        if (!user) return undefined;
+        const settings = (user.unsafeMetadata?.settings as Record<string, any>) || {};
+        return settings[key];
+    },
 
-interface SettingsSchema extends DBSchema {
-    settings: {
-        key: Settings;
-        value: any;
-    };
-}
-
-class SettingsDB {
-
-    private dbPromise: Promise<IDBPDatabase<SettingsSchema>>;
-
-    constructor() {
-        this.dbPromise = openDB<SettingsSchema>("silvernote-db", 1, {
-            upgrade(db) {
-                if (!db.objectStoreNames.contains("settings")) {
-                    db.createObjectStore("settings");
+    async set(user: any, key: Settings, value: any) 
+    {
+        if (!user) return;
+        const currentSettings = (user.unsafeMetadata?.settings as Record<string, any>) || {};
+        
+        return await user.update({
+            unsafeMetadata: {
+                ...user.unsafeMetadata,
+                settings: {
+                    ...currentSettings,
+                    [key]: value
                 }
             }
         });
     }
 
-    public async get(key: Settings) {
-        const db = await this.dbPromise;
-        return await db.get("settings", key);
-    }
-
-    public async set(key: Settings, value: any) {
-        const db = await this.dbPromise;
-        return await db.put("settings", value, key);
-    }
-
-    public async update(key: Settings, partialValue: Record<string, any>) {
-        const existing = await this.get(key) || {};
-        const updated = { ...existing, ...partialValue };
-        return await this.set(key, updated);
-    }
-
-    public async delete(key: Settings) {
-        const db = await this.dbPromise;
-        return await db.delete("settings", key);
-    }
-
-    public async getAll() {
-        const db = await this.dbPromise;
-        return await db.getAll("settings");
-    }
-
-}
-
-
-const sdb = new SettingsDB();
-export {
-    sdb,
-    type Settings
-}
+};

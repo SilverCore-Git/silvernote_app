@@ -19,14 +19,12 @@
                     <hr />
 
                     <li @click="share_menu = true">Partager</li>
-                    <li @click="saveNote(uuid, { force: true })">Sauvegarder</li>
-                    <li @click="stats_popup = true">Statistiques</li>
 
                     <hr />
 
-                    <li @click="showGame = true">2048</li>
-
-                    <hr />
+                    <!-- <li @click="showGame = true">2048</li> -->
+                    
+                    <li @click="stats_popup = true">Informations</li>
 
                     <li class="text-red-600" @click="showDialog = true">
                         Supprimer
@@ -83,13 +81,11 @@
 
 <script setup lang="ts">
 
-import { ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import { editor } from '@/components/Markdown/Editor'
-import type { Note } from '@/assets/ts/type';
 import Import from './common/Import.vue';
 import Export from './common/Export.vue';
 import NoteParamsOverlay from '../Home/components/common/NoteParamsOverlay.vue';
-import { saveNote } from '@/components/Markdown/Function/saveNote';
 import Share_menu from '@/components/popup/share_menu.vue';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
 import { Notes } from '@/assets/ts/database/Var';
@@ -101,8 +97,9 @@ import { useWSocket } from '@/composables/WSocket';
 const props = defineProps<{
   visible: boolean;
   uuid: string;
-  note: Note;
 }>()
+
+const note = computed(() => Notes.value.find(note => note.uuid === props.uuid));
 
 const emit = defineEmits(['update:visible'])
 
@@ -123,9 +120,14 @@ const delete_note = async (state: number) => {
     if (state === 1) return showDialog.value = true;
     if (state === 2)
     {
-        (await useWSocket()).value.emit('note:delete', props.note);
-        Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
+
         router.push('/');
+        
+        await nextTick();
+
+        (await useWSocket()).value.emit('note:delete', note.value);
+        Notes.value = Notes.value.filter(_note => _note.uuid !== props.uuid);
+
     }
 }
 

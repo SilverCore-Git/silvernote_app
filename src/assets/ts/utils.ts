@@ -81,18 +81,22 @@ class utils {
         return data.id;
     }
 
-    public emojiToBase64 (emoji: string, size = 64, offsetY = 0.05): string {
+    public emojiToBase64 (emoji: string, size = 64, offsetY = 0.05): string 
+    {
 
         const canvas = document.createElement('canvas');
         canvas.width = size;
         canvas.height = size;
 
         const ctx = canvas.getContext('2d')!;
-        ctx.font = `${size}px serif`;
+        
+        const fontSize = size * 0.8; 
+        ctx.font = `${fontSize}px serif`;
+        
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        ctx.fillText(emoji, size / 2, size / 2 + size * offsetY);
+        ctx.fillText(emoji, size / 2, size / 2 + (size * offsetY));
 
         return canvas.toDataURL('image/png');
 
