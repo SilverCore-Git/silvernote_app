@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { Notes, SharedNotes, Tags } from '@/assets/ts/database/Var';
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import DownloadDBToSnote from '../../utils/DownloadDBToSNOTE';
 import DownloadDBToJSON from '../../utils/DownloadDBToJSON';
 import ConfirmDialog from '@/components/popup/ConfirmDialog.vue';
