@@ -29,7 +29,7 @@
                     </div>
                 </div>
 
-                <div class="border border-(--text)/10 bg-(--bg2) rounded-lg p-4">
+                <div v-if="editor" class="border border-(--text)/10 bg-(--bg2) rounded-lg p-4">
                     <div class="text-xs flex items-center gap-1.5 mb-1">
                         <i class="bi bi-fonts" /> Mots
                     </div>
@@ -38,7 +38,7 @@
                     </div>
                 </div>
 
-                <div class="border border-(--text)/10 bg-(--bg2) rounded-lg p-4">
+                <div v-if="editor" class="border border-(--text)/10 bg-(--bg2) rounded-lg p-4">
                     <div class="text-xs flex items-center gap-1.5 mb-1">
                         <i class="bi bi-text-center" /> Caractères
                     </div>
@@ -98,6 +98,7 @@ import type { Note } from '@/assets/ts/type';
 import { computed, ref, watch } from 'vue';
 import useToken from '@/composables/useToken';
 import { api_url } from '@/assets/ts/backend_link';
+import { editor } from '@/components/Markdown/Editor';
 
 const props = defineProps<{
   note: Note;
@@ -130,11 +131,11 @@ const formatDate = (date: number | string | undefined) => {
 };
 
 const wordCount = computed(() => {
-    return props.note.content?.trim().split(/\s+/).filter(Boolean).length || 0;
+    return editor.value?.storage.characterCount.words() || 0;
 });
 
 const characterCount = computed(() => {
-    return props.note.content?.length || 0;
+    return editor.value?.storage.characterCount.characters() || 0;
 });
 
 watch(() => stats_menu.value, async () => await checkShareStatus());
