@@ -43,6 +43,11 @@ const pages: Page[] = [
         icon: "bi-shield-fill-check",
         name: "Juridique"
     },
+    {
+        path: '/support',
+        icon: "bi-question-circle-fill",
+        name: "Support"
+    },
     // {
     //     path: '/developpeurs',
     //     icon: "bi-code-slash",
