@@ -45,7 +45,7 @@
 
 <script setup lang="ts">
 
-import { ref, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import { ref, onMounted, nextTick, watch, onUnmounted } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import { useUser } from '@clerk/vue';
 
@@ -68,6 +68,7 @@ import './css/CodeBlock.scss';
 import getContrastColor from '@/assets/ts/utils/getContrastColor.js';
 import { useWSocket } from '@/composables/WSocket';
 import waitFor from '@/assets/ts/utils/waitFor';
+import { initWordCounter } from './Function/wordCounter';
 
 const props = defineProps<{
   editable?: boolean;
@@ -246,9 +247,10 @@ watch(() => props.uuid, async () => {
 onMounted(async () => {
   window.addEventListener('keydown', handleSaveShortcut)
   await initEditor();
+  initWordCounter();
 });
 
-onBeforeUnmount(() => {
+onUnmounted(() => {
   window.removeEventListener('keydown', handleSaveShortcut)
   if (editor.value) editor.value.destroy();
   clearMathCache();
