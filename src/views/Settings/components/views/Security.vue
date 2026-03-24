@@ -6,6 +6,7 @@ import { api_url } from '@/assets/ts/backend_link';
 import useToken from '@/composables/useToken';
 
 const { Item: aiFunc } = useSettingsItem('aiFunc', true);
+const { Item: snoteWrapped } = useSettingsItem('snoteWrapped', true);
 
 const fingerPrint = ref<string>('');
 const showFingerprint = ref<boolean>(false);
@@ -26,9 +27,9 @@ onMounted(async () => {
 
 <template>
 
-    <div class="min-h-full max-w-5xl mx-auto w-full p-8 transition-colors duration-300">
+    <div class="min-h-full max-w-5xl mx-auto w-full p-8 transition-colors duration-300 space-y-10">
         
-        <header class="mb-8">
+        <header>
 
             <div class="flex items-center gap-3 mb-2">
                 <h1 class="font-bold text-3xl tracking-tight">Sécurité & Confidentialité</h1>
@@ -38,14 +39,17 @@ onMounted(async () => {
             </p>
         </header>
 
-        <section class="mb-10">
-
-            <h2 class="font-semibold text-lg mb-4 flex items-center gap-2">
-                Agent IA : <a class="text-(--btn)">SilverIA</a>
-            </h2>
+        <section>
             
             <div 
-                class="p-6 rounded-xl bg-(--bg2) border border-(--white)/10 transition-all" 
+                class="
+                    p-6 rounded-xl bg-(--bg2) 
+                    border border-(--white)/10
+                    hover:border hover:border-(--btn) 
+                    transition-all duration-200! 
+                    cursor-pointer
+                "
+                @click="aiFunc = !aiFunc" 
                 :class="!aiFunc ? 'opacity-75' : ''"
             >
 
@@ -57,7 +61,6 @@ onMounted(async () => {
                     </div>
                     
                     <button 
-                        @click="aiFunc = !aiFunc"
                         :class="aiFunc ? 'bg-(--btn)' : 'bg-gray-600'"
                         class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer"
                     >
@@ -78,8 +81,42 @@ onMounted(async () => {
 
                     <label class="flex items-center gap-3 p-3 rounded-lg bg-(--bg)/50 border border-(--white)/5 pointer-events-none">
                         <input type="checkbox" :checked="aiFunc" class="accent-(--btn) w-4 h-4">
-                        <span class="text-sm">Résumé automatique des notes</span>
+                        <span class="text-sm">SilverIA chatbot</span>
                     </label>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section>
+            
+            <div 
+                class="
+                    p-6 rounded-xl bg-(--bg2) 
+                    border border-(--white)/10
+                    hover:border hover:border-(--btn) 
+                    transition-all duration-200! 
+                    cursor-pointer
+                "
+                @click="snoteWrapped = !snoteWrapped" 
+                :class="!snoteWrapped ? 'opacity-75' : ''"
+            >
+
+                <div class="flex items-center justify-between ">
+
+                    <div>
+                        <p class="font-medium">Rétrospective du mois : Snote Wrapped</p>
+                        <p class="text-xs opacity-50 max-w-md">Autorise l'analyse de vous actions pour vos présenter une retrospective mensuel.</p>
+                    </div>
+                    
+                    <button
+                        :class="snoteWrapped ? 'bg-(--btn)' : 'bg-gray-600'"
+                        class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer"
+                    >
+                        <span :class="snoteWrapped ? 'translate-x-2' : '-translate-x-2'" class="h-4 w-4 rounded-full bg-white transition-transform" />
+                    </button>
 
                 </div>
 

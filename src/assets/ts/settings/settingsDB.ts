@@ -1,4 +1,4 @@
-export type Settings = 'private_mode' | 'show_all_news' | 'aiFunc';
+export type Settings = 'private_mode' | 'show_all_news' | 'aiFunc' | 'snoteWrapped';
 
 export const sdb = {
     
