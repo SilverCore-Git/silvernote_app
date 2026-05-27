@@ -9,7 +9,7 @@ class useChat
 
     public chat: Ref<Chat | null> = ref(null);
 
-    public async create (user: any)
+    public async create ()
     {
 
         const res = await fetch(`${api_url}/api/ai/create`, {
@@ -18,7 +18,6 @@ class useChat
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${await useToken()}`
             },
-            body: JSON.stringify({ user })
         });
 
         if (res.ok) {

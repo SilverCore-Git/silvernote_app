@@ -35,7 +35,7 @@ import isMobile from '@/assets/ts/utils/isMobile';
 
 
 const route = useRoute();
-const { user, isLoaded } = useUser();
+const { isLoaded } = useUser();
 const MessageTextarea = ref<HTMLTextAreaElement | null>(null);
 
 const handleEsc = (e: KeyboardEvent) => {
@@ -46,7 +46,7 @@ onMounted(async () => {
     window.addEventListener('keydown', handleEsc)
     await waitFor(() => isLoaded.value, 10000);
     loaded.value = true;
-    await useChat.create(user.value);
+    await useChat.create();
     waitFor(() => chatBody.value !== undefined, 10000);
 })
 

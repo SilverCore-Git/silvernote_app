@@ -82,6 +82,8 @@ const noteRows = computed(() => {
 
         </div>
 
+        <div v-else class="mt-30" />
+
     </div>
 
 </template>
