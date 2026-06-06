@@ -101,6 +101,7 @@ const HtmlFileModel = ({ icon, title, content }: Note): string => {
                 <img 
                     style="margin-right: 12px; width: 3em; height: 3em;"
                     src="${icon}"
+                    loading="lazy"
                 >
                 <h1 class="h1">${title}</h1>
             </div>

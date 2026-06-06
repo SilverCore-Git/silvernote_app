@@ -346,6 +346,7 @@ onMounted(async () => {
                   :key="'visitor-'+index"
                   class="w-8 h-8 rounded-full border border-(--text)/10"
                   :src="user.imageUrl"
+                  loading="lazy"
               />
 
             </div>
