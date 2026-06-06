@@ -12,9 +12,6 @@ import Onboarding from './views/onboarding/Onboarding.vue';
 import ImportSnote from './views/onboarding/views/import-snote.vue';
 import ImportKeep from './views/onboarding/views/import-keep.vue';
 
-// Lazy loading pour le jeu 2048 (composant lourd)
-const App2048 = () => import('./components/2048/App2048.vue');
-
 
 
 const routes = [
@@ -72,13 +69,6 @@ const routes = [
     props: true, 
     component: ImportKeep,
     meta: { title: 'Importation - Silvernote' }
-  },
-
-  { 
-    path: '/tools/2048', 
-    name: '2048', 
-    component: App2048,
-    meta: { title: '2048 - Silvernote' }
   },
 
   // auth
