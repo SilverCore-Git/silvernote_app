@@ -20,6 +20,7 @@
                 class="w-full outline-none"
                 v-model="query"
                 @focus="isFocus = true"
+                ref="searchInput"
             />
 
             <i 
@@ -108,7 +109,7 @@
 
 <script lang="ts" setup>
 
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { isRotating, reload_list } from '../../composables/Reload';
 import { NotifImportant } from '@/components/notifications/notifications';
@@ -118,6 +119,32 @@ const router = useRouter();
 const query = ref<string>('');
 const isFocus = ref<boolean>(false);
 const showNotification = ref<boolean>(false);
+const searchInput = ref<HTMLInputElement | null>(null);
+
+// Raccourci clavier pour la recherche globale (Ctrl+K / Cmd+K)
+const handleSearchShortcut = (e: KeyboardEvent) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    isFocus.value = true;
+    // Focus sur l'input de recherche au prochain tick
+    setTimeout(() => {
+      searchInput.value?.focus();
+    }, 100);
+  }
+  // Fermer la recherche avec Escape
+  if (e.key === 'Escape' && isFocus.value) {
+    isFocus.value = false;
+    query.value = '';
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', handleSearchShortcut);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleSearchShortcut);
+});
 
 
 watch(() => query.value, () => {
