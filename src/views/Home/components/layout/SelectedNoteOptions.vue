@@ -108,9 +108,9 @@
 
     <confirm-dialog
         :visible="showConfirmDel"
-        title="Supprimer les notes séléctionnées"
+        title="Supprimer les notes sélectionnées"
         :message="`Êtes-vous sûr de vouloir supprimer ${selectedNote.length} notes ?`"
-        :checkbox="selectedNote.length > 2 ? 'Je suis conscient que cette action est irreversible.' : undefined"
+        :checkbox="selectedNote.length > 2 ? 'Je suis conscient que cette action est irréversible.' : undefined"
         @cancel="showConfirmDel = false"
         @confirm="deleteNotes(2)"
     />
