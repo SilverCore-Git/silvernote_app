@@ -9,8 +9,8 @@ import '@/assets/ts/utils/DangerLogger.ts';
 
 
 import './style.css';
-// Bootstrap Icons loaded via CDN in index.html for better font path resolution
-// import 'bootstrap-icons/font/bootstrap-icons.css'
+// Bootstrap Icons loaded locally for better reliability
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import postError from './components/errorOverlay/postError.ts';
 import { clerkAppearanceSettings } from './assets/ts/theme.ts';
 
