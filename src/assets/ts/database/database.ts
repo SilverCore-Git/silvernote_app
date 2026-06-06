@@ -2,6 +2,7 @@ import type { Note, Tag } from '../type';
 import { api_url } from '../backend_link';
 import type { Socket } from 'socket.io-client';
 import useToken from '@/composables/useToken';
+import { APICache } from '../cache/apiCache';
 
 class Database {
     
@@ -34,14 +35,32 @@ class Database {
 
     /**
      * Récupération de toutes les données (Notes ou Tags)
+     * Utilise le cache pour réduire les requêtes API inutiles
      */
-    public async getAll<T extends 'notes' | 'tags'>(type: T): Promise<T extends 'notes' ? Note[] : Tag[]> {
+    public async getAll<T extends 'notes' | 'tags'>(type: T, forceRefresh: boolean = false): Promise<T extends 'notes' ? Note[] : Tag[]> {
         const endpoint = type === 'notes' ? 'get/notes' : 'get/tags';
-        const response = await fetch(`${api_url}/api/db/${endpoint}`, {
+        const url = `${api_url}/api/db/${endpoint}`;
+        const category = type; // Utiliser le type comme catégorie pour le TTL
+
+        // Vérifier le cache (sauf si forceRefresh est true)
+        if (!forceRefresh) {
+            const cachedData = await APICache.get(url, category);
+            if (cachedData) {
+                return cachedData;
+            }
+        }
+
+        // Si pas dans le cache ou forceRefresh, faire la requête API
+        const response = await fetch(url, {
             headers: await this.getHeaders(),
             credentials: 'include',
         });
-        return await response.json();
+        const data = await response.json();
+
+        // Mettre en cache les données
+        await APICache.set(url, data, category);
+
+        return data;
     }
 
     /**
