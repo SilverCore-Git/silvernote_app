@@ -286,8 +286,12 @@
 <script lang="ts" setup>
 
 import type { Note, User } from '@/assets/ts/type';
-import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch, defineAsyncComponent } from 'vue';
+
+// Lazy load RichMarkdownEditor for better performance
+const RichMarkdownEditor = defineAsyncComponent(
+  () => import('@/components/Markdown/RichMarkdownEditor.vue')
+);
 import { useRouter } from 'vue-router';
 import Success from '@/components/alert/Success.vue';
 import Popup from '@/components/popup/Popup.vue';
