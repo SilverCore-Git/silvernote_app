@@ -2,7 +2,12 @@
 
 import { ref } from 'vue';
 import { useDraggable } from '@vueuse/core';
-import App2048 from './App2048.vue';
+import { defineAsyncComponent } from 'vue';
+
+// Lazy loading du jeu 2048 pour améliorer les performances
+const App2048 = defineAsyncComponent(
+  () => import('./App2048.vue')
+);
 
 defineProps<{
   show: boolean

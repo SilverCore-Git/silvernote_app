@@ -380,8 +380,7 @@ onMounted(async () => {
     await waitFor(() => note.value !== undefined, 5_000);
     if (!note.value) return;
 
-    init_emoji_picker({
-        icon,
+    await init_emoji_picker({
         note,
         ref: emojiBtn,
     });

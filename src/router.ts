@@ -8,10 +8,12 @@ import SignIn from './views/auth/SignIn.vue';
 import SignUp from './views/auth/SignUp.vue';
 import Redirect from './views/auth/Redirect.vue';
 import NotFound from './views/errors/404.vue';
-import App2048 from './components/2048/App2048.vue';
 import Onboarding from './views/onboarding/Onboarding.vue';
 import ImportSnote from './views/onboarding/views/import-snote.vue';
 import ImportKeep from './views/onboarding/views/import-keep.vue';
+
+// Lazy loading pour le jeu 2048 (composant lourd)
+const App2048 = () => import('./components/2048/App2048.vue');
 
 
 
