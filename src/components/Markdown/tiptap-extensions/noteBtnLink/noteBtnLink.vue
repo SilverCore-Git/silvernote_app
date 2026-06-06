@@ -14,7 +14,7 @@
             "
             @click="handleClick"
         >
-            <img v-if="note?.icon" :src="note.icon" class="w-6 h-6" />
+            <img v-if="note?.icon" :src="note.icon" class="w-6 h-6" :alt="note?.title || 'Icône de la note'" />
             <div v-else class="bi bi-file-earmark font-extrabold text-10" />
             <span>{{ note?.title || 'Note sans titre' }}</span>
         </button>

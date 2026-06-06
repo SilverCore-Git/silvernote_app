@@ -447,6 +447,7 @@ onMounted(async () => {
                 <img 
                   class="w-20 h-20 " 
                   :src="localNote.icon" 
+                  :alt="localNote.title || 'Icône de la note'"
                 />
 
               </div>
@@ -462,6 +463,7 @@ onMounted(async () => {
                   <img 
                     class="w-20 h-20  cursor-pointer hover:scale-110 transition-transform" 
                     :src="localNote.icon" 
+                    :alt="localNote.title || 'Icône de la note'"
                   />
 
                 </PressAndHold>
@@ -490,6 +492,7 @@ onMounted(async () => {
                   :src="suggestedIcon"
                   @error="suggestedIcon = ''"
                   class="w-full h-full object-contain filter grayscale-[0.3] opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 ease-out" 
+                  alt="Icône suggérée"
                 />
                 
                 <div class="absolute -top-1 -right-1 bg-(--btn) text-(--text) rounded-lg shadow-lg shadow-purple-500/20 w-7 h-7 flex items-center justify-center border-2 border-(--bg-primary) group-hover:rotate-12 transition-transform">

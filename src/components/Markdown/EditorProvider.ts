@@ -4,10 +4,30 @@ import { socketConnected, useRoom, useWSocket } from '@/composables/WSocket';
 import waitFor from '@/assets/ts/utils/waitFor';
 import postError from '../errorOverlay/postError';
 import { editor } from './Editor';
-import { nextTick } from 'vue';
+import { nextTick, ref, type Ref } from 'vue';
 import { Notes } from '@/assets/ts/database/Var';
 
 let isOffline = false;
+
+// Interface pour représenter un collaborateur
+interface Collaborator {
+  id: number;
+  name: string;
+  color: string;
+  cursor?: { x: number; y: number } | null;
+  lastActive: number;
+}
+
+// Fonction pour générer une couleur déterministe à partir d'un ID
+export function getCollaboratorColor(clientId: number): string {
+  // Générer une couleur déterministe à partir de l'ID
+  let hash = clientId;
+  for (let i = 0; i < 3; i++) {
+    hash = ((hash << 5) - hash) + (hash * 17);
+  }
+  const hue = Math.abs(hash) % 360;
+  return `hsl(${hue}, 70%, 50%)`;
+}
 
 const socket = useWSocket();
 
@@ -17,6 +37,9 @@ export class EditorProvider
     public doc: Y.Doc;
     public awareness: awarenessProtocol.Awareness;
     public synced: boolean = false;
+    
+    // Liste réactive des collaborateurs
+    public collaborators: Ref<Collaborator[]> = ref<Collaborator[]>([]);
 
     private room: string = '';
     private shared: boolean = false;
@@ -24,6 +47,7 @@ export class EditorProvider
 
     private updateHandler: ((update: Uint8Array, origin: any) => void) | null = null;
     private awarenessUpdateHandler: ((changes: any) => void) | null = null;
+    private awarenessChangeHandler: (() => void) | null = null;
 
     constructor(
       doc: Y.Doc,
@@ -232,9 +256,17 @@ export class EditorProvider
         } else {
           console.log('❌ Not emitting awareness-update - editable:', this.editable, 'room:', this.room);
         }
+        
+        // Mettre à jour la liste des collaborateurs
+        this.updateCollaborators();
       };
 
       this.awareness.on('update', this.awarenessUpdateHandler);
+      
+      // Écouter les changements locaux d'awareness pour mettre à jour les collaborateurs
+      this.awarenessChangeHandler = () => this.updateCollaborators();
+      this.awareness.on('change', this.awarenessChangeHandler);
+      
       console.log('✅ Local updates enabled');
 
     }
@@ -252,6 +284,49 @@ export class EditorProvider
         this.awarenessUpdateHandler = null;
       }
 
+      if (this.awarenessChangeHandler) {
+        this.awareness.off('change', this.awarenessChangeHandler);
+        this.awarenessChangeHandler = null;
+      }
+
+    }
+
+    /**
+     * Met à jour la liste des collaborateurs à partir de l'awareness
+     */
+    private updateCollaborators(): void {
+      const newCollaborators: Collaborator[] = [];
+      const states = this.awareness.getStates();
+      const myClientId = this.awareness.clientID;
+
+      states.forEach((state: any, clientId: number) => {
+        // Ne pas inclure soi-même
+        if (clientId === myClientId) return;
+
+        // Récupérer les informations de l'utilisateur
+        const user = state.user || {};
+        const name = user.name || `Utilisateur ${clientId % 1000}`;
+        const color = getCollaboratorColor(clientId);
+
+        // Récupérer la position du curseur si disponible
+        let cursor: { x: number; y: number } | null = null;
+        if (state.cursor) {
+          cursor = {
+            x: state.cursor.x || 0,
+            y: state.cursor.y || 0,
+          };
+        }
+
+        newCollaborators.push({
+          id: clientId,
+          name,
+          color,
+          cursor: cursor && (cursor.x > 0 || cursor.y > 0) ? cursor : null,
+          lastActive: Date.now(),
+        });
+      });
+
+      this.collaborators.value = newCollaborators;
     }
 
     public destroy()
@@ -272,3 +347,6 @@ export class EditorProvider
     }
 
 }
+
+// Exporter le type pour qu'il puisse être utilisé dans d'autres fichiers
+export type { Collaborator };

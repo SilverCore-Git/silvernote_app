@@ -39,6 +39,14 @@
 
   <SaveIndicator />
 
+  <!-- Indicateur de collaboration (uniquement en mode partagé) -->
+  <CollaborationStatus
+    v-if="provider && props.shared"
+    :collaborators="provider.collaborators"
+    :show="showCollaborationStatus"
+    @update:show="showCollaborationStatus = $event"
+  />
+
   <PhoneToolsBar v-if="!loader || props.editable" />
   
 </template>
@@ -60,6 +68,7 @@ import SaveIndicator from './SaveIndicator.vue';
 import PhoneToolsBar from './ToolsMenu/phoneToolsBar/phoneToolsBar.vue';
 import { SearchBar } from './tiptap-extensions/searchAndReplace';
 import { EditorProvider } from './EditorProvider';
+import CollaborationStatus from './CollaborationStatus.vue';
 
 import { getEditorConfig } from './editorConfig';
 import { createMathCheckDebounced, clearMathCache } from './tiptap-extensions/mathExtension';
@@ -80,6 +89,11 @@ const searchBarVisible = ref<boolean>(false);
 const colorCache = ref<string | null>(null);
 const { user } = useUser();
 
+// État pour l'affichage des collaborateurs
+const showCollaborationStatus = ref<boolean>(true);
+
+// Provider pour la collaboration (partage de notes)
+const provider = ref<EditorProvider | null>(null);
 
 const focusEditor = () => editor.value?.commands.focus();
 
@@ -157,7 +171,8 @@ async function initEditor(): Promise<void>
 
   const colorPromise = getColorByImage();
 
-  const provider = new EditorProvider(ydoc, props.uuid, props.shared);
+  // Créer le provider et l'assigner à la ref pour y accéder dans le template
+  provider.value = new EditorProvider(ydoc, props.uuid, props.shared);
   
   const mathCheckDebounced = createMathCheckDebounced();
   
@@ -165,7 +180,7 @@ async function initEditor(): Promise<void>
     ...getEditorConfig({
       editable: props.editable,
       ydoc,
-      provider,
+      provider: provider.value,
       userColor,
       userName: user.value?.username || 'Invité',
       userAvatar: user.value?.imageUrl,
@@ -206,10 +221,10 @@ async function initEditor(): Promise<void>
     
     userColor = bg; 
 
-    if (provider?.awareness) {
-      const state = provider.awareness.getLocalState();
+    if (provider.value?.awareness) {
+      const state = provider.value.awareness.getLocalState();
       if (state) {
-        provider.awareness.setLocalState({ 
+        provider.value.awareness.setLocalState({ 
           ...state, 
           user: { 
             ...state.user, 
@@ -221,7 +236,7 @@ async function initEditor(): Promise<void>
     }
   }).catch(err => console.warn('Failed to fetch user color:', err));
 
-  await waitFor(() => provider.synced);
+  await waitFor(() => provider.value?.synced);
 
   await nextTick();
 

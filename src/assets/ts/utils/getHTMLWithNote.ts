@@ -177,7 +177,7 @@ export default function(note: Note, user?: any): string {
         <header>
             <div class="meta">
                 <div class="icon-wrapper">
-                    ${ note.icon !== '' ? `<img src="${note.icon}" width="64" height="64" loading="lazy"/>` : '' }
+                    ${ note.icon !== '' ? `<img src="${note.icon}" width="64" height="64" loading="lazy" alt="${note.title}"/>` : '' }
                     <h1>${note.title}</h1>
                 </div>
             </div>
