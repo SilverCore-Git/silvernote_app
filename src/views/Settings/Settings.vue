@@ -3,17 +3,12 @@
 import BackBtn from '@/components/backBtn.vue';
 import MobileNavBar from './components/layout/MobileNavBar.vue';
 import NavBar from './components/layout/Navbar.vue';
-import Account from './components/views/Account.vue';
+import AccountSecurity from './components/views/AccountSecurity.vue';
 import Appearance from './components/views/Appearance.vue';
-import Legal from './components/views/Legal.vue';
 import Mydata from './components/views/Mydata.vue';
-import Preferences from './components/views/Preferences.vue';
-import Developpeurs from './components/views/developpeurs/Developpeurs.vue';
+import HelpLegal from './components/views/HelpLegal.vue';
 import DesktopAppTitleBar from '@/components/DesktopAppTitleBar.vue';
 import isElectron from '@/assets/ts/utils/isElectron';
-import Security from './components/views/Security.vue';
-import Support from './components/views/Support.vue';
-// import Game from './components/views/Game.vue';
 
 defineProps<{
   page: string;
@@ -53,15 +48,11 @@ defineProps<{
       :class="isElectron ? 'rounded-tl-xl border-t border-l border-(--text-little)/20' : ''"
     >
 
-      <Legal v-if="page == 'legal'" />
+      <AccountSecurity v-if="page == 'account'" />
       <Mydata v-else-if="page == 'mydata'" />
       <Appearance v-else-if="page == 'appearance'" />
-      <Preferences v-else-if="page == 'preferences'" />
-      <Developpeurs v-else-if="page == 'developpeurs'" />
-      <Security v-else-if="page == 'security'" />
-      <Support v-else-if="page == 'support'" />
-      <!-- <Game v-else-if="page == '2048'" /> -->
-      <Account v-else />
+      <HelpLegal v-else-if="page == 'help'" />
+      <AccountSecurity v-else />
 
     </div>
 

@@ -11,18 +11,8 @@ const pages: Page[] = [
     {
         path: '/account',
         icon: "bi-person-fill",
-        name: "Compte"
+        name: "Compte et Sécurité"
     },
-    {
-        path: '/security',
-        icon: "bi-shield-lock-fill",
-        name: "Sécuritée"
-    },
-    // {
-    //     path: '/preferences',
-    //     icon: "bi-sliders",
-    //     name: "Préférences"
-    // },
     {
         path: '/appearance',
         icon: "bi-palette-fill",
@@ -33,26 +23,11 @@ const pages: Page[] = [
         icon: "bi-database-fill",
         name: "Mes données"
     },
-    // {
-    //     path: '/2048',
-    //     icon: "bi-grid-3x3",
-    //     name: "Jeu 2048"
-    // },
     {
-        path: '/legal',
-        icon: "bi-shield-fill-check",
-        name: "Juridique"
-    },
-    {
-        path: '/support',
+        path: '/help',
         icon: "bi-question-circle-fill",
-        name: "Support"
-    },
-    // {
-    //     path: '/developpeurs',
-    //     icon: "bi-code-slash",
-    //     name: "Développeurs"
-    // }
+        name: "Aide et Juridique"
+    }
 ]
 
 export { pages, type Page };
