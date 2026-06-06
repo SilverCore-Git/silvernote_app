@@ -20,7 +20,7 @@
 
                     <div class="flex flex-col items-start">
                         <span class="text-base font-bold">Silvernote</span>
-                        <span class="text(--text-little) text-[10px] -mt-1">
+                        <span class="text-(--text-little) text-[10px] -mt-1">
                             version {{ version }}
                         </span>
                     </div>
