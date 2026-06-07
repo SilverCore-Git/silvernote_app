@@ -176,6 +176,7 @@
   - Basé sur la langue du navigateur (`navigator.language`)
   - Préférence utilisateur sauvegardée
   - Paramètre d'URL (`?lang=en`)
+  - sauvé la langue dans les metadata clerk
 - **Priorité** : ⭐⭐⭐
 - **Effort** : Faible
 
