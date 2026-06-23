@@ -262,7 +262,7 @@
 
   <ConfirmDialog
       :visible="showConfirmDel"
-      title="Supprimer les notes séléctionnées"
+      title="Supprimer les notes sélectionnées"
       message="Êtes-vous sûr de vouloir supprimer ces notes ?"
       @cancel="showConfirmDel = false; emit('update:modelValue', false)"
       @confirm="delete_share(2)"

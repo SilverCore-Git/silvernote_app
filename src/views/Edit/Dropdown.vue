@@ -22,8 +22,6 @@
 
                     <hr />
 
-                    <!-- <li @click="showGame = true">2048</li> -->
-                    
                     <li @click="stats_popup = true">Informations</li>
 
                     <li class="text-red-600" @click="showDialog = true">
@@ -75,7 +73,6 @@
         :note="note"
     />
 
-    <app2048-popup v-model:show="showGame" />
 
 </template>
 
@@ -110,7 +107,6 @@ const stats_popup = ref<boolean>(false);
 const import_menu = ref<boolean>(false);
 const share_menu = ref<boolean>(false);
 const showDialog = ref<boolean>(false);
-const showGame = ref<boolean>(false);
 
 
 const undo = () => editor.value?.chain().focus().undo().run()

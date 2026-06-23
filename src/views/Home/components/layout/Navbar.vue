@@ -12,7 +12,6 @@
             <li class="flex-col nohover">
 
                 <div
-                    @click="showGame = !showGame"
                     class="flex flex-row gap-2 items-center justify-center"
                 >
 
@@ -20,7 +19,7 @@
 
                     <div class="flex flex-col items-start">
                         <span class="text-base font-bold">Silvernote</span>
-                        <span class="text(--text-little) text-[10px] -mt-1">
+                        <span class="text-(--text-little) text-[10px] -mt-1">
                             version {{ version }}
                         </span>
                     </div>
@@ -171,8 +170,6 @@
 
         </ul> -->
 
-        <!-- <App2048Popup v-model:show="showGame" /> -->
-
     </div>
 
 </template>
@@ -186,14 +183,12 @@ import { ref, watch } from 'vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 import { UserButton } from '@clerk/vue';
 import { clerkAppearanceSettings } from '@/assets/ts/theme';
-// import App2048Popup from '@/components/2048/App2048Popup.vue';
 import News from '../../../../components/notifications/Notifications.vue';
 
  
 const router = useRouter();
 const route = useRoute();
 const selectedNote = ref<string>('');
-const showGame = ref<boolean>(false);
 const host = window.location.hostname;
 
 

@@ -8,7 +8,7 @@
 
       <div>
 
-          <UpdateAvalable v-if="loaded && isLoaded" />
+          <UpdateAvailable v-if="loaded && isLoaded" />
 
           <div class="w-full h-full" v-if="route.path.startsWith('/sauth')">
             <router-view />
@@ -118,7 +118,7 @@ import BtnOverlay from "./components/common/BtnOverlay.vue";
 import DesktopAppTitleBar from "./components/DesktopAppTitleBar.vue";
 import IconLoader from "./components/iconLoader.vue";
 import { initNotifications } from "./components/notifications/notifications";
-import UpdateAvalable from "./components/updateAvalable.vue";
+import UpdateAvailable from "./components/updateAvailable.vue";
 import { useWSocket } from "./composables/WSocket";
 import dbSocket from "./assets/ts/database/dbSocket";
 import { dev } from '../package.json';

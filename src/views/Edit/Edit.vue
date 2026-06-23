@@ -2,8 +2,7 @@
 
 import BackBtn from '@/components/backBtn.vue';
 import { editor } from '@/components/Markdown/Editor';
-import RichMarkdownEditor from '@/components/Markdown/RichMarkdownEditor.vue';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { defineAsyncComponent, computed, nextTick, onMounted, ref, watch } from 'vue';
 import Dropdown from './Dropdown.vue';
 import type { User } from '@/assets/ts/type';
 import useEmoji from './composable/useEmoji';
@@ -18,6 +17,11 @@ import ShareDropdown from '../Share/components/dropdown.vue';
 import Popup from '@/components/popup/Popup.vue';
 import getIconByNote from '@/assets/ts/utils/ai/getIconByNote';
 import useSettingsItem from '@/assets/ts/settings/useSettingsItem';
+
+// Lazy loading des composants lourds pour améliorer les performances
+const RichMarkdownEditor = defineAsyncComponent(
+  () => import('@/components/Markdown/RichMarkdownEditor.vue')
+);
 
 
 const props = defineProps<{
@@ -159,7 +163,7 @@ onMounted(async () => {
       await nextTick();
       resizeTitle();
 
-      init_emoji_picker({
+      await init_emoji_picker({
         note: localNote,
         ref: emojiBtn,
       });
@@ -342,6 +346,7 @@ onMounted(async () => {
                   :key="'visitor-'+index"
                   class="w-8 h-8 rounded-full border border-(--text)/10"
                   :src="user.imageUrl"
+                  loading="lazy"
               />
 
             </div>
@@ -442,6 +447,7 @@ onMounted(async () => {
                 <img 
                   class="w-20 h-20 " 
                   :src="localNote.icon" 
+                  :alt="localNote.title || 'Icône de la note'"
                 />
 
               </div>
@@ -457,6 +463,7 @@ onMounted(async () => {
                   <img 
                     class="w-20 h-20  cursor-pointer hover:scale-110 transition-transform" 
                     :src="localNote.icon" 
+                    :alt="localNote.title || 'Icône de la note'"
                   />
 
                 </PressAndHold>
@@ -485,6 +492,7 @@ onMounted(async () => {
                   :src="suggestedIcon"
                   @error="suggestedIcon = ''"
                   class="w-full h-full object-contain filter grayscale-[0.3] opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 ease-out" 
+                  alt="Icône suggérée"
                 />
                 
                 <div class="absolute -top-1 -right-1 bg-(--btn) text-(--text) rounded-lg shadow-lg shadow-purple-500/20 w-7 h-7 flex items-center justify-center border-2 border-(--bg-primary) group-hover:rotate-12 transition-transform">

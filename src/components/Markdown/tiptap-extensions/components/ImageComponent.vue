@@ -63,6 +63,7 @@
                     group-hover:opacity-80
                 "
                 :class="{ 'opacity-80': selected }"
+                loading="lazy"
             >
 
         </div>

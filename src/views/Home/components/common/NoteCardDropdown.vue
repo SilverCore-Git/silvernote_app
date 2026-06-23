@@ -69,8 +69,8 @@
 
             <ConfirmDialog
                 :visible="showConfirmDel"
-                title="Supprimer vôtre note"
-                message="êtes vous sur de vouloir supprimer votre note ?"
+                title="Supprimer votre note"
+                message="Êtes-vous sûr de vouloir supprimer votre note ?"
                 @cancel="showConfirmDel = false"
                 @confirm="deleteNote(2)"
             />

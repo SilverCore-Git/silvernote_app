@@ -131,10 +131,10 @@ const resetDB = async (state: 1 | 2) => {
 
                     <h2 class="font-semibold text-lg mb-1 flex items-center gap-2">
                         <i class="bi bi-box-arrow-down text-(--btn)" />
-                        Importer des notes et des tags
+                        Importer des notes et des étiquettes
                     </h2>
 
-                    <p class="text-sm opacity-60">Fusionnez vos notes depuis google keep ou un fichier .snote.</p>
+                    <p class="text-sm opacity-60">Fusionnez vos notes depuis Google Keep ou un fichier .snote.</p>
 
                 </div>
 
@@ -144,7 +144,7 @@ const resetDB = async (state: 1 | 2) => {
                         class="default-primary w-full"
                         @click="router.push('/settings/import/keep')"
                     >
-                        Depuis google keep
+                        Depuis Google Keep
                     </button>
 
                     <button 
@@ -166,14 +166,14 @@ const resetDB = async (state: 1 | 2) => {
 
                 <div class="flex flex-col items-start  gap-4">
                     <p class="text-sm text-red-500/70">
-                        Vider vôtre base de donnés. Supprimer toutes vos notes et vos tags (cette action est irreversible).
+                        Vider votre base de données. Supprime toutes vos notes et vos étiquettes (cette action est irréversible).
                     </p>
                     <button 
                         @click="resetDB(1)"
                         class="primary danger w-full"
                         :class="Loader == 'reset' ? 'loader' : ''"
                     >
-                        Supprimer tout
+                        Tout supprimer
                     </button>
                 </div>
 
@@ -186,7 +186,7 @@ const resetDB = async (state: 1 | 2) => {
     <ConfirmDialog
         :visible="ShowConfirmDialog"
         title="Réinitialiser la base de données"
-        message="Cette action est irréversible. Êtes-vous sûr de vouloir réinitialiser votre base de données ? Toutes vos notes et tags seront supprimés définitivement."
+        message="Cette action est irréversible. Êtes-vous sûr de vouloir réinitialiser votre base de données ? Toutes vos notes et étiquettes seront supprimées définitivement."
         checkbox="Je comprends les conséquences de cette action"
         @cancel="ShowConfirmDialog = false"
         @confirm="resetDB(2); ShowConfirmDialog = false"

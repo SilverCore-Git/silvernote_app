@@ -1,7 +1,7 @@
 <template>
     <div class="h-full w-full flex justify-center items-center">
         <div class="loader-wrapper">
-            <img src="/favicon.svg" class="loader-icon" />
+            <img src="/favicon.svg" class="loader-icon" alt="Silvernote Logo" />
         </div>
     </div>
 </template>

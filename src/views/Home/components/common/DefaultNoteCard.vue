@@ -41,6 +41,7 @@
                         :src="icon" 
                         class="min-w-18 w-18 h-18 object-contain shrink-0 opacity-80" 
                         loading="lazy"
+                        :alt="title || 'Icône de la note'"
                     />
                 </div>
 
@@ -84,6 +85,7 @@
                             :style="{ zIndex: 10 - index }"
                             :src="visitor.imageUrl"
                             loading="lazy"
+                            :alt="`Avatar de ${visitor.username || 'utilisateur'}`"
                         />
                         <div 
                             v-if="shareVisitors.length > 5"

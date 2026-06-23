@@ -36,7 +36,7 @@
         "fn": "() => editor.chain().focus().toggleBlockquote().run()"
     },
     {
-        "name": "Code block",
+        "name": "Bloc de code",
         "fn": "() => editor.chain().focus().toggleCodeBlock().run()"
     },
     {
