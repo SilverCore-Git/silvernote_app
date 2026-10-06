@@ -9,8 +9,8 @@
         "
     >
 
-        <!-- SilverIA btn -->
-        <Silveria v-if="aiEnabled" />
+        <!-- SilverIA btn — désactivé côté front (temporaire) -->
+        <Silveria v-if="false && aiEnabled" />
 
         <!-- new note btn -->
         <button
