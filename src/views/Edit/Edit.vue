@@ -2,6 +2,7 @@
 
 import BackBtn from '@/components/backBtn.vue';
 import { editor } from '@/components/Markdown/Editor';
+import waitFor from '@/assets/ts/utils/waitFor';
 import { defineAsyncComponent, computed, nextTick, onMounted, ref, watch } from 'vue';
 import Dropdown from './Dropdown.vue';
 import type { User } from '@/assets/ts/type';
@@ -180,6 +181,9 @@ onMounted(async () => {
   {
 
     if (shared.value) return;
+
+    await waitFor(() => !!editor.value, 5000);
+    if (!editor.value) return;
 
     const content = editor.value.getHTML();
     if (
