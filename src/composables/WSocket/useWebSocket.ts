@@ -9,69 +9,88 @@ import { ref, type Ref } from "vue";
 // uniquement par l'entrypoint Node (app.ts), qui n'est plus celui exécuté.
 const wsocketHost: string = api_url;
 
+// Au-delà de cette durée en arrière-plan, la connexion est considérée comme
+// suspecte au retour (mobile : le socket peut se croire connecté alors que la
+// connexion TCP est morte, jusqu'au timeout de ping ~45s).
+const HIDDEN_RECONNECT_THRESHOLD_MS = 5_000;
+
 const socket = ref<Socket | null>(null);
-const isConnecting = ref<boolean>(false);
+let hiddenAt: number | null = null;
+
+const reconnectIfNeeded = () => {
+    const s = socket.value;
+    if (!s || s.connected || s.active) return;
+    s.connect();
+};
+
+const onVisibilityChange = () => {
+
+    if (document.visibilityState === 'hidden')
+    {
+        hiddenAt = Date.now();
+        return;
+    }
+
+    const s = socket.value;
+    const wasHiddenLong = hiddenAt !== null && Date.now() - hiddenAt > HIDDEN_RECONNECT_THRESHOLD_MS;
+    hiddenAt = null;
+
+    if (s?.connected && wasHiddenLong)
+    {
+        // Force une reconnexion propre plutôt que d'écrire dans une connexion
+        // potentiellement morte. La fermeture du transport déclenche la
+        // reconnexion automatique de socket.io.
+        s.io.engine?.close();
+        return;
+    }
+
+    reconnectIfNeeded();
+
+};
 
 const useWSocket = async (): Promise<Ref<Socket | null>> => {
-    
-    if (socket.value?.connected) return socket as Ref<Socket | null>;
 
-    if (isConnecting.value)
+    // Un seul socket pour toute l'app : en recréer un orphelinerait les
+    // listeners déjà attachés à l'ancien (EditorProvider, useNoteEditing...).
+    if (socket.value)
     {
-        return new Promise((resolve) => {
-            const check = setInterval(() => {
-                if (socket.value) {
-                    clearInterval(check);
-                    resolve(socket as Ref<Socket | null>);
-                }
-            }, 100);
-        });
+        reconnectIfNeeded();
+        return socket as Ref<Socket | null>;
     }
 
-    isConnecting.value = true;
+    socket.value = io(wsocketHost, {
+        path: "/socket",
+        // Forme fonction : réévaluée à chaque (re)connexion. Les tokens Clerk
+        // expirent en ~60s, un token figé à la création fait rejeter toutes les
+        // reconnexions ultérieures par le middleware serveur.
+        auth: (cb) => {
+            const session = window.Clerk?.session;
+            if (!session) return cb({});
+            session.getToken()
+                .then((token) => cb({ token }))
+                .catch(() => cb({}));
+        },
+        reconnection: true,
+        autoConnect: true,
+    });
 
-    try {
+    socket.value.on("connect", () => {
+        console.log("[WS] Connected with ID:", socket.value?.id);
+    });
 
-        const currentToken = await window.Clerk.session?.getToken();
+    socket.value.on("connect_error", (err) => {
+        console.error("[WS] Connection Error:", err.message);
+        // Un refus du middleware serveur (ex. token invalide) désactive la
+        // reconnexion automatique de socket.io (`active` passe à false) :
+        // on relance nous-mêmes, le token sera regénéré par `auth`.
+        if (!socket.value?.active) setTimeout(reconnectIfNeeded, 2_000);
+    });
 
-        socket.value = io(wsocketHost, {
-            path: "/socket",
-            auth: { token: currentToken },
-            reconnection: true,
-            autoConnect: true,
-            reconnectionAttempts: 5
-        });
-
-        socket.value.on("reconnect_attempt", async () => {
-            
-            const newToken = await window.Clerk.session?.getToken();
-            
-            if (socket.value) 
-            {
-                socket.value.auth = { token: newToken };
-            }
-
-        });
-
-        socket.value.on("connect", () => {
-            console.log("[WS] Connected with ID:", socket.value?.id);
-            isConnecting.value = false;
-        });
-
-        socket.value.on("connect_error", (err) => {
-            console.error("[WS] Connection Error:", err.message);
-            isConnecting.value = false;
-        });
-
-    } 
-    catch (error) 
-    {
-        console.error("[WS] Auth Error:", error);
-        isConnecting.value = false;
-    }
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("online", reconnectIfNeeded);
 
     return socket as Ref<Socket | null>;
-    
+
 };
 
 export default useWSocket;

@@ -38,6 +38,10 @@ export class EditorProvider
     public doc: Y.Doc;
     public awareness: awarenessProtocol.Awareness;
     public synced: boolean = false;
+    // Passe à true à chaque déconnexion : au prochain `initial-state` (renvoyé par
+    // le serveur sur join-room à la reconnexion), on fusionne l'état serveur et on
+    // lui renvoie l'état local complet.
+    private needsResync: boolean = false;
     
     // Liste réactive des collaborateurs
     public collaborators: Ref<Collaborator[]> = ref<Collaborator[]>([]);
@@ -98,9 +102,13 @@ export class EditorProvider
       (await socket).value.emit('get-initial-state', { roomId: this.room });
 
       // État initial du document
-      (await socket).value.on('initial-state', ({ ydocState, share, note }: { ydocState: any, share: any, note?: Note }) => {
+      (await socket).value.on('initial-state', async ({ ydocState, share, note }: { ydocState: any, share: any, note?: Note }) => {
 
-          if (this.synced) return;
+          if (this.synced)
+          {
+            if (this.needsResync) await this.resyncAfterReconnect(ydocState);
+            return;
+          }
 
           const cachedNote = Notes.value.find(n => n.uuid == this.room);
 
@@ -152,6 +160,7 @@ export class EditorProvider
 
 
           this.synced = true;
+          this.needsResync = false;
           console.log('✅ Editor synced!');
         
           nextTick(() => {
@@ -241,14 +250,49 @@ export class EditorProvider
         }
       });
 
+      // Les updates locales restent émises pendant la déconnexion : socket.io les
+      // met en tampon et les envoie à la reconnexion, y compris si l'éditeur a été
+      // fermé entre-temps (le tampon vit sur le socket, pas sur l'éditeur).
       (await socket).value.on('disconnect', () => {
         isOffline = true;
+        this.needsResync = true;
         console.log('❌ Socket disconnected');
-        this.disableLocalUpdates();
         window.dispatchEvent(new CustomEvent('note-save-offline'));
       });
 
       this.enableLocalUpdates();
+    }
+
+    // Les updates émises sur une connexion déjà morte mais pas encore détectée
+    // (mobile au réveil) sont perdues sans passer par le tampon : on renvoie donc
+    // l'état local complet. Yjs déduplique, c'est sans risque.
+    private async resyncAfterReconnect(ydocState: any)
+    {
+
+      this.needsResync = false;
+
+      const uint8State = ydocState instanceof Uint8Array
+        ? ydocState
+        : new Uint8Array(ydocState ?? []);
+
+      if (uint8State.length > 0)
+      {
+        try {
+          Y.applyUpdate(this.doc, uint8State, 'remote');
+        }
+        catch (e) {
+          console.error("❌ Erreur lors de la fusion de l'état serveur après reconnexion", e);
+        }
+      }
+
+      if (!this.editable || !this.room) return;
+
+      window.dispatchEvent(new CustomEvent('note-saving'));
+      (await socket).value.emit('y-update', {
+        roomId: this.room,
+        update: Y.encodeStateAsUpdate(this.doc)
+      });
+
     }
 
     private enableLocalUpdates()
