@@ -6,6 +6,7 @@ import postError from '../errorOverlay/postError';
 import { editor } from './Editor';
 import { nextTick, ref, type Ref } from 'vue';
 import { Notes } from '@/assets/ts/database/Var';
+import type { Note } from '@/assets/ts/type';
 
 let isOffline = false;
 
@@ -97,29 +98,42 @@ export class EditorProvider
       (await socket).value.emit('get-initial-state', { roomId: this.room });
 
       // État initial du document
-      (await socket).value.on('initial-state', ({ ydocState, share }: { ydocState: any, share: any }) => {
+      (await socket).value.on('initial-state', ({ ydocState, share, note }: { ydocState: any, share: any, note?: Note }) => {
 
           if (this.synced) return;
 
-          const note = Notes.value.find(note => note.uuid == this.room);
+          const cachedNote = Notes.value.find(n => n.uuid == this.room);
 
-          if (note && note.content_type == 'text/html')
+          // Le `note` reçu dans ce même message socket est la source de vérité :
+          // son content_type reflète l'état réel côté serveur (potentiellement déjà
+          // migré en 'ydoc'), contrairement au cache local Notes.value qui peut être
+          // périmé. On ne se rabat sur le cache que si le serveur n'a, par
+          // exception, pas envoyé de `note` dans ce payload.
+          const effectiveNote = note ?? cachedNote;
+
+          // Garde le cache local cohérent avec la valeur fraîche du serveur.
+          if (note && cachedNote)
           {
-            editor.value.commands.setContent(note.content);
+            cachedNote.content_type = note.content_type;
           }
-          else if (note?.content_type == 'ydoc' || (!note && this.shared))
+
+          if (effectiveNote && effectiveNote.content_type == 'text/html')
+          {
+            editor.value.commands.setContent(effectiveNote.content);
+          }
+          else if (effectiveNote?.content_type == 'ydoc' || (!effectiveNote && this.shared))
           {
 
-            const uint8State = ydocState instanceof Uint8Array 
-                ? ydocState 
+            const uint8State = ydocState instanceof Uint8Array
+                ? ydocState
                 : new Uint8Array(ydocState);
 
-            if (uint8State.length > 0) 
+            if (uint8State.length > 0)
             {
                 try {
                     Y.applyUpdate(this.doc, uint8State, 'initial');
-                } 
-                catch (e) 
+                }
+                catch (e)
                 {
                     console.error("❌ Erreur lors de l'application de l'état initial Yjs", e);
                 }
@@ -128,7 +142,7 @@ export class EditorProvider
           }
           else
           {
-            throw new Error(`Unsupported content type : ${note.content_type}`);
+            throw new Error(`Unsupported content type : ${effectiveNote?.content_type}`);
           }
 
           if (this.shared && share)
@@ -155,6 +169,22 @@ export class EditorProvider
 
         Y.applyUpdate(this.doc, uint8Update, 'remote');
         
+      });
+
+      // Accusé de réception serveur d'une sauvegarde (persistance en base)
+      (await socket).value.on('note-persisted', (data: { roomId: string, ok: boolean, message?: string }) => {
+
+        if (data.roomId !== this.room) return;
+
+        if (data.ok)
+        {
+          window.dispatchEvent(new CustomEvent('note-saved'));
+        }
+        else
+        {
+          window.dispatchEvent(new CustomEvent('note-save-error'));
+        }
+
       });
 
       // Updates distants d'awareness (curseurs)
@@ -234,6 +264,7 @@ export class EditorProvider
       this.updateHandler = async (update: Uint8Array, origin: any) => {
         
         if (origin !== 'remote' && this.editable && this.room) {
+          window.dispatchEvent(new CustomEvent('note-saving'));
           (await socket).value.emit('y-update', { roomId: this.room, update });
         } else {
           console.log('❌ Not emitting y-update - origin:', origin, 'editable:', this.editable, 'room:', this.room);
@@ -338,6 +369,7 @@ export class EditorProvider
       socket.then(s => {
         s.value.off('initial-state');
         s.value.off('y-update');
+        s.value.off('note-persisted');
         s.value.off('awareness-update');
         s.value.off('ai-content-update');
         s.value.off('connect');

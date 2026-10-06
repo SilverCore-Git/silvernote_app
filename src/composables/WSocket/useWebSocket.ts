@@ -3,10 +3,11 @@ import { io, type Socket } from "socket.io-client";
 import { ref, type Ref } from "vue";
 
 
-const wsocketHost: string = 
-  api_url === "http://localhost:3000" 
-    ? "http://localhost:3434" 
-    : api_url;
+// Le serveur bun (app.bun.ts), utilisé en dev comme en prod, intègre Socket.io
+// directement sur le même port que l'API REST (voir app.bun.ts). Le port 3434
+// correspondait à l'ancien serveur WebSocket séparé (wsocket/ws.ts), utilisé
+// uniquement par l'entrypoint Node (app.ts), qui n'est plus celui exécuté.
+const wsocketHost: string = api_url;
 
 const socket = ref<Socket | null>(null);
 const isConnecting = ref<boolean>(false);

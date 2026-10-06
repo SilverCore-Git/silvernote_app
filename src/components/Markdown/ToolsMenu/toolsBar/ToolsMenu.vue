@@ -100,9 +100,9 @@
 <script setup lang="ts">
 
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
-import { useRoute } from 'vue-router';
+// import { useRoute } from 'vue-router'; // Silveria désactivé côté front (temporaire)
 
-import useSilverIA from '@/components/silveria/composables/useSilverIA';
+// import useSilverIA from '@/components/silveria/composables/useSilverIA'; // Silveria désactivé côté front (temporaire)
 import type { Categories } from '../ToolsMenuTypes';
 import config from './ToolsMenuConfig.json';
 import { editor } from '../../Editor';
@@ -111,8 +111,8 @@ import colorEditor from '../colorEditor/colorEditor.vue';
 import isMobile from '@/assets/ts/utils/isMobile';
 
 
-const { sendToSilverIA } = useSilverIA();
-const route = useRoute();
+// const { sendToSilverIA } = useSilverIA(); // Silveria désactivé côté front (temporaire)
+// const route = useRoute(); // Silveria désactivé côté front (temporaire)
 const _config = config as any;
 
 const showMenu = ref<boolean>(false);
@@ -236,14 +236,14 @@ const execCheck = (checkStr: string): boolean => {
 
 
 
-const AskToAI = (prompt: string) => {
-  if (!editor.value) return;
-  const { from, to } = editor.value.state.selection;
-  const selectedText = editor.value.state.doc.textBetween(from, to, ' ');
-
-  sendToSilverIA({ text: `${prompt} : ${selectedText}`, route });
-
-};
+// Silveria désactivé côté front (temporaire) :
+// const AskToAI = (prompt: string) => {
+//   if (!editor.value) return;
+//   const { from, to } = editor.value.state.selection;
+//   const selectedText = editor.value.state.doc.textBetween(from, to, ' ');
+//   sendToSilverIA({ text: `${prompt} : ${selectedText}`, route });
+// };
+const AskToAI = (_prompt: string) => {};
 
 const insertImageFromFile = () => {
   const input = document.createElement("input");
