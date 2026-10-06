@@ -1,11 +1,10 @@
 import type { Note, Tag } from '../type';
 import { api_url } from '../backend_link';
-import type { Socket } from 'socket.io-client';
 import useToken from '@/composables/useToken';
 import { APICache } from '../cache/apiCache';
 
 class Database {
-    
+
     private async getHeaders() {
         return {
             'Content-Type': 'application/json',
@@ -14,23 +13,32 @@ class Database {
     }
 
     /**
-     * Envoi d'une note vers le serveur (via Socket ou Fetch)
+     * Envoi d'une note vers le serveur (via Fetch)
      */
-    private async push_note(note: Note, socket?: Socket) {
-        if (socket) {
-            socket.emit('edit_note', { 
-                uuid: note.uuid,
-                content: note.content,
-                title: note.title
-            });
-        } else {
-            await fetch(`${api_url}/api/db/update/a/note`, {
+    private async push_note(note: Note) {
+
+        window.dispatchEvent(new CustomEvent('note-saving'));
+
+        try {
+
+            const response = await fetch(`${api_url}/api/db/update/a/note`, {
                 method: 'POST',
                 headers: await this.getHeaders(),
                 credentials: 'include',
                 body: JSON.stringify({ note }),
             });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update note (HTTP ${response.status})`);
+            }
+
+            window.dispatchEvent(new CustomEvent('note-saved'));
+
+        } catch (e) {
+            window.dispatchEvent(new CustomEvent('note-save-error'));
+            throw e;
         }
+
     }
 
     /**
@@ -70,14 +78,31 @@ class Database {
 
         note.date = new Date().toISOString();
 
-        const _note = await fetch(`${api_url}/api/db/new/note`, {
-            method: 'POST',
-            headers: await this.getHeaders(),
-            credentials: 'include',
-            body: JSON.stringify({ note }),
-        }).then(res => res.json()).then(res => res.note);
+        window.dispatchEvent(new CustomEvent('note-saving'));
 
-        return _note;
+        try {
+
+            const response = await fetch(`${api_url}/api/db/new/note`, {
+                method: 'POST',
+                headers: await this.getHeaders(),
+                credentials: 'include',
+                body: JSON.stringify({ note }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to create note (HTTP ${response.status})`);
+            }
+
+            const _note = await response.json().then(res => res.note);
+
+            window.dispatchEvent(new CustomEvent('note-saved'));
+
+            return _note;
+
+        } catch (e) {
+            window.dispatchEvent(new CustomEvent('note-save-error'));
+            throw e;
+        }
 
     }
 
@@ -92,19 +117,36 @@ class Database {
     /**
      * Mise à jour partielle (ex: icône, titre, contenu)
      */
-    public async updateField(note: Note, socket?: Socket) {
-        await this.push_note(note, socket);
+    public async updateField(note: Note) {
+        await this.push_note(note);
     }
 
     /**
      * Suppression d'une note
      */
     public async delete(uuid: string): Promise<void> {
-        await fetch(`${api_url}/api/db/delete/a/note?uuid=${uuid}`, {
-            method: 'POST',
-            headers: await this.getHeaders(),
-            credentials: 'include',
-        });
+
+        window.dispatchEvent(new CustomEvent('note-saving'));
+
+        try {
+
+            const response = await fetch(`${api_url}/api/db/delete/a/note?uuid=${uuid}`, {
+                method: 'POST',
+                headers: await this.getHeaders(),
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to delete note (HTTP ${response.status})`);
+            }
+
+            window.dispatchEvent(new CustomEvent('note-saved'));
+
+        } catch (e) {
+            window.dispatchEvent(new CustomEvent('note-save-error'));
+            throw e;
+        }
+
     }
 
     /**
@@ -114,14 +156,31 @@ class Database {
 
         tag.id = parseInt(Date.now() + Math.floor(Math.random() * 1000).toString());
 
-        const _tag = await fetch(`${api_url}/api/db/new/tag`, {
-            method: 'POST',
-            headers: await this.getHeaders(),
-            credentials: 'include',
-            body: JSON.stringify({ tag }),
-        }).then(res => res.json()).then(res => res.tag);
-    
-        return _tag
+        window.dispatchEvent(new CustomEvent('note-saving'));
+
+        try {
+
+            const response = await fetch(`${api_url}/api/db/new/tag`, {
+                method: 'POST',
+                headers: await this.getHeaders(),
+                credentials: 'include',
+                body: JSON.stringify({ tag }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to create tag (HTTP ${response.status})`);
+            }
+
+            const _tag = await response.json().then(res => res.tag);
+
+            window.dispatchEvent(new CustomEvent('note-saved'));
+
+            return _tag;
+
+        } catch (e) {
+            window.dispatchEvent(new CustomEvent('note-save-error'));
+            throw e;
+        }
 
     }
 
@@ -129,26 +188,59 @@ class Database {
      * Mise à jour d'un tag
      */
     public async updateTag(tag: Tag) {
-        
+
         tag._id = undefined;
-        await fetch(`${api_url}/api/db/update/a/tag`, {
-            method: 'POST',
-            headers: await this.getHeaders(),
-            credentials: 'include',
-            body: JSON.stringify({ tag }),
-        });
-        
+
+        window.dispatchEvent(new CustomEvent('note-saving'));
+
+        try {
+
+            const response = await fetch(`${api_url}/api/db/update/a/tag`, {
+                method: 'POST',
+                headers: await this.getHeaders(),
+                credentials: 'include',
+                body: JSON.stringify({ tag }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update tag (HTTP ${response.status})`);
+            }
+
+            window.dispatchEvent(new CustomEvent('note-saved'));
+
+        } catch (e) {
+            window.dispatchEvent(new CustomEvent('note-save-error'));
+            throw e;
+        }
+
     }
 
     /**
      * Suppression d'un tag
      */
     public async delete_tag(uuid: string): Promise<void> {
-        await fetch(`${api_url}/api/db/delete/a/tag?uuid=${uuid}`, {
-            method: 'POST',
-            headers: await this.getHeaders(),
-            credentials: 'include',
-        });
+
+        window.dispatchEvent(new CustomEvent('note-saving'));
+
+        try {
+
+            const response = await fetch(`${api_url}/api/db/delete/a/tag?uuid=${uuid}`, {
+                method: 'POST',
+                headers: await this.getHeaders(),
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to delete tag (HTTP ${response.status})`);
+            }
+
+            window.dispatchEvent(new CustomEvent('note-saved'));
+
+        } catch (e) {
+            window.dispatchEvent(new CustomEvent('note-save-error'));
+            throw e;
+        }
+
     }
 
     /**
@@ -170,7 +262,7 @@ class Database {
         });
 
     }
-    
+
 }
 
 export default new Database();

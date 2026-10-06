@@ -51,12 +51,14 @@ function useNoteEditing (noteId: Ref<string> | ComputedRef<string>, isShared: Re
 
         const iconEmitWatch = watch(() => localNote.value.icon, (newIcon, oldIcon) => {
             if (newIcon == oldIcon) return;
+            window.dispatchEvent(new CustomEvent('note-saving'));
             socket.value.emit('icon-update', { roomId: localNote.value.id, update: newIcon });
         })
 
         const titleEmitWatch = watch(() => localNote.value.title, (newTitle, oldTitle) => {
             if (newTitle == oldTitle) return;
             document.title = `${newTitle} - Silvernote`;
+            window.dispatchEvent(new CustomEvent('note-saving'));
             socket.value.emit('title-update', { roomId: localNote.value.id, update: newTitle });
         })
 
