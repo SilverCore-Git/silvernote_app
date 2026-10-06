@@ -15,4 +15,12 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
+  server: {
+    watch: {
+      // Évite que le watcher ne suive les worktrees d'agents créés sous .claude/
+      // (leur création/suppression pendant que ce serveur tourne corrompait le
+      // cache interne de Vite, causant des ENOENT sur des fichiers déjà supprimés).
+      ignored: ['**/.claude/**'],
+    },
+  },
 })
