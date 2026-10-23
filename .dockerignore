@@ -1,0 +1,13 @@
+node_modules/
+dist/
+android/
+.env
+.env.*
+.git/
+.gitignore
+.github/
+Dockerfile
+.dockerignore
+.claude/
+*.log
+.DS_Store

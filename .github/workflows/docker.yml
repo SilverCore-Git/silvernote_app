@@ -1,0 +1,53 @@
+# Construit l'image du front et la pousse sur ghcr.io, rattachée au dépôt
+# deployment_files (privé : l'image hérite de sa visibilité et de ses accès).
+# Secret requis : GHCR_TOKEN (PAT classique, scope write:packages).
+# Secrets figés dans le bundle (vides = fonctionnalité absente, sauf Clerk obligatoire) : VITE_CLERK_PUBLISHABLE_KEY,
+# VITE_PDFSHIFT_KEY, VITE_DISCORD_ISSUE_WH.
+name: Image Docker
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+      - id: pkg
+        run: echo "version=$(jq -r .version package.json)" >> "$GITHUB_OUTPUT"
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/silvercore-git/silvernote-app
+          # latest = main ; sinon nom de branche / tag, plus le sha court
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=${{ steps.pkg.outputs.version }},enable={{is_default_branch}}
+            type=ref,event=branch
+            type=ref,event=tag
+            type=sha
+          labels: org.opencontainers.image.source=https://github.com/SilverCore-Git/deployment_files
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          # Sans attestation, ghcr reçoit une image simple et lit le label source
+          # (sinon un index : label ignoré, package rattaché à aucun dépôt).
+          provenance: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+            VITE_PDFSHIFT_KEY=${{ secrets.VITE_PDFSHIFT_KEY }}
+            VITE_DISCORD_ISSUE_WH=${{ secrets.VITE_DISCORD_ISSUE_WH }}
